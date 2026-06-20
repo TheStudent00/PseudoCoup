@@ -59,10 +59,21 @@ PseudoCoup                          the umbrella: write once, render anywhere.
   |           +-- PyHaxeUI-OpenFL   ship path candidate. DOES NOT EXIST YET.
   |           +-- PyHaxeUI-iOS      ship path. planned, not started.
   |
-  +-- PyFlutter                     target: pseudo-code -> Dart/Flutter
-                                    NEW, not started. the other side of the
-                                    open fork (section 6).
+  +-- PseudoDart                    target: pseudo-code -> Dart source. UNDERWAY.
+        |                           (Dart reaches Android/iOS/web/desktop via
+        |                            Flutter.) was "PyFlutter" earlier in this
+        |                            doc; renamed per the umbrella pattern.
+        +-- PseudoFlutter           the UI kit over the Dart target. analog of
+                                    PyHaxeUI. planned, not started.
 ```
+
+**Naming update (2026-06-20).** The Dart side, called "PyFlutter" throughout the
+older parts of this doc, is now split and named to mirror the Haxe side:
+**PseudoDart** = the Python->Dart transpiler (analog of PyHaxe), **PseudoFlutter**
+= the UI kit over it (analog of PyHaxeUI). The `Pseudo` prefix (not `Py`) was
+chosen because `PyDart` is already taken by an unrelated project, and `Pseudo`
+sits naturally under the umbrella. Wherever this doc says "PyFlutter," read
+"PseudoDart / PseudoFlutter."
 
 The `Py-` names follow one pattern: `Py` + target = a **transpiler target**. The
 umbrella cannot follow that pattern, because it is not tied to one target — that
@@ -243,6 +254,33 @@ did **NOT** go through OpenFL. It went through **hxjava -> native Android Views*
 OpenFL was the *original development plan's* intended drawn-widget renderer, but it
 was never used for Android. This matters enormously for section 6.
 
+### Update 2026-06-20 — the Dart side is underway (PseudoDart)
+
+The fork's "PyFlutter" side is no longer conceptual. It is named (PseudoDart +
+PseudoFlutter, see the naming update in section 0) and the transpiler exists and
+works, in its own private repo (`~/Programming/PseudoDart`):
+
+- Full Flutter SDK (Dart 3.12.2) installed. The discipline for the Dart target is
+  settled and far lighter than PyHaxe's — **4 bans + an annotation warning** vs.
+  PyHaxe's 14 rules — because Dart natively supports closures, generators,
+  async/await, try/finally, rethrow, and records. Settled construct-by-construct
+  against the live Dart compiler.
+- A working AST->Dart emitter (the `haxe_emitter` analog) transpiles realistic
+  multi-class programs. **Capstone:** PyHaxe's own `inventory_example.py`, ported
+  to PseudoDart, emits Dart that `dart analyze`s clean and `dart run`s, matching
+  the source Python line-for-line except one formatting divergence. Same
+  disciplined Python — Haxe via PyHaxe, Dart via PseudoDart. The
+  one-source-many-targets thesis, shown end-to-end.
+- Lowering choices and known gaps live in `PseudoDart/docs/DEVELOPMENT_NOTES.md`.
+
+This partly answers section 7's investigation #2 (PyFlutter's transpile cost): the
+PyHaxe AST-walk spine + discipline checker carry over directly; the emitter is an
+early ~700-line spine, not yet feature-complete. OpenFL's iOS reach (investigation
+#1) is still uncosted, so the fork is **not** closed — but the Dart side has moved
+from candidate to underway, consistent with the owner's recorded lean toward
+notation/portability. The `backward` (Dart->Python) idea raised in
+`DevComms/log_0` is explicitly parked, not a design driver.
+
 ### What is NOT proved
 
 **Any iOS ship path.** Not started by any route. This is now the central open
@@ -253,7 +291,9 @@ Swift" is what surfaced it.
 no OpenFL mapping, no OpenFL ship. "Continuing OpenFL" is a misnomer — it would be
 *starting* OpenFL.
 
-**PyFlutter.** Does not exist. Conceptual only, as of this conversation.
+**PseudoFlutter (the Dart-side UI kit).** Not started. The PseudoDart *transpiler*
+is underway (see the update above), but the *UI kit* over it — the analog of
+PyHaxeUI, where the three-tier model maps onto Flutter widgets — does not exist.
 
 **Two-paths-agree (debug vs ship look/behave the same).** Still cannot be fully
 tested until a second ship path on a second platform exists.
@@ -475,3 +515,13 @@ end-to-end** (M2a/M2b/M2b2). Recorded across `PyHaxeUI_development_plan.md`,
 - **Named the umbrella: PseudoCoup** — a coup against un-intentful, un-portable
   design — keeping the `Py-` names as targets underneath and "intent" as the
   internal principle. This doc created at the end.
+
+**This conversation (cont., 2026-06-20) — built the Dart side.** Reviewed DevComms;
+recorded the forward/backward brainstorm (`DevComms/log_0_pseudodart_forward_backward_discipline.md`);
+installed the Flutter SDK (Dart 3.12.2); settled the lighter Dart-target discipline
+(4 bans + annotation warning); and stood up **PseudoDart** — the Python->Dart
+transpiler — through a discipline checker and a working AST->Dart emitter, proving
+it on PyHaxe's `inventory_example.py` end-to-end (emit -> `dart analyze` ->
+`dart run`). Demoted the `backward` (Dart->Python) idea to "would be cool, not a
+driver." This handoff updated to reflect the Dart side moving from conceptual to
+underway. Next on PseudoDart: a type environment (for record indexing).
