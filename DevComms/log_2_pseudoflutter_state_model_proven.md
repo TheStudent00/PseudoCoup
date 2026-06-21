@@ -71,13 +71,25 @@ because nothing fixed where they lived, and that disorganization was its own dra
 
 The intention-based process from log_1 is no longer theory — leaf, container,
 compound-stateful, and all three present shapes (selection / boolean / pure value)
-are built and verified. Natural next steps:
+are built and verified.
 
-    - compose the six into one full screen from a single app intent, verified
-      side-by-side (tests that components co-lay-out, not just render in isolation);
-    - a component whose app state is a string the user edits (`text_field`) — the
-      first place Kivy's TextInput vs Flutter's TextField behaviour diverges under
-      the same present contract;
-    - wire the app intent through PseudoDart (it currently runs as disciplined
-      Python under the Kivy kit; the Dart side is transpiled but not yet driving a
-      live Flutter app).
+Done since this log was opened (same run):
+
+    - DONE  full screen from one intent, verified side-by-side (comparisons/screen.png)
+            — the six co-lay-out in a shared content column, identically on both engines.
+    - DONE  text_field — string app state the user edits; the first component whose
+            editing behaviour (Kivy TextInput vs Flutter TextField) genuinely diverges,
+            so it lives inside the kit behind the same present contract.
+    - DONE  the ship path: example/app_demo.py (the whole screen as intent) transpiles
+            through PseudoDart to example/app_demo.gen.dart, which **type-checks against
+            the kit** (`dart analyze` → no issues). One Python source now drives both the
+            Kivy debug render AND a Dart program that compiles against Flutter. (This also
+            caught a real parity bug — Tokens(420) vs Tokens.load(420) — the analyzer
+            holding both kits to the same intent.)
+
+Remaining:
+
+    - drive a LIVE Flutter app from app_demo.gen.dart (so far the Dart is emitted and
+      analyzed, but not yet pumped into a running Flutter widget tree end-to-end);
+    - widen the kit toward the ~20-30 components a real screen needs (list_row, slider,
+      dropdown, …), each via the same compare.py side-by-side.
