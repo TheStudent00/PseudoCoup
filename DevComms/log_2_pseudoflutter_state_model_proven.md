@@ -87,9 +87,19 @@ Done since this log was opened (same run):
             caught a real parity bug — Tokens(420) vs Tokens.load(420) — the analyzer
             holding both kits to the same intent.)
 
+    - DONE  the loop run end-to-end: test/generated_screen_golden_test.dart imports the
+            MACHINE-GENERATED app_demo.gen.dart and pumps its build_screen() — the Flutter
+            pixels come from generated code, the Kivy pixels from the same app_demo.py run
+            directly (comparisons/generated_screen.png). Closing it needed build_screen() to
+            RETURN a tree, so the app expresses stacking as intent too: a column([...])
+            primitive (decision #3 applied to layout — the app never writes Column/BoxLayout).
+
 Remaining:
 
-    - drive a LIVE Flutter app from app_demo.gen.dart (so far the Dart is emitted and
-      analyzed, but not yet pumped into a running Flutter widget tree end-to-end);
-    - widen the kit toward the ~20-30 components a real screen needs (list_row, slider,
-      dropdown, …), each via the same compare.py side-by-side.
+    - a STANDALONE runnable Flutter app (a main.dart that runs app_demo.gen.dart's
+      build_screen() in a window) — the generated code already executes and renders
+      under the test harness, this is the same path packaged as an app;
+    - teach the emitter the kit's return types so build_screen() comes back `Widget`,
+      not `dynamic` (it runs either way; this is a typing nicety);
+    - widen the kit toward the ~20-30 components a real screen needs (slider, dropdown,
+      …), each via the same compare.py side-by-side. (list_row is done.)
