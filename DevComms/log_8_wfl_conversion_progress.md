@@ -97,8 +97,9 @@ A transpiler would *lower* (intent → primitives); this conversion *lifts* WFL'
 primitives up into kit intent. Recognising "this **is** a workout_row / info_card" is
 pattern recognition, not syntax mapping — and a transpiler that *didn't* lift would
 just reproduce WFL's primitives, defeating the kit. The grading is mechanical; the lift
-is semantic. The most-mechanical path available is intent→intent: `WFL_PyHaxe/src/ui/`
-holds every screen in Python against the *old* kit, so porting those skips the lift.
+is semantic. The *lowering* the other way **is** mechanical and is now demonstrated end
+to end (see "Runnable app" below): once a screen is expressed as kit intent, emitting it
+to a target (Dart/Flutter) and rendering it on another (Kivy) is deterministic.
 
 ## Done — what's left is polish, not conversion
 
@@ -110,5 +111,29 @@ The full screen inventory is converted. Open follow-ups, all optional:
   handful of omitted accessories (FABs, per-row overflow/delete icons, top-bar icon
   actions), the nested-card-content width-coupling (check-in section borders), and the
   Kivy chip flow-gap. None block the thesis; each is a known, localized fix.
-- **Mechanisation experiment:** port `WFL_PyHaxe/src/ui/` (old-kit Python screens) to
-  the new kit to test the intent→intent path that skips the semantic lift.
+
+## Runnable app — the write-once path, wired and interactive
+
+The per-screen conversions above were verification harnesses (parallel Dart goldens +
+Kivy renders). To show the actual write-once → render-anywhere path end to end, a small
+navigable WFL app is wired from ONE disciplined-Python intent source:
+
+- `example/wfl_app.py` — one source: four screens (Today / Progress / Library / You)
+  behind a `bottom_nav_bar`. The selected tab is app state; a tap calls
+  `present("app", i)` and the `zone` re-renders. The app names structure + state only;
+  it never positions a pixel or picks an engine.
+- **Ship path:** `bash tools/transpile_demo.sh wfl_app` → `example/wfl_app.gen.dart`
+  (PseudoDart; `flutter analyze` clean) → run by `example/wfl_main.dart`. Verified it
+  **builds to a native binary** (`flutter build linux -t example/wfl_main.dart` →
+  `build/linux/x64/release/bundle/pseudoflutter`) and that the nav genuinely switches
+  screens (`test/wfl_app_smoke_test.dart` drives `on_nav` and asserts the swap).
+- **Debug path:** the same `wfl_app.py` runs untouched under Kivy
+  (`kivy_compare/run_wfl.py`, live + interactive; `render_wfl_app.py` captures it).
+- **Identical across engines:** `comparisons/wfl_app_{today,progress}_2way.png` show the
+  same intent rendering the same on Flutter (transpiled) and Kivy (direct). Only delta
+  noted: the "done" workout_row strikethrough draws on Flutter but not Kivy.
+
+Wiring was tractable: ~120 lines of intent for the four-screen shell, no kit changes.
+The one discipline that matters is calling each component with the positional/named
+arg split its *Dart* signature expects (e.g. `text(value, role=...)`), so the emitted
+Dart type-checks.
