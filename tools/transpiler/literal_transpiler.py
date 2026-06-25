@@ -1,5 +1,6 @@
 import os
 import sys
+import ast
 
 # Attempt to load tree_sitter_kotlin
 try:
@@ -113,15 +114,23 @@ class LiteralVisitor:
         elif node.type == "if_expression":
             condition_node = next((c for c in node.children if c.type == "value_arguments" or c.type == "parenthesized_expression"), None)
             if not condition_node:
-                # Some ifs just have the expression directly as named children
-                # A proper Kotlin tree-sitter `if_expression` usually has a condition and a consequence
                 condition_node = node.named_children[0] if len(node.named_children) > 0 else None
             
             cond_text = self.get_text(condition_node, source_bytes) if condition_node else "True"
             self.emit(f"if {cond_text}:")
             self.indent_level += 1
             
-            consequence = next((c for c in node.children if c.type == "block" or c.type == "expression_statement" or c.type == "return_statement"), None)
+            # Find the consequence. It should be the first named child after the condition
+            consequence = None
+            found_cond = False
+            for child in node.named_children:
+                if child == condition_node:
+                    found_cond = True
+                    continue
+                if found_cond:
+                    consequence = child
+                    break
+            
             if consequence:
                 self.visit(consequence, source_bytes)
             else:
@@ -159,7 +168,17 @@ class LiteralVisitor:
                             self.emit(f"{prefix} {subject_text} == {cond_text}:")
                         self.indent_level += 1
                         
-                        entry_body = next((c for c in child.children if c.type == "block" or c.type == "expression_statement" or c.type == "return_statement"), None)
+                        # Get the entry body which is the child after the condition
+                        entry_body = None
+                        found_cond = False
+                        for c in child.children:
+                            if c.type == "when_condition" or c.type == "else":
+                                found_cond = True
+                                continue
+                            if found_cond and c.type not in ("->", "line_comment", "block_comment"):
+                                entry_body = c
+                                break
+                        
                         if entry_body:
                             self.visit(entry_body, source_bytes)
                         else:
@@ -173,6 +192,7 @@ class LiteralVisitor:
             raw_text = self.get_text(node, source_bytes)
             first_line = raw_text.split('\n')[0]
             self.emit(f"# TODO_RAW_EXPRESSION [assignment]: {first_line}")
+            self.emit("pass")
             
             # Check if right-hand side is a call with a lambda (like `timerJob = viewModelScope.launch { ... }`)
             rhs = node.named_children[1] if len(node.named_children) > 1 else None
@@ -193,11 +213,16 @@ class LiteralVisitor:
             var_text = self.get_text(loop_var, source_bytes) if loop_var else "item"
             iter_text = self.get_text(iterable, source_bytes) if iterable else "collection"
             
-            self.emit(f"for {var_text} in {iter_text}:")
+            if iterable and iterable.type not in ("identifier", "navigation_expression", "call_expression"):
+                self.emit(f"for {var_text} in [_RAW_ITERABLE_TODO_]:  # {iter_text}")
+            else:
+                self.emit(f"for {var_text} in {iter_text}:")
+
             self.indent_level += 1
             
-            body = next((c for c in node.children if c.type == "block" or c.type == "expression_statement"), None)
-            if body:
+            # The body is the last child that is not a parenthesis or identifier
+            body = node.named_children[-1] if len(node.named_children) > 0 else None
+            if body and body != iterable:
                 self.visit(body, source_bytes)
             else:
                 self.emit("pass")
@@ -209,8 +234,8 @@ class LiteralVisitor:
             self.emit(f"while {cond_text}:")
             self.indent_level += 1
             
-            body = next((c for c in node.children if c.type == "block" or c.type == "expression_statement"), None)
-            if body:
+            body = node.named_children[-1] if len(node.named_children) > 0 else None
+            if body and body != condition:
                 self.visit(body, source_bytes)
             else:
                 self.emit("pass")
@@ -219,6 +244,7 @@ class LiteralVisitor:
         elif node.type == "return_statement":
             raw_text = self.get_text(node, source_bytes).replace('\n', '\\n')
             self.emit(f"# TODO_RAW_EXPRESSION [return]: {raw_text}")
+            self.emit("pass")
 
         elif node.type in ("call_expression", "navigation_expression"):
             # Check for trailing lambda (e.g. `_uiState.update { ... }`)
@@ -237,6 +263,7 @@ class LiteralVisitor:
             raw_text = self.get_text(node, source_bytes)
             first_line = raw_text.split('\n')[0]
             self.emit(f"# TODO_RAW_EXPRESSION [call]: {first_line}")
+            self.emit("pass")
             
             if lambda_node:
                 self.emit("def _lambda():")
@@ -263,6 +290,7 @@ class LiteralVisitor:
             # STRICT RULE: Emit TODO for unhandled node types
             raw_text = self.get_text(node, source_bytes).replace('\n', '\\n')
             self.emit(f"# TODO_UNHANDLED_KOTLIN_NODE: [{node.type}] {raw_text}")
+            self.emit("pass")
 
     def transpile(self, source_code: bytes) -> str:
         parser = build_parser()
@@ -292,6 +320,11 @@ def run():
     
     with open(out_file, "w") as f:
         f.write(python_code)
+        
+    try:
+        ast.parse(python_code)
+    except SyntaxError as e:
+        print(f"ERROR: Emitted Python is invalid! ({e})")
         
     print(f"Transpiled {kt_file} -> {out_file}")
 
