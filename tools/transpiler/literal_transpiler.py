@@ -110,9 +110,105 @@ class LiteralVisitor:
             for child in node.named_children:
                 self.visit(child, source_bytes)
                 
+        elif node.type == "if_expression":
+            condition_node = next((c for c in node.children if c.type == "value_arguments" or c.type == "parenthesized_expression"), None)
+            if not condition_node:
+                # Some ifs just have the expression directly as named children
+                # A proper Kotlin tree-sitter `if_expression` usually has a condition and a consequence
+                condition_node = node.named_children[0] if len(node.named_children) > 0 else None
+            
+            cond_text = self.get_text(condition_node, source_bytes) if condition_node else "True"
+            self.emit(f"if {cond_text}:")
+            self.indent_level += 1
+            
+            consequence = next((c for c in node.children if c.type == "block" or c.type == "expression_statement" or c.type == "return_statement"), None)
+            if consequence:
+                self.visit(consequence, source_bytes)
+            else:
+                self.emit("pass")
+            self.indent_level -= 1
+            
+            # Check for else
+            else_idx = next((i for i, c in enumerate(node.children) if c.type == "else"), -1)
+            if else_idx != -1 and else_idx + 1 < len(node.children):
+                self.emit("else:")
+                self.indent_level += 1
+                self.visit(node.children[else_idx + 1], source_bytes)
+                self.indent_level -= 1
+
+        elif node.type == "when_expression":
+            subject = next((c for c in node.children if c.type == "when_subject"), None)
+            subject_text = self.get_text(subject, source_bytes) if subject else ""
+            self.emit(f"match {subject_text}:")
+            self.indent_level += 1
+            
+            body = next((c for c in node.children if c.type == "block"), None)
+            if body:
+                for child in body.named_children:
+                    if child.type == "when_entry":
+                        conditions = next((c for c in child.children if c.type == "when_condition"), None)
+                        cond_text = self.get_text(conditions, source_bytes) if conditions else "_"
+                        if cond_text == "else": cond_text = "_"
+                        self.emit(f"case {cond_text}:")
+                        self.indent_level += 1
+                        
+                        entry_body = next((c for c in child.children if c.type == "block" or c.type == "expression_statement" or c.type == "return_statement"), None)
+                        if entry_body:
+                            self.visit(entry_body, source_bytes)
+                        else:
+                            self.emit("pass")
+                        self.indent_level -= 1
+            else:
+                self.emit("pass")
+            self.indent_level -= 1
+
+        elif node.type == "assignment":
+            raw_text = self.get_text(node, source_bytes)
+            self.emit(raw_text)
+
+        elif node.type == "for_statement":
+            # Extract loop variable and iterable
+            loop_var = next((c for c in node.children if c.type == "identifier" or c.type == "variable_declaration"), None)
+            iterable = next((c for c in node.children if c.type == "value_arguments" or c.type == "parenthesized_expression" or c.type == "navigation_expression" or c.type == "identifier" or c.type == "call_expression"), None)
+            
+            # tree-sitter Kotlin sometimes puts the loop var and iterable inside parentheses
+            if not loop_var and len(node.named_children) > 0:
+                loop_var = node.named_children[0]
+            if not iterable and len(node.named_children) > 1:
+                iterable = node.named_children[1]
+                
+            var_text = self.get_text(loop_var, source_bytes) if loop_var else "item"
+            iter_text = self.get_text(iterable, source_bytes) if iterable else "collection"
+            
+            self.emit(f"for {var_text} in {iter_text}:")
+            self.indent_level += 1
+            
+            body = next((c for c in node.children if c.type == "block" or c.type == "expression_statement"), None)
+            if body:
+                self.visit(body, source_bytes)
+            else:
+                self.emit("pass")
+            self.indent_level -= 1
+
+        elif node.type == "while_statement":
+            condition = next((c for c in node.children if c.type == "parenthesized_expression"), None)
+            cond_text = self.get_text(condition, source_bytes) if condition else "True"
+            self.emit(f"while {cond_text}:")
+            self.indent_level += 1
+            
+            body = next((c for c in node.children if c.type == "block" or c.type == "expression_statement"), None)
+            if body:
+                self.visit(body, source_bytes)
+            else:
+                self.emit("pass")
+            self.indent_level -= 1
+
+        elif node.type == "return_statement":
+            raw_text = self.get_text(node, source_bytes)
+            self.emit(raw_text)
+
         elif node.type in ("call_expression", "navigation_expression"):
             raw_text = self.get_text(node, source_bytes)
-            # We emit the raw call for now as a placeholder for full AST mapping
             self.emit(raw_text)
             
         elif node.type in ("import_list", "package_header", "line_comment", "block_comment"):
