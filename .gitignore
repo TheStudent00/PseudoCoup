@@ -1,1 +1,6 @@
 runtime_uimap/
+
+# regenerable build output + caches (rewind from source, not these)
+build/
+__pycache__/
+*.pyc
