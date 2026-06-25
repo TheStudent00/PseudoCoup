@@ -138,18 +138,25 @@ class LiteralVisitor:
 
         elif node.type == "when_expression":
             subject = next((c for c in node.children if c.type == "when_subject"), None)
-            subject_text = self.get_text(subject, source_bytes) if subject else ""
-            self.emit(f"match {subject_text}:")
-            self.indent_level += 1
-            
+            subject_text = self.get_text(subject, source_bytes) if subject else "True"
+            if subject_text.startswith("(") and subject_text.endswith(")"):
+                subject_text = subject_text[1:-1]
+                
             body = next((c for c in node.children if c.type == "block"), None)
             if body:
+                is_first = True
                 for child in body.named_children:
                     if child.type == "when_entry":
                         conditions = next((c for c in child.children if c.type == "when_condition"), None)
-                        cond_text = self.get_text(conditions, source_bytes) if conditions else "_"
-                        if cond_text == "else": cond_text = "_"
-                        self.emit(f"case {cond_text}:")
+                        cond_text = self.get_text(conditions, source_bytes) if conditions else "else"
+                        
+                        prefix = "if" if is_first else "elif"
+                        
+                        if cond_text == "else":
+                            self.emit("else:")
+                        else:
+                            # A literal transpilation of when(x) { y -> ... } is `if x == y:`
+                            self.emit(f"{prefix} {subject_text} == {cond_text}:")
                         self.indent_level += 1
                         
                         entry_body = next((c for c in child.children if c.type == "block" or c.type == "expression_statement" or c.type == "return_statement"), None)
@@ -158,13 +165,19 @@ class LiteralVisitor:
                         else:
                             self.emit("pass")
                         self.indent_level -= 1
+                        is_first = False
             else:
                 self.emit("pass")
-            self.indent_level -= 1
 
         elif node.type == "assignment":
             raw_text = self.get_text(node, source_bytes)
-            self.emit(raw_text)
+            first_line = raw_text.split('\n')[0]
+            self.emit(f"# TODO_RAW_EXPRESSION [assignment]: {first_line}")
+            
+            # Check if right-hand side is a call with a lambda (like `timerJob = viewModelScope.launch { ... }`)
+            rhs = node.named_children[1] if len(node.named_children) > 1 else None
+            if rhs and rhs.type == "call_expression":
+                self.visit(rhs, source_bytes)
 
         elif node.type == "for_statement":
             # Extract loop variable and iterable
@@ -204,12 +217,43 @@ class LiteralVisitor:
             self.indent_level -= 1
 
         elif node.type == "return_statement":
-            raw_text = self.get_text(node, source_bytes)
-            self.emit(raw_text)
+            raw_text = self.get_text(node, source_bytes).replace('\n', '\\n')
+            self.emit(f"# TODO_RAW_EXPRESSION [return]: {raw_text}")
 
         elif node.type in ("call_expression", "navigation_expression"):
+            # Check for trailing lambda (e.g. `_uiState.update { ... }`)
+            lambda_node = next((c for c in node.children if c.type == "lambda_literal"), None)
+            if not lambda_node:
+                # navigation expressions might have the lambda on their right-hand side call
+                rhs = next((c for c in node.children if c.type == "call_expression"), None)
+                if rhs:
+                    lambda_node = next((c for c in rhs.children if c.type == "lambda_literal"), None)
+                
+                # It might be wrapped in an `annotated_lambda`
+                ann_lambda = next((c for c in node.children if c.type == "annotated_lambda"), None)
+                if ann_lambda:
+                    lambda_node = next((c for c in ann_lambda.children if c.type == "lambda_literal"), None)
+
             raw_text = self.get_text(node, source_bytes)
-            self.emit(raw_text)
+            first_line = raw_text.split('\n')[0]
+            self.emit(f"# TODO_RAW_EXPRESSION [call]: {first_line}")
+            
+            if lambda_node:
+                self.emit("def _lambda():")
+                self.indent_level += 1
+                
+                statements_node = next((c for c in lambda_node.named_children if c.type == "statements"), None)
+                if statements_node:
+                    children = statements_node.named_children
+                else:
+                    children = lambda_node.named_children
+                
+                if children:
+                    for stmt in children:
+                        self.visit(stmt, source_bytes)
+                else:
+                    self.emit("pass")
+                self.indent_level -= 1
             
         elif node.type in ("import_list", "package_header", "line_comment", "block_comment"):
             # skip or emit as comment
