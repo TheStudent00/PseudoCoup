@@ -55,6 +55,8 @@ means a genuine PC-only object, and the oversight view is trustworthy by constru
   codebases without running anything.
 - Protocol (log_55): you never `--snapshot` or edit the baseline; ongoing (no "done"/success
   assessment); hand each change to review WITH the ledger entries + the pair evidence.
+- **Put your report in a DevComms log** (`PseudoCoup/DevComms/log_<N>_ledger_*.md`): the design,
+  each ledger entry with its KT↔PC justification, and the gate before/after. The log is the handoff.
 
 ## Definition of "working"
 

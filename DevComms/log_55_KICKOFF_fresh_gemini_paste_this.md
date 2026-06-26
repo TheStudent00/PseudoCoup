@@ -47,10 +47,15 @@ python3 tools/dualgraph/connectivity_gate.py <slug>        # e.g. exercise_creat
 # 3. verify connectivity maintained + improved:
 python3 tools/dualgraph/connectivity_gate.py              # MUST exit 0; report the FULL per-screen delta
 python3 tools/smoke_screens.py                            # 30/30 construct
-$HOME/Programming/flutter/bin/flutter test app_flutter    # goldens
-# 4. commit cleanly. Hand the change + the KT<->PC pair evidence to review. DO NOT snapshot.
+$HOME/Programming/flutter/bin/flutter test app_flutter    # goldens (run from app_flutter/ if path errors)
+# 4. commit the src/ change cleanly. DO NOT snapshot.
+# 5. WRITE YOUR REPORT AS A LOG -> PseudoCoup/DevComms/log_<N>_<slug>_gap_closed.md
+#    It IS the handoff to review. Must contain: the gaps; blueprint EVIDENCE (Kotlin file:line proving
+#    each element is genuinely absent + the faithful type/copy); the fix; the KT<->PC pair evidence;
+#    the gate/smoke/golden results. log_59 is the template.
 ```
-Any matched drop on ANY screen in step 3 → STOP and fix. The reviewer ratchets the baseline if clean.
+Any matched drop on ANY screen in step 3 → STOP and fix. The reviewer re-runs everything, reads your
+log, and ratchets the baseline if clean.
 
 ## Your first task (a fast win to prove the loop)
 
