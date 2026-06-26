@@ -5,6 +5,25 @@ Type: task. Operating rules are in log_55 (siloed, never `--snapshot`, ongoing, 
 per-change loop). This task is the oversight foundation: replace INFERRED object matching with a
 RECORDED Kotlin↔PC correspondence, so the side-by-side view is exact by construction, not guessed.
 
+## Priority: this is THE next task now (the screen loop hit the false-negative wall)
+
+As of baseline 216/451, the genuinely-absent-element gaps are mostly done (e.g. gym_list, log_59). A
+scout of the remaining low-gap screens shows the rest are **dominated by naming false-negatives** — PC
+built the element under a different name than the Kotlin composable, so the matcher can't pair them.
+Confirmed examples to SEED the ledger with:
+
+```
+paths_screen:   KT button 'Add a second path'   ⟷  PC widget:button '+ Add a second path' (label "+" diff)
+paths_screen:   KT widget:PathSelectionSheet     ⟷  PC layer .sheet + scrim + note + section_header (PC built it expanded; KT is one named composable)
+onboarding:     KT widget:LinearProgressIndicator⟷  PC progress
+onboarding:     KT widget:WelcomeStep/PathSelectionStep ⟷ PC widget:wizard_step_scaffold '<title>'
+many screens:   KT widget:CircularProgressIndicator ⟷ PC progress
+programs:       KT widget:ProgramCard            ⟷  PC widget:program_card
+```
+
+Each is the same element with a different name — exactly what the ledger records. Until it exists,
+sending screen tasks here just produces "flag the false-negative" non-edits. Do this first.
+
 ## Why (the problem, with evidence)
 
 The side-by-side oversight (`PseudoCoup/uimap/sidebyside.html`) shows "no Kotlin source" (pc_only) rows
