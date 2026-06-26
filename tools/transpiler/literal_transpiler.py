@@ -282,7 +282,23 @@ class LiteralVisitor:
                     self.emit("pass")
                 self.indent_level -= 1
             
-        elif node.type in ("import_list", "package_header", "line_comment", "block_comment"):
+        elif node.type == "import_list":
+            for child in node.named_children:
+                self.visit(child, source_bytes)
+                
+        elif node.type in ("import", "import_header"):
+            raw_import = self.get_text(node, source_bytes)
+            # Example: import kotlinx.coroutines.flow.MutableStateFlow
+            if "kotlinx.coroutines.flow." in raw_import:
+                symbol = raw_import.split("kotlinx.coroutines.flow.")[-1].strip()
+                self.emit(f"from core.flow import {symbol}")
+            elif "kotlinx.coroutines." in raw_import:
+                symbol = raw_import.split("kotlinx.coroutines.")[-1].strip()
+                self.emit(f"from core.coroutines import {symbol}")
+            else:
+                self.emit(f"# TODO_RAW_IMPORT: {raw_import}")
+
+        elif node.type in ("package_header", "line_comment", "block_comment"):
             # skip or emit as comment
             pass
             
