@@ -53,10 +53,18 @@ Any matched drop on ANY screen in step 3 → STOP and fix. The reviewer ratchets
 
 ## Your first task (a fast win to prove the loop)
 
-Start with a low-gap screen, in this order: **`exercise_create_screen` (1 gap)**, then
-`exercise_detail_screen` (2), `workout_cooldown_screen` (2). Run the loop above on it, close the
-gap(s) by reusing existing widgets, and hand it to review with pair evidence. Once the loop is proven,
-work up the list (the bulk is `onboarding` 68, `workout_execution` 37, `calibrate` 30 — later).
+Start with a low-gap screen, in this order: **`exercise_detail_screen` (1 real gap — a chip)**, then
+`gym_create_wizard_screen` (1), `gym_list_screen` (2), `paths_screen` (2). Run the loop above on it,
+close the gap(s) by reusing existing widgets, and hand it to review with pair evidence. Once the loop
+is proven, work up the list (the bulk is `onboarding`, `workout_execution`, `calibrate` — later).
+(`exercise_create_screen` is already at 0 real gaps — skip it.)
+
+## Spacers are NOT gaps — never add one to close a gap
+
+The metric now strips `spacer` nodes (pure layout, no handler/nav/content; visual spacing is guarded
+by the goldens, not connectivity). If `connectivity_gate.py <slug>` ever shows a spacer, ignore it —
+do not insert `define_spacer_zone` to chase it. Close only REAL gaps: buttons, widgets, text, icons,
+sheets/dialogs. Adding nodes purely to move the number is the node-stuffing that ends the collaboration.
 
 ## Caveats already known (don't rediscover or paper over)
 
