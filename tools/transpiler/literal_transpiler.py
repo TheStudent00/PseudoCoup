@@ -53,6 +53,7 @@ class LiteralVisitor:
         self.indent_level = 0
         self.output = []
         self.class_members = set()   # field + method + ctor-param names of current class
+        self.scopes = []             # stack of local variable sets
         self.func_depth = 0          # >0 means we are inside a function body (locals, not fields)
         self.lambda_counter = 0
 
@@ -81,6 +82,10 @@ class LiteralVisitor:
             return self.get_text(node, source_bytes).strip() in ("continue", "break", "return")
         return False
 
+    def _real(self, node):
+        if not node: return []
+        return [c for c in node.named_children if c.type not in ("line_comment", "block_comment")]
+
     # -- expression translation ------------------------------------------- #
 
     def parse_expression(self, node, source_bytes) -> str:
@@ -100,14 +105,16 @@ class LiteralVisitor:
             if text == "this":
                 return "self"
             if text in self.class_members:
-                return f"self.{text}"
+                shadowed = any(text in s for s in self.scopes)
+                if not shadowed:
+                    return f"self.{text}"
             return text
 
         if t == "type_identifier":
             return self.get_text(node, source_bytes)
 
         if t in ("integer_literal", "number_literal", "hex_literal", "bin_literal",
-                 "real_literal", "long_literal", "unsigned_literal"):
+                 "real_literal", "long_literal", "unsigned_literal", "float_literal"):
             text = self.get_text(node, source_bytes).replace("_", "")
             return text.rstrip("LFfuU") or "0"
 
@@ -125,7 +132,8 @@ class LiteralVisitor:
 
         if t in ("unary_expression", "prefix_expression"):
             op_node = next((c for c in node.children if c.type in ("!", "-", "+", "++", "--")), None)
-            operand = node.named_children[-1] if node.named_children else None
+            real_kids = self._real(node)
+            operand = real_kids[-1] if real_kids else None
             operand_str = self.parse_expression(operand, source_bytes)
             if op_node and op_node.type == "!":
                 return f"(not {operand_str})"
@@ -135,15 +143,17 @@ class LiteralVisitor:
 
         if t == "postfix_expression":
             # e.g. `x!!` -> just `x`
-            inner = node.named_children[0] if node.named_children else None
+            real_kids = self._real(node)
+            inner = real_kids[0] if real_kids else None
             return self.parse_expression(inner, source_bytes)
 
         if t == "navigation_expression":
-            left = self.parse_expression(node.named_children[0], source_bytes) if node.named_children else ""
+            real_kids = self._real(node)
+            left = self.parse_expression(real_kids[0], source_bytes) if real_kids else ""
             # the selector (right) is a bare member name -> keep literal, do NOT member-resolve
             right = ""
-            if len(node.named_children) > 1:
-                right = self._safe_attr(self.get_text(node.named_children[1], source_bytes))
+            if len(real_kids) > 1:
+                right = self._safe_attr(self.get_text(real_kids[-1], source_bytes))
             op_node = next((c for c in node.children if c.type in (".", "?.")), None)
             if op_node and op_node.type == "?.":
                 return f"({left}.{right} if {left} is not None else None)"
@@ -153,16 +163,18 @@ class LiteralVisitor:
             return self._parse_call(node, source_bytes)
 
         if t == "index_expression":
-            base = self.parse_expression(node.named_children[0], source_bytes) if node.named_children else ""
-            idxs = [self.parse_expression(c, source_bytes) for c in node.named_children[1:]]
+            real_kids = self._real(node)
+            base = self.parse_expression(real_kids[0], source_bytes) if real_kids else ""
+            idxs = [self.parse_expression(c, source_bytes) for c in real_kids[1:]]
             return f"{base}[{', '.join(idxs)}]" if idxs else f"{base}[0]"
 
         if t in ("binary_expression", "comparison_expression", "equality_expression",
                  "additive_expression", "multiplicative_expression",
                  "conjunction_expression", "disjunction_expression",
-                 "elvis_expression"):
-            left = self.parse_expression(node.named_children[0], source_bytes) if node.named_children else ""
-            right_node = node.named_children[1] if len(node.named_children) > 1 else None
+                 "elvis_expression", "in_expression", "is_expression"):
+            real_kids = self._real(node)
+            left = self.parse_expression(real_kids[0], source_bytes) if real_kids else ""
+            right_node = real_kids[1] if len(real_kids) > 1 else None
             right = self.parse_expression(right_node, source_bytes)
             op = next((c for c in node.children
                        if c.type in ("+", "-", "*", "/", "%", "==", "!=", ">", "<", ">=", "<=",
@@ -188,10 +200,13 @@ class LiteralVisitor:
             return f"{left} {op_text} {right}"
 
         if t == "parenthesized_expression":
-            inner = self.parse_expression(node.named_children[0], source_bytes) if node.named_children else ""
+            real_kids = self._real(node)
+            inner = self.parse_expression(real_kids[0], source_bytes) if real_kids else ""
             return f"({inner})"
 
         if t == "if_expression":
+            if self._if_has_block(node):
+                return self._emit_block_wrapper(node, source_bytes, self._visit_if_statement)
             return self._if_as_ternary(node, source_bytes)
 
         if t in ("lambda_literal", "annotated_lambda"):
@@ -202,6 +217,10 @@ class LiteralVisitor:
             return self.parse_expression(node.named_children[0], source_bytes) if node.named_children else "None"
 
         if t == "when_expression":
+            has_blocks = any(c.type in ("block", "control_structure_body") and len(c.named_children) > 1 
+                             for e in self._when_entries(node) for c in e.children)
+            if has_blocks:
+                return self._emit_block_wrapper(node, source_bytes, self._visit_when)
             return self._when_as_ternary(node, source_bytes)
 
         if t in ("collection_literal",):
@@ -211,8 +230,20 @@ class LiteralVisitor:
         # unicode from comments. Emit a loud, valid-Python placeholder instead.
         return '"__TODO_EXPR__"'
 
+    def _emit_block_wrapper(self, node, source_bytes, visit_func):
+        name = f"_block_{self.lambda_counter}"
+        self.lambda_counter += 1
+        self.emit(f"def {name}():")
+        self.indent_level += 1
+        self.scopes.append(set())
+        visit_func(node, source_bytes, is_value=True)
+        self.scopes.pop()
+        self.indent_level -= 1
+        return f"{name}()"
+
     def _parse_call(self, node, source_bytes):
-        func_node = node.named_children[0] if node.named_children else None
+        real_kids = self._real(node)
+        func_node = real_kids[0] if real_kids else None
 
         is_safe_call = False
         safe_left = safe_right = ""
@@ -220,9 +251,10 @@ class LiteralVisitor:
             op_node = next((c for c in func_node.children if c.type == "?."), None)
             if op_node:
                 is_safe_call = True
-                safe_left = self.parse_expression(func_node.named_children[0], source_bytes)
-                safe_right = self._safe_attr(self.get_text(func_node.named_children[1], source_bytes)) \
-                    if len(func_node.named_children) > 1 else ""
+                func_real = self._real(func_node)
+                safe_left = self.parse_expression(func_real[0], source_bytes) if func_real else ""
+                safe_right = self._safe_attr(self.get_text(func_real[-1], source_bytes)) \
+                    if len(func_real) > 1 else ""
 
         func_name = self.parse_expression(func_node, source_bytes)
         args_node = next((c for c in node.children if c.type == "value_arguments"), None)
@@ -252,7 +284,7 @@ class LiteralVisitor:
 
     def _if_as_ternary(self, node, source_bytes):
         # named children: [condition, then] or [condition, then, else]
-        named = list(node.named_children)
+        named = self._real(node)
         cond_node = named[0] if named else None
         rest = named[1:]
         cond_str = self.parse_expression(cond_node, source_bytes) if cond_node else "True"
@@ -261,13 +293,24 @@ class LiteralVisitor:
         else_e = self.parse_expression(rest[1], source_bytes) if (has_else and len(rest) > 1) else "None"
         return f"({then_e} if {cond_str} else {else_e})"
 
+    def _if_has_block(self, node):
+        named = list(node.named_children)
+        rest = named[1:]
+        if len(rest) > 0 and rest[0].type in ("block", "control_structure_body"):
+            return True
+        if len(rest) > 1 and rest[1].type in ("block", "control_structure_body"):
+            return True
+        return False
+
     def _condition_of(self, node, source_bytes):
         cond_node = next((c for c in node.children if c.type == "parenthesized_expression"), None)
         if cond_node is not None:
-            inner = cond_node.named_children[0] if cond_node.named_children else None
+            c_real = self._real(cond_node)
+            inner = c_real[0] if c_real else None
             return self.parse_expression(inner, source_bytes) if inner else "True"
         # no parens -> first named child is the condition
-        return self.parse_expression(node.named_children[0], source_bytes) if node.named_children else "True"
+        n_real = self._real(node)
+        return self.parse_expression(n_real[0], source_bytes) if n_real else "True"
 
     def _string_to_fstring(self, node, source_bytes):
         segs = []
@@ -335,22 +378,62 @@ class LiteralVisitor:
             body_node = next((c for c in node.children if c.type == "class_body"), None)
             prev_members = self.class_members
             self.class_members = set()
-            # constructor val/var params are members too
+            ctor_params = []
+            
             for cp in node.children:
                 if cp.type == "primary_constructor":
                     for pn in cp.named_children:
                         if pn.type == "class_parameter":
                             pid = next((c for c in pn.children if c.type in ("identifier", "simple_identifier")), None)
                             if pid:
-                                self.class_members.add(self.get_text(pid, source_bytes))
+                                name = self.get_text(pid, source_bytes)
+                                self.class_members.add(name)
+                                ctor_params.append(name)
+            
+            properties = []
+            inits = []
+            methods = []
+            
             if body_node:
                 self._collect_members(body_node, source_bytes)
-                if len(body_node.named_children) == 0:
-                    self.emit("pass")
                 for child in body_node.named_children:
-                    self.visit(child, source_bytes)
-            else:
+                    if child.type == "property_declaration":
+                        properties.append(child)
+                    elif child.type == "anonymous_initializer":
+                        inits.append(child)
+                    else:
+                        methods.append(child)
+                        
+            init_args = ["self"] + ctor_params
+            self.emit(f"def __init__({', '.join(init_args)}):")
+            self.indent_level += 1
+            has_init_body = False
+            for cp in ctor_params:
+                self.emit(f"self.{cp} = {cp}")
+                has_init_body = True
+                
+            self.func_depth += 1
+            for p in properties:
+                self.visit(p, source_bytes)
+                has_init_body = True
+            for i in inits:
+                # init_block has a block child
+                block = next((c for c in i.children if c.type == "block"), None)
+                if block:
+                    self.visit(block, source_bytes)
+                has_init_body = True
+            self.func_depth -= 1
+            
+            if not has_init_body:
                 self.emit("pass")
+            self.indent_level -= 1
+            
+            if not methods and not properties and not inits and not ctor_params:
+                self.emit("pass")
+            else:
+                for m in methods:
+                    self.visit(m, source_bytes)
+
             self.indent_level -= 1
             self.class_members = prev_members
             self.emit("")
@@ -377,6 +460,7 @@ class LiteralVisitor:
             self.emit(f"def {func_name}({', '.join(params)}):")
             self.indent_level += 1
             self.func_depth += 1
+            self.scopes.append(set(params[1:]))
 
             body_node = next((c for c in node.children if c.type in ("function_body", "block")), None)
             if body_node:
@@ -384,11 +468,20 @@ class LiteralVisitor:
             else:
                 self.emit("pass")
 
+            self.scopes.pop()
             self.func_depth -= 1
             self.indent_level -= 1
             self.emit("")
 
         elif node.type in ("block", "function_body"):
+            if node.type == "function_body" and any(c.type == "=" for c in node.children):
+                real_kids = self._real(node)
+                if real_kids:
+                    self.emit(f"return {self.parse_expression(real_kids[0], source_bytes)}")
+                else:
+                    self.emit("pass")
+                return
+
             real = [c for c in node.named_children]
             if len(real) == 0:
                 self.emit("pass")
@@ -426,6 +519,8 @@ class LiteralVisitor:
             iter_text = self._iterable_text(iterable, source_bytes)
             self.emit(f"for {var_text} in {iter_text}:")
             self.indent_level += 1
+            if self.scopes:
+                self.scopes[-1].add(var_text)
             body = node.named_children[-1] if node.named_children else None
             if body is not None and body != iterable and body.type in ("block", "control_structure_body"):
                 self.visit(body, source_bytes)
@@ -513,8 +608,11 @@ class LiteralVisitor:
                     break
 
         target = name if name else "_unknown"
-        if self.func_depth == 0 and name:        # class field
+        is_class_field = (node.parent is not None and node.parent.type == "class_body")
+        if is_class_field and name:
             target = f"self.{name}"
+        elif self.scopes and name and self.func_depth > 0:
+            self.scopes[-1].add(name)
 
         if value_node is None:
             self.emit(f"{target} = None")
@@ -593,7 +691,7 @@ class LiteralVisitor:
             return node.named_children[0], right
         return None
 
-    def _visit_if_statement(self, node, source_bytes):
+    def _visit_if_statement(self, node, source_bytes, is_value=False):
         cond_str = self._condition_of(node, source_bytes)
         self.emit(f"if {cond_str}:")
         self.indent_level += 1
@@ -621,15 +719,41 @@ class LiteralVisitor:
             elif seen_else_kw and else_node is None:
                 else_node = c
         if consequence is not None:
-            self.visit(consequence, source_bytes)
+            if is_value:
+                self._emit_block_as_value(consequence, source_bytes)
+            else:
+                self.visit(consequence, source_bytes)
         else:
-            self.emit("pass")
+            self.emit("pass" if not is_value else "return None")
         self.indent_level -= 1
         if else_node is not None:
             self.emit("else:")
             self.indent_level += 1
-            self.visit(else_node, source_bytes)
+            if is_value:
+                self._emit_block_as_value(else_node, source_bytes)
+            else:
+                self.visit(else_node, source_bytes)
             self.indent_level -= 1
+        elif is_value:
+            self.emit("else:")
+            self.indent_level += 1
+            self.emit("return None")
+            self.indent_level -= 1
+
+    def _emit_block_as_value(self, block_node, source_bytes):
+        if block_node.type in ("block", "control_structure_body"):
+            stmts = list(block_node.named_children)
+            if not stmts:
+                self.emit("return None")
+            else:
+                for i, stmt in enumerate(stmts):
+                    if i == len(stmts) - 1:
+                        inner = stmt.named_children[0] if stmt.type == "expression_statement" and stmt.named_children else stmt
+                        self.emit(f"return {self.parse_expression(inner, source_bytes)}")
+                    else:
+                        self.visit(stmt, source_bytes)
+        else:
+            self.emit(f"return {self.parse_expression(block_node, source_bytes)}")
 
     def _when_subject(self, node, source_bytes):
         subject_node = next((c for c in node.children if c.type == "when_subject"), None)
@@ -645,7 +769,7 @@ class LiteralVisitor:
         src = body.named_children if body else node.named_children
         return [c for c in src if c.type == "when_entry"]
 
-    def _visit_when(self, node, source_bytes):
+    def _visit_when(self, node, source_bytes, is_value=False):
         subject = self._when_subject(node, source_bytes)
         entries = self._when_entries(node)
         if not entries:
@@ -663,9 +787,12 @@ class LiteralVisitor:
             self.indent_level += 1
             entry_body = self._when_entry_body(entry)
             if entry_body is not None:
-                self.visit(entry_body, source_bytes)
+                if is_value:
+                    self._emit_block_as_value(entry_body, source_bytes)
+                else:
+                    self.visit(entry_body, source_bytes)
             else:
-                self.emit("pass")
+                self.emit("pass" if not is_value else "return None")
             self.indent_level -= 1
             is_first = False
 
@@ -787,6 +914,7 @@ class LiteralVisitor:
         self.lambda_counter += 1
         self.emit(f"def {name}(it=None):")
         self.indent_level += 1
+        self.scopes.append({"it"})
         stmts = self._lambda_statements(lambda_node)
         if not stmts:
             self.emit("pass")
@@ -803,6 +931,7 @@ class LiteralVisitor:
                     self.emit(f"return {self.parse_expression(inner, source_bytes)}")
                 else:
                     self.visit(stmt, source_bytes)
+        self.scopes.pop()
         self.indent_level -= 1
         return name
 
