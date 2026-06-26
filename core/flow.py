@@ -4,7 +4,48 @@ T = TypeVar('T')
 
 class Flow(Generic[T]):
     """Base structural class for Kotlin Flow"""
-    pass
+    
+    def map(self, transform: Callable[[Any], Any]) -> 'Flow':
+        return self
+        
+    def filter(self, predicate: Callable[[Any], bool]) -> 'Flow':
+        return self
+        
+    def stateIn(self, scope, started, initialValue) -> 'StateFlow':
+        return StateFlow(initialValue)
+        
+    def flatMapLatest(self, transform: Callable[[Any], 'Flow']) -> 'Flow':
+        return self
+        
+    def mapLatest(self, transform: Callable[[Any], Any]) -> 'Flow':
+        return self
+        
+    def distinctUntilChanged(self) -> 'Flow':
+        return self
+        
+    def onEach(self, action: Callable[[Any], None]) -> 'Flow':
+        return self
+        
+    def collect(self, action: Callable[[Any], None]):
+        pass
+        
+    def collectLatest(self, action: Callable[[Any], None]):
+        pass
+        
+    def drop(self, count: int) -> 'Flow':
+        return self
+        
+    def debounce(self, timeoutMillis: int) -> 'Flow':
+        return self
+        
+    def mapNotNull(self, transform: Callable[[Any], Any]) -> 'Flow':
+        return self
+        
+    def first(self) -> Any:
+        return None
+        
+    def firstOrNull(self) -> Any:
+        return None
 
 class StateFlow(Flow[T]):
     def __init__(self, initial_value: T):
@@ -33,30 +74,11 @@ class MutableSharedFlow(SharedFlow[T]):
     def emit(self, value: T):
         pass
 
-# Operators
-
+# Free operators
 def combine(*flows: Flow, transform: Callable[..., Any]) -> Flow:
     return Flow()
 
-def map(flow: Flow, transform: Callable[[Any], Any]) -> Flow:
-    return Flow()
-
-def filter(flow: Flow, predicate: Callable[[Any], bool]) -> Flow:
-    return Flow()
-
-def stateIn(flow: Flow, scope, started, initialValue) -> StateFlow:
-    return StateFlow(initialValue)
-
-def flatMapLatest(flow: Flow, transform: Callable[[Any], Flow]) -> Flow:
-    return Flow()
-
-def mapLatest(flow: Flow, transform: Callable[[Any], Any]) -> Flow:
-    return Flow()
-
-def distinctUntilChanged(flow: Flow) -> Flow:
-    return Flow()
-
-def onEach(flow: Flow, action: Callable[[Any], None]) -> Flow:
+def flowOf(*elements) -> Flow:
     return Flow()
 
 def asStateFlow(flow: MutableStateFlow) -> StateFlow:
@@ -64,27 +86,6 @@ def asStateFlow(flow: MutableStateFlow) -> StateFlow:
 
 def asSharedFlow(flow: MutableSharedFlow) -> SharedFlow:
     return flow
-
-def collect(flow: Flow, action: Callable[[Any], None]):
-    pass
-
-def collectLatest(flow: Flow, action: Callable[[Any], None]):
-    pass
-
-def first(flow: Flow) -> Any:
-    return None
-
-def firstOrNull(flow: Flow) -> Any:
-    return None
-
-def drop(flow: Flow, count: int) -> Flow:
-    return Flow()
-
-def debounce(flow: Flow, timeoutMillis: int) -> Flow:
-    return Flow()
-
-def flowOf(*elements) -> Flow:
-    return Flow()
 
 class SharingStarted:
     WhileSubscribed = "WhileSubscribed"

@@ -260,6 +260,22 @@ class LiteralVisitor:
         args_node = next((c for c in node.children if c.type == "value_arguments"), None)
         args_str = self._parse_args(args_node, source_bytes)
 
+        lambda_node = self._trailing_lambda(node)
+        if lambda_node:
+            lambda_name = self._emit_lambda_block(lambda_node, source_bytes)
+            if func_node and func_node.type == "call_expression" and args_node is None:
+                if func_name.endswith(")"):
+                    if func_name.endswith("()"):
+                        func_name = func_name[:-1] + f"{lambda_name})"
+                    else:
+                        func_name = func_name[:-1] + f", {lambda_name})"
+                    return func_name
+            else:
+                if args_str:
+                    args_str = f"{args_str}, {lambda_name}"
+                else:
+                    args_str = lambda_name
+
         if is_safe_call:
             return f"({safe_left}.{safe_right}({args_str}) if {safe_left} is not None else None)"
         return f"{func_name}({args_str})"
@@ -370,12 +386,27 @@ class LiteralVisitor:
                 self.visit(child, source_bytes)
 
         elif node.type == "class_declaration":
-            name_node = next((c for c in node.children if c.type in ("identifier", "type_identifier")), None)
-            class_name = self.get_text(name_node, source_bytes) if name_node else "UnknownClass"
-            self.emit(f"class {class_name}:")
+            # skip annotations for class
+            name_node = next((c for c in node.children if c.type in ("identifier", "simple_identifier")), None)
+            name = self.get_text(name_node, source_bytes) if name_node else "UnknownClass"
+            body_node = next((c for c in node.children if c.type in ("class_body", "enum_class_body")), None)
+
+            if node.parent is None or node.parent.type == "source_file":
+                self.emit("")
+                self.emit("")
+            self.emit(f"class {name}:")
             self.indent_level += 1
 
-            body_node = next((c for c in node.children if c.type == "class_body"), None)
+            has_enum_entries = False
+            if body_node and body_node.type == "enum_class_body":
+                entries = [c for c in body_node.named_children if c.type == "enum_entry"]
+                for e in entries:
+                    e_name = next((c for c in e.named_children if c.type in ("identifier", "simple_identifier")), None)
+                    if e_name:
+                        ename_str = self.get_text(e_name, source_bytes)
+                        self.emit(f"{ename_str} = '{ename_str}'")
+                        has_enum_entries = True
+
             prev_members = self.class_members
             self.class_members = set()
             ctor_params = []
@@ -401,7 +432,7 @@ class LiteralVisitor:
                         properties.append(child)
                     elif child.type == "anonymous_initializer":
                         inits.append(child)
-                    else:
+                    elif child.type != "enum_entry":
                         methods.append(child)
                         
             init_args = ["self"] + ctor_params
@@ -559,11 +590,7 @@ class LiteralVisitor:
             self.emit(f"raise {self.parse_expression(inner, source_bytes)}" if inner else "raise")
 
         elif node.type in ("call_expression", "navigation_expression"):
-            lambda_node = self._trailing_lambda(node)
-            if lambda_node:
-                self._emit_trailing_lambda_call(node, lambda_node, source_bytes)
-            else:
-                self.emit(self.parse_expression(node, source_bytes))
+            self.emit(self.parse_expression(node, source_bytes))
 
         elif node.type == "import_list":
             for child in node.named_children:
