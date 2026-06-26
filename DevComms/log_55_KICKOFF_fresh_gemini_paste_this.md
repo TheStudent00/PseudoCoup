@@ -1,9 +1,10 @@
-# log_55 — KICKOFF for a fresh Gemini conversation (this is the ONE doc to hand over)
+# log_55 — KICKOFF for a fresh implementer conversation (Claude or otherwise) — the ONE doc to hand over
 
 Date: 2026-06-26
-Type: self-contained kickoff. You are continuing a Kotlin(Compose)→Python(`WFL_PseudoCoup`) port.
-Everything you need to start is here; log_53 (full protocol) and log_49 (full work-list) are the
-deeper references.
+Type: self-contained kickoff. You are the IMPLEMENTER; a separate reviewer conversation verifies every
+change and is the only one that ratchets the baseline. You are continuing a Kotlin(Compose)→Python
+(`WFL_PseudoCoup`) port. Work in `~/Programming/WFL_PseudoCoup` (branch `kit-migration-primitives`).
+Everything you need is here; log_53 (full protocol) and log_49 (full work-list) are deeper references.
 
 ## What you are doing (and NOT doing)
 
@@ -53,13 +54,12 @@ Any matched drop on ANY screen in step 3 → STOP and fix. The reviewer ratchets
 
 ## Your first task (a fast win to prove the loop)
 
-Start with a low-gap screen, in this order: **`exercise_detail_screen` (1 real gap — a chip)**, then
-`gym_create_wizard_screen` (1), `gym_list_screen` (2), `paths_screen` (2). Run the loop above on it,
-close the gap(s) by reusing existing widgets, and hand it to review with pair evidence. Once the loop
-is proven, work up the list (the bulk is `onboarding`, `workout_execution`, `calibrate` — later).
-(`exercise_create_screen` is already at 0 real gaps — skip it.)
+Start with **`gym_list_screen` (2 gaps)**, then `paths_screen` (2), `workout_warmup_screen` (2). Run
+the loop above, close the gaps by reusing existing widgets wired to the existing VM, and hand it to
+review with pair evidence. Then work up the list (bulk: `onboarding`, `workout_execution`, `calibrate`
+— later). **Already done — skip:** `exercise_create`, `exercise_detail`, `gym_create_wizard`.
 
-## Do NOT game the matcher (two ways people have tried)
+## Do NOT game the matcher (three ways people have tried — all rejected on review)
 
 The gate is a *proxy* for "the PC screen has the same wired elements as the blueprint." Never contort
 the code to move the proxy:
@@ -72,6 +72,12 @@ the code to move the proxy:
    false-negative, not a missing element**. Do NOT replace the helper with a raw primitive to satisfy
    the matcher — that degrades reuse for zero real gain. **Flag it to the reviewer to fix the matcher.**
    (This exact case — the button helper — is already fixed in the matcher as of baseline 214.)
+3. **Don't rewrite copy or swap element types to make a string/kind line up.** If a gap is closed by
+   editing user-facing text, deleting an icon, or changing a `define_text` into a `define_button` so
+   the matcher's exact-string / kind comparison passes — and the element was already present and wired
+   — that is gaming, and it is rejected. Only change a screen when the element is **genuinely absent**.
+   When you do, **open the real Kotlin source and confirm faithfulness**: same copy, same element type
+   the blueprint actually uses. Matching the proxy is not the goal; matching the blueprint is.
 
 Close only REAL gaps: a genuinely-absent button/widget/text/icon/sheet/dialog. Moving the number
 without adding a real, wired element is the gaming that ends the collaboration.
