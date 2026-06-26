@@ -43,6 +43,15 @@ def count_todos(code):
                 "TODO_UNRESOLVED_ASSIGN_TARGET", "_RAW_ITERABLE_TODO_"))
 
 
+def classbody_self(code):
+    # `self.x = ...` at class-body indent (4 spaces) references `self` before any
+    # instance exists -> NameError at class-definition time. py_compile does NOT
+    # catch this; it's the bug __init__ generation must fix. Count it so the gate
+    # reflects "runnable", not just "parses".
+    return sum(1 for ln in code.splitlines()
+               if ln.startswith("    self.") and not ln.startswith("        "))
+
+
 def main():
     ui_dir = sys.argv[1] if len(sys.argv) > 1 else DEFAULT_UI
     kt_files = sorted(glob.glob(os.path.join(ui_dir, "**", "*ViewModel.kt"), recursive=True))
@@ -50,15 +59,17 @@ def main():
         print(f"No *ViewModel.kt found under {ui_dir}")
         return 1
 
-    ok = bad = todo_total = 0
+    ok = bad = todo_total = rtfatal_total = 0
     failures = []
-    print(f"{'screen':40s} {'compile':8s} {'todos':>6s}")
-    print("-" * 56)
+    print(f"{'screen':40s} {'compile':8s} {'todos':>6s} {'rt-fatal':>9s}")
+    print("-" * 66)
     for kt in kt_files:
         name = os.path.basename(kt)[:-3]
         out, code = transpile_one(kt)
         todos = count_todos(code)
+        rtfatal = classbody_self(code)
         todo_total += todos
+        rtfatal_total += rtfatal
         try:
             py_compile.compile(out, doraise=True)
             ok += 1
@@ -67,16 +78,21 @@ def main():
             bad += 1
             status = "FAIL"
             failures.append((name, str(e).strip().splitlines()[-1][:70]))
-        print(f"{name:40s} {status:8s} {todos:6d}")
+        print(f"{name:40s} {status:8s} {todos:6d} {rtfatal:9d}")
 
-    print("-" * 56)
-    print(f"COMPILE OK {ok}/{ok + bad}   residual TODO markers: {todo_total}")
+    print("-" * 66)
+    print(f"COMPILE OK {ok}/{ok + bad}   residual TODOs: {todo_total}   "
+          f"class-body self. (runtime-fatal): {rtfatal_total}")
     if failures:
-        print("\nFAILURES:")
+        print("\nCOMPILE FAILURES:")
         for name, msg in failures:
             print(f"  {name}: {msg}")
+    if rtfatal_total:
+        print(f"\nNOT RUNNABLE: {rtfatal_total} class-body `self.` assignments "
+              f"(needs __init__ generation). py_compile passes but instantiation NameErrors.")
+    if failures or rtfatal_total:
         return 1
-    print("All ViewModels emit valid Python.")
+    print("All ViewModels emit valid Python AND have no class-body self. (instance-shaped).")
     return 0
 
 
