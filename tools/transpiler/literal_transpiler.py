@@ -33,6 +33,98 @@ class LiteralVisitor:
     def get_text(self, node, source_bytes):
         return source_bytes[node.start_byte:node.end_byte].decode('utf-8')
 
+    def parse_expression(self, node, source_bytes) -> str:
+        if not node:
+            return ""
+            
+        if node.type in ("identifier", "type_identifier", "number_literal", "boolean_literal", "null_literal"):
+            text = self.get_text(node, source_bytes)
+            if node.type == "boolean_literal":
+                return "True" if text == "true" else "False"
+            if node.type == "null_literal":
+                return "None"
+            if node.type == "number_literal" and text.endswith("L"):
+                return text[:-1]
+            return text
+            
+        elif node.type == "string_literal":
+            return self.get_text(node, source_bytes)
+            
+        elif node.type == "navigation_expression":
+            left = self.parse_expression(node.named_children[0], source_bytes) if len(node.named_children) > 0 else ""
+            right = self.parse_expression(node.named_children[1], source_bytes) if len(node.named_children) > 1 else ""
+            
+            op_node = next((c for c in node.children if c.type in (".", "?.")), None)
+            if op_node and op_node.type == "?.":
+                # For safe navigation, we just construct the python equivalent but note that if it's called
+                # e.g., (a.b if a is not None else None)(), it will crash in Python.
+                # A fully robust transpile would extract this, but for 1:1 structure this is okay, or we can use a wrapper.
+                # Actually, let's just emit `a.b if a is not None else None`.
+                # If it's part of a call `a?.b()`, tree-sitter parses `call_expression(navigation_expression)`.
+                return f"({left}.{right} if {left} is not None else None)"
+            return f"{left}.{right}"
+            
+        elif node.type == "call_expression":
+            func_node = node.named_children[0] if len(node.named_children) > 0 else None
+            
+            # Check if func_node is a safe navigation `x?.y`. If so, we must wrap the WHOLE call.
+            is_safe_call = False
+            safe_left = ""
+            safe_right = ""
+            if func_node and func_node.type == "navigation_expression":
+                op_node = next((c for c in func_node.children if c.type == "?."), None)
+                if op_node:
+                    is_safe_call = True
+                    safe_left = self.parse_expression(func_node.named_children[0], source_bytes)
+                    safe_right = self.parse_expression(func_node.named_children[1], source_bytes)
+            
+            func_name = self.parse_expression(func_node, source_bytes)
+            
+            args_node = next((c for c in node.children if c.type == "value_arguments"), None)
+            args_str = ""
+            if args_node:
+                args_list = []
+                for arg in args_node.named_children:
+                    if arg.type == "value_argument":
+                        # Check for `x = y` (identifier followed by =)
+                        has_eq = next((c for c in arg.children if c.type == "="), None)
+                        if has_eq:
+                            name_node = arg.named_children[0]
+                            expr_nodes = arg.named_children[1:]
+                            name = self.get_text(name_node, source_bytes)
+                            expr = self.parse_expression(expr_nodes[-1] if expr_nodes else None, source_bytes)
+                            args_list.append(f"{name}={expr}")
+                        else:
+                            expr = self.parse_expression(arg.named_children[-1] if len(arg.named_children) > 0 else None, source_bytes)
+                            args_list.append(expr)
+                args_str = ", ".join(args_list)
+                
+            if is_safe_call:
+                return f"({safe_left}.{safe_right}({args_str}) if {safe_left} is not None else None)"
+            return f"{func_name}({args_str})"
+            
+        elif node.type == "binary_expression":
+            left = self.parse_expression(node.named_children[0], source_bytes) if len(node.named_children) > 0 else ""
+            right = self.parse_expression(node.named_children[1], source_bytes) if len(node.named_children) > 1 else ""
+            op = next((c for c in node.children if c.type in ("+", "-", "*", "/", "==", "!=", ">", "<", ">=", "<=", "?:", "&&", "||")), None)
+            op_text = self.get_text(op, source_bytes) if op else ""
+            
+            if op_text == "?:":
+                return f"({left} if {left} is not None else {right})"
+            elif op_text == "&&":
+                return f"{left} and {right}"
+            elif op_text == "||":
+                return f"{left} or {right}"
+            else:
+                return f"{left} {op_text} {right}"
+                
+        elif node.type == "parenthesized_expression":
+            inner = self.parse_expression(node.named_children[0], source_bytes) if len(node.named_children) > 0 else ""
+            return f"({inner})"
+            
+        else:
+            return self.get_text(node, source_bytes)
+
     def visit(self, node, source_bytes):
         if node.type == "source_file":
             for child in node.named_children:
@@ -189,15 +281,50 @@ class LiteralVisitor:
                 self.emit("pass")
 
         elif node.type == "assignment":
-            raw_text = self.get_text(node, source_bytes)
-            first_line = raw_text.split('\n')[0]
-            self.emit(f"# TODO_RAW_EXPRESSION [assignment]: {first_line}")
-            self.emit("pass")
+            left = self.parse_expression(node.named_children[0], source_bytes) if len(node.named_children) > 0 else ""
+            right_node = node.named_children[1] if len(node.named_children) > 1 else None
             
-            # Check if right-hand side is a call with a lambda (like `timerJob = viewModelScope.launch { ... }`)
-            rhs = node.named_children[1] if len(node.named_children) > 1 else None
-            if rhs and rhs.type == "call_expression":
-                self.visit(rhs, source_bytes)
+            # Check if right-hand side is a call with a lambda
+            has_lambda = False
+            if right_node and right_node.type in ("call_expression", "navigation_expression"):
+                has_lambda = any(c.type == "lambda_literal" or c.type == "annotated_lambda" for c in right_node.children)
+                
+            if has_lambda:
+                func_name = self.parse_expression(right_node.named_children[0] if right_node and len(right_node.named_children) > 0 else None, source_bytes)
+                
+                self.emit("def _lambda():")
+                self.indent_level += 1
+                
+                # Dig down to the lambda
+                lambda_node = next((c for c in right_node.children if c.type == "lambda_literal"), None)
+                if not lambda_node:
+                    ann_lambda = next((c for c in right_node.children if c.type == "annotated_lambda"), None)
+                    if ann_lambda:
+                        lambda_node = next((c for c in ann_lambda.children if c.type == "lambda_literal"), None)
+                
+                if not lambda_node:
+                    rhs_call = next((c for c in right_node.children if c.type == "call_expression"), None)
+                    if rhs_call:
+                        lambda_node = next((c for c in rhs_call.children if c.type == "lambda_literal"), None)
+                        if not lambda_node:
+                            ann_lambda = next((c for c in rhs_call.children if c.type == "annotated_lambda"), None)
+                            if ann_lambda:
+                                lambda_node = next((c for c in ann_lambda.children if c.type == "lambda_literal"), None)
+                
+                statements_node = next((c for c in lambda_node.named_children if c.type == "statements"), None) if lambda_node else None
+                children = statements_node.named_children if statements_node else (lambda_node.named_children if lambda_node else [])
+                
+                if children:
+                    for stmt in children:
+                        self.visit(stmt, source_bytes)
+                else:
+                    self.emit("pass")
+                self.indent_level -= 1
+                
+                self.emit(f"{left} = {func_name}(_lambda)")
+            else:
+                right = self.parse_expression(right_node, source_bytes)
+                self.emit(f"{left} = {right}")
 
         elif node.type == "for_statement":
             # Extract loop variable and iterable
@@ -242,30 +369,27 @@ class LiteralVisitor:
             self.indent_level -= 1
 
         elif node.type == "return_statement":
-            raw_text = self.get_text(node, source_bytes).replace('\n', '\\n')
-            self.emit(f"# TODO_RAW_EXPRESSION [return]: {raw_text}")
-            self.emit("pass")
+            if len(node.named_children) > 0:
+                expr = self.parse_expression(node.named_children[0], source_bytes)
+                self.emit(f"return {expr}")
+            else:
+                self.emit("return")
 
         elif node.type in ("call_expression", "navigation_expression"):
             # Check for trailing lambda (e.g. `_uiState.update { ... }`)
             lambda_node = next((c for c in node.children if c.type == "lambda_literal"), None)
             if not lambda_node:
-                # navigation expressions might have the lambda on their right-hand side call
                 rhs = next((c for c in node.children if c.type == "call_expression"), None)
                 if rhs:
                     lambda_node = next((c for c in rhs.children if c.type == "lambda_literal"), None)
                 
-                # It might be wrapped in an `annotated_lambda`
                 ann_lambda = next((c for c in node.children if c.type == "annotated_lambda"), None)
                 if ann_lambda:
                     lambda_node = next((c for c in ann_lambda.children if c.type == "lambda_literal"), None)
 
-            raw_text = self.get_text(node, source_bytes)
-            first_line = raw_text.split('\n')[0]
-            self.emit(f"# TODO_RAW_EXPRESSION [call]: {first_line}")
-            self.emit("pass")
-            
             if lambda_node:
+                func_name = self.parse_expression(node.named_children[0] if len(node.named_children) > 0 else None, source_bytes)
+                
                 self.emit("def _lambda():")
                 self.indent_level += 1
                 
@@ -281,6 +405,11 @@ class LiteralVisitor:
                 else:
                     self.emit("pass")
                 self.indent_level -= 1
+                
+                self.emit(f"{func_name}(_lambda)")
+            else:
+                expr = self.parse_expression(node, source_bytes)
+                self.emit(expr)
             
         elif node.type == "import_list":
             for child in node.named_children:
