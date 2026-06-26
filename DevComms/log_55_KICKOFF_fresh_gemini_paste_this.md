@@ -59,12 +59,22 @@ close the gap(s) by reusing existing widgets, and hand it to review with pair ev
 is proven, work up the list (the bulk is `onboarding`, `workout_execution`, `calibrate` — later).
 (`exercise_create_screen` is already at 0 real gaps — skip it.)
 
-## Spacers are NOT gaps — never add one to close a gap
+## Do NOT game the matcher (two ways people have tried)
 
-The metric now strips `spacer` nodes (pure layout, no handler/nav/content; visual spacing is guarded
-by the goldens, not connectivity). If `connectivity_gate.py <slug>` ever shows a spacer, ignore it —
-do not insert `define_spacer_zone` to chase it. Close only REAL gaps: buttons, widgets, text, icons,
-sheets/dialogs. Adding nodes purely to move the number is the node-stuffing that ends the collaboration.
+The gate is a *proxy* for "the PC screen has the same wired elements as the blueprint." Never contort
+the code to move the proxy:
+
+1. **Spacers are NOT gaps.** The metric strips `spacer` nodes (pure layout; spacing is guarded by the
+   goldens, not connectivity). If a gap is a `spacer`, ignore it — never insert `define_spacer_zone`.
+2. **Don't inline a reusable helper to flip a classification.** If a "gap" is really the same element
+   already present and wired but *classified* differently (e.g. a `widgets.py` `button()` helper shows
+   as `widget:button` while the blueprint's raw Button is `button .filled`), that is a **matcher
+   false-negative, not a missing element**. Do NOT replace the helper with a raw primitive to satisfy
+   the matcher — that degrades reuse for zero real gain. **Flag it to the reviewer to fix the matcher.**
+   (This exact case — the button helper — is already fixed in the matcher as of baseline 214.)
+
+Close only REAL gaps: a genuinely-absent button/widget/text/icon/sheet/dialog. Moving the number
+without adding a real, wired element is the gaming that ends the collaboration.
 
 ## Caveats already known (don't rediscover or paper over)
 
