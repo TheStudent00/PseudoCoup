@@ -14,8 +14,8 @@ OUT_OF_SCOPE, with nothing left over. Anything left over is the worklist.
 # Seeded from the donor coverage instrument (tools/transpiler/coverage.py); refined
 # as P1 lands real handlers.
 CONTAINER = {
-    "source_file", "package_header", "import", "import_list", "import_header",
-    "shebang_line", "file_annotation",
+    "package_header", "import", "import_list", "import_header",
+    "shebang", "file_annotation",
     "value_argument", "value_arguments", "string_content", "escape_sequence",
     "variable_declaration", "multi_variable_declaration",
     "modifiers", "visibility_modifier", "class_modifier", "member_modifier",
@@ -27,6 +27,8 @@ CONTAINER = {
     "lambda_parameters", "annotated_lambda", "property_delegate",
     "enum_entry", "getter", "setter", "type_test",
     "line_comment", "block_comment",
+    # suites/bodies are descended into by their parent renderer, never dispatched
+    "block", "function_body", "statements",
 }
 
 # No Python equivalent -> always a shim (the wrap layer lands in P3).

@@ -50,6 +50,17 @@ class Visitor:
     def routed_kinds(cls) -> set:
         return set(cls._route)
 
+    # -- shared CST helpers ------------------------------------------------- #
+    @staticmethod
+    def text(node) -> str:
+        return node.text.decode("utf-8")
+
+    @staticmethod
+    def named(node) -> list:
+        """Named children minus comments (the structurally-significant kids)."""
+        return [c for c in node.named_children
+                if c.type not in ("line_comment", "block_comment")]
+
     def visit(self, node):
         if node.type == "ERROR" or getattr(node, "is_missing", False):
             raise Untranspilable(node, "parser error / missing node")
