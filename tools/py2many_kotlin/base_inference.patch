@@ -1,0 +1,23 @@
+--- a/py2many/inference.py	2026-02-19 15:15:02.000000000 -0500
++++ b/py2many/inference.py	2026-06-27 03:04:35.260945327 -0400
+@@ -412,12 +412,18 @@
+                 type_str = get_id(scope.returns)
+                 if type_str is not None:
+                     if new_type_str != type_str:
+-                        type_str = f"Union[{type_str},{new_type_str}]"
+-                        scope.returns.id = type_str
++                        # Only widen an annotation we inferred ourselves; never
++                        # clobber a return type declared in source. Doing so
++                        # produced invalid nested Union[Union[...]] return types
++                        # (e.g. declared `int` vs an inferred `Int`).
++                        if getattr(scope.returns, "py2many_inferred", False):
++                            type_str = f"Union[{type_str},{new_type_str}]"
++                            scope.returns.id = type_str
+                 else:
+                     # Do not overwrite source annotation with inferred
+                     if scope.returns is None:
+                         scope.returns = ast.Name(id=new_type_str)
++                        scope.returns.py2many_inferred = True
+                         lifetime = getattr(node.value.annotation, "lifetime", None)
+                         if lifetime is not None:
+                             scope.returns.lifetime = lifetime
