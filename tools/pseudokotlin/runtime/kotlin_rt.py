@@ -215,6 +215,9 @@ class KtList(list):
     def sortedByDescending(self, key):
         return KtList(sorted(self, key=key, reverse=True))
 
+    def sortedWith(self, comparator):
+        return KtList(sorted(self, key=functools.cmp_to_key(comparator)))
+
     def reversed(self):
         return KtList(reversed(self))
 
@@ -421,7 +424,126 @@ class KtMap(dict):
         return KtList(self.values())
 
 
+class KtSet(set):
+    @property
+    def size(self):
+        return len(self)
+
+    def isEmpty(self):
+        return len(self) == 0
+
+    def isNotEmpty(self):
+        return len(self) != 0
+
+    def contains(self, x):
+        return x in self
+
+    def _coerce(self, other):           # Kotlin `set + elem` adds; `set + coll` unions
+        return set(other) if isinstance(other, (set, frozenset, list)) else {other}
+
+    def __add__(self, other):
+        return KtSet(self | self._coerce(other))
+
+    def __sub__(self, other):
+        return KtSet(set(self) - self._coerce(other))
+
+    def plus(self, other):
+        return self.__add__(other)
+
+    def minus(self, other):
+        return self.__sub__(other)
+
+    def union(self, other):
+        return KtSet(self | set(other))
+
+    def intersect(self, other):
+        return KtSet(self & set(other))
+
+    def subtract(self, other):
+        return KtSet(self - set(other))
+
+    def toList(self):
+        return KtList(self)
+
+    def toMutableSet(self):
+        return KtSet(self)
+
+    def toSet(self):
+        return self
+
+    def map(self, f):
+        return KtList(self).map(f)
+
+    def mapNotNull(self, f):
+        return KtList(self).mapNotNull(f)
+
+    def filter(self, p):
+        return KtList(self).filter(p)
+
+    def any(self, p=None):
+        return KtList(self).any(p)
+
+    def all(self, p):
+        return KtList(self).all(p)
+
+    def none(self, p=None):
+        return KtList(self).none(p)
+
+    def count(self, p=None):
+        return KtList(self).count(p)
+
+    def sumOf(self, s):
+        return KtList(self).sumOf(s)
+
+    def maxOf(self, s):
+        return KtList(self).maxOf(s)
+
+    def minOf(self, s):
+        return KtList(self).minOf(s)
+
+    def maxByOrNull(self, s):
+        return KtList(self).maxByOrNull(s)
+
+    def minByOrNull(self, s):
+        return KtList(self).minByOrNull(s)
+
+    def sorted(self):
+        return KtList(self).sorted()
+
+    def sortedBy(self, k):
+        return KtList(self).sortedBy(k)
+
+    def associateBy(self, k, v=None):
+        return KtList(self).associateBy(k, v)
+
+    def associateWith(self, v):
+        return KtList(self).associateWith(v)
+
+    def groupBy(self, k, v=None):
+        return KtList(self).groupBy(k, v)
+
+    def first(self, p=None):
+        return KtList(self).first(p)
+
+    def firstOrNull(self, p=None):
+        return KtList(self).firstOrNull(p)
+
+    def forEach(self, a):
+        KtList(self).forEach(a)
+
+    def joinToString(self, *a, **k):
+        return KtList(self).joinToString(*a, **k)
+
+
 # ---- Kotlin stdlib helpers (added as engines surface them) ------------------- #
+def List(n, init):                      # List(size) { i -> … } factory
+    return KtList(init(i) for i in range(n))
+
+
+def MutableList(n, init):
+    return KtList(init(i) for i in range(n))
+
+
 class Pair:
     def __init__(self, first, second):
         self.first, self.second = first, second
@@ -454,7 +576,7 @@ def listOfNotNull(*xs):
 
 
 def setOf(*xs):
-    return set(xs)
+    return KtSet(xs)
 
 
 def mapOf(*pairs):
@@ -470,7 +592,7 @@ def emptyMap():
 
 
 def emptySet():
-    return set()
+    return KtSet()
 
 
 def mutableListOf(*xs):
@@ -478,11 +600,49 @@ def mutableListOf(*xs):
 
 
 def mutableSetOf(*xs):
-    return set(xs)
+    return KtSet(xs)
 
 
 def mutableMapOf(*pairs):
     return KtMap(tuple(p) for p in pairs)
+
+
+# ---- Kotlin comparators (compareBy { … }.thenBy { … }; sortedWith) ----------- #
+def _cmp_key(ka, kb):
+    return -1 if ka < kb else (1 if ka > kb else 0)
+
+
+class Comparator:
+    def __init__(self, fn):
+        self.fn = fn
+
+    def __call__(self, a, b):
+        return self.fn(a, b)
+
+    def thenBy(self, selector):
+        prev = self.fn
+        return Comparator(lambda a, b: prev(a, b) or _cmp_key(selector(a), selector(b)))
+
+    def thenByDescending(self, selector):
+        prev = self.fn
+        return Comparator(lambda a, b: prev(a, b) or -_cmp_key(selector(a), selector(b)))
+
+    def reversed(self):
+        return Comparator(lambda a, b: -self.fn(a, b))
+
+
+def compareBy(*selectors):
+    def cmp(a, b):
+        for s in selectors:
+            r = _cmp_key(s(a), s(b))
+            if r:
+                return r
+        return 0
+    return Comparator(cmp)
+
+
+def compareByDescending(*selectors):
+    return compareBy(*selectors).reversed()
 
 
 # ---- Kotlin top-level math (called by bare name) ----------------------------- #
