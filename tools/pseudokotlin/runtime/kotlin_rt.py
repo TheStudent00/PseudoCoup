@@ -10,6 +10,28 @@ and every addition is itself under the runtime oracle (if the shim is wrong, the
 transpiled test diverges from the JVM-verified assertion and the oracle catches it).
 """
 import math
+import re as _re
+
+
+class Regex:
+    def __init__(self, pattern, *options):
+        self.pattern = pattern
+        self._c = _re.compile(pattern)
+
+    def matches(self, s):
+        return self._c.fullmatch(s) is not None
+
+    def containsMatchIn(self, s):
+        return self._c.search(s) is not None
+
+    def replace(self, s, repl):
+        return self._c.sub(repl, s)
+
+    def find(self, s):
+        return self._c.search(s)
+
+    def split(self, s):
+        return KtList(self._c.split(s))
 
 
 # ---- JUnit lifecycle annotations -> identity decorators that TAG the method, so
@@ -683,6 +705,26 @@ def minOf(*xs):
 
 def maxOf(*xs):
     return max(xs)
+
+
+class Math:                             # java.lang.Math (used as `Math.round(x)` etc.)
+    PI = math.pi
+    E = math.e
+    round = staticmethod(lambda x: math.floor(x + 0.5))
+    abs = staticmethod(abs)
+    max = staticmethod(max)
+    min = staticmethod(min)
+    floor = staticmethod(lambda x: math.floor(x))
+    ceil = staticmethod(lambda x: math.ceil(x))
+    sqrt = staticmethod(math.sqrt)
+    cbrt = staticmethod(lambda x: math.copysign(abs(x) ** (1 / 3), x))
+    pow = staticmethod(pow)
+    exp = staticmethod(math.exp)
+    log = staticmethod(math.log)
+    log10 = staticmethod(math.log10)
+    sin = staticmethod(math.sin)
+    cos = staticmethod(math.cos)
+    tan = staticmethod(math.tan)
 
 
 def roundToInt(x):
