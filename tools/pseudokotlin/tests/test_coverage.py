@@ -18,6 +18,13 @@ from transpiler import KtToPy  # noqa: E402
 EXHAUSTIVENESS_ENFORCED = False  # flip True at end of P1
 
 
+def test_no_handler_for_unknown_kind():
+    # every registered handler must target a REAL grammar kind (catches typos like
+    # registering "integer_literal" when this grammar calls it "number_literal").
+    bogus = KtToPy.routed_kinds() - parse.named_kinds()
+    assert not bogus, f"handlers for non-existent grammar kinds: {sorted(bogus)}"
+
+
 def test_no_kind_double_classified():
     routed = KtToPy.routed_kinds()
     overlap = routed & (classify.CONTAINER | classify.OUT_OF_SCOPE | classify.WRAP)
