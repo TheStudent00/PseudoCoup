@@ -27,6 +27,8 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._scopes = []        # stack of local-name sets (params/locals shadow members)
         self._hoist = []         # pending helper defs (multi-statement lambdas), flushed
         self._lam = 0            #   before the statement that produced them
+        self._static_members = set()  # companion members -> ClassName.x resolution
+        self._static_class = None     # the enclosing class name for those
 
     def transpile(self, source: bytes) -> str:
         tree = parse(source)

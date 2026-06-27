@@ -28,7 +28,10 @@ class Expressions:
         const = {"null": "None", "true": "True", "false": "False"}
         if t in const:
             return const[t]
-        if t in self._members and not any(t in s for s in self._scopes):
+        shadowed = any(t in s for s in self._scopes)
+        if not shadowed and t in self._static_members:      # companion -> ClassName.x
+            return f"{self._static_class}.{t}"
+        if not shadowed and t in self._members:             # instance member -> self.x
             return f"self.{t}"
         return t
 

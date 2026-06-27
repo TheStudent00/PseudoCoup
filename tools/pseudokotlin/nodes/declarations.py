@@ -8,11 +8,13 @@ import sys
 import os
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from dispatch import kind  # noqa: E402
+from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
 
 _TOP_DECLS = {"class_declaration", "object_declaration", "function_declaration",
               "property_declaration"}
+# class-body members still needing design work -- fail loudly, never drop
+_OOP_DEFER = {"secondary_constructor", "object_literal"}
 
 
 class Declarations:
@@ -23,11 +25,12 @@ class Declarations:
 
     @kind("function_declaration")
     def v_function_declaration(self, node):
-        name = self._name_of(node) or "unknown_func"
-        params = []
         in_class = node.parent is not None and node.parent.type == "class_body"
-        if in_class:
-            params.append("self")
+        return self._function(node, with_self=in_class)
+
+    def _function(self, node, with_self, decorator=""):
+        name = self._name_of(node) or "unknown_func"
+        params = ["self"] if with_self else []
         pnode = next((c for c in node.children if c.type == "function_value_parameters"), None)
         if pnode:
             for p in pnode.named_children:
@@ -37,14 +40,25 @@ class Declarations:
                         params.append(pid)
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
-        self._scopes.append(set(params[1:] if in_class else params))
+        self._scopes.append(set(params[1:] if with_self else params))
         body = self._render_function_body(body_node)
         self._scopes.pop()
-        return f"def {name}({', '.join(params)}):\n{body}"
+        head = f"{decorator}\n" if decorator else ""
+        return f"{head}def {name}({', '.join(params)}):\n{body}"
 
     @kind("class_declaration")
     def v_class_declaration(self, node):
-        name = self._name_of(node) or "UnknownClass"
+        return self._render_class(node, self._name_of(node) or "UnknownClass")
+
+    @kind("object_declaration")
+    def v_object_declaration(self, node):
+        # Kotlin `object Foo {…}` is a singleton. Emit the class, then rebind the
+        # name to a sole instance -> `Foo.x`/`Foo.f()` resolve, single-instance
+        # semantics preserved, no extra instances constructible.
+        name = self._name_of(node) or "UnknownObject"
+        return f"{self._render_class(node, name)}\n{name} = {name}()"
+
+    def _render_class(self, node, name):
         body_node = next((c for c in node.children
                           if c.type in ("class_body", "enum_class_body")), None)
         ctor_params = []
@@ -60,7 +74,7 @@ class Declarations:
 
         prev = self._members
         self._members = set(ctor_params)
-        props, methods = [], []
+        props, methods, nested, comps, inits = [], [], [], [], []
         if body_node:
             for c in body_node.named_children:
                 if c.type == "property_declaration":
@@ -73,20 +87,52 @@ class Declarations:
                     if nm:
                         self._members.add(nm)
                     methods.append(c)
+                elif c.type in ("class_declaration", "object_declaration"):
+                    nested.append(c)
+                elif c.type == "companion_object":
+                    comps.append(c)
+                elif c.type == "anonymous_initializer":
+                    inits.append(c)
+                elif c.type in _OOP_DEFER:
+                    raise Untranspilable(c, "class member needs the OOP-model pass")
+                # else: enum_entry / modifiers / trivia -> consumed, not emitted
+
+        self._scopes.append(set(ctor_params))
+        init_body = [f"self.{p} = {p}" for p in ctor_params]
+        init_body += [self._render_property(p, as_self=True) for p in props]
+        for ini in inits:                                  # init { … } -> __init__ body
+            blk = next((k for k in ini.named_children if k.type == "block"), None)
+            if blk is not None:
+                init_body += self.render_statements(self.named(blk))
+        self._scopes.pop()
 
         lines = []
-        init_body = [f"self.{p} = {p}" for p in ctor_params]
-        self._scopes.append(set(ctor_params))
-        init_body += [self._render_property(p, as_self=True) for p in props]
-        self._scopes.pop()
-        if ctor_params or props:
+        if ctor_params or props or inits:
             args = ", ".join(["self"] + ctor_params)
             lines.append(f"def __init__({args}):\n{_block(init_body)}")
         lines += [self.visit(m) for m in methods]
+        lines += [self.visit(n) for n in nested]
+        for comp in comps:                                 # companion -> static members
+            lines += self._render_companion(comp, name)
         self._members = prev
 
         body = _block(lines) if lines else _block([])
         return f"class {name}:\n{body}"
+
+    def _render_companion(self, comp, cls_name):
+        cbody = next((c for c in comp.named_children if c.type == "class_body"), comp)
+        cprops = [c for c in cbody.named_children if c.type == "property_declaration"]
+        cfuncs = [c for c in cbody.named_children if c.type == "function_declaration"]
+        names = {self._name_of(p, deep=True) for p in cprops}
+        names |= {self._name_of(f) for f in cfuncs}
+        names.discard(None)
+        prev_sm, prev_sc = self._static_members, self._static_class
+        self._static_members, self._static_class = names, cls_name
+        out = [self._render_property(p, as_self=False) for p in cprops]   # class-level
+        out += [self._function(f, with_self=False, decorator="@staticmethod")
+                for f in cfuncs]
+        self._static_members, self._static_class = prev_sm, prev_sc
+        return out
 
     @kind("property_declaration")
     def v_property_declaration(self, node):
