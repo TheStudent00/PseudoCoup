@@ -74,14 +74,17 @@ class Declarations:
 
         prev = self._members
         self._members = set(ctor_params)
-        props, methods, nested, comps, inits = [], [], [], [], []
+        props, getters, methods, nested, comps, inits = [], [], [], [], [], []
         if body_node:
             for c in body_node.named_children:
                 if c.type == "property_declaration":
                     nm = self._name_of(c, deep=True)
                     if nm:
                         self._members.add(nm)
-                    props.append(c)
+                    if any(k.type == "getter" for k in c.children):   # computed property
+                        getters.append(c)
+                    else:
+                        props.append(c)
                 elif c.type == "function_declaration":
                     nm = self._name_of(c)
                     if nm:
@@ -111,6 +114,7 @@ class Declarations:
             args = ", ".join(["self"] + ctor_params)
             lines.append(f"def __init__({args}):\n{_block(init_body)}")
         lines += [self.visit(m) for m in methods]
+        lines += [self._render_getter(g) for g in getters]  # computed props -> @property
         lines += [self.visit(n) for n in nested]
         for comp in comps:                                 # companion -> static members
             lines += self._render_companion(comp, name)
@@ -118,6 +122,16 @@ class Declarations:
 
         body = _block(lines) if lines else _block([])
         return f"class {name}:\n{body}"
+
+    def _render_getter(self, prop):
+        name = self._name_of(prop, deep=True) or "_prop"
+        getter = next((c for c in prop.children if c.type == "getter"), None)
+        body_node = next((c for c in getter.named_children
+                          if c.type in ("function_body", "block")), None) if getter else None
+        self._scopes.append(set())
+        body = self._render_function_body(body_node)
+        self._scopes.pop()
+        return f"@property\ndef {name}(self):\n{body}"
 
     def _render_companion(self, comp, cls_name):
         cbody = next((c for c in comp.named_children if c.type == "class_body"), comp)
