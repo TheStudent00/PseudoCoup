@@ -25,6 +25,9 @@ _BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMa
                    "Collection", "Iterable", "Sequence", "Array", "String",
                    "CharSequence", "Int", "Long", "Double", "Float", "Boolean",
                    "Char", "Byte", "Short", "Number", "Comparable", "Any", "Pair"}
+# type (simple name) -> its instance member names, accumulated as classes are rendered.
+# Lets an extension fn `fun Recv.f() = … bareField …` resolve bareField to self.field.
+_TYPE_FIELDS = {}
 
 
 class Declarations:
@@ -71,9 +74,15 @@ class Declarations:
         params = (["self"] if with_self else []) + parts
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
+        recv = self._ext_receiver(node)         # extension: receiver fields resolve to self
+        prev_m = self._members
+        if recv is not None:
+            simple = recv.split("<")[0].strip().split(".")[-1]
+            self._members = self._members | _TYPE_FIELDS.get(simple, set())
         self._scopes.append(set(names) | self._local_names(body_node))
         body = self._render_function_body(body_node, prefix=guards)
         self._scopes.pop()
+        self._members = prev_m
         decos = ([decorator] if decorator else []) + \
             [f"@{a}" for a in self._annotations(node) if a in _JUNIT_ANN]
         head = "".join(d + "\n" for d in decos)
@@ -287,6 +296,7 @@ class Declarations:
         lines += [self.visit(n) for n in nested]
         for comp in comps:                                 # companion -> static members
             lines += self._render_companion(comp, name)
+        _TYPE_FIELDS[name] = set(self._members)             # for extension-receiver lookup
         self._members = prev
 
         body = _block(lines) if lines else _block([])
@@ -312,7 +322,11 @@ class Declarations:
             out.append(f'{name}.{en}.name = "{en}"')
             out.append(f"{name}.{en}.ordinal = {i}")
         listed = ", ".join(f"{name}.{en}" for en in names)
-        out.append(f"{name}._entries = [{listed}]")   # backs values()/entries()
+        out.append(f"{name}._entries = KtList([{listed}])")   # values()/entries()/valueOf
+        out.append(f"{name}.values = staticmethod(lambda: {name}._entries)")
+        out.append(f"{name}.entries = {name}._entries")
+        out.append(f"{name}.valueOf = staticmethod("
+                   f"lambda s: next(e for e in {name}._entries if e.name == s))")
         return "\n".join(out)
 
     def _render_getter(self, prop):
