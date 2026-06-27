@@ -196,11 +196,14 @@ class Declarations:
 
     @kind("object_declaration")
     def v_object_declaration(self, node):
-        # Kotlin `object Foo {…}` is a singleton. Emit the class, then rebind the
-        # name to a sole instance -> `Foo.x`/`Foo.f()` resolve, single-instance
-        # semantics preserved, no extra instances constructible.
+        # Kotlin `object Foo {…}` is a singleton. Emit the class, then rebind the name to
+        # a sole instance -> `Foo.x`/`Foo.f()` resolve. The instantiation is deferred to
+        # module end (after nested-type aliases) so __init__ can reference the object's own
+        # nested types (e.g. `val x = VolumeLandmark(...)` in the body).
         name = self._name_of(node) or "UnknownObject"
-        return f"{self._render_class(node, name)}\n{name} = {name}()"
+        cls = self._render_class(node, name)
+        self._ext_patches.append(f"{name} = {name}()")
+        return cls
 
     def _render_class(self, node, name):
         body_node = next((c for c in node.children
