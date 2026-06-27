@@ -50,6 +50,7 @@ _STDLIB_METHODS = {
     "split":         lambda r, a: f"KtList({r}.split({a[0]}))",
     "substring":     lambda r, a: (f"{r}[{a[0]}:{a[1]}]" if len(a) > 1
                                    else f"{r}[{a[0]}:]"),
+    "replaceFirstChar": lambda r, a: f"(({a[0]}({r}[0]) + {r}[1:]) if {r} else {r})",
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
 # back to len() for any sized receiver (KtList also has a .size property of its own).
