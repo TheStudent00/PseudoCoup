@@ -15,6 +15,9 @@ _TOP_DECLS = {"class_declaration", "object_declaration", "function_declaration",
               "property_declaration"}
 # class-body members still needing design work -- fail loudly, never drop
 _OOP_DEFER = {"secondary_constructor", "object_literal"}
+# JUnit lifecycle annotations preserved as decorators (kotlin_rt tags them) so the
+# oracle runs real @Test methods, not private helpers. Others are still dropped.
+_JUNIT_ANN = {"Test", "Before", "After", "BeforeEach", "AfterEach", "Ignore", "Disabled"}
 
 
 class Declarations:
@@ -25,7 +28,8 @@ class Declarations:
 
     @kind("function_declaration")
     def v_function_declaration(self, node):
-        in_class = node.parent is not None and node.parent.type == "class_body"
+        in_class = node.parent is not None and \
+            node.parent.type in ("class_body", "enum_class_body")
         # extension fn `fun Recv.name(…)` -> the receiver becomes self (its `.` token
         # sits between the receiver type and the name); body `this` already -> self.
         is_extension = any(c.type == "." for c in node.children)
@@ -33,21 +37,64 @@ class Declarations:
 
     def _function(self, node, with_self, decorator=""):
         name = self._safe(self._name_of(node) or "unknown_func")
-        params = ["self"] if with_self else []
         pnode = next((c for c in node.children if c.type == "function_value_parameters"), None)
-        if pnode:
-            for p in pnode.named_children:
-                if p.type == "parameter":
-                    pid = self._name_of(p)
-                    if pid:
-                        params.append(self._safe(pid))
+        names, parts, guards = self._collect_params(pnode) if pnode is not None \
+            else ([], [], [])
+        params = (["self"] if with_self else []) + parts
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
-        self._scopes.append(set(params[1:] if with_self else params))
-        body = self._render_function_body(body_node)
+        self._scopes.append(set(names))
+        body = self._render_function_body(body_node, prefix=guards)
         self._scopes.pop()
-        head = f"{decorator}\n" if decorator else ""
+        decos = ([decorator] if decorator else []) + \
+            [f"@{a}" for a in self._annotations(node) if a in _JUNIT_ANN]
+        head = "".join(d + "\n" for d in decos)
         return f"{head}def {name}({', '.join(params)}):\n{body}"
+
+    def _annotations(self, node):
+        mods = next((c for c in node.children if c.type == "modifiers"), None)
+        if mods is None:
+            return []
+        out = []
+        for a in mods.named_children:
+            if a.type == "annotation":
+                ut = next((k for k in a.named_children
+                           if k.type in ("user_type", "constructor_invocation")), None)
+                if ut is not None:
+                    out.append(self.text(ut).split("(")[0].strip())
+        return out
+
+    def _collect_params(self, pnode):
+        # A Kotlin default value is a SIBLING of its `parameter` (after a `=` token),
+        # not a child. Walk all children, pairing each default to the prior parameter.
+        # Defaults render in the enclosing scope (not the param scope). A default that
+        # references `self.` is NOT def-time-safe in Python (the `def` runs during
+        # class-body exec) -> emit a None sentinel + a body guard instead. Returns
+        # (bare names for scope, signature parts, body-prefix guard lines).
+        names, sig, pending = [], [], False
+        for c in pnode.children:
+            if c.type == "parameter":
+                pid = self._name_of(c)
+                if pid:
+                    names.append(pid)
+                    sig.append([self._safe(pid), None])
+                pending = False
+            elif c.type == "=":
+                pending = True
+            elif pending and c.is_named:
+                if sig:
+                    sig[-1][1] = self.visit(c)
+                pending = False
+        parts, guards = [], []
+        for p, d in sig:
+            if d is None:
+                parts.append(p)
+            elif "self." in d:                       # per-call default via sentinel
+                parts.append(f"{p}=None")
+                guards.append(f"if {p} is None: {p} = {d}")
+            else:
+                parts.append(f"{p}={d}")
+        return names, parts, guards
 
     @kind("class_declaration")
     def v_class_declaration(self, node):
@@ -78,9 +125,12 @@ class Declarations:
         prev = self._members
         self._members = set(ctor_params)
         props, getters, lazies, methods, nested, comps, inits = [], [], [], [], [], [], []
+        entries = []
         if body_node:
             for c in body_node.named_children:
-                if c.type == "property_declaration":
+                if c.type == "enum_entry":
+                    entries.append(c)
+                elif c.type == "property_declaration":
                     nm = self._name_of(c, deep=True)
                     if nm:
                         self._members.add(nm)
@@ -127,7 +177,30 @@ class Declarations:
         self._members = prev
 
         body = _block(lines) if lines else _block([])
-        return f"class {name}:\n{body}"
+        cls = f"class {name}:\n{body}"
+        if entries:                          # enum entries -> class-level singletons
+            cls += "\n" + self._render_enum_entries(node, name, entries)
+        return cls
+
+    def _render_enum_entries(self, node, name, entries):
+        # each Kotlin enum entry is one instance of the class, bound as a class attr
+        # (identity == matches Kotlin enum identity); .name/.ordinal set for the
+        # common `entry.name`/`entry.ordinal`/`values()` accesses.
+        out, names = [], []
+        for e in entries:
+            ename = self._name_of(e)
+            if any(k.type == "class_body" for k in e.children):
+                raise Untranspilable(e, "enum entry with a body (per-entry override)")
+            args = self._render_args(next((k for k in e.named_children
+                                           if k.type == "value_arguments"), None))
+            out.append(f"{name}.{ename} = {name}({args})")
+            names.append(ename)
+        for i, en in enumerate(names):
+            out.append(f'{name}.{en}.name = "{en}"')
+            out.append(f"{name}.{en}.ordinal = {i}")
+        listed = ", ".join(f"{name}.{en}" for en in names)
+        out.append(f"{name}._entries = [{listed}]")   # backs values()/entries()
+        return "\n".join(out)
 
     def _render_getter(self, prop):
         name = self._safe(self._name_of(prop, deep=True) or "_prop")
@@ -221,24 +294,25 @@ class Declarations:
                 return self.text(pid) if pid else None
         return None
 
-    def _render_function_body(self, body_node):
+    def _render_function_body(self, body_node, prefix=()):
+        pre = list(prefix)                          # default-arg sentinel guards, etc.
         if body_node is None:
-            return _block([])
+            return _block(pre or [])
         if body_node.type == "function_body":
             if any(c.type == "=" for c in body_node.children):     # `= expr` body
                 kids = self.named(body_node)
                 if not kids:
-                    return _block([])
+                    return _block(pre or [])
                 before = len(self._hoist)
                 line = self._distribute(kids[0], "return ")   # when/if -> distributed
                 hoist = self._hoist[before:]
                 del self._hoist[before:]
-                return _block(hoist + [line])
+                return _block(pre + hoist + [line])
             inner = self.named(body_node)                          # function_body -> block
             if inner and inner[0].type == "block":
                 body_node = inner[0]
         # body_node is now a block: render its statements (hoist-aware)
-        return _block(self.render_statements(self.named(body_node)))
+        return _block(pre + self.render_statements(self.named(body_node)))
 
     def _render_property(self, node, as_self):
         getter = next((c for c in node.children if c.type == "getter"), None)
