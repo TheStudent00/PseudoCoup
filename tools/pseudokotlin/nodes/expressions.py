@@ -146,13 +146,17 @@ class Expressions:
             return f"-{s}"
         if "+" in ops:
             return f"+{s}"
-        # ++ / -- have no Python operator; render the mutation as an augmented
-        # assignment STATEMENT (Python forbids the value-of-increment idiom, so the
-        # pre/post distinction collapses -- faithful only in statement position).
-        if "++" in ops:
-            return f"{s} += 1"
-        if "--" in ops:
-            return f"{s} -= 1"
+        # ++ / -- in VALUE position (`${n++}`, `f(order++)`): Python has no value-of-
+        # increment, so hoist `_inc = n; n += 1` (postfix returns old, prefix new) and
+        # use the temp. Statement position is handled cleanly by _maybe_increment.
+        if "++" in ops or "--" in ops:
+            op = "+=" if "++" in ops else "-="
+            prefix = node.children[0].type in ("++", "--")
+            self._lam += 1
+            tmp = f"_inc{self._lam}"
+            self._hoist.append(f"{s} {op} 1\n{tmp} = {s}" if prefix
+                               else f"{tmp} = {s}\n{s} {op} 1")
+            return tmp
         raise Untranspilable(node, f"unsupported unary operator {ops}")
 
     @kind("in_expression")

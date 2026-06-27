@@ -91,7 +91,8 @@ class Statements:
         if node.type == "if_expression" and self._if_is_block(node):
             return self._if(node, lead)
         if self._stmt_shaped(node):
-            return self.visit(node)
+            inc = self._maybe_increment(node)   # `if (c) n++` branch -> clean `n += 1`
+            return inc if inc is not None else self.visit(node)
         return f"{lead}{self.visit(node)}"
 
     def _stmt_shaped(self, node):
