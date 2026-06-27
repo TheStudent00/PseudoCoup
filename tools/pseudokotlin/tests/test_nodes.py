@@ -82,7 +82,7 @@ def test_lambda_range_infix():
             "    for (i in 0..n) { p(i) }\n    val pr = 1 to 2 }")
     assert compiles(py)
     assert "lambda v: v * 2" in py
-    assert "for i in range(0, n + 1):" in py
+    assert "for i in KtList(range(0, n + 1)):" in py
     assert "pr = (1, 2)" in py
 
 

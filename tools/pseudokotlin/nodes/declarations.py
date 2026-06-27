@@ -219,10 +219,18 @@ class Declarations:
                     else:
                         props.append(c)
                 elif c.type == "function_declaration":
-                    nm = self._name_of(c)
-                    if nm:
-                        self._members.add(nm)
-                    methods.append(c)
+                    recv = self._ext_receiver(c)
+                    if recv is not None:        # member extension fn -> top-level def +
+                        base = recv.split("<")[0].strip()      # patch onto the receiver
+                        fname = self._safe(self._name_of(c) or "fn")
+                        self._ext_patches.append(self._function(c, with_self=True))
+                        if base and base not in _BUILTIN_RECVRS:
+                            self._ext_patches.append(f"{base}.{fname} = {fname}")
+                    else:
+                        nm = self._name_of(c)
+                        if nm:
+                            self._members.add(nm)
+                        methods.append(c)
                 elif c.type in ("class_declaration", "object_declaration"):
                     nested.append(c)
                 elif c.type == "companion_object":
@@ -377,15 +385,14 @@ class Declarations:
     # ---- helpers --------------------------------------------------------- #
     def _name_of(self, node, deep=False):
         ids = ("simple_identifier", "identifier")
-        direct = next((c for c in node.children if c.type in ids), None)
-        if direct is not None:
-            return self.text(direct)
-        if deep:  # e.g. property_declaration -> variable_declaration -> id
+        if deep:  # property_declaration -> variable_declaration -> id. Check this FIRST:
             vd = next((c for c in node.children if c.type == "variable_declaration"), None)
-            if vd:
+            if vd:  # a direct identifier here would be the VALUE (`var x = someVar`), not x
                 pid = next((c for c in vd.children if c.type in ids), None)
-                return self.text(pid) if pid else None
-        return None
+                if pid is not None:
+                    return self.text(pid)
+        direct = next((c for c in node.children if c.type in ids), None)
+        return self.text(direct) if direct is not None else None
 
     def _render_function_body(self, body_node, prefix=()):
         pre = list(prefix)                          # default-arg sentinel guards, etc.
