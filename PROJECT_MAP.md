@@ -45,7 +45,7 @@ target's kit) that get swapped into the WFL Python to make it a runnable app.
 | **WFL_MixingCenter** | **canonical WFL Python center** (literal 1:1 K→Py, nothing else) | none yet | **SEEDED**: 254 .py (1:1 w/ WFL's 254 .kt), 192 compile-clean; git-init local (no remote) | — / 2026-06-26 |
 | **WFL_PseudoCoup** | Dart-target port: WFL Python (`src`, 243 .py: engine/domain/data/viewmodel + ui/35) + the **dualgraph oversight tools** | Dart | **most advanced & active**; has the 27 viewmodels | `kit-migration-primitives` / 2026-06-26 |
 | **WFL_PyHaxe** | Haxe-target port: WFL Python + Haxe UI | Haxe | older/partial — **no viewmodel layer**; ui differs | `master` / 2026-06-19 |
-| **PseudoCoup** (this repo) | umbrella/meta (thesis, decisions, index) **+ the Kotlin→Python transpiler** (`tools/transpiler`, output `build/literal`) + the older mapper sandbox (`core`, `interactive_map`, `runtime_uimap`, `run_mapper.sh`, `uimap`) + DevComms logs + `uimap/sidebyside.html` | — | docs active; K→Py sandbox last 2026-06-25 | `main` / 2026-06-26 |
+| **PseudoCoup** (this repo) | umbrella/meta (thesis, decisions, index) **+ the Kotlin→Python transpiler** (`tools/transpiler` engine/donor; output `build/literal`) + the **Py↔Kt construct table & compile gate** (`tools/py2many_kotlin`) + the **Flow/coroutine shim runtime** (`core/` — emitted by the transpiler, NOT sandbox) + specs (`docs/`) + DevComms logs. The old mapping subsystem (`interactive_map`, `runtime_uimap`, `uimap`, `run_mapper.sh`, `tools/connectivity`, `tools/dynamic_mapper`) moved to **`_deprecated/`** (2026-06-27) — to be rebuilt as ONE new mapper (sizing/positioning rel+abs · one-degree connectivity) from donor parts. | — | active | `main` |
 
 ### CORRECTION (an earlier version of this doc was wrong)
 A prior draft said "28 transpiled vs 243 hand-built, so the transpiler covered only a fraction."
@@ -73,9 +73,11 @@ WFL_PseudoCoup anymore").
 
 ## 4. The dualgraph oversight (where "— no Kotlin source —" comes from)
 
-Lives in **`WFL_PseudoCoup/tools/dualgraph/`** (output rendered to
-**`PseudoCoup/uimap/sidebyside.html`**). It statically compares each Kotlin screen against its
-PC counterpart:
+Lives in **`WFL_PseudoCoup/tools/dualgraph/`**. Output was rendered to
+`PseudoCoup/uimap/sidebyside.html`; that dir moved to **`PseudoCoup/_deprecated/uimap/`** on
+2026-06-27 (the whole mapping/oversight is being superseded by one new mapper — see §5 — so the
+dualgraph render-target in WFL_PseudoCoup must be re-pointed when that lands). It statically
+compares each Kotlin screen against its PC counterpart:
 - **kt_only** = Kotlin object with no PC equivalent (rendered `— not built in PC —`).
 - **pc_only** = PC object with **no Kotlin source** (rendered **`— no Kotlin source —`**) ← the
   rows the MixingCenter must drive to **zero** for 1:1 faithfulness.
@@ -106,6 +108,10 @@ source of truth today; WFL_PseudoCoup is merely the furthest along.
 2. **Re-point the oversight** at WFL_MixingCenter (vs WFL Kotlin) and shift the goal to **"zero
    `— no Kotlin source —`"** (the MixingCenter must contain only what Kotlin has).
 3. Remaining non-`.dp` compile failures (a handful of repositories, MainActivity, DI glue).
+4. **New unified mapper** (replaces the deprecated mapping subsystem in `_deprecated/`): one tool
+   carrying **sizing/positioning (relative + absolute)** and **one-degree connectivity** (a screen/
+   overlay's direct links to other objects). Built from donor parts in `_deprecated/` (interactive_map,
+   dynamic_mapper, connectivity, uimap) + the dualgraph edge check. Deferred; reactivate parts as needed.
 
 ---
 
