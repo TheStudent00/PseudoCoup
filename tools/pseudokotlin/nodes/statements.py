@@ -80,15 +80,23 @@ class Statements:
 
     def _branch(self, body, lead):
         """Render a branch body (block or single node), distributing `lead` onto the
-        branch's value (its last statement) when in value position."""
+        branch's value (its last statement) when in value position. Hoist-aware."""
         if body.type == "block":
             stmts = self.named(body)
             if lead and stmts:
-                rendered = [self.visit(s) for s in stmts[:-1]] + [lead + self.visit(stmts[-1])]
-            else:
-                rendered = [self.visit(s) for s in stmts]
-            return _block(rendered)
-        return _block([(lead + self.visit(body)) if lead else self.visit(body)])
+                lines = self.render_statements(stmts[:-1])
+                before = len(self._hoist)
+                last = self.visit(stmts[-1])
+                lines += self._hoist[before:]
+                del self._hoist[before:]
+                lines.append(lead + last)
+                return _block(lines)
+            return _block(self.render_statements(stmts))
+        before = len(self._hoist)
+        v = self.visit(body)
+        hoist = self._hoist[before:]
+        del self._hoist[before:]
+        return _block(hoist + [(lead + v) if lead else v])
 
     # ---- loops ----------------------------------------------------------- #
     @kind("for_statement")
@@ -173,9 +181,8 @@ class Statements:
     def _suite(self, n):
         if n is None:
             return _block([])
-        if n.type == "block":
-            return _block([self.visit(c) for c in self.named(n)])
-        return _block([self.visit(n)])
+        nodes = self.named(n) if n.type == "block" else [n]
+        return _block(self.render_statements(nodes))
 
     def _loop_iterable(self, node, exclude):
         kinds = ("call_expression", "navigation_expression", "identifier",
