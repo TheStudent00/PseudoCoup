@@ -28,13 +28,20 @@ The table is the **spec**, the gate is the **verifier**, py2many is the **refere
 data generator**, the literal transpiler is the **donor**. This plan wires them
 into one disciplined transpiler.
 
-## 1. Goal (unchanged)
+## 1. Goal and the single "done" indicator
 
-`WFL_MixingCenter` = a faithful, complete **1:1 Kotlin→Python** of WFL. Done when:
-- every WFL `.kt` has a Python equivalent (sidebyside shows no `— no Kotlin source —`),
-  AND
-- the Python is *correct*, not just compiling — verified by the WFL test oracle
-  (transpile code+tests, run both sides, results match).
+`WFL_MixingCenter` = a faithful, complete **1:1 Kotlin→Python** of WFL.
+
+**Done = the WFL test oracle passes on the transpiled Python, across the whole app:**
+transpile WFL's code *and* its tests, run both sides, the results match. That is the
+*only* real done indicator — it subsumes coverage (an un-transpiled or wrong file
+fails its tests) and correctness (compiling ≠ correct). Compile-clean is an
+intermediate checkpoint, not "done."
+
+Correction to my earlier wording: `— no Kotlin source —` in the sidebyside is **not**
+a done-condition. It is a standing project **invariant** — nothing may exist on the
+Python side without a Kotlin origin — so it is never violated in the first place.
+Citing it as a finish line was wrong.
 
 ## 2. The two flaws we are removing (from log_71/TRANSPILER_SCOPE, already diagnosed)
 
@@ -122,8 +129,82 @@ structure. That decision needs the P2 data (what WFL actually leans on, by frequ
 before it can be made well — so it is deliberately deferred to its own log after P2,
 not guessed now.
 
-## 8. First action on approval
+## 8. Directory structure — current clutter → proposed (PROPOSAL, nothing moved yet)
 
-P0: scaffold `tools/pseudokotlin/`, stand up parse.py + dispatch.py + the 116-kind
-coverage test wired to fail-loud, port coverage.py. That gives the safety net and the
-exact unhandled-node worklist before a single handler is written.
+Principle: **quarantine the dead, archive the loose, don't break the live.** Active
+code keeps its path (moving a repo that others import breaks references); only
+clearly-inactive sub-projects and stray files move. Repos relocated into a folder
+keep their own `.git` — it's a filesystem move, fully reversible.
+
+### 8a. `` (the ecosystem) — proposed
+
+```
+
+├── PseudoCoup/         # the hub: umbrella docs + Kt→Py transpilers + the table/gate
+├── WFL/                # Kotlin app — source of truth (read-only reference)
+├── WFL_MixingCenter/   # canonical WFL Python — the 1:1 K→Py output (the center)
+├── PseudoDart/         # Python→Dart transpiler        ┐ active Dart target branch
+├── PseudoFlutter/      # Dart UI kit                   │ (left flat — live paths)
+├── WFL_PseudoCoup/     # WFL Dart-target port + dualgraph oversight  ┘
+├── PseudoSyntax/       # disciplined-Python notation layer
+│
+├── _deprecated/        # inactive but still referenced — FROZEN, not deleted
+│   ├── PyHaxe/             # Python→Haxe transpiler        ┐ Haxe target branch,
+│   ├── PyHaxeUI/ + -Android/ -iOS/   # Haxe UI kits        │ ~8–10d idle, superseded
+│   └── WFL_PyHaxe/         # WFL Haxe-target port          ┘ by the Dart branch
+│       # ↑ CONFIRM this set is what you consider deprecated
+│
+└── _archive/           # loose non-project clutter at root
+    ├── *.zip              # GUI4GUI_*.zip, PseudoDart.zip, PyHaxeProjects.zip, Lean(...).zip
+    └── setup_android_toolchain*.sh
+```
+
+Left ALONE unless you say otherwise (not part of the pipeline; your separate work):
+`GUI4GUI` / `GUI4GUI-Android`, `StressTestingBot`, `ToDo`, `flutter` (SDK checkout),
+and the math/proof set (`Lean`, `MathematicsVisualizer`, `MathScratchpad`,
+`LambdaSeriesProof`, `LambdaSNR`). I will not touch these without your word.
+
+### 8b. `PseudoCoup/` (internal) — proposed
+
+```
+PseudoCoup/
+├── README.md  PROJECT_MAP.md  TRANSPILER_SCOPE.md   # umbrella docs (active, stay at root)
+├── DevComms/           # decision logs (active)
+├── tools/
+│   ├── transpiler/        # literal Kt→Py engine — the DONOR (literal_transpiler.py)
+│   ├── pseudokotlin/      # the disciplined Kt→Py transpiler — NEW (parse/dispatch/nodes/wrap)
+│   └── py2many_kotlin/    # Py↔Kt construct table + compile gate (pykt.patch, atlas, gate.py)
+├── uimap/              # oversight render — sidebyside.html (the viewable artifact)
+├── build/             # generated output (gitignored) — build/literal/*.py
+│
+└── _deprecated/        # the old mapper sandbox — FROZEN
+    ├── core/  interactive_map/  runtime_uimap/  run_mapper.sh
+    ├── implementation_plan.md  connectivity_audit_results.md   # stale docs
+    └── OTU                                                     # unknown stray
+        # ↑ CONFIRM: are tools/connectivity and tools/dynamic_mapper also old-mapper-era
+        #   (→ _deprecated), and what is the file `OTU`?
+```
+
+### 8c. To execute the reorg I need three confirmations (genuine, not filler)
+
+1. `_deprecated/` set = the **Haxe branch** (PyHaxe, PyHaxeUI/-Android/
+   -iOS, WFL_PyHaxe)? Add/remove any.
+2. Inside PseudoCoup, are **tools/connectivity** and **tools/dynamic_mapper** part of
+   the dead mapper sandbox (→ `_deprecated`), and what is the root file **`OTU`**?
+3. The unrelated set (GUI4GUI/bots/math/flutter) — **leave as-is**, or also tuck into
+   an `_external/` folder?
+
+Moving repos is reversible but semi-disruptive (IDE roots, any absolute paths), so I
+propose to do it in one scripted, logged pass *after* you confirm 1–3 — then update
+PROJECT_MAP.md to match.
+
+## 9. First actions
+
+- **On reorg confirmation (8c):** one scripted `git mv` / `mv` pass, logged, then
+  PROJECT_MAP.md updated to the new tree.
+- **On plan approval (transpiler):** P0 — scaffold `tools/pseudokotlin/`, stand up
+  parse.py + dispatch.py + the 116-kind coverage test wired to fail-loud, port
+  coverage.py. That gives the safety net and the exact unhandled-node worklist before
+  a single handler is written.
+
+The two are independent; either can go first.
