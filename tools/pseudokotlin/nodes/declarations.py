@@ -115,14 +115,20 @@ class Declarations:
                 pending = False
         parts, guards = [], []
         pnames = {p for p, _ in sig}
+        seen_default = False
         for p, d in sig:
             if d is None:
-                parts.append(p)
+                # Kotlin allows a required param AFTER a defaulted one (caller names it);
+                # Python forbids it -> force =None to keep the signature valid (valid calls
+                # always pass it, so no behavioral divergence).
+                parts.append(f"{p}=None" if seen_default else p)
             elif self._default_call_time(d, pnames):  # references self/another param ->
                 parts.append(f"{p}=None")             # not def-time-safe; sentinel + guard
                 guards.append(f"if {p} is None: {p} = {d}")
+                seen_default = True
             else:
                 parts.append(f"{p}={d}")
+                seen_default = True
         return names, parts, guards
 
     def _local_names(self, node):
@@ -242,18 +248,20 @@ class Declarations:
                 # else: enum_entry / modifiers / trivia -> consumed, not emitted
 
         self._scopes.append(set(ctor_params))
-        sig, guards = ["self"], []
+        sig, guards, seen_default = ["self"], [], False
         safe_names = {self._safe(p) for p in ctor_params}
         for p in ctor_params:
             sp = self._safe(p)
             d = ctor_defaults.get(p)
             if d is None:
-                sig.append(sp)
+                sig.append(f"{sp}=None" if seen_default else sp)   # required-after-default
             elif self._default_call_time(d, safe_names):    # sentinel for self/param refs
                 sig.append(f"{sp}=None")
                 guards.append(f"if {sp} is None: {sp} = {d}")
+                seen_default = True
             else:
                 sig.append(f"{sp}={d}")
+                seen_default = True
         init_body = guards + [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
         init_body += [self._render_property(p, as_self=True) for p in props]
         for ini in inits:                                  # init { … } -> __init__ body
@@ -372,7 +380,13 @@ class Declarations:
         names.discard(None)
         prev_sm, prev_sc = self._static_members, self._static_class
         self._static_members, self._static_class = names, cls_name
-        out = [self._render_property(p, as_self=False) for p in cprops]   # class-level
+        out = []
+        for p in cprops:                                   # companion props -> class-level
+            r = self._render_property(p, as_self=False)
+            if "=" in r and cls_name in r.split("=", 1)[1]:   # initializer references the
+                self._ext_patches.append(f"{cls_name}.{r}")   # enclosing class -> defer to
+            else:                                             # module level (the class isn't
+                out.append(r)                                 # bound during its own body)
         out += [self._function(f, with_self=False, decorator="@staticmethod")
                 for f in cfuncs]
         self._static_members, self._static_class = prev_sm, prev_sc
