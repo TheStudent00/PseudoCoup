@@ -60,7 +60,10 @@ class Expressions:
     @kind("identifier")
     def v_identifier(self, node):
         t = self.text(node)
-        const = {"null": "None", "true": "True", "false": "False"}
+        # `continue`/`break` (label-less) parse as identifiers in this grammar -> emit the
+        # Python loop statements verbatim, not a mangled identifier.
+        const = {"null": "None", "true": "True", "false": "False",
+                 "continue": "continue", "break": "break"}
         if t in const:
             return const[t]
         shadowed = any(t in s for s in self._scopes)

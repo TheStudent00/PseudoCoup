@@ -101,6 +101,8 @@ class Statements:
         cannot be a lambda body or ternary branch."""
         if not self.is_value(node):
             return True
+        if node.type == "identifier" and self.text(node) in ("continue", "break"):
+            return True                  # loop jumps parse as identifiers in this grammar
         return (node.type == "unary_expression"
                 and any(c.type in ("++", "--") for c in node.children))
 
