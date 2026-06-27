@@ -137,7 +137,16 @@ class Expressions:
     def v_in(self, node):
         kids = self.named(node)
         neg = any(c.type == "!in" for c in node.children)
-        return f"({self.visit(kids[0])} {'not in' if neg else 'in'} {self.visit(kids[-1])})"
+        left, right = self.visit(kids[0]), kids[-1]
+        if right.type == "range_expression":    # `x in a..b` is membership: a <= x <= b
+            rk = self.named(right)               # (NOT iteration -- works for floats too)
+            expr = f"({self.visit(rk[0])} <= {left} <= {self.visit(rk[-1])})"
+            return f"(not {expr})" if neg else expr
+        if right.type == "infix_expression" and self.text(self.named(right)[1]) == "until":
+            rk = self.named(right)               # `x in a until b` -> a <= x < b
+            expr = f"({self.visit(rk[0])} <= {left} < {self.visit(rk[-1])})"
+            return f"(not {expr})" if neg else expr
+        return f"({left} {'not in' if neg else 'in'} {self.visit(right)})"
 
     @kind("is_expression")
     def v_is(self, node):
