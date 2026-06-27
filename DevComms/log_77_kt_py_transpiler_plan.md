@@ -129,82 +129,63 @@ structure. That decision needs the P2 data (what WFL actually leans on, by frequ
 before it can be made well — so it is deliberately deferred to its own log after P2,
 not guessed now.
 
-## 8. Directory structure — current clutter → proposed (PROPOSAL, nothing moved yet)
+## 8. PseudoCoup internal cleanup — current mess → proposed (scoped to THIS repo only)
 
-Principle: **quarantine the dead, archive the loose, don't break the live.** Active
-code keeps its path (moving a repo that others import breaks references); only
-clearly-inactive sub-projects and stray files move. Repos relocated into a folder
-keep their own `.git` — it's a filesystem move, fully reversible.
+(The `~/Programming` ecosystem reorg is a separate problem, deferred — not in scope.)
 
-### 8a. `~/Programming/` (the ecosystem) — proposed
+### The rule (the thing I violated)
+**One home per kind of file, no floaters:**
+- **Markdown logs / decision / handoff / protocol / concept docs → `DevComms/` only.**
+  Nothing log-like at the repo root or scattered in tool dirs. (I broke this; fixing it.)
+- **Specs** (`TRANSPILER_SCOPE.md`) → a `docs/` folder.
+- **Repo entry docs** (`README.md`, `PROJECT_MAP.md`) → root, and only those two.
+- **A tool's own `README.md`** → co-located in that tool's dir (a tool readme is not a
+  log). Generated artifacts (e.g. `equivalence_table.md`) → the tool dir, gitignored if
+  regenerable.
+- **Generated / cache** (`build/`, `.pytest_cache/`) → gitignored, never committed.
 
-```
-~/Programming/
-├── PseudoCoup/         # the hub: umbrella docs + Kt→Py transpilers + the table/gate
-├── WFL/                # Kotlin app — source of truth (read-only reference)
-├── WFL_MixingCenter/   # canonical WFL Python — the 1:1 K→Py output (the center)
-├── PseudoDart/         # Python→Dart transpiler        ┐ active Dart target branch
-├── PseudoFlutter/      # Dart UI kit                   │ (left flat — live paths)
-├── WFL_PseudoCoup/     # WFL Dart-target port + dualgraph oversight  ┘
-├── PseudoSyntax/       # disciplined-Python notation layer
-│
-├── _deprecated/        # inactive but still referenced — FROZEN, not deleted
-│   ├── PyHaxe/             # Python→Haxe transpiler        ┐ Haxe target branch,
-│   ├── PyHaxeUI/ + -Android/ -iOS/   # Haxe UI kits        │ ~8–10d idle, superseded
-│   └── WFL_PyHaxe/         # WFL Haxe-target port          ┘ by the Dart branch
-│       # ↑ CONFIRM this set is what you consider deprecated
-│
-└── _archive/           # loose non-project clutter at root
-    ├── *.zip              # GUI4GUI_*.zip, PseudoDart.zip, PyHaxeProjects.zip, Lean(...).zip
-    └── setup_android_toolchain*.sh
-```
+### Current mess (measured)
+- Root floaters that are really logs: `connectivity_audit_results.md`,
+  `implementation_plan.md` → belong in `DevComms/`.
+- `.pytest_cache/README.md` is committed (junk) → gitignore.
+- Old **mapper sandbox** at root: `core/`, `interactive_map/`, `runtime_uimap/`,
+  `run_mapper.sh`, `uimap/` (each carrying stray `.md`) → dead weight.
+- `OTU GREEN LICENSE FOR UNIVERSAL WORKS.pdf` at root (mystery solved — a license PDF).
+- DevComms has two `log_29` and two `log_38` (duplicate numbers). Logs are an
+  append-only ledger, so I will NOT renumber history — just noting the collision.
 
-Left ALONE unless you say otherwise (not part of the pipeline; your separate work):
-`GUI4GUI` / `GUI4GUI-Android`, `StressTestingBot`, `ToDo`, `flutter` (SDK checkout),
-and the math/proof set (`Lean`, `MathematicsVisualizer`, `MathScratchpad`,
-`LambdaSeriesProof`, `LambdaSNR`). I will not touch these without your word.
-
-### 8b. `PseudoCoup/` (internal) — proposed
-
+### Proposed tree
 ```
 PseudoCoup/
-├── README.md  PROJECT_MAP.md  TRANSPILER_SCOPE.md   # umbrella docs (active, stay at root)
-├── DevComms/           # decision logs (active)
+├── README.md  PROJECT_MAP.md         # the only markdown at root
+├── LICENSE.pdf                       # the renamed "OTU GREEN LICENSE..." PDF
+├── DevComms/                         # THE markdown home: all logs + protocol/handoff/
+│                                     #   concept docs + the two relocated root docs
+├── docs/                             # specs (not logs): TRANSPILER_SCOPE.md
 ├── tools/
-│   ├── transpiler/        # literal Kt→Py engine — the DONOR (literal_transpiler.py)
-│   ├── pseudokotlin/      # the disciplined Kt→Py transpiler — NEW (parse/dispatch/nodes/wrap)
-│   └── py2many_kotlin/    # Py↔Kt construct table + compile gate (pykt.patch, atlas, gate.py)
-├── uimap/              # oversight render — sidebyside.html (the viewable artifact)
-├── build/             # generated output (gitignored) — build/literal/*.py
-│
-└── _deprecated/        # the old mapper sandbox — FROZEN
+│   ├── transpiler/                   # literal Kt→Py engine — the DONOR
+│   ├── pseudokotlin/                 # disciplined Kt→Py transpiler — NEW (P0 onward)
+│   └── py2many_kotlin/               # Py↔Kt table + gate (README co-located = fine)
+├── uimap/                            # oversight render — sidebyside.html  [IF active]
+├── build/                            # generated; gitignored
+└── _deprecated/                      # the dead mapper sandbox — frozen, not deleted
     ├── core/  interactive_map/  runtime_uimap/  run_mapper.sh
-    ├── implementation_plan.md  connectivity_audit_results.md   # stale docs
-    └── OTU                                                     # unknown stray
-        # ↑ CONFIRM: are tools/connectivity and tools/dynamic_mapper also old-mapper-era
-        #   (→ _deprecated), and what is the file `OTU`?
+    └── connectivity_audit_results.md (if stale)
 ```
+Plus: add `.pytest_cache/` to `.gitignore`.
 
-### 8c. To execute the reorg I need three confirmations (genuine, not filler)
+### Two real confirmations before I move anything
+1. **`uimap/`** — is it the *live* oversight render (the sidebyside artifact you view),
+   or old-mapper residue? If live, it stays; if dead, it joins `_deprecated/`.
+2. **`tools/connectivity/`** and **`tools/dynamic_mapper/`** — active, or part of the
+   dead mapper sandbox (→ `_deprecated/`)?
 
-1. `~/Programming/_deprecated/` set = the **Haxe branch** (PyHaxe, PyHaxeUI/-Android/
-   -iOS, WFL_PyHaxe)? Add/remove any.
-2. Inside PseudoCoup, are **tools/connectivity** and **tools/dynamic_mapper** part of
-   the dead mapper sandbox (→ `_deprecated`), and what is the root file **`OTU`**?
-3. The unrelated set (GUI4GUI/bots/math/flutter) — **leave as-is**, or also tuck into
-   an `_external/` folder?
+Everything else above is unambiguous. On your answer I do one scripted `git mv` pass,
+logged, then update PROJECT_MAP.md to match.
 
-Moving repos is reversible but semi-disruptive (IDE roots, any absolute paths), so I
-propose to do it in one scripted, logged pass *after* you confirm 1–3 — then update
-PROJECT_MAP.md to match.
+## 9. First actions (independent — either can go first)
 
-## 9. First actions
-
-- **On reorg confirmation (8c):** one scripted `git mv` / `mv` pass, logged, then
-  PROJECT_MAP.md updated to the new tree.
-- **On plan approval (transpiler):** P0 — scaffold `tools/pseudokotlin/`, stand up
-  parse.py + dispatch.py + the 116-kind coverage test wired to fail-loud, port
-  coverage.py. That gives the safety net and the exact unhandled-node worklist before
-  a single handler is written.
-
-The two are independent; either can go first.
+- **Cleanup:** the scripted `git mv` pass above, once you answer the two confirmations.
+- **Transpiler P0:** scaffold `tools/pseudokotlin/` — parse.py + dispatch.py + the
+  116-kind coverage test wired to fail-loud + ported coverage.py. The safety net and
+  the exact unhandled-node worklist, before a single handler is written.
