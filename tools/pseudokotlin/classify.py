@@ -28,14 +28,32 @@ CONTAINER = {
     "enum_entry", "getter", "setter", "type_test",
     "line_comment", "block_comment",
     # suites/bodies are descended into by their parent renderer, never dispatched
-    "block", "function_body", "statements",
+    "block", "function_body",
+    # consumed by a specific parent handler (when/try/string/lambda/call)
+    "when_entry", "when_subject", "catch_block", "finally_block", "interpolation",
+    "annotation", "annotated_lambda", "lambda_parameters", "parameter", "label",
+    "delegation_specifier", "delegation_specifiers", "explicit_delegation",
+    "constructor_delegation_call",
+    # type system: Python is dynamic -> annotations are dropped, not emitted
+    "user_type", "nullable_type", "non_nullable_type", "function_type",
+    "function_type_parameters", "parenthesized_type", "type_arguments",
+    "type_constraint", "type_constraints", "type_parameter", "type_parameters",
+    "type_parameter_modifiers", "type_projection", "range_test", "type_alias",
+    "type_modifiers", "parameter_modifier", "platform_modifier",
+    "reification_modifier", "variance_modifier",
 }
 
 # No Python equivalent -> always a shim (the wrap layer lands in P3).
 WRAP: set = set()
 
-# Explicitly refused.
-OUT_OF_SCOPE = {"ERROR"}
+# Explicitly refused (for now). The OOP-model cases (object/companion/secondary
+# ctor/anonymous object) are a real Kotlin-model != Python-model design decision
+# (TRANSPILER_SCOPE Group C) -- handled in a dedicated pass, not half-baked here.
+OUT_OF_SCOPE = {
+    "ERROR",
+    "object_declaration", "companion_object", "object_literal",
+    "secondary_constructor", "anonymous_function", "anonymous_initializer",
+}
 
 
 def bucket(node_kind: str, routed: set) -> str:

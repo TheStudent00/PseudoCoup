@@ -61,3 +61,26 @@ def test_null_dp_and_safe_call():
     py = tp("fun f(): Int { return 16.dp }")          # WRAP: 16.dp -> dp(16)
     assert "dp(16)" in py
     assert compiles(py)
+
+
+def test_when_distributes_into_return():
+    py = tp('fun grade(x: Int): String { return when (x) {\n'
+            '    1 -> "a"\n    2 -> "b"\n    else -> "c" } }')
+    assert compiles(py)
+    assert "if x == 1:" in py and "return \"a\"" in py
+    assert "elif x == 2:" in py and "else:" in py
+
+
+def test_try_catch_finally():
+    py = tp("fun f() { try { g() } catch (e: Exception) { h() } finally { k() } }")
+    assert compiles(py)
+    assert "try:" in py and "except Exception as e:" in py and "finally:" in py
+
+
+def test_lambda_range_infix():
+    py = tp("fun f(n: Int) { val ys = xs.map { v -> v * 2 }\n"
+            "    for (i in 0..n) { p(i) }\n    val pr = 1 to 2 }")
+    assert compiles(py)
+    assert "lambda v: v * 2" in py
+    assert "for i in range(0, n + 1):" in py
+    assert "pr = (1, 2)" in py

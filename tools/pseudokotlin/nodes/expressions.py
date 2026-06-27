@@ -56,7 +56,10 @@ class Expressions:
     def v_binary(self, node):
         kids = self.named(node)
         left, right = self.visit(kids[0]), self.visit(kids[-1])
-        op = next((c.type for c in node.children if c.type in _OP_TOKENS), None)
+        op = next((c.type for c in node.children
+                   if c.type in _OP_TOKENS or c.type == "?:"), None)
+        if op == "?:":                                  # elvis: a ?: b
+            return f"({left} if {left} is not None else {right})"
         if op is None:
             raise Untranspilable(node, "binary expression without a known operator")
         return f"{left} {_BINOP.get(op, op)} {right}"
@@ -111,7 +114,78 @@ class Expressions:
         kids = self.named(node)
         fn = self.visit(kids[0])
         args_node = next((c for c in node.children if c.type == "value_arguments"), None)
-        return f"{fn}({self._render_args(args_node)})"
+        args = self._render_args(args_node)
+        trailing = next((c for c in node.named_children
+                         if c.type in ("annotated_lambda", "lambda_literal")), None)
+        if trailing is not None:                       # `xs.map { v -> v*2 }`
+            lam = trailing
+            if lam.type == "annotated_lambda":
+                lam = next((c for c in lam.named_children if c.type == "lambda_literal"), lam)
+            lam_str = self.visit(lam)
+            args = f"{args}, {lam_str}" if args else lam_str
+        return f"{fn}({args})"
+
+    @kind("collection_literal")
+    def v_collection(self, node):
+        return "[" + ", ".join(self.visit(c) for c in self.named(node)) + "]"
+
+    @kind("range_expression")
+    def v_range(self, node):
+        kids = self.named(node)
+        return f"range({self.visit(kids[0])}, {self.visit(kids[-1])} + 1)"
+
+    @kind("infix_expression")
+    def v_infix(self, node):
+        kids = self.named(node)
+        left, right = kids[0], kids[-1]
+        op = self.text(kids[1])                         # the middle identifier
+        l, r = self.visit(left), self.visit(right)
+        if op == "to":
+            return f"({l}, {r})"
+        if op == "until":
+            return f"range({l}, {r})"
+        if op == "downTo":
+            return f"range({l}, {r} - 1, -1)"
+        if op == "step" and left.type == "range_expression":
+            rk = self.named(left)
+            return f"range({self.visit(rk[0])}, {self.visit(rk[-1])} + 1, {r})"
+        return f"{l}.{op}({r})"                          # generic infix -> method
+
+    @kind("lambda_literal")
+    def v_lambda(self, node):
+        pnode = next((c for c in node.named_children if c.type == "lambda_parameters"), None)
+        params = []
+        if pnode is not None:
+            for vd in pnode.named_children:
+                pid = next((c for c in vd.children if c.type == "identifier"), None)
+                if pid is not None:
+                    params.append(self.text(pid))
+        body = [c for c in self.named(node) if c.type != "lambda_parameters"]
+        if len(body) == 1:
+            ps = ", ".join(params) if params else "it=None"
+            return f"(lambda {ps}: {self.visit(body[0])})"
+        raise Untranspilable(node, "multi-statement lambda (deferred)")
+
+    @kind("callable_reference")
+    def v_callable_ref(self, node):
+        return self.text(node).replace("::", ".").lstrip(".")
+
+    @kind("qualified_identifier")
+    def v_qualified(self, node):
+        return self.text(node)
+
+    @kind("spread_expression")
+    def v_spread(self, node):
+        kids = self.named(node)
+        return f"*{self.visit(kids[0])}" if kids else "*[]"
+
+    @kind("annotated_expression")
+    def v_annotated_expr(self, node):
+        return self.visit(self.named(node)[-1])         # strip annotation
+
+    @kind("labeled_expression")
+    def v_labeled_expr(self, node):
+        return self.visit(self.named(node)[-1])         # strip label
 
     @kind("index_expression")
     def v_index(self, node):
