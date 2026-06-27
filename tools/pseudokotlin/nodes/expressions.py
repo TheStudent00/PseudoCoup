@@ -19,8 +19,11 @@ _NUMBER_KINDS = {"number_literal", "float_literal"}
 
 # Kotlin stdlib methods with no Python builtin -> rewritten at the CALL site (Python
 # builtins can't carry them). recv + positional arg strings -> a Python expression.
+# Scalar/string Kotlin stdlib methods with no Python builtin. Collection methods are
+# NOT here -- they dispatch to the KtList/KtMap runtime types (kotlin_rt) so chains
+# stay typed; only string/number ops and `.asSequence` (a no-op) live at the call site.
 _STDLIB_METHODS = {
-    "isEmpty":       lambda r, a: f"(len({r}) == 0)",
+    "isEmpty":       lambda r, a: f"(len({r}) == 0)",     # works on str + any sized
     "isNotEmpty":    lambda r, a: f"(len({r}) != 0)",
     "isBlank":       lambda r, a: f"(len({r}.strip()) == 0)",
     "isNotBlank":    lambda r, a: f"(len({r}.strip()) != 0)",
@@ -29,17 +32,10 @@ _STDLIB_METHODS = {
     "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
     "roundToInt":    lambda r, a: f"roundToInt({r})",
     "roundToLong":   lambda r, a: f"roundToLong({r})",
-    "map":           lambda r, a: f"list(map({a[0]}, {r}))",
-    "filter":        lambda r, a: f"list(filter({a[0]}, {r}))",
-    "toList":        lambda r, a: f"list({r})",
-    "toSet":         lambda r, a: f"set({r})",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
-    "take":          lambda r, a: f"list({r})[:{a[0]}]",
-    "first":         lambda r, a: f"next(filter({a[0]}, {r}))" if a else f"{r}[0]",
-    "firstOrNull":   lambda r, a: (f"next(filter({a[0]}, {r}), None)" if a
-                                   else f"(({r})[0] if {r} else None)"),
 }
-# Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site.
+# Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
+# back to len() for any sized receiver (KtList also has a .size property of its own).
 _STDLIB_PROPS = {"size": lambda r: f"len({r})"}
 
 
@@ -156,24 +152,35 @@ class Expressions:
     def v_call(self, node):
         kids = self.named(node)
         callee = kids[0]
+        own_args = next((c for c in node.children if c.type == "value_arguments"), None)
+        trailing = next((c for c in node.named_children
+                         if c.type in ("annotated_lambda", "lambda_literal")), None)
+        # `f(args) { lambda }` parses as (f(args))(lambda) -- the trailing lambda is an
+        # EXTRA argument to the inner call, not a second call. Merge it in.
+        if trailing is not None and callee.type == "call_expression" and own_args is None:
+            in_args = self._render_args(next((c for c in callee.children
+                                              if c.type == "value_arguments"), None))
+            in_fn = self.visit(self.named(callee)[0])
+            lam = self._lambda_str(trailing)
+            return f"{in_fn}({f'{in_args}, {lam}' if in_args else lam})"
         if callee.type == "navigation_expression" \
                 and not any(c.type == "?." for c in callee.children):
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
-            if sel in _STDLIB_METHODS:                  # WRAP: recv.isEmpty() -> len()==0
+            if sel in _STDLIB_METHODS:                  # WRAP: recv.coerceIn(...) -> min/max
                 return _STDLIB_METHODS[sel](self.visit(nk[0]), self._arg_values(node))
         fn = self.visit(callee)
-        args_node = next((c for c in node.children if c.type == "value_arguments"), None)
-        args = self._render_args(args_node)
-        trailing = next((c for c in node.named_children
-                         if c.type in ("annotated_lambda", "lambda_literal")), None)
+        args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`
-            lam = trailing
-            if lam.type == "annotated_lambda":
-                lam = next((c for c in lam.named_children if c.type == "lambda_literal"), lam)
-            lam_str = self.visit(lam)
-            args = f"{args}, {lam_str}" if args else lam_str
+            lam = self._lambda_str(trailing)
+            args = f"{args}, {lam}" if args else lam
         return f"{fn}({args})"
+
+    def _lambda_str(self, trailing):
+        lam = trailing
+        if lam.type == "annotated_lambda":
+            lam = next((c for c in lam.named_children if c.type == "lambda_literal"), lam)
+        return self.visit(lam)
 
     @kind("collection_literal")
     def v_collection(self, node):
