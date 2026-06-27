@@ -1,0 +1,114 @@
+--- a/py2many/pykt/transpiler.py	2026-02-19 15:15:02.000000000 -0500
++++ b/py2many/pykt/transpiler.py	2026-06-27 02:33:46.239332385 -0400
+@@ -136,7 +136,30 @@
+         if len(typedecls) > 0:
+             template = "<{}>".format(", ".join(typedecls))
+ 
++        # Kotlin function parameters are `val` (immutable). If the Python body
++        # reassigns a parameter even once, shadow it with a local `var` so it
++        # compiles. (node.mutable_vars only flags vars assigned >1 time, which
++        # misses a param reassigned exactly once — so detect targets directly.)
++        argset = set(args)
++        reassigned = set()
++        for stmt in node.body:
++            for n in ast.walk(stmt):
++                targets = []
++                if isinstance(n, ast.Assign):
++                    targets = n.targets
++                elif isinstance(n, (ast.AugAssign, ast.AnnAssign)):
++                    targets = [n.target]
++                for t in targets:
++                    if isinstance(t, ast.Name) and t.id in argset:
++                        reassigned.add(t.id)
++        shadows = "".join(f"var {a} = {a}\n" for a in args if a in reassigned)
++        if shadows:
++            body = shadows + body
++
+         args = ", ".join(args_list)
++        if node.name == "__init__":
++            # Python's __init__ becomes a Kotlin secondary constructor.
++            return f"constructor({args}) {{\n" + body + "}\n\n"
+         funcdef = f"fun {node.name}{template}({args}){return_type} {{"
+         return funcdef + "\n" + body + "}\n\n"
+ 
+@@ -188,7 +211,7 @@
+             return f"{value_id}.{attr}"
+ 
+         if is_self_arg(value_id, node.scopes):
+-            return attr
++            return f"this.{attr}"
+ 
+         return f"{value_id}.{attr}"
+ 
+@@ -312,9 +335,14 @@
+             if typename is None:
+                 typename = f"ST{index}"
+                 index += 1
+-            mut = is_mutable(node.scopes, get_id(declaration))
+-            mut = "var" if mut else "val"
+-            fields.append(f"{mut} {declaration}: {typename}")
++            # declarations are keyed by the assignment target id ("self.x");
++            # the Kotlin field name is just the attribute ("x").
++            field_name = (
++                declaration[len("self.") :]
++                if declaration.startswith("self.")
++                else declaration
++            )
++            fields.append(f"var {field_name}: {typename}")
+ 
+         for b in node.body:
+             if isinstance(b, ast.FunctionDef):
+@@ -403,6 +431,8 @@
+         value = self.visit(node.value)
+         index = self.visit(node.slice)
+         if hasattr(node, "is_annotation"):
++            if value == "Optional":
++                return f"{index}?"
+             if value in self._container_type_map:
+                 value = self._container_type_map[value]
+             if value == "Tuple":
+@@ -445,6 +475,10 @@
+         target = self.visit(node.target)
+         type_str = self._typename_from_annotation(node)
+         val = self.visit(node.value) if node.value is not None else None
++        # `self.x: T = v` inside a method: the field is already declared in the
++        # class body, so emit a plain assignment, not a new var declaration.
++        if isinstance(node.target, ast.Attribute):
++            return f"{target} = {val}"
+         if type_str == self._default_type:
+             return f"var {target} = {val}"
+         return f"var {target}: {type_str} = {val}"
+--- a/py2many/pykt/clike.py	2026-02-19 15:15:02.000000000 -0500
++++ b/py2many/pykt/clike.py	2026-06-27 02:31:05.002908026 -0400
+@@ -173,6 +173,9 @@
+         if hasattr(node, attr):
+             typename = getattr(node, attr)
+             if isinstance(typename, ast.Subscript):
++                if get_id(typename.value) == "Optional":
++                    inner = self._typename_from_type_node(self._slice_value(typename))
++                    return f"{inner}?"
+                 if get_id(typename.value) == "Callable":
+                     slice_value = self._slice_value(typename)
+                     slice_value = self._recursive_expand(slice_value)
+--- a/py2many/pykt/plugins.py	2026-02-19 15:15:02.000000000 -0500
++++ b/py2many/pykt/plugins.py	2026-06-27 02:29:59.042511716 -0400
+@@ -50,6 +50,11 @@
+         self._usings.add("kotlin.math.floor")
+         return f"floor({vargs[0]}).toInt()"
+ 
++    def visit_math_sqrt(self, node, vargs) -> str:
++        # kotlin.math.sqrt only accepts Double/Float; coerce the argument.
++        self._usings.add("kotlin.math.sqrt")
++        return f"sqrt(({vargs[0]}).toDouble())"
++
+ 
+ # small one liners are inlined here as lambdas
+ SMALL_DISPATCH_MAP = {
+@@ -71,6 +76,7 @@
+     "xrange": KotlinTranspilerPlugins.visit_range,
+     "print": KotlinTranspilerPlugins.visit_print,
+     "floor": KotlinTranspilerPlugins.visit_floor,
++    "math.sqrt": KotlinTranspilerPlugins.visit_math_sqrt,
+ }
+ 
+ MODULE_DISPATCH_TABLE: Dict[str, str] = {}
