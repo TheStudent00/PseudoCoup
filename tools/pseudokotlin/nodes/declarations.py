@@ -158,6 +158,10 @@ class Declarations:
                     nm = self._name_of(c, deep=True)
                     if nm:
                         out.add(nm)
+                    mvd = next((k for k in c.children
+                                if k.type == "multi_variable_declaration"), None)
+                    if mvd is not None:                  # destructuring `val (a, b) = …`
+                        out.update(self._destructure_names(mvd))
                 elif c.type == "for_statement":
                     var = next((k for k in c.children if k.type in
                                 ("variable_declaration", "identifier")), None)
@@ -460,14 +464,22 @@ class Declarations:
         deleg = next((c for c in node.children if c.type == "property_delegate"), None)
         if deleg is not None:   # `by lazy`/`by …` only modelled as a class member
             raise Untranspilable(deleg, "delegated property outside a class body")
-        name = self._name_of(node, deep=True) or "_"
-        target = f"self.{self._safe(name)}" if (as_self and name in self._members) \
-            else self._safe(name)
-        # value is the named child after the variable_declaration
+        mvd = next((c for c in node.children
+                    if c.type == "multi_variable_declaration"), None)
+        if mvd is not None:     # destructuring `val (a, b) = expr` -> a, b = expr
+            target = ", ".join(self._safe(n) for n in self._destructure_names(mvd))
+            decl = mvd
+        else:
+            name = self._name_of(node, deep=True) or "_"
+            target = f"self.{self._safe(name)}" if (as_self and name in self._members) \
+                else self._safe(name)
+            decl = next((c for c in node.children
+                         if c.type == "variable_declaration"), None)
+        # value is the named child after the (multi_)variable_declaration
         kids = self.named(node)
         val_node = None
         for i, c in enumerate(kids):
-            if c.type == "variable_declaration" and i + 1 < len(kids):
+            if c is decl and i + 1 < len(kids):
                 val_node = kids[i + 1]
                 break
         if val_node is None:
