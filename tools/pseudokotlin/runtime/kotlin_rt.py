@@ -386,6 +386,9 @@ class KtList(list):
     def indexOfFirst(self, p):
         return next((i for i, x in enumerate(self) if p(x)), -1)
 
+    def indexOfLast(self, p):
+        return next((i for i in range(len(self) - 1, -1, -1) if p(self[i])), -1)
+
     def indexOf(self, x):
         try:
             return super().index(x)
@@ -626,6 +629,28 @@ def listOf(*xs):
 
 def listOfNotNull(*xs):
     return KtList(x for x in xs if x is not None)
+
+
+# Kotlin type names used as values (String(chars), Boolean("true"), …) -> Python types
+String = str
+CharSequence = str
+
+
+def arrayOf(*xs):
+    return KtList(xs)
+
+
+def arrayOfNulls(n):
+    return KtList([None] * n)
+
+
+def intArrayOf(*xs):
+    return KtList(xs)
+
+
+def repeat(n, action):
+    for i in range(n):
+        action(i)
 
 
 def setOf(*xs):
