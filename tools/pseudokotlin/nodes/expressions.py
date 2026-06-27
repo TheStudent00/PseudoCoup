@@ -27,7 +27,17 @@ _STDLIB_METHODS = {
     "coerceAtMost":  lambda r, a: f"min({r}, {a[0]})",
     "coerceAtLeast": lambda r, a: f"max({r}, {a[0]})",
     "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
+    "roundToInt":    lambda r, a: f"roundToInt({r})",
+    "roundToLong":   lambda r, a: f"roundToLong({r})",
     "map":           lambda r, a: f"list(map({a[0]}, {r}))",
+    "filter":        lambda r, a: f"list(filter({a[0]}, {r}))",
+    "toList":        lambda r, a: f"list({r})",
+    "toSet":         lambda r, a: f"set({r})",
+    "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
+    "take":          lambda r, a: f"list({r})[:{a[0]}]",
+    "first":         lambda r, a: f"next(filter({a[0]}, {r}))" if a else f"{r}[0]",
+    "firstOrNull":   lambda r, a: (f"next(filter({a[0]}, {r}), None)" if a
+                                   else f"(({r})[0] if {r} else None)"),
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site.
 _STDLIB_PROPS = {"size": lambda r: f"len({r})"}

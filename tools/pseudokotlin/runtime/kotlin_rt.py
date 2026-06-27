@@ -49,8 +49,17 @@ def assertFalse(*args):
 
 
 def assertEquals(*args):
-    expected, actual = args[-2], args[-1]
-    if isinstance(expected, float) or isinstance(actual, float):
+    # JUnit overloads: assertEquals([msg,] expected, actual [, delta]). The float form's
+    # THIRD value is a tolerance delta -- NOT the actual. Strip an optional leading
+    # String message, then read expected, actual, and an optional trailing delta.
+    if len(args) >= 3 and isinstance(args[0], str):   # leading message only with 3+ args
+        args = args[1:]                               # (2-arg form may compare two strings)
+    expected, actual = args[0], args[1]
+    delta = args[2] if len(args) > 2 else None
+    if delta is not None:
+        assert abs(expected - actual) <= delta, \
+            f"expected {expected!r}, got {actual!r} (delta {delta})"
+    elif isinstance(expected, float) or isinstance(actual, float):
         assert math.isclose(expected, actual, rel_tol=1e-9, abs_tol=1e-9), \
             f"expected {expected!r}, got {actual!r}"
     else:
@@ -128,6 +137,23 @@ def mutableSetOf(*xs):
 
 def mutableMapOf(*pairs):
     return dict(pairs)
+
+
+# ---- Kotlin top-level math (called by bare name) ----------------------------- #
+def minOf(*xs):
+    return min(xs)
+
+
+def maxOf(*xs):
+    return max(xs)
+
+
+def roundToInt(x):
+    return math.floor(x + 0.5)          # Kotlin rounds half up (Math.round)
+
+
+def roundToLong(x):
+    return math.floor(x + 0.5)
 
 
 # ---- Kotlin preconditions ---------------------------------------------------- #
