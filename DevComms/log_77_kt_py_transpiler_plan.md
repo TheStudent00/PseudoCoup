@@ -197,5 +197,29 @@ logged, then update PROJECT_MAP.md to match.
 
 - **Cleanup:** the scripted `git mv` pass above, once you answer the two confirmations.
 - **Transpiler P0:** scaffold `tools/pseudokotlin/` — parse.py + dispatch.py + the
-  116-kind coverage test wired to fail-loud + ported coverage.py. The safety net and
-  the exact unhandled-node worklist, before a single handler is written.
+  coverage gate + ported coverage.py. The safety net and the exact unhandled-node
+  worklist, before a single handler is written. **(DONE — see §10.)**
+
+## 10. P0 design (BUILT 2026-06-27) — the routing mechanism
+
+Routing surface, verified live from the grammar: **114 named kinds** (the earlier
+"116" was an estimate). Operators/punctuation are 171 *anonymous* kinds — read inside
+a parent handler, never dispatched.
+
+Mechanism (`tools/pseudokotlin/`):
+- `@kind("if_expression", …)` registers a method into an explicit `_route` dict
+  (`dispatch.Visitor`). `visit(node)` dispatches off `node.type` through `_route`;
+  `ERROR`/missing nodes raise `Untranspilable`; an unrouted kind hits ONE place.
+- The registry being an **introspectable dict is the point** — the gate diffs its keys
+  against `parse.named_kinds()`. An if-chain's branches can't be enumerated; this can.
+- Every named kind is exactly one of {ROUTED, container, wrap, out-of-scope}; anything
+  left over is the **UNROUTED worklist**. `classify.py` = the buckets, `coverage.py` =
+  the worklist report, `tests/test_coverage.py` = consistency now, exhaustiveness gate
+  flips on at end of P1.
+- Per handler: **MAP** (guaranteed-valid Python) · **WRAP** (shim, P3) · **FAIL**
+  (raise). The `16.dp` class of bug is fixed by structure-aware sub-dispatch *inside*
+  the handler (look at the receiver child), not a new top-level branch.
+
+P0 status: spine + registry + gate stood up, **gate green**. `python3
+tools/pseudokotlin/coverage.py` → 114 kinds · 38 container · **76 UNROUTED** (the P1
+worklist) · 0 handlers (by design). Donor for P1: `tools/transpiler/literal_transpiler.py`.
