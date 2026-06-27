@@ -253,8 +253,8 @@ class Expressions:
 
     @kind("range_expression")
     def v_range(self, node):
-        kids = self.named(node)
-        return f"range({self.visit(kids[0])}, {self.visit(kids[-1])} + 1)"
+        kids = self.named(node)         # KtList so `(a..b).map { … }` works; iterates fine
+        return f"KtList(range({self.visit(kids[0])}, {self.visit(kids[-1])} + 1))"
 
     @kind("infix_expression")
     def v_infix(self, node):
