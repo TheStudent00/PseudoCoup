@@ -32,6 +32,11 @@ _STDLIB_METHODS = {
     "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
     "roundToInt":    lambda r, a: f"roundToInt({r})",
     "roundToLong":   lambda r, a: f"roundToLong({r})",
+    "toDouble":      lambda r, a: f"float({r})",          # numeric conversions
+    "toFloat":       lambda r, a: f"float({r})",
+    "toInt":         lambda r, a: f"int({r})",
+    "toLong":        lambda r, a: f"int({r})",
+    "toString":      lambda r, a: f"str({r})",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
