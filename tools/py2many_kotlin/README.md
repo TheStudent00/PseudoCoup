@@ -28,12 +28,19 @@ single hop, with zero runtime scaffolding (no `HxObject`/`__hx_invoke`).
 
 ```bash
 # from the repo root:
-PATCH="$PWD/tools/py2many_kotlin/pykt.patch"
+DIR="$PWD/tools/py2many_kotlin"
 PKG=$(python3 -c 'import py2many,os;print(os.path.dirname(py2many.__file__))')
 # patch paths are a/py2many/... so strip 1 component, applied from site-packages:
-( cd "$(dirname "$PKG")" && patch -p1 < "$PATCH" )
-bash tools/py2many_kotlin/run_atlas.sh        # -> PASS
+( cd "$(dirname "$PKG")" \
+    && patch -p1 < "$DIR/pykt.patch" \
+    && patch -p1 < "$DIR/base_inference.patch" )
+bash tools/py2many_kotlin/run_atlas.sh        # original atlas -> PASS (8/8)
+python3 tools/py2many_kotlin/gate.py          # constructs/    -> 12/12 PASS
 ```
+
+Two patches: **`pykt.patch`** (the Kotlin backend, `pykt/{transpiler,clike,plugins,
+inference}.py`) and **`base_inference.patch`** (one fix in the *shared*
+`py2many/inference.py` — see below; affects all backends, verified non-regressing).
 
 Pristine baseline for the diff: `pip download py2many==0.8 --no-deps` (wheel).
 The patch round-trips: applied to the pristine wheel it reproduces the working
@@ -67,16 +74,20 @@ Atlas-growth round 2 (from `constructs/`, all compile-gated) added:
 | `abs(x)` unresolved | `kotlin.math.abs` | plugins.py |
 | `s.upper()` unresolved | str-method map → `s.uppercase()` (+ lower/strip/startswith/endswith) | transpiler.py |
 
+Atlas-growth round 3 — the structural/type-aware tier, all now compile-gated:
+
+| symptom | fix | file |
+|---|---|---|
+| list comprehension hit the "unsupported" path | `visit_ListComp` → `iter.filter{}.map{}.toTypedArray()` | transpiler.py |
+| `(q,r)` had no Kotlin form | 2-tuple → `Pair(...)`, 3-tuple → `Triple(...)` (+ drop the old double-wrap) | transpiler.py |
+| `Tuple[int,int]` return type → `RT` | → `Pair<Int,Int>` / `Triple<…>` | clike.py |
+| `len(s)` type-blind → `.size` on a `String` | type-aware: `String` → `.length`, else `.size` | transpiler.py |
+| **`Union[Union[…]]` return type** | **shared base fix**: never clobber a *source-declared* return annotation (only widen inferred ones) | inference.py |
+
 ### Construct gate — current standing (`python3 gate.py`)
 
-**8/12 PASS.** Still failing (the deliberate backlog — deeper, not mechanical):
-
-- `list_comp` — comprehension not lowered; needs a `visit_ListComp` → `.map { }`.
-- `tuple_return` — `(q, r)` / `Tuple[int,int]` need `Pair(...)` / `Pair<…>`.
-- `optional_chain` — `len(s)` on a `String` emits `.size`; needs type-aware
-  dispatch (`String` → `.length`, collection → `.size`).
-- `dict_ops` — py2many's multi-return type inference produces a nested
-  `Union[Union[…]]` return type → invalid signature. Upstream inference bug.
+**12/12 PASS.** Combined with the original 8-construct atlas, **20/20 distinct
+constructs compile** to idiomatic Kotlin, single hop.
 
 ## Scope / what this does NOT cover
 
