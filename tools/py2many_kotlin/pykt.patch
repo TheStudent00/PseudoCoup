@@ -1,5 +1,5 @@
 --- a/py2many/pykt/transpiler.py	2026-02-19 15:15:02.000000000 -0500
-+++ b/py2many/pykt/transpiler.py	2026-06-27 02:53:13.501341894 -0400
++++ b/py2many/pykt/transpiler.py	2026-06-27 03:02:38.467491794 -0400
 @@ -136,8 +136,33 @@
          if len(typedecls) > 0:
              template = "<{}>".format(", ".join(typedecls))
@@ -35,7 +35,7 @@
          return funcdef + "\n" + body + "}\n\n"
  
      def visit_Return(self, node) -> str:
-@@ -188,10 +213,20 @@
+@@ -188,10 +213,32 @@
              return f"{value_id}.{attr}"
  
          if is_self_arg(value_id, node.scopes):
@@ -54,10 +54,22 @@
 +        "endswith": "endsWith",
 +    }
 +
++    def _arg_type(self, node):
++        """Best-effort declared type of an expression (resolve Names via scope)."""
++        defn = node
++        if isinstance(node, ast.Name):
++            found = node.scopes.find(get_id(node))
++            if found is not None:
++                defn = found
++        try:
++            return self._typename_from_annotation(defn)
++        except Exception:  # noqa: BLE001
++            return None
++
      def visit_Call(self, node) -> str:
          fname = self.visit(node.func)
          vargs = []
-@@ -203,6 +238,11 @@
+@@ -203,11 +250,23 @@
          ):
              fname = fname.replace(".append", " +=")
  
@@ -69,7 +81,19 @@
          if node.args:
              vargs += [self.visit(a) for a in node.args]
          if node.keywords:
-@@ -307,14 +347,25 @@
+             vargs += [self.visit(kw.value) for kw in node.keywords]
+ 
++        # len() is container-type-dependent in Kotlin: String -> .length,
++        # collections -> .size. The default dispatch is type-blind (.size).
++        if fname == "len" and len(node.args) == 1:
++            base = (self._arg_type(node.args[0]) or "").rstrip("?")
++            prop = "length" if base in ("String", "str") else "size"
++            return f"{vargs[0]}.{prop}"
++
+         ret = self._dispatch(node, fname, vargs)
+         if ret is not None:
+             return ret
+@@ -307,14 +366,25 @@
                      return ret
  
          fields = []
@@ -98,7 +122,29 @@
  
          for b in node.body:
              if isinstance(b, ast.FunctionDef):
-@@ -403,6 +454,8 @@
+@@ -388,6 +458,21 @@
+         elements_str = ", ".join(elements)
+         return f"arrayOf({elements_str})"
+ 
++    def visit_ListComp(self, node) -> str:
++        # [elt for target in iter (if cond)*]  ->  iter.filter{}.map{}.toTypedArray()
++        # (py2many maps Python List -> Kotlin Array, so map's List result is
++        # re-arrayed to stay consistent.) Single-generator only; else fall back.
++        if len(node.generators) != 1:
++            return super().visit_ListComp(node)
++        gen = node.generators[0]
++        if not isinstance(gen.target, ast.Name):
++            return super().visit_ListComp(node)
++        target = self.visit(gen.target)
++        expr = self.visit(gen.iter)
++        for cond in gen.ifs:
++            expr = f"{expr}.filter {{ {target} -> {self.visit(cond)} }}"
++        return f"{expr}.map {{ {target} -> {self.visit(node.elt)} }}.toTypedArray()"
++
+     def visit_Set(self, node) -> str:
+         elements = [self.visit(e) for e in node.elts]
+         elements_str = ", ".join(elements)
+@@ -403,6 +488,8 @@
          value = self.visit(node.value)
          index = self.visit(node.slice)
          if hasattr(node, "is_annotation"):
@@ -107,7 +153,25 @@
              if value in self._container_type_map:
                  value = self._container_type_map[value]
              if value == "Tuple":
-@@ -445,6 +498,10 @@
+@@ -431,10 +518,15 @@
+         return f"{lower}..{upper}"
+ 
+     def visit_Tuple(self, node) -> str:
+-        elts = [self.visit(e) for e in node.elts]
+-        elts = ", ".join(elts)
++        parts = [self.visit(e) for e in node.elts]
++        elts = ", ".join(parts)
+         if hasattr(node, "is_annotation"):
+             return elts
++        # Kotlin has no anonymous tuple literal: 2-tuple -> Pair, 3-tuple -> Triple.
++        if len(parts) == 2:
++            return f"Pair({elts})"
++        if len(parts) == 3:
++            return f"Triple({elts})"
+         return f"({elts})"
+ 
+     def visit_Assert(self, node) -> str:
+@@ -445,6 +537,10 @@
          target = self.visit(node.target)
          type_str = self._typename_from_annotation(node)
          val = self.visit(node.value) if node.value is not None else None
@@ -118,15 +182,31 @@
          if type_str == self._default_type:
              return f"var {target} = {val}"
          return f"var {target}: {type_str} = {val}"
+@@ -456,8 +552,7 @@
+             elts = [self.visit(e) for e in target.elts]
+             elts_str = ", ".join(elts)
+             value = self.visit(node.value)
+-            if isinstance(node.value, ast.Tuple):
+-                value = f"Pair{value}"
++            # visit_Tuple already emits Pair(...)/Triple(...); no extra wrap.
+             return f"{kw} ({elts_str}) = {value}"
+ 
+         if isinstance(node.scopes[-1], ast.If):
 --- a/py2many/pykt/clike.py	2026-02-19 15:15:02.000000000 -0500
-+++ b/py2many/pykt/clike.py	2026-06-27 02:31:05.002908026 -0400
-@@ -173,6 +173,9 @@
++++ b/py2many/pykt/clike.py	2026-06-27 03:02:04.443759873 -0400
+@@ -173,6 +173,15 @@
          if hasattr(node, attr):
              typename = getattr(node, attr)
              if isinstance(typename, ast.Subscript):
 +                if get_id(typename.value) == "Optional":
 +                    inner = self._typename_from_type_node(self._slice_value(typename))
 +                    return f"{inner}?"
++                if get_id(typename.value) == "Tuple":
++                    sl = self._slice_value(typename)
++                    elts = sl.elts if isinstance(sl, ast.Tuple) else [sl]
++                    parts = [self._typename_from_type_node(e) for e in elts]
++                    head = {2: "Pair", 3: "Triple"}.get(len(parts), "Pair")
++                    return f"{head}<{', '.join(parts)}>"
                  if get_id(typename.value) == "Callable":
                      slice_value = self._slice_value(typename)
                      slice_value = self._recursive_expand(slice_value)

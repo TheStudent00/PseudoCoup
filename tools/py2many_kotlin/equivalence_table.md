@@ -30,7 +30,7 @@ Backends read: 7 (Kotlin, Rust, Go, Nim, Julia, Zig, Mojo)
 | Python | Kotlin | Rust | Go | Nim | Julia | Zig | Mojo |
 |---|---|---|---|---|---|---|---|
 | `List` | Array | Vec | [] | seq | Vector | pylib.AutoArrayList | List |
-| `Dict` | Dict | HashMap | · | Table | Dict | pylib.AutoMap | Dict |
+| `Dict` | HashMap | HashMap | · | Table | Dict | pylib.AutoMap | Dict |
 | `Set` | Set | HashSet | · | set | Set | pylib.AutoSet | Set |
 | `Optional` | Nothing | Option | nil | Option | Union{Nothing} | Optional | Optional |
 | `Result` | · | Result | · | · | · | · | · |
@@ -38,7 +38,7 @@ Backends read: 7 (Kotlin, Rust, Go, Nim, Julia, Zig, Mojo)
 
 ## Stdlib / builtin functions with a mapping (coverage; emitted form verified via the compile gate)
 
-- **Kotlin** (13): `bool`, `float`, `floor`, `int`, `len`, `math.sqrt`, `max`, `min`, `print`, `range`, `reversed`, `str`, `xrange`
+- **Kotlin** (14): `abs`, `bool`, `float`, `floor`, `int`, `len`, `math.sqrt`, `max`, `min`, `print`, `range`, `reversed`, `str`, `xrange`
 - **Rust** (26): `asyncio.run`, `bool`, `enumerate`, `filter`, `float`, `floor`, `i16`, `i32`, `i64`, `i8`, `int`, `len`, `list`, `map`, `max`, `min`, `print`, `range`, `reversed`, `str`, `sum`, `u16`, `u32`, `u64`, `u8`, `xrange`
 - **Go** (11): `bool`, `float`, `floor`, `int`, `max`, `min`, `print`, `range`, `range_`, `str`, `xrange`
 - **Nim** (8): `bool`, `float`, `floor`, `int`, `print`, `range`, `str`, `xrange`
