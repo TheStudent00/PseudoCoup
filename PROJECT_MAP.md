@@ -16,15 +16,17 @@ lives and what it's for.
 ```
 WFL (Kotlin)                      the original app — SOURCE OF TRUTH
    │
-   │  (A) Kotlin → Python transpiler        "1:1 faithful, API calls in wrappers"
-   │      transpiler:  PseudoCoup/tools/transpiler  (+ dynamic_mapper, connectivity)
-   │      output:      PseudoCoup/build/literal/  (28 .py — the transpiled Python)
+   │  (A) literal Kotlin → Python transpiler   "1:1 faithful, API calls in wrappers"
+   │      engine: PseudoCoup/tools/transpiler/literal_transpiler.py (transpiles ANY .kt)
+   │      drivers: run_all.py (ViewModels-only -> build/literal) ·
+   │               transpile_app.py (WHOLE app -> WFL_MixingCenter, mirrors the pkg tree)
    ▼
 WFL Python  (canonical, 1:1 with Kotlin — INVARIANT: nothing in it lacks a Kotlin equivalent)
-   │      INTENDED HOME ⇒ ~/Programming/WFL_MixingCenter   (new, currently EMPTY)
-   │      seeded from the transpiled Python "before PseudoCoup anything"; the dualgraph
-   │      oversight gates it: drive sidebyside.html to ZERO "— no Kotlin source —" rows.
-   │      ONLY THEN start swapping in PseudoUI (the partial UI solutions).
+   │      HOME ⇒ ~/Programming/WFL_MixingCenter   (SEEDED 2026-06-26: 254 .py = WFL's 254 .kt,
+   │      192 compile-clean; the 62 invalid are dominated by Compose unit literals N.dp/N.sp)
+   │      it holds the literal transpiler output and NOTHING ELSE (no PseudoCoup/PseudoUI).
+   │      the dualgraph oversight gates it: drive sidebyside.html to ZERO "— no Kotlin source —"
+   │      rows. ONLY THEN start swapping in PseudoUI (the partial UI solutions).
    │
    ├─ (B1) Python → Dart   via PseudoDart;  UI kit = PseudoFlutter   ⇒ target port WFL_PseudoCoup
    └─ (B2) Python → Haxe   via PyHaxe;      UI kit = PyHaxeUI(+Android/iOS) ⇒ target port WFL_PyHaxe
@@ -40,17 +42,20 @@ target's kit) that get swapped into the WFL Python to make it a runnable app.
 | repo | role | target | status | branch / last-active |
 |---|---|---|---|---|
 | **WFL** | original Kotlin/Compose app — source of truth | — | reference, read-only | `main` / 2026-06-16 |
-| **WFL_MixingCenter** | **intended canonical WFL Python center** (1:1 w/ Kotlin) | none yet | **EMPTY — not yet seeded, not a git repo** | — |
+| **WFL_MixingCenter** | **canonical WFL Python center** (literal 1:1 K→Py, nothing else) | none yet | **SEEDED**: 254 .py (1:1 w/ WFL's 254 .kt), 192 compile-clean; git-init local (no remote) | — / 2026-06-26 |
 | **WFL_PseudoCoup** | Dart-target port: WFL Python (`src`, 243 .py: engine/domain/data/viewmodel + ui/35) + the **dualgraph oversight tools** | Dart | **most advanced & active**; has the 27 viewmodels | `kit-migration-primitives` / 2026-06-26 |
 | **WFL_PyHaxe** | Haxe-target port: WFL Python + Haxe UI | Haxe | older/partial — **no viewmodel layer**; ui differs | `master` / 2026-06-19 |
 | **PseudoCoup** (this repo) | umbrella/meta (thesis, decisions, index) **+ the Kotlin→Python transpiler** (`tools/transpiler`, output `build/literal`) + the older mapper sandbox (`core`, `interactive_map`, `runtime_uimap`, `run_mapper.sh`, `uimap`) + DevComms logs + `uimap/sidebyside.html` | — | docs active; K→Py sandbox last 2026-06-25 | `main` / 2026-06-26 |
 
-### The transpiled Python (the MixingCenter seed) — key observation
-`PseudoCoup/build/literal/` has **28** transpiled `.py` files. `WFL_PseudoCoup/src` has **243**
-hand-built `.py`. So the transpiler covered only a fraction; the rest of the WFL Python was
-hand-built in the target port (per DevComms). Seeding WFL_MixingCenter "from the transpiled
-Python" therefore starts from the **small faithful core (28)**, not the large hand-built tree —
-a decision to confirm (see §5).
+### CORRECTION (an earlier version of this doc was wrong)
+A prior draft said "28 transpiled vs 243 hand-built, so the transpiler covered only a fraction."
+That was **wrong**. `PseudoCoup/build/literal` (28 `.py`) is just the **ViewModel-only** output of
+the `run_all.py` driver — not "the whole transpilation." The transpiler *engine*
+(`literal_transpiler.py`) transpiles ANY `.kt`; running it over the whole app
+(`transpile_app.py`) produces **254 `.py` for WFL's 254 `.kt`** — a true 1:1 file
+correspondence — now living in **WFL_MixingCenter**. `WFL_PseudoCoup/src` is the *Dart-target
+port* and is explicitly OUT OF SCOPE for the center (per the owner: "don't look at
+WFL_PseudoCoup anymore").
 
 ---
 
@@ -89,15 +94,18 @@ kt_only and a pc_only set — but that is measuring the Dart port's UI, not the 
 **56 identical · 123 different · 27 only in WFL_PseudoCoup** (the viewmodels). There is no single
 source of truth today; WFL_PseudoCoup is merely the furthest along.
 
-**Open decisions (to settle before building):**
-1. **Seed source for WFL_MixingCenter** — the 28-file transpiled `build/literal`, or a
-   re-run/extended transpilation, or a cleaned extract of WFL_PseudoCoup/src? (User said "starts
-   with the transpiled Python, before PseudoCoup anything" ⇒ leaning `build/literal`.)
-2. **Re-point the oversight** at WFL_MixingCenter (vs WFL Kotlin) and shift the goal from "close
-   kt_only" to **"zero `— no Kotlin source —`"** (pc_only).
-3. **Reconcile the 123 diverged domain files** — is the drift intended (target discipline) or
-   accidental? Determines whether targets sync FROM the center or keep copies.
-4. **Init WFL_MixingCenter as a git repo** (currently a bare empty dir).
+**Settled / done:**
+- ✅ Seed source: run the literal transpiler over the WHOLE WFL app → WFL_MixingCenter (done via
+  `transpile_app.py`; 254 .py, 192 compile-clean). `WFL_PseudoCoup` is out of scope for the center.
+- ✅ WFL_MixingCenter git-initialized locally (no remote yet).
+
+**Open (next):**
+1. **Fix the transpiler's biggest gap** — Compose unit literals `N.dp` / `N.sp` emit invalid
+   Python ("invalid decimal literal"); this accounts for most of the 62 compile failures (nearly
+   all the `ui/` screens). One fix clears the bulk. (Representation TBD — e.g. `dp(16)` wrapper.)
+2. **Re-point the oversight** at WFL_MixingCenter (vs WFL Kotlin) and shift the goal to **"zero
+   `— no Kotlin source —`"** (the MixingCenter must contain only what Kotlin has).
+3. Remaining non-`.dp` compile failures (a handful of repositories, MainActivity, DI glue).
 
 ---
 
