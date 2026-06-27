@@ -10,6 +10,7 @@ import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
+from util import block as _block  # noqa: E402
 
 _PY_KEYWORDS = frozenset(keyword.kwlist)
 _BINOP = {"&&": "and", "||": "or", "===": "is", "!==": "is not"}
@@ -160,11 +161,25 @@ class Expressions:
                 pid = next((c for c in vd.children if c.type == "identifier"), None)
                 if pid is not None:
                     params.append(self.text(pid))
+        ps = ", ".join(params) if params else "it=None"
         body = [c for c in self.named(node) if c.type != "lambda_parameters"]
-        if len(body) == 1:
-            ps = ", ".join(params) if params else "it=None"
+        if not body:
+            return f"(lambda {ps}: None)"
+        if len(body) == 1 and self.is_value(body[0]):
             return f"(lambda {ps}: {self.visit(body[0])})"
-        raise Untranspilable(node, "multi-statement lambda (deferred)")
+        # multi-statement (or statement-bodied) lambda has no Python lambda form ->
+        # hoist a named def; the suite renderer flushes it before the using statement.
+        self._lam += 1
+        name = f"_lam{self._lam}"
+        *head, last = body
+        lines = self.render_statements(head)
+        before = len(self._hoist)
+        last_s = self.visit(last)
+        lines += self._hoist[before:]
+        del self._hoist[before:]
+        lines.append(f"return {last_s}" if self.is_value(last) else last_s)
+        self._hoist.append(f"def {name}({ps}):\n{_block(lines)}")
+        return name
 
     @kind("callable_reference")
     def v_callable_ref(self, node):
