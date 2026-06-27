@@ -41,7 +41,13 @@ _STDLIB_METHODS = {
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
 # back to len() for any sized receiver (KtList also has a .size property of its own).
-_STDLIB_PROPS = {"size": lambda r: f"len({r})"}
+_STDLIB_PROPS = {
+    "size": lambda r: f"len({r})",
+    "first": lambda r: f"{r}[0]",       # range/list .first property (start/first element)
+    "last": lambda r: f"{r}[-1]",       # .last property (end/last element)
+    "lastIndex": lambda r: f"(len({r}) - 1)",
+    "indices": lambda r: f"KtList(range(len({r})))",
+}
 
 # Kotlin scope functions `x.let/also/takeIf/takeUnless { … }` -- the lambda (which uses
 # `it`) is applied to the receiver. Handled at the call site (they apply to ANY type, so
@@ -204,6 +210,16 @@ class Expressions:
                 return _SCOPE_FNS[sel](self.visit(nk[0]), self._lambda_str(trailing), safe)
             if sel in _STDLIB_METHODS and not safe:     # WRAP: recv.coerceIn(...) -> min/max
                 return _STDLIB_METHODS[sel](self.visit(nk[0]), self._arg_values(node))
+            # general method call -- build recv.sel(args) from the receiver+selector so the
+            # navigation PROPERTY mappings (.first -> [0], .size -> len) don't fire on a
+            # method CALL (`it.first()` is a method; `it.first` is the property).
+            recv = self.visit(nk[0])
+            args = self._render_args(own_args)
+            if trailing is not None:
+                lam = self._lambda_str(trailing)
+                args = f"{args}, {lam}" if args else lam
+            call = f"{recv}.{self._safe(sel)}({args})"
+            return f"({call} if {recv} is not None else None)" if safe else call
         fn = self.visit(callee)
         args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`

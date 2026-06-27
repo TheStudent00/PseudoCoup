@@ -179,6 +179,12 @@ class KtList(list):
             return next((x for x in self if p(x)), None)
         return self[0] if self else None
 
+    def find(self, p):                  # Kotlin find = firstOrNull with a predicate
+        return next((x for x in self if p(x)), None)
+
+    def findLast(self, p):
+        return next((x for x in reversed(self) if p(x)), None)
+
     def last(self, p=None):
         if p:
             return next(x for x in reversed(self) if p(x))
