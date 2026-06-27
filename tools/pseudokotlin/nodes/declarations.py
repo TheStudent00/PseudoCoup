@@ -26,10 +26,13 @@ class Declarations:
     @kind("function_declaration")
     def v_function_declaration(self, node):
         in_class = node.parent is not None and node.parent.type == "class_body"
-        return self._function(node, with_self=in_class)
+        # extension fn `fun Recv.name(…)` -> the receiver becomes self (its `.` token
+        # sits between the receiver type and the name); body `this` already -> self.
+        is_extension = any(c.type == "." for c in node.children)
+        return self._function(node, with_self=in_class or is_extension)
 
     def _function(self, node, with_self, decorator=""):
-        name = self._name_of(node) or "unknown_func"
+        name = self._safe(self._name_of(node) or "unknown_func")
         params = ["self"] if with_self else []
         pnode = next((c for c in node.children if c.type == "function_value_parameters"), None)
         if pnode:
@@ -37,7 +40,7 @@ class Declarations:
                 if p.type == "parameter":
                     pid = self._name_of(p)
                     if pid:
-                        params.append(pid)
+                        params.append(self._safe(pid))
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
         self._scopes.append(set(params[1:] if with_self else params))
@@ -74,7 +77,7 @@ class Declarations:
 
         prev = self._members
         self._members = set(ctor_params)
-        props, getters, methods, nested, comps, inits = [], [], [], [], [], []
+        props, getters, lazies, methods, nested, comps, inits = [], [], [], [], [], [], []
         if body_node:
             for c in body_node.named_children:
                 if c.type == "property_declaration":
@@ -83,6 +86,8 @@ class Declarations:
                         self._members.add(nm)
                     if any(k.type == "getter" for k in c.children):   # computed property
                         getters.append(c)
+                    elif any(k.type == "property_delegate" for k in c.children):
+                        lazies.append(c)                              # `by lazy { … }`
                     else:
                         props.append(c)
                 elif c.type == "function_declaration":
@@ -101,7 +106,7 @@ class Declarations:
                 # else: enum_entry / modifiers / trivia -> consumed, not emitted
 
         self._scopes.append(set(ctor_params))
-        init_body = [f"self.{p} = {p}" for p in ctor_params]
+        init_body = [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
         init_body += [self._render_property(p, as_self=True) for p in props]
         for ini in inits:                                  # init { … } -> __init__ body
             blk = next((k for k in ini.named_children if k.type == "block"), None)
@@ -111,10 +116,11 @@ class Declarations:
 
         lines = []
         if ctor_params or props or inits:
-            args = ", ".join(["self"] + ctor_params)
+            args = ", ".join(["self"] + [self._safe(p) for p in ctor_params])
             lines.append(f"def __init__({args}):\n{_block(init_body)}")
         lines += [self.visit(m) for m in methods]
         lines += [self._render_getter(g) for g in getters]  # computed props -> @property
+        lines += [self._render_lazy(z) for z in lazies]     # by lazy -> cached @property
         lines += [self.visit(n) for n in nested]
         for comp in comps:                                 # companion -> static members
             lines += self._render_companion(comp, name)
@@ -124,7 +130,7 @@ class Declarations:
         return f"class {name}:\n{body}"
 
     def _render_getter(self, prop):
-        name = self._name_of(prop, deep=True) or "_prop"
+        name = self._safe(self._name_of(prop, deep=True) or "_prop")
         getter = next((c for c in prop.children if c.type == "getter"), None)
         body_node = next((c for c in getter.named_children
                           if c.type in ("function_body", "block")), None) if getter else None
@@ -132,6 +138,56 @@ class Declarations:
         body = self._render_function_body(body_node)
         self._scopes.pop()
         return f"@property\ndef {name}(self):\n{body}"
+
+    def _render_ext_getter(self, prop, getter):
+        # top-level computed property `val [Recv.]name get() = …` -> a function; an
+        # extension property (receiver before the name, marked by a `.`) takes self.
+        name = self._safe(self._name_of(prop, deep=True) or "_prop")
+        params = ["self"] if any(c.type == "." for c in prop.children) else []
+        body_node = next((c for c in getter.named_children
+                          if c.type in ("function_body", "block")), None)
+        self._scopes.append(set())
+        body = self._render_function_body(body_node)
+        self._scopes.pop()
+        return f"def {name}({', '.join(params)}):\n{body}"
+
+    def _render_lazy(self, prop):
+        # `val x by lazy { … }` -> a @property that computes once and caches in
+        # self._x. Single-threaded compute-on-first-access matches Kotlin lazy; only
+        # `by lazy` is accepted -- any other delegate (Delegates.observable, …) fails
+        # loudly rather than being silently mis-mapped.
+        name = self._safe(self._name_of(prop, deep=True) or "_prop")
+        deleg = next((c for c in prop.children if c.type == "property_delegate"), None)
+        call = next((c for c in deleg.named_children
+                     if c.type == "call_expression"), None) if deleg else None
+        fn = next((c for c in call.named_children
+                   if c.type == "identifier"), None) if call else None
+        if call is None or fn is None or self.text(fn) != "lazy":
+            raise Untranspilable(deleg or prop,
+                                 "only `by lazy { … }` property delegation is supported")
+        lam = next((c for c in call.named_children
+                    if c.type in ("annotated_lambda", "lambda_literal")), None)
+        if lam is not None and lam.type == "annotated_lambda":
+            lam = next((c for c in lam.named_children
+                        if c.type == "lambda_literal"), lam)
+        cache = f"self._{name}"
+        self._scopes.append(set())
+        body = [c for c in self.named(lam)
+                if c.type != "lambda_parameters"] if lam is not None else []
+        if not body:
+            compute = [f"{cache} = None"]
+        else:
+            *head, last = body
+            compute = self.render_statements(head)
+            before = len(self._hoist)
+            line = self._distribute(last, f"{cache} = ") if self.is_value(last) \
+                else self.visit(last)
+            compute += self._hoist[before:]
+            del self._hoist[before:]
+            compute.append(line)
+        self._scopes.pop()
+        guard = [f'if not hasattr(self, "_{name}"):', _block(compute), f"return {cache}"]
+        return f"@property\ndef {name}(self):\n{_block(guard)}"
 
     def _render_companion(self, comp, cls_name):
         cbody = next((c for c in comp.named_children if c.type == "class_body"), comp)
@@ -174,10 +230,10 @@ class Declarations:
                 if not kids:
                     return _block([])
                 before = len(self._hoist)
-                v = self.visit(kids[0])
+                line = self._distribute(kids[0], "return ")   # when/if -> distributed
                 hoist = self._hoist[before:]
                 del self._hoist[before:]
-                return _block(hoist + [f"return {v}"])
+                return _block(hoist + [line])
             inner = self.named(body_node)                          # function_body -> block
             if inner and inner[0].type == "block":
                 body_node = inner[0]
@@ -185,8 +241,15 @@ class Declarations:
         return _block(self.render_statements(self.named(body_node)))
 
     def _render_property(self, node, as_self):
+        getter = next((c for c in node.children if c.type == "getter"), None)
+        if getter is not None:  # top-level / extension computed property -> function
+            return self._render_ext_getter(node, getter)
+        deleg = next((c for c in node.children if c.type == "property_delegate"), None)
+        if deleg is not None:   # `by lazy`/`by …` only modelled as a class member
+            raise Untranspilable(deleg, "delegated property outside a class body")
         name = self._name_of(node, deep=True) or "_"
-        target = f"self.{name}" if (as_self and name in self._members) else name
+        target = f"self.{self._safe(name)}" if (as_self and name in self._members) \
+            else self._safe(name)
         # value is the named child after the variable_declaration
         kids = self.named(node)
         val_node = None
@@ -196,8 +259,4 @@ class Declarations:
                 break
         if val_node is None:
             return f"{target} = None"
-        if val_node.type == "when_expression":
-            return self._when(val_node, f"{target} = ")
-        if val_node.type == "if_expression" and self._if_is_block(val_node):
-            return self._if(val_node, f"{target} = ")
-        return f"{target} = {self.visit(val_node)}"
+        return self._distribute(val_node, f"{target} = ")

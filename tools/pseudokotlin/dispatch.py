@@ -13,6 +13,8 @@ Per-handler contract — MAP · WRAP · FAIL, never emit-and-hope:
            equivalent (e.g. 16.dp -> dp(16)).
   - FAIL : raise Untranspilable. Unknown/parse-error nodes fail loudly.
 """
+import keyword
+import re
 
 
 class Untranspilable(Exception):
@@ -60,6 +62,23 @@ class Visitor:
         """Named children minus comments (the structurally-significant kids)."""
         return [c for c in node.named_children
                 if c.type not in ("line_comment", "block_comment")]
+
+    @staticmethod
+    def _safe(name):
+        """A Kotlin identifier as a legal Python one. Strips backticks and rewrites
+        non-identifier chars (Kotlin's `fun \\`human readable name\\`()` test idiom),
+        then a Python keyword (`from`, `is`, `class`, …) gets a trailing underscore.
+        Applied at EMISSION only -- member/scope sets stay keyed on the raw Kotlin
+        name so matching is unaffected."""
+        if not name:
+            return name
+        if name.startswith("`") and name.endswith("`"):
+            name = name[1:-1]
+        if not name.isidentifier():
+            name = re.sub(r"\W", "_", name)
+            if name and name[0].isdigit():
+                name = "_" + name
+        return name + "_" if name in keyword.kwlist else name
 
     def visit(self, node):
         if node.type == "ERROR" or getattr(node, "is_missing", False):
