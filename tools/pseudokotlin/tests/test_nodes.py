@@ -84,3 +84,72 @@ def test_lambda_range_infix():
     assert "lambda v: v * 2" in py
     assert "for i in range(0, n + 1):" in py
     assert "pr = (1, 2)" in py
+
+
+def test_increment_decrement_to_augmented():
+    py = tp("fun tick(): Int { var i = 0; i++; i--; return i }")
+    assert compiles(py)
+    assert "i += 1" in py and "i -= 1" in py
+
+
+def test_by_lazy_to_cached_property():
+    py = tp("class C(val n: Int) { val x by lazy { n * 2 } }")
+    assert compiles(py)
+    assert "@property" in py
+    assert 'if not hasattr(self, "_x"):' in py
+    assert "self._x = self.n * 2" in py
+    assert "return self._x" in py
+
+
+def test_non_lazy_delegate_fails_loud():
+    from dispatch import Untranspilable
+    import pytest
+    with pytest.raises(Untranspilable):
+        tp("class C { val w by Delegates.observable(0) { a, b, c -> } }")
+
+
+def test_guard_clause_stays_statement():
+    # one-armed `if (c) return x` is a statement, never a ternary value
+    py = tp("fun f(xs: List<Int>): Int { if (xs.isEmpty()) return 0; return xs.size }")
+    assert compiles(py)
+    assert "if xs.isEmpty():" in py and "return 0" in py
+    assert "(return 0" not in py and "0 if" not in py   # not collapsed to a ternary
+
+
+def test_elvis_with_early_return_hoists_guard():
+    py = tp("fun f(m: Map<Int,Int>): Int { val v = m[1] ?: return -1; return v + 1 }")
+    assert compiles(py)
+    assert "if _elv1 is None:" in py and "return -1" in py
+    assert "v = _elv1" in py
+
+
+def test_expression_body_when_distributes():
+    py = tp('fun g(x: Int): String = when (x) { 1 -> "a"; else -> "b" }')
+    assert compiles(py)
+    assert "if x == 1:" in py and 'return "a"' in py
+    assert "return when" not in py            # the bug this guards against
+
+
+def test_extension_function_takes_self():
+    py = tp("fun Foo.label(): String = bar()")
+    assert compiles(py)
+    assert "def label(self):" in py
+
+
+def test_try_as_value_distributes_return():
+    py = tp("fun h(): Int = try { compute() } catch (e: Exception) { -1 }")
+    assert compiles(py)
+    assert "try:" in py and "return compute()" in py
+    assert "except Exception as e:" in py and "return -1" in py
+
+
+def test_extension_property_getter_is_function():
+    py = tp("val List<Int>.tot: Int get() = sum()")
+    assert compiles(py)
+    assert "def tot(self):" in py and "return sum()" in py
+
+
+def test_python_keyword_names_mangled():
+    py = tp("class C { fun from(x: Int) = x }")
+    assert compiles(py)
+    assert "def from_(self, x):" in py

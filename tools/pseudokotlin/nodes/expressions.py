@@ -4,7 +4,6 @@ guarantees parses (MAP), routes a no-Python-equivalent to a shim (WRAP, e.g.
 16.dp -> dp(16)), or raises Untranspilable (FAIL). Node-kind names are this
 grammar's actual named kinds (verified against parse.named_kinds()).
 """
-import keyword
 import os
 import sys
 
@@ -12,7 +11,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
 
-_PY_KEYWORDS = frozenset(keyword.kwlist)
 _BINOP = {"&&": "and", "||": "or", "===": "is", "!==": "is not"}
 _OP_TOKENS = {"+", "-", "*", "/", "%", "==", "!=", ">", "<", ">=", "<=",
               "&&", "||", "===", "!==", "&", "|", "^", "<<", ">>"}
@@ -30,10 +28,10 @@ class Expressions:
             return const[t]
         shadowed = any(t in s for s in self._scopes)
         if not shadowed and t in self._static_members:      # companion -> ClassName.x
-            return f"{self._static_class}.{t}"
+            return f"{self._static_class}.{self._safe(t)}"
         if not shadowed and t in self._members:             # instance member -> self.x
-            return f"self.{t}"
-        return t
+            return f"self.{self._safe(t)}"
+        return self._safe(t)
 
     @kind("this_expression")
     def v_this(self, node):
@@ -63,6 +61,12 @@ class Expressions:
         op = next((c.type for c in node.children
                    if c.type in _OP_TOKENS or c.type == "?:"), None)
         if op == "?:":                                  # elvis: a ?: b
+            if not self.is_value(kids[-1]):             # a ?: return/throw -> guard
+                self._lam += 1                          # `val x = e ?: return d` becomes
+                tmp = f"_elv{self._lam}"                # tmp = e; if tmp is None: <stmt>
+                self._hoist.append(
+                    f"{tmp} = {left}\nif {tmp} is None:\n{_block([right])}")
+                return tmp
             return f"({left} if {left} is not None else {right})"
         if op is None:
             raise Untranspilable(node, "binary expression without a known operator")
@@ -80,6 +84,13 @@ class Expressions:
             return f"-{s}"
         if "+" in ops:
             return f"+{s}"
+        # ++ / -- have no Python operator; render the mutation as an augmented
+        # assignment STATEMENT (Python forbids the value-of-increment idiom, so the
+        # pre/post distinction collapses -- faithful only in statement position).
+        if "++" in ops:
+            return f"{s} += 1"
+        if "--" in ops:
+            return f"{s} -= 1"
         raise Untranspilable(node, f"unsupported unary operator {ops}")
 
     @kind("in_expression")
@@ -108,7 +119,7 @@ class Expressions:
         if recv.type in _NUMBER_KINDS and sel in _UNIT_EXT:      # WRAP: 16.dp -> dp(16)
             return f"{_UNIT_EXT[sel]}({self.visit(recv)})"
         left = self.visit(recv)
-        attr = sel + "_" if sel in _PY_KEYWORDS else sel
+        attr = self._safe(sel)
         if any(c.type == "?." for c in node.children):
             return f"({left}.{attr} if {left} is not None else None)"
         return f"{left}.{attr}"
@@ -153,7 +164,7 @@ class Expressions:
         if op == "step" and left.type == "range_expression":
             rk = self.named(left)
             return f"range({self.visit(rk[0])}, {self.visit(rk[-1])} + 1, {r})"
-        return f"{l}.{op}({r})"                          # generic infix -> method
+        return f"{l}.{self._safe(op)}({r})"              # generic infix -> method
 
     @kind("lambda_literal")
     def v_lambda(self, node):
@@ -163,12 +174,12 @@ class Expressions:
             for vd in pnode.named_children:
                 pid = next((c for c in vd.children if c.type == "identifier"), None)
                 if pid is not None:
-                    params.append(self.text(pid))
+                    params.append(self._safe(self.text(pid)))
         ps = ", ".join(params) if params else "it=None"
         body = [c for c in self.named(node) if c.type != "lambda_parameters"]
         if not body:
             return f"(lambda {ps}: None)"
-        if len(body) == 1 and self.is_value(body[0]):
+        if len(body) == 1 and not self._renders_stmt(body[0]):   # pure expr body only
             return f"(lambda {ps}: {self.visit(body[0])})"
         # multi-statement (or statement-bodied) lambda has no Python lambda form ->
         # hoist a named def; the suite renderer flushes it before the using statement.
@@ -177,10 +188,10 @@ class Expressions:
         *head, last = body
         lines = self.render_statements(head)
         before = len(self._hoist)
-        last_s = self.visit(last)
+        last_line = self._distribute(last, "return ")   # block-if/when/stmt-aware
         lines += self._hoist[before:]
         del self._hoist[before:]
-        lines.append(f"return {last_s}" if self.is_value(last) else last_s)
+        lines.append(last_line)
         self._hoist.append(f"def {name}({ps}):\n{_block(lines)}")
         return name
 
