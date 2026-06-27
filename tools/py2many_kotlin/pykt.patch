@@ -1,6 +1,6 @@
 --- a/py2many/pykt/transpiler.py	2026-02-19 15:15:02.000000000 -0500
-+++ b/py2many/pykt/transpiler.py	2026-06-27 02:33:46.239332385 -0400
-@@ -136,7 +136,30 @@
++++ b/py2many/pykt/transpiler.py	2026-06-27 02:53:13.501341894 -0400
+@@ -136,8 +136,33 @@
          if len(typedecls) > 0:
              template = "<{}>".format(", ".join(typedecls))
  
@@ -25,13 +25,17 @@
 +            body = shadows + body
 +
          args = ", ".join(args_list)
+-        funcdef = f"fun {node.name}{template}({args}){return_type} {{"
 +        if node.name == "__init__":
 +            # Python's __init__ becomes a Kotlin secondary constructor.
 +            return f"constructor({args}) {{\n" + body + "}\n\n"
-         funcdef = f"fun {node.name}{template}({args}){return_type} {{"
++        # Kotlin places type parameters BEFORE the function name: `fun <T> f()`.
++        template_prefix = f"{template} " if template else ""
++        funcdef = f"fun {template_prefix}{node.name}({args}){return_type} {{"
          return funcdef + "\n" + body + "}\n\n"
  
-@@ -188,7 +211,7 @@
+     def visit_Return(self, node) -> str:
+@@ -188,10 +213,20 @@
              return f"{value_id}.{attr}"
  
          if is_self_arg(value_id, node.scopes):
@@ -40,7 +44,38 @@
  
          return f"{value_id}.{attr}"
  
-@@ -312,9 +335,14 @@
++    # Python str methods -> Kotlin String methods (name-based; covers the common
++    # cases seen in the corpus -- extend as usage demands).
++    STR_METHODS = {
++        "upper": "uppercase",
++        "lower": "lowercase",
++        "strip": "trim",
++        "startswith": "startsWith",
++        "endswith": "endsWith",
++    }
++
+     def visit_Call(self, node) -> str:
+         fname = self.visit(node.func)
+         vargs = []
+@@ -203,6 +238,11 @@
+         ):
+             fname = fname.replace(".append", " +=")
+ 
++        if "." in fname:
++            recv, _, meth = fname.rpartition(".")
++            if meth in self.STR_METHODS:
++                fname = f"{recv}.{self.STR_METHODS[meth]}"
++
+         if node.args:
+             vargs += [self.visit(a) for a in node.args]
+         if node.keywords:
+@@ -307,14 +347,25 @@
+                     return ret
+ 
+         fields = []
++        seen_fields = set()
+         index = 0
+         for declaration, typename in declarations.items():
              if typename is None:
                  typename = f"ST{index}"
                  index += 1
@@ -48,17 +83,22 @@
 -            mut = "var" if mut else "val"
 -            fields.append(f"{mut} {declaration}: {typename}")
 +            # declarations are keyed by the assignment target id ("self.x");
-+            # the Kotlin field name is just the attribute ("x").
++            # the Kotlin field name is just the attribute ("x"). The extractor
++            # can key the same field two ways (annotated "self.x" from __init__
++            # plus "x" from a later reassignment) -- dedup so it declares once.
 +            field_name = (
 +                declaration[len("self.") :]
 +                if declaration.startswith("self.")
 +                else declaration
 +            )
++            if field_name in seen_fields:
++                continue
++            seen_fields.add(field_name)
 +            fields.append(f"var {field_name}: {typename}")
  
          for b in node.body:
              if isinstance(b, ast.FunctionDef):
-@@ -403,6 +431,8 @@
+@@ -403,6 +454,8 @@
          value = self.visit(node.value)
          index = self.visit(node.slice)
          if hasattr(node, "is_annotation"):
@@ -67,7 +107,7 @@
              if value in self._container_type_map:
                  value = self._container_type_map[value]
              if value == "Tuple":
-@@ -445,6 +475,10 @@
+@@ -445,6 +498,10 @@
          target = self.visit(node.target)
          type_str = self._typename_from_annotation(node)
          val = self.visit(node.value) if node.value is not None else None
@@ -91,8 +131,8 @@
                      slice_value = self._slice_value(typename)
                      slice_value = self._recursive_expand(slice_value)
 --- a/py2many/pykt/plugins.py	2026-02-19 15:15:02.000000000 -0500
-+++ b/py2many/pykt/plugins.py	2026-06-27 02:29:59.042511716 -0400
-@@ -50,6 +50,11 @@
++++ b/py2many/pykt/plugins.py	2026-06-27 02:51:59.882759543 -0400
+@@ -50,6 +50,15 @@
          self._usings.add("kotlin.math.floor")
          return f"floor({vargs[0]}).toInt()"
  
@@ -101,14 +141,30 @@
 +        self._usings.add("kotlin.math.sqrt")
 +        return f"sqrt(({vargs[0]}).toDouble())"
 +
++    def visit_abs(self, node, vargs) -> str:
++        self._usings.add("kotlin.math.abs")
++        return f"abs({vargs[0]})"
++
  
  # small one liners are inlined here as lambdas
  SMALL_DISPATCH_MAP = {
-@@ -71,6 +76,7 @@
+@@ -71,6 +80,8 @@
      "xrange": KotlinTranspilerPlugins.visit_range,
      "print": KotlinTranspilerPlugins.visit_print,
      "floor": KotlinTranspilerPlugins.visit_floor,
 +    "math.sqrt": KotlinTranspilerPlugins.visit_math_sqrt,
++    "abs": KotlinTranspilerPlugins.visit_abs,
  }
  
  MODULE_DISPATCH_TABLE: Dict[str, str] = {}
+--- a/py2many/pykt/inference.py	2026-02-19 15:15:02.000000000 -0500
++++ b/py2many/pykt/inference.py	2026-06-27 02:51:43.185400693 -0400
+@@ -31,7 +31,7 @@
+ 
+ KT_CONTAINER_TYPE_MAP = {
+     "List": "Array",
+-    "Dict": "Dict",
++    "Dict": "HashMap",
+     "Set": "Set",
+     "Optional": "Nothing",
+ }
