@@ -403,6 +403,31 @@ class KtList(list):
         transform = next((a for a in args if callable(a)), kw.get("transform"))
         return sep.join(str(transform(x)) if transform else str(x) for x in self)
 
+    def add(self, *a):                  # add(x) appends; add(i, x) inserts
+        if len(a) == 2:
+            self.insert(a[0], a[1])
+        else:
+            self.append(a[0])
+        return True
+
+    def addAll(self, coll):
+        self.extend(coll)
+        return True
+
+    def removeAt(self, i):
+        return self.pop(i)
+
+    def removeFirst(self):
+        return self.pop(0)
+
+    def removeLast(self):
+        return self.pop()
+
+    def removeAll(self, coll):
+        s = set(coll)
+        self[:] = [x for x in self if x not in s]
+        return True
+
     def toList(self):
         return self
 
@@ -410,7 +435,13 @@ class KtList(list):
         return KtList(self)
 
     def toSet(self):
-        return set(self)
+        return KtSet(self)
+
+    def toMutableSet(self):
+        return KtSet(self)
+
+    def toHashSet(self):
+        return KtSet(self)
 
     def toTypedArray(self):
         return KtList(self)
