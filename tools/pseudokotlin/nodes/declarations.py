@@ -79,8 +79,12 @@ class Declarations:
         if recv is not None:
             simple = recv.split("<")[0].strip().split(".")[-1]
             self._members = self._members | _TYPE_FIELDS.get(simple, set())
-        self._scopes.append(set(names) | self._local_names(body_node))
-        body = self._render_function_body(body_node, prefix=guards)
+        own = set(names) | self._local_names(body_node)
+        # a nested local fn mutating an enclosing fn's var needs `nonlocal` (Kotlin closes
+        # over it). Methods/top-level fns have no enclosing fn scope -> no nonlocals.
+        nonlocals = self._nonlocals(body_node, own)
+        self._scopes.append(own)
+        body = self._render_function_body(body_node, prefix=nonlocals + guards)
         self._scopes.pop()
         self._members = prev_m
         decos = ([decorator] if decorator else []) + \
@@ -139,6 +143,15 @@ class Declarations:
                 parts.append(f"{p}={d}")
                 seen_default = True
         return names, parts, guards
+
+    def _nonlocals(self, body_node, own_locals):
+        # names assigned in `body_node` that live in an ENCLOSING function scope (not
+        # this fn's own locals/params) -> `nonlocal` declarations.
+        if not self._scopes or body_node is None:
+            return []
+        enclosing = set().union(*self._scopes)
+        captured = sorted((self._assigned_names([body_node]) & enclosing) - own_locals)
+        return [f"nonlocal {n}" for n in captured]
 
     def _local_names(self, node):
         # Local `val`/`var` declarations (and for-loop variables) shadow class members,
