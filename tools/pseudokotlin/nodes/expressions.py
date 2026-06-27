@@ -17,6 +17,21 @@ _OP_TOKENS = {"+", "-", "*", "/", "%", "==", "!=", ">", "<", ">=", "<=",
 _UNIT_EXT = {"dp": "dp", "sp": "sp", "em": "em"}
 _NUMBER_KINDS = {"number_literal", "float_literal"}
 
+# Kotlin stdlib methods with no Python builtin -> rewritten at the CALL site (Python
+# builtins can't carry them). recv + positional arg strings -> a Python expression.
+_STDLIB_METHODS = {
+    "isEmpty":       lambda r, a: f"(len({r}) == 0)",
+    "isNotEmpty":    lambda r, a: f"(len({r}) != 0)",
+    "isBlank":       lambda r, a: f"(len({r}.strip()) == 0)",
+    "isNotBlank":    lambda r, a: f"(len({r}.strip()) != 0)",
+    "coerceAtMost":  lambda r, a: f"min({r}, {a[0]})",
+    "coerceAtLeast": lambda r, a: f"max({r}, {a[0]})",
+    "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
+    "map":           lambda r, a: f"list(map({a[0]}, {r}))",
+}
+# Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site.
+_STDLIB_PROPS = {"size": lambda r: f"len({r})"}
+
 
 class Expressions:
     # ---- atoms ----------------------------------------------------------- #
@@ -118,16 +133,26 @@ class Expressions:
         sel = self.text(kids[-1]) if len(kids) > 1 else ""
         if recv.type in _NUMBER_KINDS and sel in _UNIT_EXT:      # WRAP: 16.dp -> dp(16)
             return f"{_UNIT_EXT[sel]}({self.visit(recv)})"
+        safe_call = any(c.type == "?." for c in node.children)
+        if sel in _STDLIB_PROPS and not safe_call:               # WRAP: xs.size -> len(xs)
+            return _STDLIB_PROPS[sel](self.visit(recv))
         left = self.visit(recv)
         attr = self._safe(sel)
-        if any(c.type == "?." for c in node.children):
+        if safe_call:
             return f"({left}.{attr} if {left} is not None else None)"
         return f"{left}.{attr}"
 
     @kind("call_expression")
     def v_call(self, node):
         kids = self.named(node)
-        fn = self.visit(kids[0])
+        callee = kids[0]
+        if callee.type == "navigation_expression" \
+                and not any(c.type == "?." for c in callee.children):
+            nk = self.named(callee)
+            sel = self.text(nk[-1]) if len(nk) > 1 else ""
+            if sel in _STDLIB_METHODS:                  # WRAP: recv.isEmpty() -> len()==0
+                return _STDLIB_METHODS[sel](self.visit(nk[0]), self._arg_values(node))
+        fn = self.visit(callee)
         args_node = next((c for c in node.children if c.type == "value_arguments"), None)
         args = self._render_args(args_node)
         trailing = next((c for c in node.named_children
@@ -227,6 +252,23 @@ class Expressions:
         return self.visit(self.named(node)[0])   # Python is dynamic: `x as T` -> x
 
     # ---- helpers --------------------------------------------------------- #
+    def _arg_values(self, call_node):
+        """Positional argument value strings (+ a trailing lambda) for a call -- used
+        by the stdlib-method WRAP, which takes positional args only."""
+        out = []
+        an = next((c for c in call_node.children if c.type == "value_arguments"), None)
+        if an is not None:
+            for a in an.named_children:
+                if a.type == "value_argument" and a.named_children:
+                    out.append(self.visit(a.named_children[-1]))
+        tl = next((c for c in call_node.named_children
+                   if c.type in ("annotated_lambda", "lambda_literal")), None)
+        if tl is not None:
+            lam = tl if tl.type == "lambda_literal" \
+                else next((c for c in tl.named_children if c.type == "lambda_literal"), tl)
+            out.append(self.visit(lam))
+        return out
+
     def _render_args(self, args_node):
         if not args_node:
             return ""
