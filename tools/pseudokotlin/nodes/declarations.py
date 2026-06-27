@@ -111,13 +111,18 @@ class Declarations:
         if body_node.type == "function_body":
             if any(c.type == "=" for c in body_node.children):     # `= expr` body
                 kids = self.named(body_node)
-                return _block([f"return {self.visit(kids[0])}"]) if kids else _block([])
+                if not kids:
+                    return _block([])
+                before = len(self._hoist)
+                v = self.visit(kids[0])
+                hoist = self._hoist[before:]
+                del self._hoist[before:]
+                return _block(hoist + [f"return {v}"])
             inner = self.named(body_node)                          # function_body -> block
             if inner and inner[0].type == "block":
                 body_node = inner[0]
-        # body_node is now a block: render its statements
-        stmts = [self.visit(c) for c in self.named(body_node)]
-        return _block(stmts)
+        # body_node is now a block: render its statements (hoist-aware)
+        return _block(self.render_statements(self.named(body_node)))
 
     def _render_property(self, node, as_self):
         name = self._name_of(node, deep=True) or "_"
