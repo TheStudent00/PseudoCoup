@@ -51,6 +51,11 @@ _STDLIB_METHODS = {
     "substring":     lambda r, a: (f"{r}[{a[0]}:{a[1]}]" if len(a) > 1
                                    else f"{r}[{a[0]}:]"),
     "replaceFirstChar": lambda r, a: f"(({a[0]}({r}[0]) + {r}[1:]) if {r} else {r})",
+    "toRegex":       lambda r, a: f"Regex({r})",
+    # str.replace(Regex, repl) is a REGEX replace; replace(str, repl) is literal
+    "replace":       lambda r, a: (f"({a[0]}.replace({r}, {a[1]}) "
+                                   f"if isinstance({a[0]}, Regex) "
+                                   f"else {r}.replace({a[0]}, {a[1]}))"),
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
 # back to len() for any sized receiver (KtList also has a .size property of its own).
@@ -346,6 +351,13 @@ class Expressions:
         # suite renderer flushes it before the using statement.
         self._lam += 1
         name = f"_lam{self._lam}"
+        # Kotlin closures mutate captured outer variables; Python needs `nonlocal`. Any
+        # name assigned in the body that lives in an enclosing scope (not a lambda
+        # param/local) is declared nonlocal.
+        enclosing = set().union(*self._scopes) if self._scopes else set()
+        lam_local = set(params) | self._local_names(node)
+        captured = sorted((self._assigned_names(body) & enclosing) - lam_local)
+        nonlocals = [f"nonlocal {n}" for n in captured]
         *head, last = body
         lines = list(unpacks) + self.render_statements(head)
         before = len(self._hoist)
@@ -353,8 +365,32 @@ class Expressions:
         lines += self._hoist[before:]
         del self._hoist[before:]
         lines.append(last_line)
-        self._hoist.append(f"def {name}({ps}):\n{_block(lines)}")
+        self._hoist.append(f"def {name}({ps}):\n{_block(nonlocals + lines)}")
         return name
+
+    def _assigned_names(self, nodes):
+        # bare-identifier targets of assignments / ++ / -- in these nodes, not crossing
+        # nested lambda/fn boundaries -- candidates for `nonlocal` when captured.
+        out, stop = set(), ("lambda_literal", "function_declaration", "anonymous_function")
+
+        def walk(n):
+            if n.type == "assignment":
+                lhs = self.named(n)[0]
+                if lhs.type == "identifier":
+                    out.add(self.text(lhs))
+            elif n.type == "unary_expression":
+                ops = [c.type for c in n.children if not c.is_named]
+                if "++" in ops or "--" in ops:
+                    operand = self.named(n)[0]
+                    if operand.type == "identifier":
+                        out.add(self.text(operand))
+            for c in n.children:
+                if c.type not in stop:
+                    walk(c)
+
+        for nd in nodes:
+            walk(nd)
+        return out
 
     def _destructure_names(self, mvd):
         out = []
