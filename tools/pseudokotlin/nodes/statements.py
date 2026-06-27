@@ -35,7 +35,7 @@ class Statements:
         then_n = branches[0] if branches else None
         else_n = branches[1] if len(branches) > 1 else None
 
-        if self._is_block(then_n) or self._is_block(else_n):
+        if self._renders_stmt(then_n) or self._renders_stmt(else_n):
             out = [f"if {cond}:", self._branch(then_n, lead)]
             if else_n is not None and else_n.type == "if_expression":
                 out.append("el" + self._if(else_n, lead))      # elif chain
@@ -51,7 +51,7 @@ class Statements:
         kids = self.named(node)
         pc = next((c for c in node.children if c.type == "parenthesized_expression"), None)
         branches = [k for k in kids if k is not pc] if pc else kids[1:]
-        return any(self._is_block(b) for b in branches)
+        return any(self._renders_stmt(b) for b in branches)
 
     @kind("when_expression")
     def v_when(self, node):
@@ -78,25 +78,60 @@ class Statements:
                 first = False
         return "\n".join(out)
 
+    def _distribute(self, node, lead):
+        """Render `node` in value position with `lead` ('return ' / 'x = ') pushed
+        onto its value. A block-form when/if becomes a statement with `lead` on each
+        branch (Kotlin expression -> Python statement); a statement-shaped node
+        (return/throw/++) carries its own flow and takes no lead; anything else is
+        `lead+expr`. The plain case leaves hoists in self._hoist for the caller."""
+        if node.type == "when_expression":
+            return self._when(node, lead)
+        if node.type == "try_expression":
+            return self._try(node, lead)
+        if node.type == "if_expression" and self._if_is_block(node):
+            return self._if(node, lead)
+        if self._stmt_shaped(node):
+            return self.visit(node)
+        return f"{lead}{self.visit(node)}"
+
+    def _stmt_shaped(self, node):
+        """True for nodes rendering to a Python STATEMENT, not a value-expression:
+        return/throw/assignment/loops (is_value False), and ++/-- (an augmented-assign
+        statement though typed as a unary). Such a node never takes a value-lead and
+        cannot be a lambda body or ternary branch."""
+        if not self.is_value(node):
+            return True
+        return (node.type == "unary_expression"
+                and any(c.type in ("++", "--") for c in node.children))
+
+    def _renders_stmt(self, n):
+        """True when `n` compiles to a Python STATEMENT rather than a value-expression:
+        a block, a when/try (always statement form here), a block-form if, or a
+        statement-shaped node (return/throw/assign/loop/++). Forces if/when into
+        statement form and keeps such a node out of a lambda body / ternary branch."""
+        if n is None:
+            return False
+        if n.type in ("block", "when_expression", "try_expression"):
+            return True
+        if n.type == "if_expression":
+            return self._if_is_block(n)
+        return self._stmt_shaped(n)
+
     def _branch(self, body, lead):
         """Render a branch body (block or single node), distributing `lead` onto the
-        branch's value (its last statement) when in value position. Hoist-aware."""
-        if body.type == "block":
-            stmts = self.named(body)
-            if lead and stmts:
-                lines = self.render_statements(stmts[:-1])
-                before = len(self._hoist)
-                last = self.visit(stmts[-1])
-                lines += self._hoist[before:]
-                del self._hoist[before:]
-                lines.append(lead + last)
-                return _block(lines)
+        branch's value (its last statement) via `_distribute` -- so a last statement
+        that is itself a when/if/return/throw/++ is handled correctly, not blindly
+        prefixed. Hoist-aware."""
+        stmts = self.named(body) if body.type == "block" else [body]
+        if not (lead and stmts):
             return _block(self.render_statements(stmts))
+        lines = self.render_statements(stmts[:-1])
         before = len(self._hoist)
-        v = self.visit(body)
-        hoist = self._hoist[before:]
+        last_line = self._distribute(stmts[-1], lead)
+        lines += self._hoist[before:]
         del self._hoist[before:]
-        return _block(hoist + [(lead + v) if lead else v])
+        lines.append(last_line)
+        return _block(lines)
 
     # ---- loops ----------------------------------------------------------- #
     @kind("for_statement")
@@ -126,16 +161,24 @@ class Statements:
     # ---- try / jumps / assignment ---------------------------------------- #
     @kind("try_expression")
     def v_try(self, node):
+        return self._try(node, "")
+
+    def _try(self, node, lead):
+        # Kotlin try is an expression: its value is the try block's (or the matching
+        # catch block's) last expression. `lead` distributes into try/catch via
+        # _branch; `finally` never carries the value, so it stays a plain suite.
         kids = self.named(node)
-        out = ["try:", self._suite(kids[0])]
+        out = ["try:", self._branch(kids[0], lead)]
         for c in node.named_children:
             if c.type == "catch_block":
                 ck = c.named_children
-                ename = next((self.text(k) for k in ck if k.type == "identifier"), "e")
+                ename = next((self._safe(self.text(k))
+                              for k in ck if k.type == "identifier"), "e")
                 ut = next((k for k in ck if k.type == "user_type"), None)
                 etype = self.text(ut) if ut is not None else "Exception"
                 cblock = next((k for k in ck if k.type == "block"), None)
-                out += [f"except {etype} as {ename}:", self._suite(cblock)]
+                cbody = self._branch(cblock, lead) if cblock is not None else _block([])
+                out += [f"except {etype} as {ename}:", cbody]
             elif c.type == "finally_block":
                 fblock = next((k for k in c.named_children if k.type == "block"), None)
                 out += ["finally:", self._suite(fblock)]
@@ -153,12 +196,7 @@ class Statements:
         kids = self.named(node)
         if not kids:
             return "return"
-        val = kids[0]
-        if val.type == "when_expression":
-            return self._when(val, "return ")
-        if val.type == "if_expression" and self._if_is_block(val):
-            return self._if(val, "return ")
-        return f"return {self.visit(val)}"
+        return self._distribute(kids[0], "return ")
 
     @kind("throw_expression")
     def v_throw(self, node):
@@ -173,10 +211,6 @@ class Statements:
             return self.visit(inner[0]) if inner else "True"
         kids = self.named(node)
         return self.visit(kids[0]) if kids else "True"
-
-    @staticmethod
-    def _is_block(n):
-        return n is not None and n.type == "block"
 
     def _suite(self, n):
         if n is None:
