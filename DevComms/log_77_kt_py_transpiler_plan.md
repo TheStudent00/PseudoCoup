@@ -129,9 +129,19 @@ structure. That decision needs the P2 data (what WFL actually leans on, by frequ
 before it can be made well — so it is deliberately deferred to its own log after P2,
 not guessed now.
 
-## 8. PseudoCoup internal cleanup — current mess → proposed (scoped to THIS repo only)
+## 8. PseudoCoup internal cleanup — DONE (2026-06-27)
 
 (The `~/Programming` ecosystem reorg is a separate problem, deferred — not in scope.)
+
+**Executed:** the old mapping subsystem (`interactive_map/`, `runtime_uimap/`, `uimap/`,
+`run_mapper.sh`, `tools/connectivity/`, `tools/dynamic_mapper/`) + the two stale root
+docs moved to `_deprecated/` (self-documented by `_deprecated/README.md`).
+`TRANSPILER_SCOPE.md` → `docs/`. The license PDF → `LICENSE.pdf`. `.pytest_cache/`
+gitignored; stray committed `.pyc` dropped. **Correction made during execution:** `core/`
+is NOT sandbox — it's the live Flow/coroutine shim runtime the transpiler emits, so it
+stayed. Active `tools/` is now just `transpiler/` + `py2many_kotlin/`. Root markdown is
+now only `README.md` + `PROJECT_MAP.md`. Smoke-checked: transpiler still imports, `core/`
+resolves. The proposal that drove this is preserved below.
 
 ### The rule (the thing I violated)
 **One home per kind of file, no floaters:**
