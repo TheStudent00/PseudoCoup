@@ -14,6 +14,7 @@ Usage:  python3 gate.py [constructs_dir]
 Exit 0 iff every construct compiles.
 """
 import os
+import shutil
 import subprocess
 import sys
 
@@ -54,7 +55,11 @@ def main():
                        cwd=out, env=env, capture_output=True)
         gen = os.path.join(cdir, name + ".kt")
         if os.path.exists(gen):
-            os.replace(gen, kt)
+            # shutil.move (not os.replace) to tolerate a cases dir on a
+            # different filesystem than _gate_out (cross-device link).
+            if os.path.exists(kt):
+                os.remove(kt)
+            shutil.move(gen, kt)
         if not os.path.exists(kt):
             results.append((name, "NO-KT", ""))
             continue
