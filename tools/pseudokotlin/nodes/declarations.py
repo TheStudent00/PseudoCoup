@@ -159,6 +159,10 @@ class Declarations:
         walk(node)
         return out
 
+    def _is_const(self, prop):
+        mods = next((c for c in prop.children if c.type == "modifiers"), None)
+        return mods is not None and "const" in self.text(mods).split()
+
     def _ctor_default(self, class_param):
         # `val x: T = expr` -> the default is the named child after the `=` token.
         seen_eq = False
@@ -387,6 +391,10 @@ class Declarations:
                 self._ext_patches.append(f"{cls_name}.{r}")   # enclosing class -> defer to
             else:                                             # module level (the class isn't
                 out.append(r)                                 # bound during its own body)
+            if self._is_const(p):       # `const val` is import-and-use-bare across files;
+                cn = self._name_of(p, deep=True)              # alias it to the module level
+                if cn:
+                    self._ext_patches.append(f"{cn} = {cls_name}.{cn}")
         out += [self._function(f, with_self=False, decorator="@staticmethod")
                 for f in cfuncs]
         self._static_members, self._static_class = prev_sm, prev_sc
