@@ -98,6 +98,22 @@ class KtList(list):
     def size(self):
         return len(self)
 
+    def __add__(self, other):           # Kotlin list + list = concat; list + elem = append
+        if isinstance(other, (list, tuple, set, frozenset)):
+            return KtList(list(self) + list(other))
+        return KtList(list(self) + [other])
+
+    def __iadd__(self, other):          # Kotlin `list += elem` APPENDS (Python would
+        if isinstance(other, (list, tuple, set, frozenset)):   # extend -> iterate elem)
+            self.extend(other)
+        else:
+            self.append(other)
+        return self
+
+    def __getitem__(self, i):           # slices stay KtList so chains keep the methods
+        r = list.__getitem__(self, i)
+        return KtList(r) if isinstance(i, slice) else r
+
     @property
     def indices(self):
         return KtList(range(len(self)))
@@ -373,6 +389,9 @@ class KtList(list):
 
 
 class KtMap(dict):
+    def __missing__(self, k):           # Kotlin map[k] returns null for an absent key
+        return None
+
     @property
     def size(self):
         return len(self)
