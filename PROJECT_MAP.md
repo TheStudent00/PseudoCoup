@@ -25,8 +25,9 @@ WFL Python  (canonical, 1:1 with Kotlin — INVARIANT: nothing in it lacks a Kot
    │      HOME ⇒ ~/Programming/WFL_MixingCenter   (SEEDED 2026-06-26: 254 .py = WFL's 254 .kt,
    │      192 compile-clean; the 62 invalid are dominated by Compose unit literals N.dp/N.sp)
    │      it holds the literal transpiler output and NOTHING ELSE (no PseudoCoup/PseudoUI).
-   │      the dualgraph oversight gates it: drive sidebyside.html to ZERO "— no Kotlin source —"
-   │      rows. ONLY THEN start swapping in PseudoUI (the partial UI solutions).
+   │      INVARIANT (enforced by the transpiler's map·wrap·fail contract, NOT a goal to pursue):
+   │      every Python artifact traces to Kotlin — nothing fabricated; a "— no Kotlin source —"
+   │      row here is a defect. (PseudoUI swap-ins are a later, separate phase.)
    │
    ├─ (B1) Python → Dart   via PseudoDart;  UI kit = PseudoFlutter   ⇒ target port WFL_PseudoCoup
    └─ (B2) Python → Haxe   via PyHaxe;      UI kit = PyHaxeUI(+Android/iOS) ⇒ target port WFL_PyHaxe
@@ -105,8 +106,11 @@ source of truth today; WFL_PseudoCoup is merely the furthest along.
 1. **Fix the transpiler's biggest gap** — Compose unit literals `N.dp` / `N.sp` emit invalid
    Python ("invalid decimal literal"); this accounts for most of the 62 compile failures (nearly
    all the `ui/` screens). One fix clears the bulk. (Representation TBD — e.g. `dp(16)` wrapper.)
-2. **Re-point the oversight** at WFL_MixingCenter (vs WFL Kotlin) and shift the goal to **"zero
-   `— no Kotlin source —`"** (the MixingCenter must contain only what Kotlin has).
+2. **"Every Python artifact traces to Kotlin" is an INVARIANT, not a goal** — enforced *by
+   construction*, not pursued. The transpiler's map·wrap·fail contract never fabricates Python with
+   no Kotlin origin (emit-and-hope was the old violation mechanism). A `— no Kotlin source —` row in
+   the MixingCenter is therefore a **defect to fix**, never a milestone. (The old dualgraph's pc_only
+   metric was measuring the Dart *port*, which legitimately adds UI — a different artifact.)
 3. Remaining non-`.dp` compile failures (a handful of repositories, MainActivity, DI glue).
 4. **New unified mapper** (replaces the deprecated mapping subsystem in `_deprecated/`): one tool
    carrying **sizing/positioning (relative + absolute)** and **one-degree connectivity** (a screen/
