@@ -30,11 +30,14 @@ _BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMa
 class Declarations:
     @kind("source_file")
     def v_source_file(self, node):
-        self._ext_patches = []
+        self._ext_patches, self._nested_aliases = [], []
         parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
         body = "\n\n\n".join(p for p in parts if p)
-        if self._ext_patches:   # flush extension-receiver patches AFTER all decls, so
-            body += "\n\n\n" + "\n".join(self._ext_patches)   # the receiver class exists
+        # flush AFTER all decls so the referenced classes exist: nested-type aliases
+        # (Inner = Outer.Inner, makes bare cross-file refs resolve) then ext patches.
+        tail = self._nested_aliases + self._ext_patches
+        if tail:
+            body += "\n\n\n" + "\n".join(tail)
         return body
 
     @kind("function_declaration")
@@ -205,6 +208,10 @@ class Declarations:
         lines += [self.visit(m) for m in methods]
         lines += [self._render_getter(g) for g in getters]  # computed props -> @property
         lines += [self._render_lazy(z) for z in lazies]     # by lazy -> cached @property
+        for n in nested:                                    # alias nested types to module
+            nm = self._name_of(n)                           # level: Inner = Outer.Inner
+            if nm:
+                self._nested_aliases.append(f"{nm} = {name}.{nm}")
         lines += [self.visit(n) for n in nested]
         for comp in comps:                                 # companion -> static members
             lines += self._render_companion(comp, name)

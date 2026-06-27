@@ -30,6 +30,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._static_members = set()  # companion members -> ClassName.x resolution
         self._static_class = None     # the enclosing class name for those
         self._ext_patches = []        # `Recv.fn = fn` lines, flushed at module end
+        self._nested_aliases = []     # `Inner = Outer.Inner` lines, flushed at module end
 
     def transpile(self, source: bytes) -> str:
         tree = parse(source)

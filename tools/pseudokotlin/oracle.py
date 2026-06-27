@@ -33,6 +33,7 @@ _TP_CACHE = {}      # path -> transpiled Python (or None if it does not transpil
 _INDEX = {}         # top-level Kotlin declaration name -> defining .kt path
 _TOP_DECL = ("class_declaration", "object_declaration",
              "function_declaration", "property_declaration", "type_alias")
+_TYPE_DECL = ("class_declaration", "object_declaration", "type_alias")
 
 CORPUS = os.path.normpath(os.path.join(HERE, "..", "..", "..", "WFL_MixingCenter", "WFL"))
 MAIN = os.path.join(CORPUS, "app", "src", "main")
@@ -75,14 +76,27 @@ def build_index():
                 path = os.path.join(dp, n)
                 with open(path, "rb") as f:
                     src = f.read()
-                for c in parse(src).root_node.named_children:
-                    if c.type not in _TOP_DECL:
-                        continue
-                    ident = next((k for k in c.children
-                                  if k.type in ("identifier", "simple_identifier")), None)
-                    if ident is not None:
-                        _INDEX.setdefault(ident.text.decode(), path)
+                _index_decls(parse(src).root_node, path)
     return _INDEX
+
+
+def _index_decls(node, path, types_only=False):
+    """Index declaration name -> file, descending into class/object bodies so NESTED
+    TYPES (e.g. ConfidenceTier inside AutoregulationEngine) resolve too. Inside a body
+    only nested TYPES are indexed, never members -- indexing member functions/props
+    (`size`, `name`, …) would make the closure pull in the whole corpus."""
+    kinds = _TYPE_DECL if types_only else _TOP_DECL
+    for c in node.named_children:
+        if c.type in kinds:
+            ident = next((k for k in c.children
+                          if k.type in ("identifier", "simple_identifier")), None)
+            if ident is not None:
+                _INDEX.setdefault(ident.text.decode(), path)
+        if c.type in ("class_declaration", "object_declaration"):
+            body = next((k for k in c.children
+                         if k.type in ("class_body", "enum_class_body")), None)
+            if body is not None:
+                _index_decls(body, path, types_only=True)
 
 
 def referenced_names(py):
