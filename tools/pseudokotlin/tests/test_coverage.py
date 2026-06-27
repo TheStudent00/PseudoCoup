@@ -15,7 +15,7 @@ import parse  # noqa: E402
 import classify  # noqa: E402
 from transpiler import KtToPy  # noqa: E402
 
-EXHAUSTIVENESS_ENFORCED = False  # flip True at end of P1
+EXHAUSTIVENESS_ENFORCED = True  # P1 complete: every named kind is classified
 
 
 def test_no_handler_for_unknown_kind():

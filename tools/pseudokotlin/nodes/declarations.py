@@ -124,9 +124,15 @@ class Declarations:
         target = f"self.{name}" if (as_self and name in self._members) else name
         # value is the named child after the variable_declaration
         kids = self.named(node)
-        val = None
+        val_node = None
         for i, c in enumerate(kids):
             if c.type == "variable_declaration" and i + 1 < len(kids):
-                val = self.visit(kids[i + 1])
+                val_node = kids[i + 1]
                 break
-        return f"{target} = {val}" if val is not None else f"{target} = None"
+        if val_node is None:
+            return f"{target} = None"
+        if val_node.type == "when_expression":
+            return self._when(val_node, f"{target} = ")
+        if val_node.type == "if_expression" and self._if_is_block(val_node):
+            return self._if(val_node, f"{target} = ")
+        return f"{target} = {self.visit(val_node)}"
