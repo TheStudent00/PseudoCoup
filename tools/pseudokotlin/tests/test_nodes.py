@@ -112,8 +112,18 @@ def test_guard_clause_stays_statement():
     # one-armed `if (c) return x` is a statement, never a ternary value
     py = tp("fun f(xs: List<Int>): Int { if (xs.isEmpty()) return 0; return xs.size }")
     assert compiles(py)
-    assert "if xs.isEmpty():" in py and "return 0" in py
-    assert "(return 0" not in py and "0 if" not in py   # not collapsed to a ternary
+    assert "if (len(xs) == 0):" in py and "return 0" in py   # isEmpty/size -> len WRAP
+    assert "(return 0" not in py and "0 if" not in py        # not collapsed to a ternary
+
+
+def test_stdlib_method_wrap():
+    py = tp("fun f(xs: List<Int>, n: Int): Int {\n"
+            "    if (xs.isNotEmpty()) return n.coerceIn(1, 10)\n"
+            "    return n.coerceAtMost(5) }")
+    assert compiles(py)
+    assert "(len(xs) != 0)" in py
+    assert "max(1, min(n, 10))" in py
+    assert "min(n, 5)" in py
 
 
 def test_elvis_with_early_return_hoists_guard():

@@ -6,6 +6,7 @@ resolution in the identifier handler.
 """
 import sys
 import os
+import re
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
@@ -18,13 +19,23 @@ _OOP_DEFER = {"secondary_constructor", "object_literal"}
 # JUnit lifecycle annotations preserved as decorators (kotlin_rt tags them) so the
 # oracle runs real @Test methods, not private helpers. Others are still dropped.
 _JUNIT_ANN = {"Test", "Before", "After", "BeforeEach", "AfterEach", "Ignore", "Disabled"}
+# Receiver types that map to Python builtins -> cannot be monkey-patched, so an
+# extension function on them is NOT registered onto the receiver (a separate bucket).
+_BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMap",
+                   "Collection", "Iterable", "Sequence", "Array", "String",
+                   "CharSequence", "Int", "Long", "Double", "Float", "Boolean",
+                   "Char", "Byte", "Short", "Number", "Comparable", "Any", "Pair"}
 
 
 class Declarations:
     @kind("source_file")
     def v_source_file(self, node):
+        self._ext_patches = []
         parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
-        return "\n\n\n".join(p for p in parts if p)
+        body = "\n\n\n".join(p for p in parts if p)
+        if self._ext_patches:   # flush extension-receiver patches AFTER all decls, so
+            body += "\n\n\n" + "\n".join(self._ext_patches)   # the receiver class exists
+        return body
 
     @kind("function_declaration")
     def v_function_declaration(self, node):
@@ -32,8 +43,22 @@ class Declarations:
             node.parent.type in ("class_body", "enum_class_body")
         # extension fn `fun Recv.name(…)` -> the receiver becomes self (its `.` token
         # sits between the receiver type and the name); body `this` already -> self.
-        is_extension = any(c.type == "." for c in node.children)
-        return self._function(node, with_self=in_class or is_extension)
+        recv = self._ext_receiver(node)
+        fn = self._function(node, with_self=in_class or recv is not None)
+        if recv is not None and not in_class:   # top-level extension: dispatch on the
+            base = recv.split("<")[0].strip()   # receiver -> patch it onto that class so
+            if base and base not in _BUILTIN_RECVRS:    # `recv.name(...)` resolves (Kotlin
+                nm = self._safe(self._name_of(node) or "unknown_func")  # ext semantics).
+                self._ext_patches.append(f"{base}.{nm} = {nm}")   # flushed at module end
+        return fn
+
+    def _ext_receiver(self, node):
+        # extension fn `fun <user_type>.name(...)`: receiver is the user_type before the
+        # `.` (a plain fn has no `.` child; its return type's user_type sits after `:`).
+        if not any(c.type == "." for c in node.children):
+            return None
+        ut = next((c for c in node.children if c.type == "user_type"), None)
+        return self.text(ut) if ut is not None else None
 
     def _function(self, node, with_self, decorator=""):
         name = self._safe(self._name_of(node) or "unknown_func")
@@ -86,15 +111,24 @@ class Declarations:
                     sig[-1][1] = self.visit(c)
                 pending = False
         parts, guards = [], []
+        pnames = {p for p, _ in sig}
         for p, d in sig:
             if d is None:
                 parts.append(p)
-            elif "self." in d:                       # per-call default via sentinel
-                parts.append(f"{p}=None")
+            elif self._default_call_time(d, pnames):  # references self/another param ->
+                parts.append(f"{p}=None")             # not def-time-safe; sentinel + guard
                 guards.append(f"if {p} is None: {p} = {d}")
             else:
                 parts.append(f"{p}={d}")
         return names, parts, guards
+
+    @staticmethod
+    def _default_call_time(default, pnames):
+        # A default is NOT def-time-safe (the `def` runs during class-body exec) when it
+        # references self or another parameter -- Kotlin evaluates defaults per-call.
+        if "self." in default:
+            return True
+        return bool(set(re.findall(r"[A-Za-z_]\w*", default)) & pnames)
 
     @kind("class_declaration")
     def v_class_declaration(self, node):
