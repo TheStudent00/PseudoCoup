@@ -579,6 +579,9 @@ class Pair:
     def __iter__(self):
         return iter((self.first, self.second))
 
+    def __getitem__(self, i):           # so the .first/.second WRAP ([0]/[1]) also works
+        return (self.first, self.second)[i]
+
 
 class Triple:
     def __init__(self, first, second, third):
@@ -590,6 +593,9 @@ class Triple:
 
     def __iter__(self):
         return iter((self.first, self.second, self.third))
+
+    def __getitem__(self, i):
+        return (self.first, self.second, self.third)[i]
 
 
 def listOf(*xs):

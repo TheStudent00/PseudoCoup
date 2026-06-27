@@ -38,15 +38,30 @@ _STDLIB_METHODS = {
     "toLong":        lambda r, a: f"int({r})",
     "toString":      lambda r, a: f"str({r})",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
+    # ---- Kotlin String methods (names differ from Python's str) ---- #
+    "lowercase":     lambda r, a: f"{r}.lower()",
+    "uppercase":     lambda r, a: f"{r}.upper()",
+    "trim":          lambda r, a: f"{r}.strip()",
+    "trimStart":     lambda r, a: f"{r}.lstrip()",
+    "trimEnd":       lambda r, a: f"{r}.rstrip()",
+    "startsWith":    lambda r, a: f"{r}.startswith({a[0]})",
+    "endsWith":      lambda r, a: f"{r}.endswith({a[0]})",
+    "contains":      lambda r, a: f"({a[0]} in {r})",     # str/collection membership
+    "split":         lambda r, a: f"KtList({r}.split({a[0]}))",
+    "substring":     lambda r, a: (f"{r}[{a[0]}:{a[1]}]" if len(a) > 1
+                                   else f"{r}[{a[0]}:]"),
 }
 # Kotlin stdlib PROPERTIES (no call) rewritten at the navigation site. `size` falls
 # back to len() for any sized receiver (KtList also has a .size property of its own).
 _STDLIB_PROPS = {
     "size": lambda r: f"len({r})",
-    "first": lambda r: f"{r}[0]",       # range/list .first property (start/first element)
+    "first": lambda r: f"{r}[0]",       # range/list .first / Pair.first (a to b -> tuple)
+    "second": lambda r: f"{r}[1]",      # Pair.second / Triple.second
+    "third": lambda r: f"{r}[2]",       # Triple.third
     "last": lambda r: f"{r}[-1]",       # .last property (end/last element)
     "lastIndex": lambda r: f"(len({r}) - 1)",
     "indices": lambda r: f"KtList(range(len({r})))",
+    "length": lambda r: f"len({r})",    # String.length
 }
 
 # Kotlin scope functions `x.let/also/takeIf/takeUnless { … }` -- the lambda (which uses
