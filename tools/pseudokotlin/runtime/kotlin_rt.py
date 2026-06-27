@@ -79,6 +79,348 @@ def assertNotNull(*args):
     assert args[-1] is not None, "expected non-None"
 
 
+# ---- Kotlin collection runtime -- KtList/KtMap carry the Kotlin stdlib methods so
+#      `xs.sortedBy { … }.map { … }` dispatches uniformly. List-returning methods
+#      return KtList (chains stay typed); map-returning methods return KtMap. Lambdas
+#      arrive as the transpiler's `(lambda it=None: …)`, called positionally. -------- #
+import functools
+
+
+class KtEntry:                       # Kotlin Map.Entry (mapValues { it.value } etc.)
+    __slots__ = ("key", "value")
+
+    def __init__(self, key, value):
+        self.key, self.value = key, value
+
+
+class KtList(list):
+    @property
+    def size(self):
+        return len(self)
+
+    @property
+    def indices(self):
+        return KtList(range(len(self)))
+
+    @property
+    def lastIndex(self):
+        return len(self) - 1
+
+    def isEmpty(self):
+        return len(self) == 0
+
+    def isNotEmpty(self):
+        return len(self) != 0
+
+    def contains(self, x):
+        return x in self
+
+    def filter(self, p):
+        return KtList(x for x in self if p(x))
+
+    def filterNot(self, p):
+        return KtList(x for x in self if not p(x))
+
+    def filterNotNull(self):
+        return KtList(x for x in self if x is not None)
+
+    def filterIndexed(self, p):
+        return KtList(x for i, x in enumerate(self) if p(i, x))
+
+    def map(self, f):
+        return KtList(f(x) for x in self)
+
+    def mapIndexed(self, f):
+        return KtList(f(i, x) for i, x in enumerate(self))
+
+    def mapNotNull(self, f):
+        return KtList(y for y in (f(x) for x in self) if y is not None)
+
+    def flatMap(self, f):
+        return KtList(y for x in self for y in f(x))
+
+    def flatten(self):
+        return KtList(y for x in self for y in x)
+
+    def forEach(self, action):
+        for x in self:
+            action(x)
+
+    def forEachIndexed(self, action):
+        for i, x in enumerate(self):
+            action(i, x)
+
+    def onEach(self, action):
+        for x in self:
+            action(x)
+        return self
+
+    def first(self, p=None):
+        return next(x for x in self if p(x)) if p else self[0]
+
+    def firstOrNull(self, p=None):
+        if p:
+            return next((x for x in self if p(x)), None)
+        return self[0] if self else None
+
+    def last(self, p=None):
+        if p:
+            return next(x for x in reversed(self) if p(x))
+        return self[-1]
+
+    def lastOrNull(self, p=None):
+        if p:
+            return next((x for x in reversed(self) if p(x)), None)
+        return self[-1] if self else None
+
+    def single(self, p=None):
+        items = [x for x in self if p(x)] if p else list(self)
+        if len(items) != 1:
+            raise ValueError("expected single element")
+        return items[0]
+
+    def singleOrNull(self, p=None):
+        items = [x for x in self if p(x)] if p else list(self)
+        return items[0] if len(items) == 1 else None
+
+    def take(self, n):
+        return KtList(self[:max(0, n)])
+
+    def takeLast(self, n):
+        return KtList(self[len(self) - n:] if n > 0 else [])
+
+    def takeWhile(self, p):
+        out = KtList()
+        for x in self:
+            if not p(x):
+                break
+            out.append(x)
+        return out
+
+    def drop(self, n):
+        return KtList(self[max(0, n):])
+
+    def dropLast(self, n):
+        return KtList(self[:max(0, len(self) - n)])
+
+    def sorted(self):
+        return KtList(sorted(self))
+
+    def sortedDescending(self):
+        return KtList(sorted(self, reverse=True))
+
+    def sortedBy(self, key):
+        return KtList(sorted(self, key=key))
+
+    def sortedByDescending(self, key):
+        return KtList(sorted(self, key=key, reverse=True))
+
+    def reversed(self):
+        return KtList(reversed(self))
+
+    def distinct(self):
+        seen, out = set(), KtList()
+        for x in self:
+            if x not in seen:
+                seen.add(x)
+                out.append(x)
+        return out
+
+    def distinctBy(self, key):
+        seen, out = set(), KtList()
+        for x in self:
+            k = key(x)
+            if k not in seen:
+                seen.add(k)
+                out.append(x)
+        return out
+
+    def sumOf(self, selector):
+        return sum(selector(x) for x in self)
+
+    def sum(self):
+        return sum(self)
+
+    def average(self):
+        return sum(self) / len(self) if self else 0.0
+
+    def count(self, p=None):
+        return sum(1 for x in self if p(x)) if p else len(self)
+
+    def maxOrNull(self):
+        return max(self) if self else None
+
+    def minOrNull(self):
+        return min(self) if self else None
+
+    def maxOf(self, selector):
+        return max(selector(x) for x in self)
+
+    def minOf(self, selector):
+        return min(selector(x) for x in self)
+
+    def maxOfOrNull(self, selector):
+        return max((selector(x) for x in self), default=None)
+
+    def minOfOrNull(self, selector):
+        return min((selector(x) for x in self), default=None)
+
+    def maxByOrNull(self, selector):
+        return max(self, key=selector) if self else None
+
+    def minByOrNull(self, selector):
+        return min(self, key=selector) if self else None
+
+    def any(self, p=None):
+        return any(p(x) for x in self) if p else len(self) > 0
+
+    def all(self, p):
+        return all(p(x) for x in self)
+
+    def none(self, p=None):
+        return not self.any(p)
+
+    def associateBy(self, key, value=None):
+        return KtMap((key(x), value(x) if value else x) for x in self)
+
+    def associateWith(self, value):
+        return KtMap((x, value(x)) for x in self)
+
+    def associate(self, transform):
+        return KtMap(tuple(transform(x)) for x in self)
+
+    def groupBy(self, key, value=None):
+        out = KtMap()
+        for x in self:
+            out.setdefault(key(x), KtList()).append(value(x) if value else x)
+        return out
+
+    def partition(self, p):
+        yes, no = KtList(), KtList()
+        for x in self:
+            (yes if p(x) else no).append(x)
+        return Pair(yes, no)
+
+    def zip(self, other, transform=None):
+        return KtList(transform(a, b) if transform else Pair(a, b)
+                      for a, b in zip(self, other))
+
+    def zipWithNext(self, transform=None):
+        return KtList(transform(a, b) if transform else Pair(a, b)
+                      for a, b in zip(self, self[1:]))
+
+    def chunked(self, n, transform=None):
+        chunks = (KtList(self[i:i + n]) for i in range(0, len(self), n))
+        return KtList(transform(c) if transform else c for c in chunks)
+
+    def windowed(self, size, step=1, partialWindows=False):
+        out = KtList()
+        i = 0
+        while i + (size if not partialWindows else 1) <= len(self):
+            out.append(KtList(self[i:i + size]))
+            i += step
+        return out
+
+    def fold(self, initial, op):
+        return functools.reduce(op, self, initial)
+
+    def reduce(self, op):
+        return functools.reduce(op, self)
+
+    def getOrNull(self, i):
+        return self[i] if 0 <= i < len(self) else None
+
+    def getOrElse(self, i, default):
+        return self[i] if 0 <= i < len(self) else default(i)
+
+    def elementAtOrNull(self, i):
+        return self.getOrNull(i)
+
+    def indexOfFirst(self, p):
+        return next((i for i, x in enumerate(self) if p(x)), -1)
+
+    def indexOf(self, x):
+        try:
+            return super().index(x)
+        except ValueError:
+            return -1
+
+    def withIndex(self):
+        return KtList(Pair(i, x) for i, x in enumerate(self))
+
+    def joinToString(self, *args, **kw):
+        sep = next((a for a in args if isinstance(a, str)), kw.get("separator", ", "))
+        transform = next((a for a in args if callable(a)), kw.get("transform"))
+        return sep.join(str(transform(x)) if transform else str(x) for x in self)
+
+    def toList(self):
+        return self
+
+    def toMutableList(self):
+        return KtList(self)
+
+    def toSet(self):
+        return set(self)
+
+    def toTypedArray(self):
+        return KtList(self)
+
+    def reversedArray(self):
+        return KtList(reversed(self))
+
+
+class KtMap(dict):
+    @property
+    def size(self):
+        return len(self)
+
+    @property
+    def entries(self):
+        return KtList(KtEntry(k, v) for k, v in self.items())
+
+    def isEmpty(self):
+        return len(self) == 0
+
+    def isNotEmpty(self):
+        return len(self) != 0
+
+    def containsKey(self, k):
+        return k in self
+
+    def getValue(self, k):
+        return self[k]
+
+    def getOrDefault(self, k, d):
+        return dict.get(self, k, d)
+
+    def getOrElse(self, k, default):
+        return self[k] if k in self else default()
+
+    def mapValues(self, f):
+        return KtMap((k, f(KtEntry(k, v))) for k, v in self.items())
+
+    def mapKeys(self, f):
+        return KtMap((f(KtEntry(k, v)), v) for k, v in self.items())
+
+    def filterValues(self, p):
+        return KtMap((k, v) for k, v in self.items() if p(v))
+
+    def filterKeys(self, p):
+        return KtMap((k, v) for k, v in self.items() if p(k))
+
+    def filter(self, p):
+        return KtMap((k, v) for k, v in self.items() if p(KtEntry(k, v)))
+
+    def toList(self):
+        return KtList(Pair(k, v) for k, v in self.items())
+
+    def keysList(self):
+        return KtList(self.keys())
+
+    def valuesList(self):
+        return KtList(self.values())
+
+
 # ---- Kotlin stdlib helpers (added as engines surface them) ------------------- #
 class Pair:
     def __init__(self, first, second):
@@ -104,7 +446,11 @@ class Triple:
 
 
 def listOf(*xs):
-    return list(xs)
+    return KtList(xs)
+
+
+def listOfNotNull(*xs):
+    return KtList(x for x in xs if x is not None)
 
 
 def setOf(*xs):
@@ -112,15 +458,15 @@ def setOf(*xs):
 
 
 def mapOf(*pairs):
-    return dict(pairs)
+    return KtMap(tuple(p) for p in pairs)
 
 
 def emptyList():
-    return []
+    return KtList()
 
 
 def emptyMap():
-    return {}
+    return KtMap()
 
 
 def emptySet():
@@ -128,7 +474,7 @@ def emptySet():
 
 
 def mutableListOf(*xs):
-    return list(xs)
+    return KtList(xs)
 
 
 def mutableSetOf(*xs):
@@ -136,7 +482,7 @@ def mutableSetOf(*xs):
 
 
 def mutableMapOf(*pairs):
-    return dict(pairs)
+    return KtMap(tuple(p) for p in pairs)
 
 
 # ---- Kotlin top-level math (called by bare name) ----------------------------- #

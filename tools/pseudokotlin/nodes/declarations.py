@@ -125,6 +125,16 @@ class Declarations:
                 parts.append(f"{p}={d}")
         return names, parts, guards
 
+    def _ctor_default(self, class_param):
+        # `val x: T = expr` -> the default is the named child after the `=` token.
+        seen_eq = False
+        for c in class_param.children:
+            if c.type == "=":
+                seen_eq = True
+            elif seen_eq and c.is_named:
+                return self.visit(c)
+        return None
+
     @staticmethod
     def _default_call_time(default, pnames):
         # A default is NOT def-time-safe (the `def` runs during class-body exec) when it
@@ -148,7 +158,7 @@ class Declarations:
     def _render_class(self, node, name):
         body_node = next((c for c in node.children
                           if c.type in ("class_body", "enum_class_body")), None)
-        ctor_params = []
+        ctor_params, ctor_defaults = [], {}
         pc = next((c for c in node.children if c.type == "primary_constructor"), None)
         if pc is not None:
             cps = next((c for c in pc.named_children if c.type == "class_parameters"), None)
@@ -158,6 +168,9 @@ class Declarations:
                     nm = self._name_of(pn)
                     if nm:
                         ctor_params.append(nm)
+                        dflt = self._ctor_default(pn)   # `val x: T = expr` -> __init__ default
+                        if dflt is not None:
+                            ctor_defaults[nm] = dflt
 
         prev = self._members
         self._members = set(ctor_params)
@@ -193,7 +206,19 @@ class Declarations:
                 # else: enum_entry / modifiers / trivia -> consumed, not emitted
 
         self._scopes.append(set(ctor_params))
-        init_body = [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
+        sig, guards = ["self"], []
+        safe_names = {self._safe(p) for p in ctor_params}
+        for p in ctor_params:
+            sp = self._safe(p)
+            d = ctor_defaults.get(p)
+            if d is None:
+                sig.append(sp)
+            elif self._default_call_time(d, safe_names):    # sentinel for self/param refs
+                sig.append(f"{sp}=None")
+                guards.append(f"if {sp} is None: {sp} = {d}")
+            else:
+                sig.append(f"{sp}={d}")
+        init_body = guards + [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
         init_body += [self._render_property(p, as_self=True) for p in props]
         for ini in inits:                                  # init { … } -> __init__ body
             blk = next((k for k in ini.named_children if k.type == "block"), None)
@@ -203,8 +228,7 @@ class Declarations:
 
         lines = []
         if ctor_params or props or inits:
-            args = ", ".join(["self"] + [self._safe(p) for p in ctor_params])
-            lines.append(f"def __init__({args}):\n{_block(init_body)}")
+            lines.append(f"def __init__({', '.join(sig)}):\n{_block(init_body)}")
         lines += [self.visit(m) for m in methods]
         lines += [self._render_getter(g) for g in getters]  # computed props -> @property
         lines += [self._render_lazy(z) for z in lazies]     # by lazy -> cached @property
