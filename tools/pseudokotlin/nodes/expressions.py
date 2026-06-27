@@ -124,9 +124,17 @@ class Expressions:
     @kind("binary_expression")
     def v_binary(self, node):
         kids = self.named(node)
-        left, right = self.visit(kids[0]), self.visit(kids[-1])
         op = next((c.type for c in node.children
                    if c.type in _OP_TOKENS or c.type == "?:"), None)
+        # `func<Type>(args)` is a grammar ambiguity parsed as (func < Type) > (args);
+        # it's really a generic call -- drop the type argument.
+        if op == ">" and kids[0].type == "binary_expression" \
+                and kids[-1].type == "parenthesized_expression" \
+                and any(c.type == "<" for c in kids[0].children):
+            fn = self.visit(self.named(kids[0])[0])
+            inner = self.named(kids[-1])
+            return f"{fn}({self.visit(inner[0]) if inner else ''})"
+        left, right = self.visit(kids[0]), self.visit(kids[-1])
         if op == "?:":                                  # elvis: a ?: b
             if not self.is_value(kids[-1]):             # a ?: return/throw -> guard
                 self._lam += 1                          # `val x = e ?: return d` becomes
