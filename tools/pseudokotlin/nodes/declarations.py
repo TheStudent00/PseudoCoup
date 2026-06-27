@@ -71,7 +71,7 @@ class Declarations:
         params = (["self"] if with_self else []) + parts
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
-        self._scopes.append(set(names))
+        self._scopes.append(set(names) | self._local_names(body_node))
         body = self._render_function_body(body_node, prefix=guards)
         self._scopes.pop()
         decos = ([decorator] if decorator else []) + \
@@ -124,6 +124,34 @@ class Declarations:
             else:
                 parts.append(f"{p}={d}")
         return names, parts, guards
+
+    def _local_names(self, node):
+        # Local `val`/`var` declarations (and for-loop variables) shadow class members,
+        # so collect them into the function's scope -> a local `score` resolves to the
+        # local, not a same-named `fun score(...)`. Stops at nested fn/lambda/class.
+        out = set()
+        if node is None:
+            return out
+        stop = ("lambda_literal", "function_declaration", "anonymous_function",
+                "object_declaration", "class_declaration")
+
+        def walk(n):
+            for c in n.children:
+                if c.type in stop:
+                    continue
+                if c.type == "property_declaration":
+                    nm = self._name_of(c, deep=True)
+                    if nm:
+                        out.add(nm)
+                elif c.type == "for_statement":
+                    var = next((k for k in c.children if k.type in
+                                ("variable_declaration", "identifier")), None)
+                    if var is not None:
+                        out.add(self.text(var))
+                walk(c)
+
+        walk(node)
+        return out
 
     def _ctor_default(self, class_param):
         # `val x: T = expr` -> the default is the named child after the `=` token.
