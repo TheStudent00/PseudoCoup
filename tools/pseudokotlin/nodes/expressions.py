@@ -145,6 +145,17 @@ class Expressions:
             return f"({left} if {left} is not None else {right})"
         if op is None:
             raise Untranspilable(node, "binary expression without a known operator")
+        if op in ("+", "-") and kids[0].type == "character_literal":
+            if op == "-" and kids[-1].type == "character_literal":   # Char - Char = Int
+                return f"(ord({left}) - ord({right}))"
+            sign = "+" if op == "+" else "-"                         # Char +/- Int = Char
+            return f"chr(ord({left}) {sign} {right})"
+        if op == "+":   # Kotlin "str" + any concatenates (coerces); Python str+int errors
+            strs = ("string_literal", "multiline_string_literal")
+            if kids[0].type in strs:
+                return f"({left} + str({right}))"
+            if kids[-1].type in strs:
+                return f"(str({left}) + {right})"
         return f"{left} {_BINOP.get(op, op)} {right}"
 
     @kind("unary_expression")
@@ -204,9 +215,20 @@ class Expressions:
         kids = self.named(node)
         recv = kids[0]
         sel = self.text(kids[-1]) if len(kids) > 1 else ""
+        safe_call = any(c.type == "?." for c in node.children)
+        # grammar quirk: `!w.sel` / `-w.sel` parse as (!w).sel but MEAN !(w.sel) -- the
+        # prefix op binds looser than the dot. Lift it out around the navigation.
+        if recv.type == "unary_expression":
+            ops = [c.type for c in recv.children if not c.is_named]
+            pre = next((o for o in ("!", "-", "+") if o in ops), None)
+            if pre is not None:
+                base = self._navigate(self.named(recv)[0], sel, safe_call, node)
+                return f"(not {base})" if pre == "!" else f"{pre}{base}"
+        return self._navigate(recv, sel, safe_call, node)
+
+    def _navigate(self, recv, sel, safe_call, node):
         if recv.type in _NUMBER_KINDS and sel in _UNIT_EXT:      # WRAP: 16.dp -> dp(16)
             return f"{_UNIT_EXT[sel]}({self.visit(recv)})"
-        safe_call = any(c.type == "?." for c in node.children)
         if sel in _STDLIB_PROPS and not safe_call:               # WRAP: xs.size -> len(xs)
             return _STDLIB_PROPS[sel](self.visit(recv))
         left = self.visit(recv)
