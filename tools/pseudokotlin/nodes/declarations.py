@@ -25,6 +25,12 @@ _BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMa
                    "Collection", "Iterable", "Sequence", "Array", "String",
                    "CharSequence", "Int", "Long", "Double", "Float", "Boolean",
                    "Char", "Byte", "Short", "Number", "Comparable", "Any", "Pair"}
+# Kotlin type -> Python type for overload isinstance dispatch (a domain class maps to
+# itself). Int/Long stay int; Double/Float stay float -- distinguishable at runtime.
+_PYTYPE = {"Double": "float", "Float": "float", "Int": "int", "Long": "int",
+           "String": "str", "CharSequence": "str", "Char": "str", "Boolean": "bool",
+           "List": "list", "MutableList": "list", "Collection": "list", "Array": "list",
+           "Set": "set", "MutableSet": "set", "Map": "dict", "MutableMap": "dict"}
 # type (simple name) -> its instance member names, accumulated as classes are rendered.
 # Lets an extension fn `fun Recv.f() = … bareField …` resolve bareField to self.field.
 _TYPE_FIELDS = {}
@@ -66,8 +72,8 @@ class Declarations:
         ut = next((c for c in node.children if c.type == "user_type"), None)
         return self.text(ut) if ut is not None else None
 
-    def _function(self, node, with_self, decorator=""):
-        name = self._safe(self._name_of(node) or "unknown_func")
+    def _function(self, node, with_self, decorator="", name=None):
+        name = name or self._safe(self._name_of(node) or "unknown_func")
         pnode = next((c for c in node.children if c.type == "function_value_parameters"), None)
         names, parts, guards = self._collect_params(pnode) if pnode is not None \
             else ([], [], [])
@@ -91,6 +97,60 @@ class Declarations:
             [f"@{a}" for a in self._annotations(node) if a in _JUNIT_ANN]
         head = "".join(d + "\n" for d in decos)
         return f"{head}def {name}({', '.join(params)}):\n{body}"
+
+    # ---- method overloading (Kotlin same-name, different signatures) ------- #
+    def _render_overloads(self, name, variants):
+        # render each variant as `_name__i`, then a wrapper `name` that dispatches by the
+        # runtime type at the first param position where the signatures differ.
+        safe = self._safe(name)
+        impls = [self._function(v, with_self=True, name=f"_{safe}__{i}")
+                 for i, v in enumerate(variants)]
+        sigs = [self._param_types(v) for v in variants]
+        return impls + [self._overload_wrapper(safe, sigs)]
+
+    def _param_types(self, node):
+        pnode = next((c for c in node.children
+                      if c.type == "function_value_parameters"), None)
+        out = []
+        if pnode is not None:
+            for p in pnode.named_children:
+                if p.type == "parameter":
+                    ut = next((c for c in p.children if c.type == "user_type"), None)
+                    typ = self.text(ut).split("<")[0].strip() if ut is not None else None
+                    out.append((self._name_of(p), typ))
+        return out
+
+    def _overload_wrapper(self, safe, sigs):
+        n = len(sigs)
+        # discriminating position: first index where the variants' types differ
+        disc = next((d for d in range(max((len(s) for s in sigs), default=0))
+                     if len({s[d][1] if d < len(s) else None for s in sigs}) > 1), None)
+        order = sorted(range(n), key=lambda i: (   # specific (domain) types before general
+            self._type_rank(sigs[i][disc][1]) if disc is not None and disc < len(sigs[i])
+            else (len(sigs[i]), 99)))
+        body = []
+        for rank, i in enumerate(order):
+            call = f"return self._{safe}__{i}(*args, **kwargs)"
+            if rank == len(order) - 1:                       # last variant = fallback
+                body.append(call)
+            elif disc is not None and disc < len(sigs[i]):
+                pname, typ = sigs[i][disc]
+                body.append(f"if {self._type_guard(disc, pname, typ)}:\n    {call}")
+            else:                                            # discriminate by arity
+                body.append(f"if len(args) + len(kwargs) == {len(sigs[i])}:\n    {call}")
+        return f"def {safe}(self, *args, **kwargs):\n{_block(body)}"
+
+    def _type_guard(self, d, pname, typ):
+        pt = _PYTYPE.get(typ, typ)
+        checks = [f"(len(args) > {d} and isinstance(args[{d}], {pt}))"]
+        if pname:
+            checks.append(f"isinstance(kwargs.get('{self._safe(pname)}'), {pt})")
+        return "(" + " or ".join(checks) + ")"
+
+    @staticmethod
+    def _type_rank(typ):
+        # domain classes are specific (checked first); primitives are general (fallback)
+        return (1, 0) if typ in _PYTYPE else (0, 0)
 
     def _annotations(self, node):
         mods = next((c for c in node.children if c.type == "modifiers"), None)
@@ -306,7 +366,14 @@ class Declarations:
         lines = []
         if ctor_params or props or inits:
             lines.append(f"def __init__({', '.join(sig)}):\n{_block(init_body)}")
-        lines += [self.visit(m) for m in methods]
+        groups = {}                          # group by name -> Kotlin method overloading
+        for m in methods:
+            groups.setdefault(self._name_of(m), []).append(m)
+        for mname, variants in groups.items():
+            if len(variants) == 1:
+                lines.append(self.visit(variants[0]))
+            else:                            # >1 same-named -> type-dispatching wrapper
+                lines += self._render_overloads(mname, variants)
         lines += [self._render_getter(g) for g in getters]  # computed props -> @property
         lines += [self._render_lazy(z) for z in lazies]     # by lazy -> cached @property
         for n in nested:                                    # alias nested types to module
