@@ -38,6 +38,17 @@ _STDLIB_METHODS = {
 # back to len() for any sized receiver (KtList also has a .size property of its own).
 _STDLIB_PROPS = {"size": lambda r: f"len({r})"}
 
+# Kotlin scope functions `x.let/also/takeIf/takeUnless { … }` -- the lambda (which uses
+# `it`) is applied to the receiver. Handled at the call site (they apply to ANY type, so
+# no runtime method works) and aware of `?.` safe-call. recv, lambda-str, is-safe-call.
+_SCOPE_FNS = {
+    "let":        lambda r, f, s: f"({f}({r}) if {r} is not None else None)" if s
+                                  else f"{f}({r})",
+    "takeIf":     lambda r, f, s: f"({r} if {f}({r}) else None)",
+    "takeUnless": lambda r, f, s: f"({r} if not {f}({r}) else None)",
+    "also":       lambda r, f, s: f"({f}({r}), {r})[1]",      # run for effect, return recv
+}
+
 
 class Expressions:
     # ---- atoms ----------------------------------------------------------- #
@@ -163,11 +174,18 @@ class Expressions:
             in_fn = self.visit(self.named(callee)[0])
             lam = self._lambda_str(trailing)
             return f"{in_fn}({f'{in_args}, {lam}' if in_args else lam})"
-        if callee.type == "navigation_expression" \
-                and not any(c.type == "?." for c in callee.children):
+        if callee.type == "navigation_expression":
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
-            if sel in _STDLIB_METHODS:                  # WRAP: recv.coerceIn(...) -> min/max
+            safe = any(c.type == "?." for c in callee.children)
+            if sel in _SCOPE_FNS and trailing is not None:   # x.let { it… } -> f(x)
+                lam = self._lambda_node(trailing)
+                if self._has_nonlocal_return(lam):      # `x?.let { return it }` guard:
+                    if sel == "let":                    # the return exits the ENCLOSING fn
+                        return self._let_guard(nk[0], lam, safe)
+                    raise Untranspilable(node, f"non-local return in {sel} {{ … }}")
+                return _SCOPE_FNS[sel](self.visit(nk[0]), self._lambda_str(trailing), safe)
+            if sel in _STDLIB_METHODS and not safe:     # WRAP: recv.coerceIn(...) -> min/max
                 return _STDLIB_METHODS[sel](self.visit(nk[0]), self._arg_values(node))
         fn = self.visit(callee)
         args = self._render_args(own_args)
@@ -176,11 +194,53 @@ class Expressions:
             args = f"{args}, {lam}" if args else lam
         return f"{fn}({args})"
 
+    def _lambda_node(self, trailing):
+        if trailing.type == "annotated_lambda":
+            return next((c for c in trailing.named_children
+                         if c.type == "lambda_literal"), trailing)
+        return trailing
+
     def _lambda_str(self, trailing):
-        lam = trailing
-        if lam.type == "annotated_lambda":
-            lam = next((c for c in lam.named_children if c.type == "lambda_literal"), lam)
-        return self.visit(lam)
+        return self.visit(self._lambda_node(trailing))
+
+    def _has_nonlocal_return(self, node):
+        # a `return` anywhere in an inline lambda body returns from the ENCLOSING fn;
+        # stop at nested lambda/function boundaries (those have their own return scope).
+        for c in node.children:
+            if c.type == "return_expression":
+                return True
+            if c.type in ("lambda_literal", "function_declaration", "anonymous_function"):
+                continue
+            if self._has_nonlocal_return(c):
+                return True
+        return False
+
+    def _let_guard(self, recv_node, lam, safe):
+        # `recv[?].let { … return … }` -> evaluate recv once, bind the lambda param, run
+        # the body as statements (its `return` is the enclosing fn's). Hoisted before the
+        # using statement; the expression value is None (used in statement position).
+        self._lam += 1
+        tmp = f"_let{self._lam}"
+        recv = self.visit(recv_node)
+        pname = self._lambda_param(lam)
+        body = [c for c in self.named(lam) if c.type != "lambda_parameters"]
+        inner = [f"{pname} = {tmp}"] + self.render_statements(body)
+        if safe:
+            block = [f"{tmp} = {recv}", f"if {tmp} is not None:\n{_block(inner)}"]
+        else:
+            block = [f"{tmp} = {recv}", *inner]
+        self._hoist.append("\n".join(block))
+        return "None"
+
+    def _lambda_param(self, lam):
+        pnode = next((c for c in lam.named_children
+                      if c.type == "lambda_parameters"), None)
+        if pnode is not None:
+            pid = next((c for vd in pnode.named_children
+                        for c in vd.children if c.type == "identifier"), None)
+            if pid is not None:
+                return self._safe(self.text(pid))
+        return "it"
 
     @kind("collection_literal")
     def v_collection(self, node):
