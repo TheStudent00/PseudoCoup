@@ -76,6 +76,25 @@ it's the shortest path to `Table_Py_Kt`.
 - Scaffold `PseudoKotlin` (visitor + coverage-test + map/wrap/fail) when we move from harvesting
   to the transpiler proper.
 
-## Immediate next action
-Run py2many's Python→Kotlin backend on the harvester's construct atlas; report output quality +
-how much extracts cleanly (the number that decides direct-py2many vs the Haxe/J2K composition).
+## py2many Python→Kotlin — MEASURED (result)
+
+py2many 0.8 installed (`pip install --user py2many`). Atlas of 8 typed-Python constructs →
+Kotlin (`py2many --kotlin atlas.py`; the `jgo`/ktlint formatter error is cosmetic — raw Kotlin
+emits fine):
+- **CLEAN idiomatic Kotlin, 6/8** — arithmetic, if/else, ternary (`if (a>0) 1 else -1`),
+  for_range (`for (i in 0..n-1)`), while, list_ops (`arrayOf(...)`, `+= 4`, `.size`).
+  **No runtime scaffolding, single hop** — decisively beats the Haxe→Java→Kotlin path (which
+  drags `HxObject`/`__hx_invoke`/`Runtime.eq`).
+- **BUGGY (py2many-0.8 beta Kotlin backend), 2/8 + stdlib** — class (`val self.x` leak + broken
+  constructor on `Pt`), nullable (`Optional[int]` → `Nothing<Int>` instead of `Int?`), stdlib
+  (`math.sqrt` left as `math.sqrt`).
+
+**Verdict:** py2many's direct Python→Kotlin **collapses the pipeline for the routine bulk** —
+clean, idiomatic, zero filtering, one hop — confirming the hypothesis. The OOP/nullable/stdlib
+gaps are localized beta-backend bugs (py2many is open source — likely small fixes) or
+route-around. It's the shorter path; the Haxe/J2K composition is the fallback for breadth.
+
+## Next action
+Decide: fix py2many's Kotlin backend (class/nullable/stdlib — appear localized) and harvest the
+Py↔Kt table from it, vs. accept its clean subset + handle OOP/nullable separately. Scaffold
+`PseudoKotlin` when moving from harvesting to the transpiler proper.
