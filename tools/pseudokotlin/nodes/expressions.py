@@ -304,24 +304,30 @@ class Expressions:
     @kind("lambda_literal")
     def v_lambda(self, node):
         pnode = next((c for c in node.named_children if c.type == "lambda_parameters"), None)
-        params = []
+        params, unpacks = [], []
         if pnode is not None:
             for vd in pnode.named_children:
-                pid = next((c for c in vd.children if c.type == "identifier"), None)
-                if pid is not None:
-                    params.append(self._safe(self.text(pid)))
+                if vd.type == "multi_variable_declaration":   # destructuring `(a, b)`:
+                    dn = f"_d{len(unpacks)}"                   # bind a, b = _d (Python has no
+                    names = [self._safe(t) for t in self._destructure_names(vd)]
+                    params.append(dn)                         # destructuring lambda params)
+                    unpacks.append(f"{', '.join(names)} = {dn}")
+                else:
+                    pid = next((c for c in vd.children if c.type == "identifier"), None)
+                    if pid is not None:
+                        params.append(self._safe(self.text(pid)))
         ps = ", ".join(params) if params else "it=None"
         body = [c for c in self.named(node) if c.type != "lambda_parameters"]
         if not body:
             return f"(lambda {ps}: None)"
-        if len(body) == 1 and not self._renders_stmt(body[0]):   # pure expr body only
-            return f"(lambda {ps}: {self.visit(body[0])})"
-        # multi-statement (or statement-bodied) lambda has no Python lambda form ->
-        # hoist a named def; the suite renderer flushes it before the using statement.
+        if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
+            return f"(lambda {ps}: {self.visit(body[0])})"   # pure expr body, no unpacking
+        # multi-statement / destructuring / statement-bodied -> hoist a named def; the
+        # suite renderer flushes it before the using statement.
         self._lam += 1
         name = f"_lam{self._lam}"
         *head, last = body
-        lines = self.render_statements(head)
+        lines = list(unpacks) + self.render_statements(head)
         before = len(self._hoist)
         last_line = self._distribute(last, "return ")   # block-if/when/stmt-aware
         lines += self._hoist[before:]
@@ -329,6 +335,15 @@ class Expressions:
         lines.append(last_line)
         self._hoist.append(f"def {name}({ps}):\n{_block(lines)}")
         return name
+
+    def _destructure_names(self, mvd):
+        out = []
+        for c in mvd.named_children:
+            if c.type == "variable_declaration":
+                pid = next((k for k in c.children if k.type == "identifier"), None)
+                if pid is not None:
+                    out.append(self.text(pid))
+        return out
 
     @kind("callable_reference")
     def v_callable_ref(self, node):
