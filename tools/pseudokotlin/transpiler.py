@@ -45,6 +45,9 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         return lines
 
     def stmt_lines(self, node) -> list:
+        inc = self._maybe_increment(node)       # statement-position ++/-- -> clean `n += 1`
+        if inc is not None:
+            return [inc]
         before = len(self._hoist)
         s = self.visit(node)
         out = self._hoist[before:]
@@ -52,6 +55,16 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         if s:
             out.append(s)
         return out
+
+    def _maybe_increment(self, node):
+        """`n++`/`n--` in STATEMENT position -> `n += 1`/`n -= 1` (no temp); None
+        otherwise (value position hoists a temp in v_unary)."""
+        if node.type == "unary_expression":
+            ops = [c.type for c in node.children if not c.is_named]
+            if "++" in ops or "--" in ops:
+                operand = self.visit(self.named(node)[0])
+                return f"{operand} {'+=' if '++' in ops else '-='} 1"
+        return None
 
     @staticmethod
     def is_value(node) -> bool:
