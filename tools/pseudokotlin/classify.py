@@ -32,6 +32,8 @@ CONTAINER = {
     # consumed by a specific parent handler (when/try/string/lambda/call)
     "when_entry", "when_subject", "catch_block", "finally_block", "interpolation",
     "annotation", "annotated_lambda", "lambda_parameters", "parameter", "label",
+    # consumed by the class renderer (folded into the class), never dispatched
+    "companion_object", "anonymous_initializer",
     "delegation_specifier", "delegation_specifiers", "explicit_delegation",
     "constructor_delegation_call",
     # type system: Python is dynamic -> annotations are dropped, not emitted
@@ -51,8 +53,7 @@ WRAP: set = set()
 # (TRANSPILER_SCOPE Group C) -- handled in a dedicated pass, not half-baked here.
 OUT_OF_SCOPE = {
     "ERROR",
-    "object_declaration", "companion_object", "object_literal",
-    "secondary_constructor", "anonymous_function", "anonymous_initializer",
+    "object_literal", "secondary_constructor", "anonymous_function",
 }
 
 
