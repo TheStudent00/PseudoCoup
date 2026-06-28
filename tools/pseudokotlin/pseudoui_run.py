@@ -1074,20 +1074,39 @@ def build_transpiled_vm(key, db):
 
 
 def emit_app_screen(ir, key, class_name):
-    """the generated build() wrapped as an app Screen class (db ctor + router-shaped build)."""
+    """the generated build() wrapped as an app Screen class (db ctor + router-shaped build),
+    tracking owned_ids so the router can tear the screen's zones down on navigate-away."""
     src = emit_py(ir, key)
     lines = src.splitlines()
     bi = next(i for i, l in enumerate(lines) if l.startswith("def build("))
     head = lines[:bi]                                    # the _ev helper
     body = lines[bi + 1:]                                # build() body (indented 4)
-    out = head + ["", f"class {class_name}:",
-                  "    def __init__(self, db):",
-                  "        self.db = db",
-                  f'        self.vm = build_transpiled_vm({key!r}, db)',
-                  "",
-                  "    def build(self, ui, content_zone_id, router):",
-                  "        viewModel = self.vm",
-                  "        content = content_zone_id"]
+    out = head + [
+        "", "class _Track:                             # records every define_*'s zone id -> owned_ids",
+        "    def __init__(self, ui, owned): self._ui, self._owned = ui, owned",
+        "    def __getattr__(self, n):",
+        "        fn = getattr(self._ui, n)",
+        "        if n.startswith('define_'):",
+        "            def w(zid, *a, **k):",
+        "                self._owned.append(zid)",
+        "                return fn(zid, *a, **k)",
+        "            return w",
+        "        return fn",
+        "", "", f"class {class_name}:",
+        "    def __init__(self, db):",
+        "        self.db = db",
+        f'        self.vm = build_transpiled_vm({key!r}, db)',
+        "        self.owned_ids = []",
+        "",
+        "    def screen_id(self):",
+        f"        return {key!r}",
+        "",
+        "    def build(self, ui, content_zone_id, router):",
+        "        self.owned_ids = []",
+        "        ui = _Track(ui, self.owned_ids)",
+        "        self.router = router",
+        "        viewModel = self.vm",
+        "        content = content_zone_id"]
     out += ["    " + l for l in body]                    # re-indent body into the method
     return "\n".join(out) + "\n"
 

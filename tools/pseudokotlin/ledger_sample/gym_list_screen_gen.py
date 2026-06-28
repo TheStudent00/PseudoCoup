@@ -6,12 +6,31 @@ def _ev(f):
 
 
 
+class _Track:                             # records every define_*'s zone id -> owned_ids
+    def __init__(self, ui, owned): self._ui, self._owned = ui, owned
+    def __getattr__(self, n):
+        fn = getattr(self._ui, n)
+        if n.startswith('define_'):
+            def w(zid, *a, **k):
+                self._owned.append(zid)
+                return fn(zid, *a, **k)
+            return w
+        return fn
+
+
 class GymListScreenGen:
     def __init__(self, db):
         self.db = db
         self.vm = build_transpiled_vm('gym_list', db)
+        self.owned_ids = []
+
+    def screen_id(self):
+        return 'gym_list'
 
     def build(self, ui, content_zone_id, router):
+        self.owned_ids = []
+        ui = _Track(ui, self.owned_ids)
+        self.router = router
         viewModel = self.vm
         content = content_zone_id
         gyms = _ev(lambda: viewModel.gyms.collectAsStateWithLifecycle())
