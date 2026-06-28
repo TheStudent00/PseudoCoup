@@ -83,15 +83,18 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose LogCardioScreen <-> kit log_cardio
-- matched (by content anchor): 7
+- matched (by content anchor): 10
     = Activity
+    = Avg HR (bpm)
+    = Distance (km)
+    = Duration (minutes)
     = Intensity
     = Log cardio or other activity s…
     = Log other exercise
     = Notes (optional)
     = Save
     = When
-- Compose-only (in design, MISSING from kit): 11
+- Compose-only (in design, MISSING from kit): 13
     KT  Back
     KT  Cancel
     KT  It's already logged
@@ -101,16 +104,15 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     KT  Was this already logged automa…
     KT  null
     KT  option.label()
+    KT  placeholder
+    KT  trailing
     KT  type.displayName()
     KT  whenLabel(state.selectedDate, …
-- kit-only (ADDED by the wrapping): 23
+- kit-only (ADDED by the wrapping): 20
     PY  Avg HR
-    PY  Avg HR (bpm)
     PY  Bike
     PY  Class
     PY  Distance
-    PY  Distance (km)
-    PY  Duration (minutes)
     PY  Elliptical
     PY  HIIT
     PY  High
@@ -124,3 +126,6 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     PY  Run
     PY  Sport
     PY  Swim
+    PY  Today
+    PY  Walk
+    PY  ←
