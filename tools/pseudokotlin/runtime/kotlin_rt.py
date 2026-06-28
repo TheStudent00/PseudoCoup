@@ -177,6 +177,30 @@ class KtList(list):
     def flatMap(self, f):
         return KtList(y for x in self for y in f(x))
 
+    def mapTo(self, dest, f):               # map into an existing destination, return it
+        for x in self:
+            dest.add(f(x))
+        return dest
+
+    def mapNotNullTo(self, dest, f):
+        for x in self:
+            y = f(x)
+            if y is not None:
+                dest.add(y)
+        return dest
+
+    def filterTo(self, dest, p):
+        for x in self:
+            if p(x):
+                dest.add(x)
+        return dest
+
+    def flatMapTo(self, dest, f):
+        for x in self:
+            for y in f(x):
+                dest.add(y)
+        return dest
+
     def flatten(self):
         return KtList(y for x in self for y in x)
 
@@ -342,6 +366,9 @@ class KtList(list):
             out.setdefault(key(x), KtList()).append(value(x) if value else x)
         return out
 
+    def groupingBy(self, key):
+        return _KtGrouping(self, key)
+
     def partition(self, p):
         yes, no = KtList(), KtList()
         for x in self:
@@ -431,6 +458,9 @@ class KtList(list):
     def toList(self):
         return self
 
+    def orEmpty(self):                      # non-null receiver -> identity (None handled by `or KtList()`)
+        return self
+
     def toMutableList(self):
         return KtList(self)
 
@@ -448,6 +478,43 @@ class KtList(list):
 
     def reversedArray(self):
         return KtList(reversed(self))
+
+
+class _KtGrouping:
+    """Lazy result of `xs.groupingBy { key }` -- a source + key selector that the
+    terminal ops (eachCount/fold/reduce/aggregate) materialise per-key, mirroring
+    Kotlin's Grouping<T, K>."""
+    def __init__(self, src, key):
+        self._src, self._key = src, key
+
+    def eachCount(self):
+        out = KtMap()
+        for x in self._src:
+            k = self._key(x)
+            out[k] = (out[k] or 0) + 1        # KtMap.__missing__ -> None, so `or 0`
+        return out
+
+    def fold(self, initial, operation):
+        out = KtMap()
+        for x in self._src:
+            k = self._key(x)
+            acc = out[k] if k in out else initial
+            out[k] = operation(acc, x)
+        return out
+
+    def reduce(self, operation):
+        out = KtMap()
+        for x in self._src:
+            k = self._key(x)
+            out[k] = x if k not in out else operation(k, out[k], x)
+        return out
+
+    def aggregate(self, operation):
+        out = KtMap()
+        for x in self._src:
+            k = self._key(x)
+            out[k] = operation(k, out[k] if k in out else None, x, k not in out)
+        return out
 
 
 class KtMap(dict):
@@ -714,6 +781,27 @@ def mutableSetOf(*xs):
 
 def mutableMapOf(*pairs):
     return KtMap(tuple(p) for p in pairs)
+
+
+# Java collection constructors used directly in Kotlin (HashSet(), ArrayList(xs), …).
+def HashSet(src=()):
+    return KtSet(src)
+
+
+def LinkedHashSet(src=()):
+    return KtSet(src)
+
+
+def ArrayList(src=()):
+    return KtList(src)
+
+
+def HashMap(src=None):
+    return KtMap(src or {})
+
+
+def LinkedHashMap(src=None):
+    return KtMap(src or {})
 
 
 # ---- Kotlin comparators (compareBy { … }.thenBy { … }; sortedWith) ----------- #
