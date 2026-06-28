@@ -59,7 +59,7 @@ ui.define_text("progress_z50_tag", "progress_z43_column", "Tag")
 ui.define_box("progress_z51_flowrow", "progress_z43_column", "H")
 ui.define_box("progress_z52_filterchip", "progress_z51_flowrow", "V")
 ui.define_text("progress_z53_tag_label", "progress_z52_filterchip", "tag.label")
-ui.define_input_zone("progress_z54_field", "progress_z43_column", "", "")
+ui.define_input_zone("progress_z54_e_g_carried_all_", "progress_z43_column", "", "e.g. carried all the groceries…")
 ui.define_button("progress_z55_save_win", "progress_z43_column", "Save win")
 ui.define_box("progress_z56_strengthcard", "progress_z07_lazycolumn", "V")
 ui.define_box("progress_z57_wflcard", "progress_z56_strengthcard", "V")
@@ -276,7 +276,7 @@ ui.define_spacer_zone("progress_z213_spacer", "progress_z166_lazycolumn")
                 - Row[flowrow]  <container>
                   - Column[filterchip]  <container>
                     - Text[tag.label]  <leaf>
-                - TextField[field]  <leaf>
+                - TextField[e.g. carried all the groceries…]  <leaf>
                 - Button[Save win]  <leaf>
         - Column[strengthcard]  <container>
           - Column[wflcard]  <container>
@@ -439,15 +439,16 @@ ui.define_spacer_zone("progress_z213_spacer", "progress_z166_lazycolumn")
 
 ---
 ## verify vs Compose source (ProgressScreen)
-- distinct leaf signatures matched: 27/28 = 96%
+- distinct leaf signatures matched: 28/28 = 100%
 - generated signatures NOT in Compose (fabricated): 0
 - tree validity: 214 nodes, 0 orphan parents
 
 ---
 ## generated  <->  hand-built kit (progress_screen.py)
 - leaf signatures shared:        5
-- generated-only (other states / not in this trace): 22
+- generated-only (other states / not in this trace): 23
 - hand-built-only (helper glyphs / human representation): 0
+    GEN-only F:e.g. carried all the groceries…
     GEN-only T:Best
     GEN-only T:Cardio
     GEN-only T:Completed sessions and cardio …
@@ -459,4 +460,3 @@ ui.define_spacer_zone("progress_z213_spacer", "progress_z166_lazycolumn")
     GEN-only T:Last 7 days
     GEN-only T:Lifting and cardio combined.
     GEN-only T:Log a few sets to start tracki…
-    GEN-only T:No bests yet

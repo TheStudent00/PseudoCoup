@@ -43,7 +43,8 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose LogCardioScreen <-> kit log_cardio
-- distinct widget signatures matched: 10/16 = 62%
+- distinct widget signatures matched: 9/16 = 56%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
-- kit signatures NOT in Compose: 1
+- kit signatures NOT in Compose: 2
     PY  F:·DYN·
+    PY  T:Notes (optional)

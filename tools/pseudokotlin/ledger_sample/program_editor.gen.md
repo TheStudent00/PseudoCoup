@@ -315,9 +315,8 @@ ui.define_button("program_editor_z151_cancel", "program_editor_z147_alertdialog"
 
 ---
 ## verify vs Compose source (ProgramEditorScreen)
-- distinct leaf signatures matched: 30/31 = 96%
-- generated signatures NOT in Compose (fabricated): 1
-    GEN F:Description
+- distinct leaf signatures matched: 31/31 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 152 nodes, 0 orphan parents
 
 ---

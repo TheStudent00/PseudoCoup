@@ -257,9 +257,8 @@ ui.define_button("program_day_edit_z122_cancel", "program_day_edit_z119_alertdia
 
 ---
 ## verify vs Compose source (ProgramDayEditorScreen)
-- distinct leaf signatures matched: 19/20 = 95%
-- generated signatures NOT in Compose (fabricated): 1
-    GEN F:Notes
+- distinct leaf signatures matched: 20/20 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 123 nodes, 0 orphan parents
 
 ---

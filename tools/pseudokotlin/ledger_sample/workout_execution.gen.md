@@ -925,9 +925,8 @@ ui.define_icon("workout_executio_z456_icon", "workout_executio_z454_dropdownmenu
 
 ---
 ## verify vs Compose source (WorkoutExecutionScreen)
-- distinct leaf signatures matched: 62/66 = 93%
-- generated signatures NOT in Compose (fabricated): 1
-    GEN F:Exercise notes
+- distinct leaf signatures matched: 63/63 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 457 nodes, 0 orphan parents
 
 ---
