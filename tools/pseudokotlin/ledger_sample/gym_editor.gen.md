@@ -147,7 +147,7 @@ ui.define_button("gym_editor_z67_cancel", "gym_editor_z29_alertdialog", "Cancel"
 
 ---
 ## verify vs Compose source (GymEditorScreen)
-- distinct leaf signatures matched: 19/20 = 95%
+- distinct leaf signatures matched: 19/19 = 100%
 - generated signatures NOT in Compose (fabricated): 0
 - tree validity: 68 nodes, 0 orphan parents
 

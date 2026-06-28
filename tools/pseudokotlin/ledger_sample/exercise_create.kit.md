@@ -55,10 +55,8 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose ExerciseCreateScreen <-> kit exercise_create
-- distinct widget signatures matched: 11/18 = 61%
+- distinct widget signatures matched: 13/18 = 72%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
-- kit signatures NOT in Compose: 4
-    PY  F:Coaching cues (optional)
-    PY  F:Form notes (optional)
+- kit signatures NOT in Compose: 2
     PY  F:·DYN·
     PY  T:Save

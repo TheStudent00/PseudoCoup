@@ -107,9 +107,8 @@ ui.define_icon("report_bug_z47_back", "report_bug_z45_topappbar", "Back")
 
 ---
 ## verify vs Compose source (ReportBugScreen)
-- distinct leaf signatures matched: 13/14 = 92%
-- generated signatures NOT in Compose (fabricated): 1
-    GEN F:What happened?
+- distinct leaf signatures matched: 14/14 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 48 nodes, 0 orphan parents
 
 ---

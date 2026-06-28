@@ -48,6 +48,26 @@ def _abs(v):
     return bool(re.search(r"\d+\s*\.\s*(dp|sp)", v) or "tokens." in v or ".dp" in v or ".sp" in v)
 
 
+# A labeled text field is ONE widget, identified by its label (the static, stable, user-visible
+# string) -- not by descending its label/placeholder slot into a separate Text. Both ledger sides
+# and the generator key it the same way (-> type "F"), so they line up.
+FIELDS_UI = {"TextField", "OutlinedTextField", "BasicTextField", "BasicSecureTextField"}
+
+
+def field_anchor(call, subst=None):
+    """a text field's content anchor + static-ness, from its label (else placeholder/support)."""
+    a = _named_args(call)
+    lab = a.get("label") or a.get("placeholder") or a.get("supportingText")
+    if not lab:
+        return None, False
+    if subst and lab.strip() in subst:
+        lab = subst[lab.strip()]
+    lits = re.findall(r'"([^"$]*)"', lab)                 # a STATIC literal inside the slot lambda
+    if lits:
+        return _anchor('"' + lits[0] + '"'), True
+    return _anchor(lab), False
+
+
 # ── tree-sitter call-tree walk ───────────────────────────────────────────────
 def _base_and_lambda(call):
     """trailing-lambda form parses as outer call = [inner_call(args), annotated_lambda]."""
@@ -220,6 +240,9 @@ def _segment(call, idx, comps, subst=None):
     name = _name(call)
     if name in comps:                                    # a custom composable -> id by name
         return name
+    if name in FIELDS_UI:                                # a field -> id by its label
+        fa, _ = field_anchor(call, subst)
+        return f"{name}[{fa}]" if fa else f"{name}[{idx}]"
     args = _named_args(call)
     cd = args.get("contentDescription")
     if name in ("Icon", "Image") and cd and cd.strip() != "null":   # null desc = decorative
@@ -364,6 +387,8 @@ def collect_ids(path):
         surrounding expression); dynamic = a binding/variable, which the kit renders resolved
         and so can only be matched structurally (by type+position), not by string."""
         name = _name(call)
+        if name in FIELDS_UI:
+            return field_anchor(call, subst)
         expr = None
         if name == "Text":
             expr = _named_args(call).get("text") or _first_positional(call)
@@ -385,6 +410,8 @@ def collect_ids(path):
         full = "/".join(path + [seg])
         anchor, static = anchor_of(call, subst)
         out.append((full, name, anchor, static))
+        if name in FIELDS_UI:                            # field = one leaf; don't descend its slots
+            return
         if name in defs and name not in stack:           # inline the composable's definition
             params, roots = defs[name]
             argmap = _bind(call, params, subst)

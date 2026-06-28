@@ -127,9 +127,8 @@ ui.define_icon("log_cardio_z57_back", "log_cardio_z55_topappbar", "Back")
 
 ---
 ## verify vs Compose source (LogCardioScreen)
-- distinct leaf signatures matched: 15/16 = 93%
-- generated signatures NOT in Compose (fabricated): 1
-    GEN F:Notes (optional)
+- distinct leaf signatures matched: 16/16 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 58 nodes, 0 orphan parents
 
 ---
