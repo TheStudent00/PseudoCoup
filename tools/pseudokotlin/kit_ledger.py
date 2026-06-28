@@ -38,10 +38,12 @@ KIND_TYPE = {"box": None, "text": "Text", "button": "Button", "input_zone": "Tex
 
 
 class _Any:
-    """permissive stand-in for db / VM / router / entities: any access is safe, loops empty."""
+    """permissive stand-in for db / VM / router / entities: any access is safe; iterating a
+    list-returning VM call yields a couple of mock items so dynamic ROW STRUCTURE renders
+    (content stays empty -- structure is what the cross-side compare needs)."""
     def __getattr__(self, n): return _Any()
     def __call__(self, *a, **k): return _Any()
-    def __iter__(self): return iter(())
+    def __iter__(self): return iter((_Any(), _Any()))
     def __bool__(self): return False
     def __len__(self): return 0
     def __str__(self): return ""
@@ -83,11 +85,14 @@ def trace(screen_key, content="content"):
                  "_setactive_zone_ids", "_setactive_gym_ids"):
         if not hasattr(screen, attr):
             setattr(screen, attr, [])
-    if not hasattr(screen, "vm") or isinstance(getattr(screen, "vm"), _Any):
-        screen.vm = _Any()
+    screen.vm = _Any()       # force the mock VM so the real repository/db never runs
     ui = _RecUI()
-    screen.build(ui, content, _Any())
-    return ui.recs
+    err = None
+    try:
+        screen.build(ui, content, _Any())
+    except Exception as e:                   # noqa: BLE001 -- a screen that builds repos directly
+        err = f"{type(e).__name__}: {e}"     # (bypassing the VM) truncates; keep what rendered
+    return ui.recs, err
 
 
 # ── tree from the parent links ───────────────────────────────────────────────
@@ -103,6 +108,8 @@ def _norm_rec(kind, zid, sup, args):
         content = args[0] if len(args) > 0 else None
         style = args[1] if len(args) > 1 else None
         weight = args[2] if len(args) > 2 else 0.0
+    elif kind == "input_zone":               # (default_text, label_text) -> id by its label
+        content = (args[1] if len(args) > 1 and args[1] else (args[0] if args else None))
     return {"id": zid, "sup": sup, "kind": kind, "type": t, "content": content,
             "style": style, "weight": weight, "orient": orient, "children": []}
 
@@ -165,13 +172,14 @@ def compare(compose_ids, kit_ids):
 
 
 def run(screen_key, compose_name):
-    recs = trace(screen_key)
+    recs, err = trace(screen_key)
     roots, nodes = build_tree(recs, "content")
     name = "".join(p.capitalize() for p in screen_key.split("_"))
     L = [f"# UI layout ledger (KIT side) -- {screen_key}", "",
          "Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.",
          "helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as",
-         "the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)", ""]
+         "the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)",
+         *( [f"(partial trace -- build raised {err} after the nodes below)"] if err else [] ), ""]
     kit_ids = []
     for i, r in enumerate(roots):
         render_tree(r, 1, i, [screen_key], L, kit_ids)
