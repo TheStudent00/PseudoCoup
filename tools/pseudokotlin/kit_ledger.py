@@ -85,6 +85,19 @@ class _RecUI:
         return lambda *a, **k: _Any()
 
 
+# Per-screen seeders: insert real rows into a real (in-memory) Db so the dynamic rows render
+# through the ACTUAL repo->service->VM path -- a faithful vertical-slice trace, not a mock.
+def _seed_gym_list(db):
+    from data.repository.gym_profile_repository import GymProfileRepository
+    from data.db.entity.gym_profile_entity import GymProfileEntity
+    r = GymProfileRepository(db)
+    r.insert(GymProfileEntity("g1", "Home Gym", True, 0, 0.0, 0.0))
+    r.insert(GymProfileEntity("g2", "Commercial Gym", False, 1, 0.0, 0.0))
+
+
+SEEDERS = {"gym_list": _seed_gym_list}
+
+
 def trace(screen_key, content="content"):
     ks = types.ModuleType("kit")
     ks.UI = _RecUI
@@ -95,21 +108,28 @@ def trace(screen_key, content="content"):
     mod = importlib.import_module(f"ui.{screen_key}_screen")
     cls = next(v for k, v in vars(mod).items()
                if isinstance(v, type) and k.endswith("Screen"))
-    try:
-        screen = cls(_Any())
-    except Exception:                        # noqa: BLE001 -- ctor wants something else
-        screen = cls.__new__(cls)
-    for attr in ("owned_ids", "_item_zone_ids", "_item_gym_ids",
-                 "_setactive_zone_ids", "_setactive_gym_ids"):
-        if not hasattr(screen, attr):
-            setattr(screen, attr, [])
-    screen.vm = _Any()       # force the mock VM so the real repository/db never runs
+    seeder = SEEDERS.get(screen_key)
+    if seeder:                               # faithful path: real seeded Db + the real VM
+        from data.db.db import InMemoryDb
+        db = InMemoryDb()
+        seeder(db)
+        screen = cls(db)
+    else:                                    # mock path: permissive stand-in, static skeleton
+        try:
+            screen = cls(_Any())
+        except Exception:                    # noqa: BLE001
+            screen = cls.__new__(cls)
+        for attr in ("owned_ids", "_item_zone_ids", "_item_gym_ids",
+                     "_setactive_zone_ids", "_setactive_gym_ids"):
+            if not hasattr(screen, attr):
+                setattr(screen, attr, [])
+        screen.vm = _Any()
     ui = _RecUI()
     err = None
     try:
         screen.build(ui, content, _Any())
-    except Exception as e:                   # noqa: BLE001 -- a screen that builds repos directly
-        err = f"{type(e).__name__}: {e}"     # (bypassing the VM) truncates; keep what rendered
+    except Exception as e:                   # noqa: BLE001
+        err = f"{type(e).__name__}: {e}"
     return ui.recs, err
 
 

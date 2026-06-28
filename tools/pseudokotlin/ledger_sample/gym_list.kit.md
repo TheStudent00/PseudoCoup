@@ -8,9 +8,27 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
     - Column[1]  <container>   size: weight(1.0)(rel)
       - Text[Gym profiles]  <leaf>   size: wrap(rel)  style=tb_title(abs)
-  - Column[1]  <container>   size: wrap(rel)  style=empty(abs)
-    - Text[No gyms yet. Tap + to add one.]  <leaf>   size: wrap(rel)  style=empty_body(abs)
-  - Overlay[2]  <container>   size: wrap(rel)
+  - Column[1]  <container>   size: wrap(rel)  style=gym_card(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=gym_top(abs)
+      - Text[Commercial Gym]  <leaf>   size: weight(1.0)(rel)  style=gym_name(abs)
+      - Button[Set active]  <leaf>   size: wrap(rel)  style=gym_chip_inactive(abs)
+    - Text[🏢 Big Box Gym]  <leaf>   size: wrap(rel)  style=gym_type(abs)
+    - Text[Equipment]  <leaf>   size: wrap(rel)  style=gym_eq_hdr(abs)
+    - Text[0 items]  <leaf>   size: wrap(rel)  style=gym_eq_count(abs)
+    - Text[No equipment listed]  <leaf>   size: wrap(rel)  style=gym_eq_names(abs)
+    - Row[5]  <container>   size: wrap(rel)  style=gym_del_row(abs)
+      - Button[Delete gym]  <leaf>   size: wrap(rel)  style=gym_del(abs)
+  - Column[2]  <container>   size: wrap(rel)  style=gym_card(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=gym_top(abs)
+      - Text[Home Gym]  <leaf>   size: weight(1.0)(rel)  style=gym_name(abs)
+      - Text[✓ Active]  <leaf>   size: wrap(rel)  style=chip_assist(abs)
+    - Text[🏠 Home Gym]  <leaf>   size: wrap(rel)  style=gym_type(abs)
+    - Text[Equipment]  <leaf>   size: wrap(rel)  style=gym_eq_hdr(abs)
+    - Text[0 items]  <leaf>   size: wrap(rel)  style=gym_eq_count(abs)
+    - Text[No equipment listed]  <leaf>   size: wrap(rel)  style=gym_eq_names(abs)
+    - Row[5]  <container>   size: wrap(rel)  style=gym_del_row(abs)
+      - Button[Delete gym]  <leaf>   size: wrap(rel)  style=gym_del(abs)
+  - Overlay[3]  <container>   size: wrap(rel)
     - Button[+]  <leaf>   size: wrap(rel)  style=fab(abs)
 
   ids:
@@ -19,30 +37,54 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     gym_list/Row[0]/Column[1]
     gym_list/Row[0]/Column[1]/Text[Gym profiles]
     gym_list/Column[1]
-    gym_list/Column[1]/Text[No gyms yet. Tap + to add one.]
-    gym_list/Overlay[2]
-    gym_list/Overlay[2]/Button[+]
+    gym_list/Column[1]/Row[0]
+    gym_list/Column[1]/Row[0]/Text[Commercial Gym]
+    gym_list/Column[1]/Row[0]/Button[Set active]
+    gym_list/Column[1]/Text[🏢 Big Box Gym]
+    gym_list/Column[1]/Text[Equipment]
+    gym_list/Column[1]/Text[0 items]
+    gym_list/Column[1]/Text[No equipment listed]
+    gym_list/Column[1]/Row[5]
+    gym_list/Column[1]/Row[5]/Button[Delete gym]
+    gym_list/Column[2]
+    gym_list/Column[2]/Row[0]
+    gym_list/Column[2]/Row[0]/Text[Home Gym]
+    gym_list/Column[2]/Row[0]/Text[✓ Active]
+    gym_list/Column[2]/Text[🏠 Home Gym]
+    gym_list/Column[2]/Text[Equipment]
+    gym_list/Column[2]/Text[0 items]
+    gym_list/Column[2]/Text[No equipment listed]
+    gym_list/Column[2]/Row[5]
+    gym_list/Column[2]/Row[5]/Button[Delete gym]
+    gym_list/Overlay[3]
+    gym_list/Overlay[3]/Button[+]
 
 ---
 ## cross-side compare: Compose GymListScreen <-> kit gym_list
-- matched (by content anchor): 2
+- matched (by content anchor): 5
+    = Delete gym
+    = Equipment
     = Gym profiles
-    = No gyms yet. Tap + to add one.
-- Compose-only (in design, MISSING from kit): 14
+    = No equipment listed
+    = Set active
+- Compose-only (in design, MISSING from kit): 11
     KT  ${equipmentList.size} items
     KT  ${type.emoji} ${type.displayNa…
     KT  Active
     KT  Add gym
     KT  Back
-    KT  Delete gym
-    KT  Equipment
-    KT  No equipment listed
-    KT  Set active
+    KT  No gyms yet. Tap + to add one.
     KT  equipmentNames
     KT  gym.name
     KT  label
     KT  null
     KT  value
-- kit-only (ADDED by the wrapping): 2
+- kit-only (ADDED by the wrapping): 8
     PY  +
+    PY  0 items
+    PY  Commercial Gym
+    PY  Home Gym
     PY  ←
+    PY  ✓ Active
+    PY  🏠 Home Gym
+    PY  🏢 Big Box Gym
