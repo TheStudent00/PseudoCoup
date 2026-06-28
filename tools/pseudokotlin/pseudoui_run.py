@@ -560,12 +560,17 @@ def _reactive_ns():
         def emit(self, *a): pass
 
     class _Flow:
+        # `v` may be a value OR a thunk (re-query function). A Kotlin Flow re-emits on every db
+        # change; the pull analog is to re-read on each access. So `.value` calls the thunk fresh,
+        # and stateIn returns the SAME lazy flow (not a frozen snapshot).
         def __init__(self, v): self._v = v
-        def stateIn(self, *a): return _StateFlow(self._v)
-        def collectAsStateWithLifecycle(self, *a): return self._v
-        def first(self): return self._v
+        def _val(self): return self._v() if callable(self._v) else self._v
+        def stateIn(self, *a): return self
+        def collectAsStateWithLifecycle(self, *a): return self._val()
+        def collectAsState(self, *a): return self._val()
+        def first(self): return self._val()
         @property
-        def value(self): return self._v
+        def value(self): return self._val()
 
     class _Scope:
         def launch(self, f):
@@ -688,15 +693,19 @@ def _gym_repo_adapter(ns, db):
         gt = GT.entries[int(g.gymType)] if g.gymType is not None else None
         return GProf(g.id, g.name, g.isActive, gt, g.createdAt, g.updatedAt)
 
-    class _Repo:
+    class _Repo:                                          # Flows wrap THUNKS -> re-query each read
         def getAllWithEquipment(self):
-            eq = GymEquipmentRepository(db)
-            return Flow(rt.KtList(GWE(lift(g), rt.KtList(eq.get_by_gym(g.id)))
-                                  for g in GymService(db).get_all()))
+            def q():
+                eq = GymEquipmentRepository(db)
+                return rt.KtList(GWE(lift(g), rt.KtList(eq.get_by_gym(g.id)))
+                                 for g in GymService(db).get_all())
+            return Flow(q)
 
         def getActive(self):
-            act = [g for g in GymService(db).get_all() if g.isActive]
-            return Flow(lift(act[0]) if act else None)
+            def q():
+                act = [g for g in GymService(db).get_all() if g.isActive]
+                return lift(act[0]) if act else None
+            return Flow(q)
 
         def setActive(self, gid): GymService(db).set_active(gid)
         def deleteGym(self, gid): GymService(db).delete_gym(gid)

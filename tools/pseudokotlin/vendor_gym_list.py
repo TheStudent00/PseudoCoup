@@ -38,13 +38,18 @@ class StateFlow:
 
 
 class Flow:
+    # `v` may be a value OR a thunk. A Kotlin Flow re-emits on every db change; the pull analog is
+    # to re-read on each access -- so `.value` calls the thunk fresh and stateIn returns the SAME
+    # lazy flow (not a frozen snapshot). Without this the screen shows stale data after a mutation.
     def __init__(self, v): self._v = v
-    def stateIn(self, *a): return StateFlow(self._v)
-    def collectAsStateWithLifecycle(self, *a): return self._v
-    def first(self): return self._v
+    def _val(self): return self._v() if callable(self._v) else self._v
+    def stateIn(self, *a): return self
+    def collectAsStateWithLifecycle(self, *a): return self._val()
+    def collectAsState(self, *a): return self._val()
+    def first(self): return self._val()
 
     @property
-    def value(self): return self._v
+    def value(self): return self._val()
 
 
 class _Scope:
@@ -115,13 +120,17 @@ class _GymRepo:
     def __init__(self, db): self.db = db
 
     def getAllWithEquipment(self):
-        eq = GymEquipmentRepository(self.db)
-        return Flow(rt.KtList(GymWithEquipment(_lift(g), rt.KtList(eq.get_by_gym(g.id)))
-                              for g in GymService(self.db).get_all()))
+        def q():                                  # thunk: re-queried on every read (Flow re-emits)
+            eq = GymEquipmentRepository(self.db)
+            return rt.KtList(GymWithEquipment(_lift(g), rt.KtList(eq.get_by_gym(g.id)))
+                             for g in GymService(self.db).get_all())
+        return Flow(q)
 
     def getActive(self):
-        act = [g for g in GymService(self.db).get_all() if g.isActive]
-        return Flow(_lift(act[0]) if act else None)
+        def q():
+            act = [g for g in GymService(self.db).get_all() if g.isActive]
+            return _lift(act[0]) if act else None
+        return Flow(q)
 
     def setActive(self, gid): GymService(self.db).set_active(gid); invalidate()
 
