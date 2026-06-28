@@ -726,9 +726,173 @@ def verify_auto(key="gym_list"):
     return dyn_matched, dyn, unresolved
 
 
+# ── (c)++ EMIT: turn the IR + auto-bindings into a runnable *_screen.py ─────────
+# The interpreter PROVES equivalence; this PRODUCES code. It walks the IR and emits a real Python
+# build() -- define_* calls wrapped in the screen's actual loops/ifs, with each binding the
+# transpiler's Kt->Py output. The result is a generated screen file (the project's deliverable),
+# and we run it to confirm it reproduces the verified trace.
+_EMIT_CACHE = {}
+
+
+def _py_expr(kt):
+    """transpile a Kotlin expression to a Python expression string (the RHS), cached."""
+    if kt not in _EMIT_CACHE:
+        from transpiler import KtToPy
+        try:
+            out = KtToPy().transpile(f"val __r = {kt}".encode()).strip()
+            _EMIT_CACHE[kt] = out.split("=", 1)[1].strip() if "=" in out else None
+        except Exception:                                # noqa: BLE001
+            _EMIT_CACHE[kt] = None
+    return _EMIT_CACHE[kt]
+
+
+_LEAF_FN = {"text": "define_text", "button": "define_button", "icon": "define_icon",
+            "image_zone": "define_image_zone", "spacer_zone": "define_spacer_zone",
+            "divider_zone": "define_divider_zone", "input_zone": "define_input_zone"}
+
+
+def _needed_binds(ir):
+    """names of `val`s actually referenced by a rendered binding (cond/src/subj/leaf/other val) --
+    so dead styling binds (WflCard's shape/border/colors) are pruned from the generated code."""
+    used, binds = [], []
+
+    def walk(nodes):
+        for n in nodes:
+            t = n["t"]
+            if t == "leaf" and n["expr"] and not n["static"]:
+                used.append(n["expr"])
+            elif t == "bind":
+                used.append(n["expr"]); binds.append(n["name"])
+            elif t == "if":
+                used.append(n["cond"]); walk(n["then"]); walk(n["else"])
+            elif t == "foreach":
+                used.append(n["src"]); walk(n["kids"])
+            elif t == "let":
+                used.append(n["subj"]); walk(n["kids"])
+            elif t == "box":
+                walk(n["kids"])
+    walk(ir)
+    blob = " ".join(e for e in used if e)
+    return {b for b in set(binds) if re.search(rf"\b{re.escape(b)}\b", blob)}
+
+
+def emit_py(ir, key):
+    """-> Python source of `def build(ui, content, viewModel):` reproducing the screen."""
+    lines = ["def _ev(f):", "    try:", "        return f()",
+             "    except Exception:", "        return None", "", "",
+             "def build(ui, content, viewModel):"]
+    ctr = [0]
+    needed = _needed_binds(ir)
+
+    def zid(m, suffix):
+        base = f'"{key}_z{m}"'
+        return base if suffix == '""' else f'({base} + "_" + {suffix})'
+
+    def emit(nodes, sup, suffix, ind):
+        pad = "    " * ind
+        wrote = False
+        for n in nodes:
+            t = n["t"]
+            if t == "bind":
+                if n["name"] not in needed:              # prune dead styling binds
+                    continue
+                lines.append(f"{pad}{n['name']} = {_py_expr(n['expr']) or 'None'}"); wrote = True
+            elif t == "box":
+                m = ctr[0]; ctr[0] += 1
+                lines.append(f"{pad}_id{m} = {zid(m, suffix)}")
+                lines.append(f'{pad}ui.define_box(_id{m}, {sup}, "{n["orient"]}")')
+                emit(n["kids"], f"_id{m}", suffix, ind); wrote = True
+            elif t == "foreach":
+                m = ctr[0]; ctr[0] += 1
+                src = _py_expr(n["src"]) or "[]"
+                nsuf = f"str(_i{m})" if suffix == '""' else f'({suffix} + "_" + str(_i{m}))'
+                lines.append(f"{pad}for _i{m}, {n['var']} in enumerate({src}):")
+                emit(n["kids"], sup, nsuf, ind + 1); wrote = True
+            elif t == "if":
+                cond = _py_expr(n["cond"])
+                if cond is None:
+                    lines.append(f"{pad}# unresolved cond ({n['cond']}); taking else branch")
+                    if n["else"]:
+                        emit(n["else"], sup, suffix, ind)
+                    continue
+                lines.append(f"{pad}if _ev(lambda: {cond}):")
+                emit(n["then"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                if n["else"]:
+                    lines.append(f"{pad}else:")
+                    emit(n["else"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                wrote = True
+            elif t == "let":
+                lines.append(f"{pad}{n['var']} = {_py_expr(n['subj']) or 'None'}")
+                lines.append(f"{pad}if {n['var']} is not None:")
+                emit(n["kids"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                wrote = True
+            elif t == "leaf":
+                fn = _LEAF_FN.get(n["kind"])
+                if not fn:
+                    continue
+                spacing = n["kind"] in ("spacer_zone", "divider_zone")
+                if not spacing and not n["static"] and not n["expr"]:
+                    continue                              # decorative / no content -> skip (as interpreter)
+                m = ctr[0]; ctr[0] += 1
+                z = zid(m, suffix)
+                if spacing:
+                    lines.append(f"{pad}ui.{fn}({z}, {sup})")
+                else:
+                    val = repr(_static_lit(n["expr"])) if n["static"] else (_py_expr(n["expr"]) or '""')
+                    arg = f'"", {val}' if n["kind"] == "input_zone" else val
+                    lines.append(f"{pad}ui.{fn}({z}, {sup}, {arg})")
+                wrote = True
+        return wrote
+
+    if not emit(ir, '"content"', '""', 1):
+        lines.append("    pass")
+    return "\n".join(lines)
+
+
+def verify_emitted(key="gym_list"):
+    cfg = SCREEN_CFG.get(key)
+    if not cfg:
+        print(f"  no config for {key!r}")
+        return
+    path = O.find_one(O.MAIN, f"{''.join(p.capitalize() for p in key.split('_'))}Screen.kt")
+    cname, ir = build_ir(path)
+    src = emit_py(ir, key)
+    os.makedirs(OUT, exist_ok=True)
+    open(os.path.join(OUT, f"{key}_screen.gen.py"), "w").write(src + "\n")
+
+    KL._setup_modules()
+    db = KL._seeded_db()
+    ns = _load_transpiled(cfg["files"])
+    vm = ns[cfg["vm"]](*cfg["adapter"](ns, db))
+    import runtime.kotlin_rt as rt
+    g = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+    exec(compile(src, f"{key}_screen.gen.py", "exec"), g)   # noqa: S102 -- generated, trusted
+    rec = KL._RecUI()
+    err = None
+    try:
+        g["build"](rec, "content", vm)
+    except Exception as e:                               # noqa: BLE001
+        err = f"{type(e).__name__}: {e}"
+    roots, _ = KL.build_tree(rec.recs, "content")
+    ids = []
+    for i, r in enumerate(roots):
+        KL.render_tree(r, 1, i, [key], [], ids)
+    gen = {(KL._ntype(t), a) for _, t, a in ids if KL._ntype(t) and a}
+    hb, _hberr = _hb_leaves(key)
+    hb_set = set(hb)
+    shared = sorted(gen & hb_set)
+    print(f"  {key}: emitted {key}_screen.gen.py ({len(src.splitlines())} lines), ran -> "
+          f"{len(rec.recs)} define_* calls; leaf shared {len(shared)}, gen-only {len(gen - hb_set)}, "
+          f"hb-only {len(hb_set - gen)}" + (f"  (build err: {err})" if err else ""))
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     key = args[0] if args else "gym_list"
+    if "--emit" in sys.argv:
+        print(f"PseudoUI EMIT runnable screen -> ledger_sample/{key}_screen.gen.py")
+        verify_emitted(key)
+        return
     if "--auto" in sys.argv:
         print(f"PseudoUI AUTO verify (transpiler-emitted bindings) -> ledger_sample/{key}.auto.md")
         verify_auto(key)
