@@ -174,12 +174,17 @@ def _ir_node(stmt, subst, stack, defs, out):
             _ir_node(s, subst, stack, defs, body)
         out.append({"t": "foreach", "src": _sub(src, subst), "var": var, "kids": body})
         return
+    if name in ("item", "stickyHeader"):                  # LazyListScope.item{} -> transparent wrapper
+        base, lam = UL._base_and_lambda(stmt)
+        for s in _stmts(lam):
+            _ir_node(s, subst, stack, defs, out)
+        return
     if _is_let(stmt):                                     # expr?.let { var -> body }
         subj, var, body_stmts = _parse_let(stmt)
         body = []
         for s in body_stmts:
             _ir_node(s, subst, stack, defs, body)
-        out.append({"t": "let", "subj": _sub(subj, subst), "var": var, "kids": body})
+        out.append({"t": "let", "subj": _sub(subj, subst), "var": var or "it", "kids": body})
         return
     if not name or not name[0].isupper():                 # lowercase call = handler/helper, not UI
         return
@@ -470,25 +475,43 @@ def verify(key):
 # (mechanical Kt->Py syntax). The only non-1:1 parts are a FIXED reactive shim (Flow/stateIn/
 # coroutine -> pull) and a Room-DAO -> InMemoryDb adapter (a framework boundary, ported once).
 def _reactive_ns():
-    """the fixed reactive shim the transpiled VM runs against (Flow/stateIn/scope -> synchronous)."""
+    """the fixed shim the transpiled VM runs against: kotlin_rt (stdlib: emptyList/emptySet/...) +
+    a synchronous coroutine/Flow layer (stateIn/launch/MutableStateFlow -> pull). FIXED, reused by
+    every screen -- this is the seam that does NOT grow per screen."""
+    import runtime.kotlin_rt as rt
+
     class _StateFlow:
-        def __init__(self, v): self.value = v
+        def __init__(self, v=None): self.value = v
+        def stateIn(self, *a): return self
+        def asStateFlow(self): return self
+        def asSharedFlow(self): return self
         def collectAsStateWithLifecycle(self, *a): return self.value   # Compose `by` delegate -> value
         def collectAsState(self, *a): return self.value
+        def first(self): return self.value
+        def emit(self, *a): pass
 
     class _Flow:
         def __init__(self, v): self._v = v
         def stateIn(self, *a): return _StateFlow(self._v)
+        def collectAsStateWithLifecycle(self, *a): return self._v
+        def first(self): return self._v
 
     class _Scope:
-        def launch(self, f): return f()
+        def launch(self, f):
+            try:
+                return f()
+            except Exception:                            # noqa: BLE001 -- best-effort init side effects
+                return None
 
     class _Started:
         @staticmethod
         def WhileSubscribed(*a): return None
 
-    return {"viewModelScope": _Scope(), "SharingStarted": _Started, "emptyList": (lambda: []),
-            "KtList": list, "_Flow": _Flow}
+    ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+    ns.update({"viewModelScope": _Scope(), "SharingStarted": _Started,
+               "MutableStateFlow": _StateFlow, "MutableSharedFlow": _StateFlow,
+               "KtList": rt.KtList, "_Flow": _Flow})
+    return ns
 
 
 def _load_transpiled(files):
@@ -526,7 +549,33 @@ def _gym_repo_adapter(ns, db):
 
         def setActive(self, gid): GymService(db).set_active(gid)
         def deleteGym(self, gid): GymService(db).delete_gym(gid)
-    return _Repo()
+    return (_Repo(),)                                     # GymListViewModel(repo)
+
+
+def _paths_repo_adapter(ns, db):
+    """A SECOND screen's boundary -- notably THINNER than gym_list's: PathEntity.name is a string,
+    so there is no enum lift and no bundling. Just expose the kit's active paths as a Flow."""
+    from domain.path_service import PathService
+    import runtime.kotlin_rt as rt
+    Flow = ns["_Flow"]
+
+    class _Repo:
+        @property
+        def activePaths(self):
+            return Flow(rt.KtList(PathService(db).active_paths()))
+
+        def seedIfNeeded(self): pass
+    return (_Repo(),)                                     # PathsViewModel(repository)
+
+
+# Per-screen config = the honest "what each screen needs" surface for --auto. The IR + binding
+# machinery is screen-agnostic; this captures only the transpiled files + the DAO->kit adapter.
+SCREEN_CFG = {
+    "gym_list": {"files": ["GymType.kt", "GymProfileEntity.kt", "GymListViewModel.kt"],
+                 "vm": "GymListViewModel", "adapter": _gym_repo_adapter},
+    "paths": {"files": ["PathsViewModel.kt"],
+              "vm": "PathsViewModel", "adapter": _paths_repo_adapter},
+}
 
 
 def _gym_list_spec_1to1(vm):
@@ -558,7 +607,7 @@ def verify_1to1(key="gym_list"):
     KL._setup_modules()
     db = KL._seeded_db()
     ns = _load_transpiled(["GymType.kt", "GymProfileEntity.kt", "GymListViewModel.kt"])
-    vm = ns["GymListViewModel"](_gym_repo_adapter(ns, db))   # the TRANSPILED VM, real data
+    vm = ns["GymListViewModel"](*_gym_repo_adapter(ns, db))   # the TRANSPILED VM, real data
     spec = _gym_list_spec_1to1(vm)
     leaves, unresolved = [], []
     interpret(ir, _spec_resolver(spec), {}, leaves, unresolved)
@@ -631,12 +680,16 @@ def _auto_env(vm):
 
 
 def verify_auto(key="gym_list"):
+    cfg = SCREEN_CFG.get(key)
+    if not cfg:
+        print(f"  no --auto config for {key!r} (have: {', '.join(SCREEN_CFG)})")
+        return None, [], []
     path = O.find_one(O.MAIN, f"{''.join(p.capitalize() for p in key.split('_'))}Screen.kt")
     cname, ir = build_ir(path)
     KL._setup_modules()
     db = KL._seeded_db()
-    ns = _load_transpiled(["GymType.kt", "GymProfileEntity.kt", "GymListViewModel.kt"])
-    vm = ns["GymListViewModel"](_gym_repo_adapter(ns, db))
+    ns = _load_transpiled(cfg["files"])
+    vm = ns[cfg["vm"]](*cfg["adapter"](ns, db))
     leaves, unresolved = [], []
     interpret(ir, _resolve_expr, _auto_env(vm), leaves, unresolved)   # resolver = the TRANSPILER
     hb, hberr = _hb_leaves(key)
@@ -644,13 +697,21 @@ def verify_auto(key="gym_list"):
     hb_set = set(hb)
     dyn = [(nt, c) for nt, c, st in leaves if not st]
     dyn_matched = [(nt, c) for nt, c in dyn if (nt, c) in hb_set]
+    shared = sorted(interp_set & hb_set)
+    interp_only = sorted(interp_set - hb_set)
+    hb_only = sorted(hb_set - interp_set)
     samples = sorted(e for e in _TP_EXPR_CACHE if _TP_EXPR_CACHE[e] and not e.startswith('"'))[:8]
 
     L = [f"# PseudoUI AUTO verify -- {key}: bindings emitted by the TRANSPILER (no hand spec)", "",
          "Every binding expression in the IR was transpiled Kt->Py and eval'd against kotlin_rt +",
          "the transpiled viewModel. There is NO per-screen binding spec -- the transpiler IS the spec.", "",
-         f"## result",
-         f"- resolved dynamic values matching hand-built: {len(dyn_matched)}/{len(dyn)}",
+         f"## leaf agreement vs hand-built (same seeded data)",
+         f"- shared (type+content):  {len(shared)}",
+         f"- interpreted-only:       {len(interp_only)}   (Compose representation: icon descs etc.)",
+         *[f"    INT {nt}: {c!r}" for nt, c in interp_only],
+         f"- hand-built-only:        {len(hb_only)}   (kit glyphs/helpers)",
+         *[f"    HB  {nt}: {c!r}" for nt, c in hb_only],
+         "", f"## dynamic values resolved ({len(dyn_matched)}/{len(dyn)} match hand-built)",
          *[f"    {'OK ' if (nt,c) in hb_set else 'MISS'}  {nt}: {c!r}" for nt, c, st in leaves if not st],
          f"- unresolved IR exprs: {len(unresolved)}",
          *[f"    {kind}: {e!r}" for kind, e in unresolved],
@@ -659,8 +720,9 @@ def verify_auto(key="gym_list"):
          *( [f"\n(hand-built trace partial: {hberr})"] if hberr else [] ), ""]
     os.makedirs(OUT, exist_ok=True)
     open(os.path.join(OUT, f"{key}.auto.md"), "w").write("\n".join(L))
-    print(f"  {key} (AUTO, transpiler-emitted bindings): {len(dyn_matched)}/{len(dyn)} dynamic values "
-          f"match hand-built, unresolved {len(unresolved)}; NO hand-written spec")
+    print(f"  {key} (AUTO): leaf shared {len(shared)}, interp-only {len(interp_only)}, "
+          f"hb-only {len(hb_only)}; dynamic {len(dyn_matched)}/{len(dyn)} match; "
+          f"unresolved {len(unresolved)}; NO hand-written spec")
     return dyn_matched, dyn, unresolved
 
 
