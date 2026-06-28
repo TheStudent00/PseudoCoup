@@ -1,5 +1,7 @@
 # PseudoUI IR -- gym_list (from GymListScreen)
 
+val gyms = viewModel.gyms.collectAsStateWithLifecycle()
+val activeGym = viewModel.activeGym.collectAsStateWithLifecycle()
 box V (Scaffold)
   IF gyms.isEmpty():
     box V (Box)
@@ -8,7 +10,13 @@ box V (Scaffold)
     box V (LazyColumn)
       FOREACH gymWithEquipment in gyms:
         box V (GymListItem)
+          val gym = gymWithEquipment.profile
+          val equipmentList = gymWithEquipment.equipment
           box V (WflCard)
+            val shape = RoundedCornerShape(WflTheme.tokens.cardRadius)
+            val border = BorderStroke(borderWidth, borderColor)
+            val colors = CardDefaults.cardColors(containerColor = containerColor)
+            val elevation = CardDefaults.cardElevation(defaultElevation = 0.dp)
             IF onClick != null:
               box V (Card)
             ELSE:
@@ -35,6 +43,7 @@ box V (Scaffold)
               IF equipmentList.isNotEmpty():
                 Text<static> '"Equipment"'
                 box V (Box)
+                  val equipmentNames = equipmentList.joinToString(", ") { it.name }
                   Text<DYN> 'equipmentNames'
                   box V (Box)
               ELSE:
