@@ -32,6 +32,6 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose GymCreateWizardScreen <-> kit gym_create_wizard
-- distinct widget signatures matched: 5/10 = 50%
+- distinct widget signatures matched: 5/9 = 55%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
 - kit signatures NOT in Compose: 0

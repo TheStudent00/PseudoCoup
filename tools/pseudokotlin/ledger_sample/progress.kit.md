@@ -27,6 +27,6 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose ProgressScreen <-> kit progress
-- distinct widget signatures matched: 5/29 = 17%
+- distinct widget signatures matched: 5/28 = 17%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
 - kit signatures NOT in Compose: 0

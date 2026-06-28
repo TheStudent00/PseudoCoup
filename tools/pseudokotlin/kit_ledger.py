@@ -276,8 +276,8 @@ def _sig_match(compose_ids, kit_ids):
     comp_static = {a for _, t, a, st in compose_ids if st and a and _ntype(t)}
     comp_sigs, kit_sigs = set(), set()
     for _, t, a, st in compose_ids:
-        if (nt := _ntype(t)):
-            comp_sigs.add((nt, a) if (st and a) else (nt, "·DYN·"))
+        if (nt := _ntype(t)) and a:          # anchorless leaf (decorative icon) -> not a content sig
+            comp_sigs.add((nt, a) if st else (nt, "·DYN·"))
     for _, t, a in kit_ids:
         if (nt := _ntype(t)) and a:
             kit_sigs.add((nt, a) if a in comp_static else (nt, "·DYN·"))
