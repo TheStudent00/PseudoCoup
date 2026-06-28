@@ -2,7 +2,7 @@
 
 Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
 helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)
+the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -11,8 +11,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     - Button[+]  <leaf>   size: wrap(rel)  style=tb_action(abs)
   - Row[1]  <container>   size: wrap(rel)  style=tab_row(abs)
     - Column[0]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
-      - Button[All]  <leaf>   size: wrap(rel)  style=tab_on(abs)
-      - Marker[1]  <leaf>   size: wrap(rel)
+      - Button[All]  <leaf>   size: wrap(rel)  style=tab_off(abs)
     - Column[1]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
       - Button[Built-in]  <leaf>   size: wrap(rel)  style=tab_off(abs)
     - Column[2]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
@@ -34,7 +33,6 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     exercises/Row[1]
     exercises/Row[1]/Column[0]
     exercises/Row[1]/Column[0]/Button[All]
-    exercises/Row[1]/Column[0]/Marker[1]
     exercises/Row[1]/Column[1]
     exercises/Row[1]/Column[1]/Button[Built-in]
     exercises/Row[1]/Column[2]
@@ -49,21 +47,23 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
 
 ---
 ## cross-side compare: Compose ExercisesScreen <-> kit exercises
-- matched (by content anchor): 1
+- matched (by content anchor): 3
+    = Exercises
     = No exercises found.
-- Compose-only (in design, MISSING from kit): 5
+    = Search exercises…
+- Compose-only (in design, MISSING from kit): 7
     KT  $label · $count
     KT  $muscles · ${exercise.equipmen…
     KT  Collapse|Expand
+    KT  New exercise
     KT  Remove from favorites|Add to f…
     KT  exercise.name
-- kit-only (ADDED by the wrapping): 9
+    KT  t.label
+- kit-only (ADDED by the wrapping): 7
     PY  +
     PY  All
     PY  Built-in
     PY  Custom
-    PY  Exercises
     PY  Favorites
-    PY  Search exercises…
     PY  ←
     PY  ⌕

@@ -2,7 +2,7 @@
 
 Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
 helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)
+the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -11,7 +11,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
   - Text[Log cardio or other activity s…]  <leaf>   size: wrap(rel)  style=note(abs)
   - Text[Activity]  <leaf>   size: wrap(rel)  style=note(abs)
   - Row[3]  <container>   size: wrap(rel)  style=chip_row(abs)
-    - Button[Run]  <leaf>   size: wrap(rel)  style=chip_on(abs)
+    - Button[Run]  <leaf>   size: wrap(rel)  style=chip_off(abs)
     - Button[Bike]  <leaf>   size: wrap(rel)  style=chip_off(abs)
     - Button[Swim]  <leaf>   size: wrap(rel)  style=chip_off(abs)
     - Button[Walk]  <leaf>   size: wrap(rel)  style=chip_off(abs)
@@ -25,20 +25,20 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
   - Text[When]  <leaf>   size: wrap(rel)  style=note(abs)
   - Button[Today]  <leaf>   size: wrap(rel)  style=btn_outlined(abs)
   - Text[Duration (minutes)]  <leaf>   size: wrap(rel)  style=note(abs)
-  - TextField[7]  <leaf>   size: wrap(rel)
+  - TextField[Minutes]  <leaf>   size: wrap(rel)
   - Text[Intensity]  <leaf>   size: wrap(rel)  style=note(abs)
   - Row[9]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Low]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[Moderate]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[Moderate]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[High]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
   - Column[10]  <container>   size: wrap(rel)  style=labeled_field(abs)
     - Text[Distance (km)]  <leaf>   size: wrap(rel)  style=field_label(abs)
-    - TextField[1]  <leaf>   size: wrap(rel)
+    - TextField[Distance]  <leaf>   size: wrap(rel)
   - Column[11]  <container>   size: wrap(rel)  style=labeled_field(abs)
     - Text[Avg HR (bpm)]  <leaf>   size: wrap(rel)  style=field_label(abs)
-    - TextField[1]  <leaf>   size: wrap(rel)
+    - TextField[Avg HR]  <leaf>   size: wrap(rel)
   - Text[Notes (optional)]  <leaf>   size: wrap(rel)  style=note(abs)
-  - TextField[13]  <leaf>   size: wrap(rel)
+  - TextField[Notes]  <leaf>   size: wrap(rel)
   - Button[Save]  <leaf>   size: wrap(rel)  style=btn_filled(abs)
   - Zone[15]  <leaf>   size: wrap(rel)
 
@@ -64,7 +64,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     log_cardio/Text[When]
     log_cardio/Button[Today]
     log_cardio/Text[Duration (minutes)]
-    log_cardio/TextField[7]
+    log_cardio/TextField[Minutes]
     log_cardio/Text[Intensity]
     log_cardio/Row[9]
     log_cardio/Row[9]/Button[Low]
@@ -72,44 +72,55 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     log_cardio/Row[9]/Button[High]
     log_cardio/Column[10]
     log_cardio/Column[10]/Text[Distance (km)]
-    log_cardio/Column[10]/TextField[1]
+    log_cardio/Column[10]/TextField[Distance]
     log_cardio/Column[11]
     log_cardio/Column[11]/Text[Avg HR (bpm)]
-    log_cardio/Column[11]/TextField[1]
+    log_cardio/Column[11]/TextField[Avg HR]
     log_cardio/Text[Notes (optional)]
-    log_cardio/TextField[13]
+    log_cardio/TextField[Notes]
     log_cardio/Button[Save]
     log_cardio/Zone[15]
 
 ---
 ## cross-side compare: Compose LogCardioScreen <-> kit log_cardio
-- matched (by content anchor): 5
+- matched (by content anchor): 7
     = Activity
     = Intensity
     = Log cardio or other activity s…
+    = Log other exercise
+    = Notes (optional)
     = Save
     = When
-- Compose-only (in design, MISSING from kit): 2
+- Compose-only (in design, MISSING from kit): 11
+    KT  Back
+    KT  Cancel
+    KT  It's already logged
+    KT  Keep both
+    KT  OK
+    KT  Oops — already logged?
+    KT  Was this already logged automa…
     KT  null
+    KT  option.label()
+    KT  type.displayName()
     KT  whenLabel(state.selectedDate, …
-- kit-only (ADDED by the wrapping): 21
+- kit-only (ADDED by the wrapping): 23
+    PY  Avg HR
     PY  Avg HR (bpm)
     PY  Bike
     PY  Class
+    PY  Distance
     PY  Distance (km)
     PY  Duration (minutes)
     PY  Elliptical
     PY  HIIT
     PY  High
     PY  Hike
-    PY  Log other exercise
     PY  Low
+    PY  Minutes
     PY  Moderate
-    PY  Notes (optional)
+    PY  Notes
     PY  Other
     PY  Row
     PY  Run
     PY  Sport
     PY  Swim
-    PY  Today
-    PY  Walk

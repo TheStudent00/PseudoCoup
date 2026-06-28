@@ -82,10 +82,10 @@ def _is_widget(call):
 
 
 def _children(call):
-    """direct child widget calls inside the trailing lambda (don't descend into a child)."""
-    _, lam = _base_and_lambda(call)
-    if lam is None:
-        return []
+    """direct child widget calls -- from the trailing lambda AND from named-argument lambdas
+    (Compose slot APIs: Scaffold(topBar={…}), TopAppBar(title={…}), Button(content)…). Don't
+    descend into a found child (handled when it's processed)."""
+    base, lam = _base_and_lambda(call)
     found = []
 
     def walk(n):
@@ -94,7 +94,15 @@ def _children(call):
                 found.append(c)
             else:
                 walk(c)
-    walk(lam)
+    if lam is not None:
+        walk(lam)
+    va = next((k for k in base.children if k.type == "value_arguments"), None)
+    if va:
+        for a in va.named_children:
+            if a.type == "value_argument":
+                for k in a.children:
+                    if k.type in ("lambda_literal", "annotated_lambda"):
+                        walk(k)
     return found
 
 
