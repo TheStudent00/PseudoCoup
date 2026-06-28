@@ -27,6 +27,8 @@ _STDLIB_METHODS = {
     "isNotEmpty":    lambda r, a: f"(len({r}) != 0)",
     "isBlank":       lambda r, a: f"(len({r}.strip()) == 0)",
     "isNotBlank":    lambda r, a: f"(len({r}.strip()) != 0)",
+    "isNullOrBlank": lambda r, a: f"({r} is None or len({r}.strip()) == 0)",
+    "isNullOrEmpty": lambda r, a: f"({r} is None or len({r}) == 0)",
     "coerceAtMost":  lambda r, a: f"min({r}, {a[0]})",
     "coerceAtLeast": lambda r, a: f"max({r}, {a[0]})",
     "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
@@ -211,28 +213,36 @@ class Expressions:
         return f"({self.visit(self.named(node)[0])})"
 
     # ---- access / call --------------------------------------------------- #
+    @staticmethod
+    def _strip_prefix(x, pre):
+        """undo a prematurely-lifted leading prefix on a visited receiver (so it can re-wrap the
+        whole postfix expr at the top). `(not X)` -> X for `!`; a leading `-`/`+` -> dropped."""
+        if pre == "!" and x.startswith("(not ") and x.endswith(")"):
+            return x[5:-1]
+        if pre in ("-", "+") and x.startswith(pre):
+            return x[1:]
+        return x
+
     @kind("navigation_expression")
     def v_navigation(self, node):
         kids = self.named(node)
         recv = kids[0]
         sel = self.text(kids[-1]) if len(kids) > 1 else ""
         safe_call = any(c.type == "?." for c in node.children)
-        # grammar quirk: `!w.sel` / `-w.sel` parse as (!w).sel but MEAN !(w.sel) -- the
-        # prefix op binds looser than the dot. Lift it out around the navigation.
-        if recv.type == "unary_expression":
-            ops = [c.type for c in recv.children if not c.is_named]
-            pre = next((o for o in ("!", "-", "+") if o in ops), None)
-            if pre is not None:
-                base = self._navigate(self.named(recv)[0], sel, safe_call, node)
-                return f"(not {base})" if pre == "!" else f"{pre}{base}"
-        return self._navigate(recv, sel, safe_call, node)
+        # grammar quirk: a leading `!`/`-`/`+` down the receiver chain parses as (!w).sel but
+        # MEANS !(w.sel) -- the prefix binds looser than the dot. Strip + re-wrap at each level
+        # so it bubbles to the outermost postfix expr.
+        pre = self._leading_prefix(recv)
+        base = self._navigate(recv, sel, safe_call, node, pre)
+        return f"(not {base})" if pre == "!" else (f"{pre}{base}" if pre else base)
 
-    def _navigate(self, recv, sel, safe_call, node):
+    def _navigate(self, recv, sel, safe_call, node, pre=None):
+        left0 = lambda: self._strip_prefix(self.visit(recv), pre)   # noqa: E731
         if recv.type in _NUMBER_KINDS and sel in _UNIT_EXT:      # WRAP: 16.dp -> dp(16)
-            return f"{_UNIT_EXT[sel]}({self.visit(recv)})"
+            return f"{_UNIT_EXT[sel]}({left0()})"
         if sel in _STDLIB_PROPS and not safe_call:               # WRAP: xs.size -> len(xs)
-            return _STDLIB_PROPS[sel](self.visit(recv))
-        left = self.visit(recv)
+            return _STDLIB_PROPS[sel](left0())
+        left = left0()
         attr = self._safe(sel)
         if safe_call:
             return f"({left}.{attr} if {left} is not None else None)"
@@ -257,31 +267,53 @@ class Expressions:
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
             safe = any(c.type == "?." for c in callee.children)
+            # grammar quirk: a leading `!`/`-`/`+` anywhere down the receiver chain parses
+            # tightly but MEANS the whole call -- `!a.b.f()` is `!(a.b.f())`. v_navigation lifts
+            # it one level early; detect it at the chain's leftmost leaf, strip the (premature)
+            # prefix off the visited receiver, and re-wrap the whole call. (No-op without one.)
+            pre = self._leading_prefix(nk[0])
+
+            def _wrap(x):
+                return f"(not {x})" if pre == "!" else (f"{pre}{x}" if pre else x)
+
+            recv = self._strip_prefix(self.visit(nk[0]), pre)
             if sel in _SCOPE_FNS and trailing is not None:   # x.let { it… } -> f(x)
                 lam = self._lambda_node(trailing)
                 if self._has_nonlocal_return(lam):      # `x?.let { return it }` guard:
                     if sel == "let":                    # the return exits the ENCLOSING fn
                         return self._let_guard(nk[0], lam, safe)
                     raise Untranspilable(node, f"non-local return in {sel} {{ … }}")
-                return _SCOPE_FNS[sel](self.visit(nk[0]), self._lambda_str(trailing), safe)
+                return _wrap(_SCOPE_FNS[sel](recv, self._lambda_str(trailing), safe))
             if sel in _STDLIB_METHODS and not safe:     # WRAP: recv.coerceIn(...) -> min/max
-                return _STDLIB_METHODS[sel](self.visit(nk[0]), self._arg_values(node))
+                return _wrap(_STDLIB_METHODS[sel](recv, self._arg_values(node)))
             # general method call -- build recv.sel(args) from the receiver+selector so the
             # navigation PROPERTY mappings (.first -> [0], .size -> len) don't fire on a
             # method CALL (`it.first()` is a method; `it.first` is the property).
-            recv = self.visit(nk[0])
             args = self._render_args(own_args)
             if trailing is not None:
                 lam = self._lambda_str(trailing)
                 args = f"{args}, {lam}" if args else lam
             call = f"{recv}.{self._safe(sel)}({args})"
-            return f"({call} if {recv} is not None else None)" if safe else call
+            return _wrap(f"({call} if {recv} is not None else None)" if safe else call)
         fn = self.visit(callee)
         args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`
             lam = self._lambda_str(trailing)
             args = f"{args}, {lam}" if args else lam
         return f"{fn}({args})"
+
+    def _leading_prefix(self, node):
+        """the `!`/`-`/`+` at the leftmost leaf of a receiver chain (the grammar binds it tightly
+        but it means the whole postfix expr). Stops at parentheses -- `(!x).f()` is explicit."""
+        n = node
+        while True:
+            if n.type == "unary_expression":
+                ops = [c.type for c in n.children if not c.is_named]
+                return next((o for o in ("!", "-", "+") if o in ops), None)
+            if n.type in ("navigation_expression", "call_expression") and self.named(n):
+                n = self.named(n)[0]
+            else:
+                return None
 
     def _lambda_node(self, trailing):
         if trailing.type == "annotated_lambda":

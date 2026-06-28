@@ -20,21 +20,18 @@ the transpiled viewModel. There is NO per-screen binding spec -- the transpiler 
     OK   T: 'Squat · Barbell'
     OK   T: 'Back Squat'
     MISS  T: 'Never program this'
-- unresolved IR exprs: 6
+- unresolved IR exprs: 3
     leaf: 'body'
     leaf: 'body'
-    cond: '!exercise.instructions.isNullOrBlank()'
-    cond: '!exercise.cues.isNullOrBlank()'
-    cond: '!exercise.videoLink.isNullOrBlank()'
     cond: 'showDeleteDialog'
 
 ## sample of the transpiler-emitted bindings (Kotlin -> Python, mechanical)
     '!exercise.cues.isNullOrBlank()'
-      -> __r = (not exercise.cues).isNullOrBlank()
+      -> __r = (not (exercise.cues is None or len(exercise.cues.strip()) == 0))
     '!exercise.instructions.isNullOrBlank()'
-      -> __r = (not exercise.instructions).isNullOrBlank()
+      -> __r = (not (exercise.instructions is None or len(exercise.instructions.strip()) == 0))
     '!exercise.videoLink.isNullOrBlank()'
-      -> __r = (not exercise.videoLink).isNullOrBlank()
+      -> __r = (not (exercise.videoLink is None or len(exercise.videoLink.strip()) == 0))
     'body'
       -> __r = body
     'ex != null'
