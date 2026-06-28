@@ -156,6 +156,64 @@ def _norm(call, parent_kind):
             "other": other}
 
 
+# ── widget identity: a content-anchored path-id (no source annotation needed) ─
+_COMPS = None
+
+
+def composable_names():
+    """names of the project's own @Composable functions -- these are the component-level
+    identifiers (a call to one is a component reference, id'd by name, not by position)."""
+    global _COMPS
+    if _COMPS is None:
+        _COMPS = set()
+        for dp, _, fs in os.walk(UIROOT):
+            for f in fs:
+                if f.endswith(".kt"):
+                    try:
+                        for cn, _ in composables(os.path.join(dp, f)):
+                            _COMPS.add(cn)
+                    except Exception:                    # noqa: BLE001
+                        pass
+    return _COMPS
+
+
+def _first_positional(call):
+    base, _ = _base_and_lambda(call)
+    va = next((k for k in base.children if k.type == "value_arguments"), None)
+    if not va:
+        return None
+    for a in va.named_children:
+        if a.type == "value_argument":
+            kids = a.children
+            if not (len(kids) >= 2 and kids[0].type == "identifier" and kids[1].type == "="):
+                return a.text.decode()
+    return None
+
+
+def _anchor(expr):
+    """human handle from an arg value: prefer string literals (an `if/else` yields a|b),
+    else the raw expression; normalized + truncated."""
+    lits = re.findall(r'"([^"]*)"', expr)
+    s = "|".join(lits) if lits else expr.strip()
+    s = re.sub(r"\s+", " ", s)
+    return (s[:30] + "…") if len(s) > 31 else s
+
+
+def _segment(call, idx, comps):
+    """this node's id segment: component name · Type[desc=…] · Text[\"…\"] · Type[index]."""
+    name = _name(call)
+    if name in comps:                                    # a custom composable -> id by name
+        return name
+    args = _named_args(call)
+    if name in ("Icon", "Image") and args.get("contentDescription"):
+        return f"{name}[desc={_anchor(args['contentDescription'])}]"
+    if name == "Text":
+        txt = args.get("text") or _first_positional(call)
+        if txt:
+            return f"Text[{_anchor(txt)}]"
+    return f"{name}[{idx}]"
+
+
 # ── render ───────────────────────────────────────────────────────────────────
 def _tag(v):
     if v in ("fill", "wrap") or v.startswith("weight"):
@@ -163,16 +221,18 @@ def _tag(v):
     return "abs" if _abs(v) or v not in ("?",) else "rel"
 
 
-def render_node(call, parent_kind, depth, idx, sibs, lines):
+def render_node(call, parent_kind, depth, idx, path, lines, ids, comps):
     name = _name(call)
+    seg = _segment(call, idx, comps)
+    full = "/".join(path + [seg])
+    ids.append(full)
     d = _norm(call, parent_kind)
     kids = _children(call)
     kind = "container" if kids else "leaf"
     ind = "  " * depth
-    pos = f" [{idx}/{sibs}]" if sibs else ""
     sz = d["size"]
     szs = f"w={sz['w']}({_tag(sz['w'])}) h={sz['h']}({_tag(sz['h'])})"
-    lines.append(f"{ind}- {name}  <{kind}>{pos}   size: {szs}")
+    lines.append(f"{ind}- {seg}  <{kind}>   size: {szs}")
     extra = []
     if d["pad"]:
         extra.append(f"pad={d['pad']} ({'abs' if _abs(d['pad']) else 'rel'})")
@@ -187,7 +247,7 @@ def render_node(call, parent_kind, depth, idx, sibs, lines):
     if extra:
         lines.append(f"{ind}    " + " · ".join(extra))
     for i, c in enumerate(kids):
-        render_node(c, name, depth + 1, i, len(kids), lines)
+        render_node(c, name, depth + 1, i, path + [seg], lines, ids, comps)
     return 1 + sum(_count(c) for c in kids)
 
 
@@ -226,19 +286,26 @@ def run(rel):
         path = os.path.join(UIROOT, rel)
     comps = composables(path)
     name = os.path.basename(path)[:-3]
+    cnames = composable_names()
     L = [f"# UI layout ledger -- {name}", "",
          "Kotlin-side sizing/positioning, read statically from each Composable's Modifier",
          "chain + container args. Normalized vocabulary (target-agnostic). abs = fixed dp/sp/",
          "token; rel = fill/weight/wrap/alignment (parent-relative). The Python/kit side and the",
-         "rendered-geometry diff plug into this same schema later.", ""]
+         "rendered-geometry diff plug into this same schema later.", "",
+         "Each node carries a content-anchored path-id (no source annotation needed): a custom",
+         "composable -> its name; Icon/Image -> [desc=…]; Text -> [\"…\"]; else Type[index]. The",
+         "full id is the path from the composable root -- a stable handle for the cross-side match.", ""]
     total = 0
     for cname, roots in comps:
         L.append(f"## @Composable {cname}")
         if not roots:
             L.append("  (no layout widgets)\n")
             continue
-        for r in roots:
-            total += render_node(r, None, 1, 0, 0 if len(roots) == 1 else len(roots), L)
+        ids = []
+        for i, r in enumerate(roots):
+            total += render_node(r, None, 1, i, [cname], L, ids, cnames)
+        L.append("  ids:")
+        L += [f"    {x}" for x in ids]
         L.append("")
     L += ["---", f"summary: {len(comps)} composables, {total} widget nodes", ""]
     os.makedirs(OUT, exist_ok=True)
