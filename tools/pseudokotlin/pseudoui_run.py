@@ -596,6 +596,78 @@ def _load_transpiled(files):
     return ns
 
 
+# ── general enum lift: kit stores enums as ints; the Kotlin code calls x.displayName() ─────────
+# Driven by the Kotlin ENTITY's field types -- no per-screen hand-lifting. A field declared as a
+# Kotlin enum (or List<enum>) is lifted from the kit int -> the transpiled enum (EnumCls.entries[i]),
+# which carries .displayName()/.emoji/etc. exactly like Kotlin.
+_ENUM_REG, _ENUM_FIELDS = {}, {}
+
+
+def _is_enum_type(name):
+    p = O.find_one(O.MAIN, f"{name}.kt")
+    try:
+        return bool(p) and f"enum class {name}" in open(p).read()
+    except Exception:                                    # noqa: BLE001
+        return False
+
+
+def _enum_class(name):
+    if name not in _ENUM_REG:
+        import runtime.kotlin_rt as rt
+        from transpiler import KtToPy
+        ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+        try:
+            src = KtToPy().transpile(open(O.find_one(O.MAIN, f"{name}.kt"), "rb").read())
+            # WORKAROUND (transpiler bug): enum member methods reference the implicit `name`/
+            # `ordinal` properties unqualified; qualify them so displayName()/emoji run. The only
+            # bare `name` in a transpiled enum is inside its method bodies (all stored .name use a
+            # dot), so this is safe for these enums.
+            src = re.sub(r"(?<![.\w])name(?![\w])", "self.name", src)
+            src = re.sub(r"(?<![.\w])ordinal(?![\w])", "self.ordinal", src)
+            exec(compile(src, name, "exec"), ns)         # noqa: S102 -- transpiled enum
+            _ENUM_REG[name] = ns.get(name)
+        except Exception:                                # noqa: BLE001
+            _ENUM_REG[name] = None
+    return _ENUM_REG[name]
+
+
+def _enum_field_map(entity_name):
+    """{field -> (enum_name, is_list)} for the Kotlin entity's enum-typed constructor fields."""
+    if entity_name not in _ENUM_FIELDS:
+        p, m = O.find_one(O.MAIN, f"{entity_name}.kt"), {}
+        if p:
+            for fname, ftype in re.findall(r"val\s+(\w+):\s*(List<\w+>|\w+)\??", open(p).read()):
+                base = re.sub(r"List<(\w+)>", r"\1", ftype)
+                if _is_enum_type(base):
+                    m[fname] = (base, ftype.startswith("List<"))
+        _ENUM_FIELDS[entity_name] = m
+    return _ENUM_FIELDS[entity_name]
+
+
+class _LiftProxy:
+    """wraps a kit entity, lifting its enum fields (int -> transpiled enum) on access."""
+    def __init__(self, obj, fmap): self.__dict__["_o"], self.__dict__["_f"] = obj, fmap
+
+    def __getattr__(self, n):
+        v = getattr(self._o, n)
+        ef = self._f.get(n)
+        if ef and (cls := _enum_class(ef[0])) is not None:
+            import runtime.kotlin_rt as rt
+            try:
+                if ef[1]:
+                    return rt.KtList(cls.entries[int(i)] for i in v)
+                if v is not None:
+                    return cls.entries[int(v)]
+            except Exception:                            # noqa: BLE001 -- not int-convertible; pass through
+                pass
+        return v
+
+
+def _lift(obj, entity_name):
+    fmap = _enum_field_map(entity_name)
+    return _LiftProxy(obj, fmap) if (fmap and obj is not None) else obj
+
+
 def _gym_repo_adapter(ns, db):
     """Room-DAO boundary, ported to the kit InMemoryDb: yields the transpiled Kotlin shapes
     (GymWithEquipment bundling profile+equipment; gymType int -> GymType enum)."""
@@ -648,7 +720,8 @@ def _exercise_detail_adapter(ns, db):
     repo = ExerciseRepository(db)
 
     class _Repo:
-        def getById(self, eid): return Flow(repo.get_by_id("eSquat"))
+        def getById(self, eid):                          # lift enum fields (movement/equipment/muscle)
+            return Flow(_lift(repo.get_by_id("eSquat"), "ExerciseEntity"))
 
     class _SSH:
         def __getitem__(self, k): return "eSquat"
