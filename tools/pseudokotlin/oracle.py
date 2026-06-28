@@ -196,17 +196,27 @@ def run_jvm(test_path):
 
 
 def oracle(name, jvm=False):
-    eng = find_one(MAIN, f"{name}.kt")
     tst = find_one(TEST, f"{name}Test.kt")
-    if not eng or not tst:
-        print(f"  {name}: missing {'engine' if not eng else 'test'} source")
+    if not tst:
+        print(f"  {name}: missing test source")
         return False
-    engine_py, test_py = transpile(eng), transpile(tst)
-    if engine_py is None or test_py is None:
-        print(f"  {name}: {'engine' if engine_py is None else 'test'} does not transpile")
+    # A test's subject need not be a same-named main file: e.g. ReadinessProgressionGateTest
+    # exercises methods ON AutoregulationEngine. When there's no `{name}.kt`, the subject
+    # arrives via the test's own dependency closure instead of as a named engine seed.
+    eng = find_one(MAIN, f"{name}.kt")
+    # Transpile the engine BEFORE the test: transpile() populates global type/field
+    # registries as a side effect, and the test's references (e.g. WarmupEngine.loadKg)
+    # resolve correctly only once the engine's fields are registered.
+    engine_py = transpile(eng) if eng else ""
+    test_py = transpile(tst)
+    if test_py is None:
+        print(f"  {name}: test does not transpile")
+        return False
+    if eng and engine_py is None:
+        print(f"  {name}: engine does not transpile")
         return False
 
-    dep_paths = closure([eng, tst])
+    dep_paths = closure(([eng] if eng else []) + [tst])
     dep_pys = [transpile(p) for p in dep_paths]
     missing = [p for p, s in zip(dep_paths, dep_pys) if s is None]
     dep_pys = [s for s in dep_pys if s]
@@ -240,13 +250,24 @@ def oracle(name, jvm=False):
 
 
 def all_engines():
+    main_syms = {n for n, p in build_index().items() if p.startswith(MAIN)}
     names = []
     for dp, _, fs in os.walk(TEST):
         if os.sep + "build" + os.sep in dp + os.sep:
             continue
         for f in fs:
-            if f.endswith("Test.kt") and find_one(MAIN, f[:-7] + ".kt"):
-                names.append(f[:-7])
+            if not f.endswith("Test.kt"):
+                continue
+            name = f[:-7]
+            if find_one(MAIN, name + ".kt"):
+                names.append(name)
+                continue
+            # No same-named engine: include iff the test references a MAIN symbol (its
+            # subject is a nested type elsewhere, e.g. ReadinessProgressionGate -> Auto-
+            # regulationEngine). Excludes Android's ExampleUnitTest, which references none.
+            tp = transpile(os.path.join(dp, f))
+            if tp and (referenced_names(tp) & main_syms):
+                names.append(name)
     return sorted(set(names))
 
 
