@@ -6,71 +6,71 @@ def _ev(f):
 
 
 def build(ui, content, viewModel):
-    gyms = viewModel.gyms.collectAsStateWithLifecycle()
-    activeGym = viewModel.activeGym.collectAsStateWithLifecycle()
+    gyms = _ev(lambda: viewModel.gyms.collectAsStateWithLifecycle())
+    activeGym = _ev(lambda: viewModel.activeGym.collectAsStateWithLifecycle())
     _id0 = "gym_list_z0"
     ui.define_box(_id0, "content", "V")
     if _ev(lambda: (len(gyms) == 0)):
-        _id1 = "gym_list_z1"
-        ui.define_box(_id1, _id0, "V")
-        ui.define_text("gym_list_z2", _id1, 'No gyms yet. Tap + to add one.')
+        _id2 = "gym_list_z2"
+        ui.define_box(_id2, _id0, "V")
+        ui.define_text("gym_list_z3", _id2, 'No gyms yet. Tap + to add one.')
     else:
-        _id3 = "gym_list_z3"
-        ui.define_box(_id3, _id0, "V")
-        for _i4, gymWithEquipment in enumerate(gyms):
-            _id5 = ("gym_list_z5" + "_" + str(_i4))
-            ui.define_box(_id5, _id3, "V")
-            gym = gymWithEquipment.profile
-            equipmentList = gymWithEquipment.equipment
-            _id6 = ("gym_list_z6" + "_" + str(_i4))
-            ui.define_box(_id6, _id5, "V")
+        _id4 = "gym_list_z4"
+        ui.define_box(_id4, _id0, "V")
+        for _i5, gymWithEquipment in enumerate(_ev(lambda: gyms) or []):
+            _id6 = ("gym_list_z6" + "_" + str(_i5))
+            ui.define_box(_id6, _id4, "V")
+            gym = _ev(lambda: gymWithEquipment.profile)
+            equipmentList = _ev(lambda: gymWithEquipment.equipment)
+            _id7 = ("gym_list_z7" + "_" + str(_i5))
+            ui.define_box(_id7, _id6, "V")
             if _ev(lambda: onClick != None):
-                _id7 = ("gym_list_z7" + "_" + str(_i4))
-                ui.define_box(_id7, _id6, "V")
+                _id9 = ("gym_list_z9" + "_" + str(_i5))
+                ui.define_box(_id9, _id7, "V")
             else:
-                _id8 = ("gym_list_z8" + "_" + str(_i4))
-                ui.define_box(_id8, _id6, "V")
-            _id9 = ("gym_list_z9" + "_" + str(_i4))
-            ui.define_box(_id9, _id6, "V")
-            _id10 = ("gym_list_z10" + "_" + str(_i4))
-            ui.define_box(_id10, _id9, "H")
-            ui.define_text(("gym_list_z11" + "_" + str(_i4)), _id10, gym.name)
+                _id10 = ("gym_list_z10" + "_" + str(_i5))
+                ui.define_box(_id10, _id7, "V")
+            _id11 = ("gym_list_z11" + "_" + str(_i5))
+            ui.define_box(_id11, _id7, "V")
+            _id12 = ("gym_list_z12" + "_" + str(_i5))
+            ui.define_box(_id12, _id11, "H")
+            ui.define_text(("gym_list_z13" + "_" + str(_i5)), _id12, _ev(lambda: gym.name))
             if _ev(lambda: (activeGym.id if activeGym is not None else None) == gymWithEquipment.profile.id):
-                _id12 = ("gym_list_z12" + "_" + str(_i4))
-                ui.define_box(_id12, _id10, "V")
-                ui.define_text(("gym_list_z13" + "_" + str(_i4)), _id12, 'Active')
+                _id15 = ("gym_list_z15" + "_" + str(_i5))
+                ui.define_box(_id15, _id12, "V")
+                ui.define_text(("gym_list_z16" + "_" + str(_i5)), _id15, '✓ Active')
             else:
-                ui.define_button(("gym_list_z14" + "_" + str(_i4)), _id10, 'Set active')
-            ui.define_spacer_zone(("gym_list_z15" + "_" + str(_i4)), _id9)
-            type = gym.gymType
+                ui.define_button(("gym_list_z17" + "_" + str(_i5)), _id12, 'Set active')
+            ui.define_spacer_zone(("gym_list_z18" + "_" + str(_i5)), _id11)
+            type = _ev(lambda: gym.gymType)
             if type is not None:
-                ui.define_text(("gym_list_z16" + "_" + str(_i4)), _id9, f"{type.emoji} {type.displayName}")
-            ui.define_spacer_zone(("gym_list_z17" + "_" + str(_i4)), _id9)
-            _id18 = ("gym_list_z18" + "_" + str(_i4))
-            ui.define_box(_id18, _id9, "H")
-            _id19 = ("gym_list_z19" + "_" + str(_i4))
-            ui.define_box(_id19, _id18, "V")
-            _id20 = ("gym_list_z20" + "_" + str(_i4))
-            ui.define_box(_id20, _id19, "V")
-            ui.define_text(("gym_list_z21" + "_" + str(_i4)), _id20, 'Equipment')
-            ui.define_text(("gym_list_z22" + "_" + str(_i4)), _id20, f"{len(equipmentList)} items")
-            ui.define_spacer_zone(("gym_list_z23" + "_" + str(_i4)), _id9)
+                ui.define_text(("gym_list_z19" + "_" + str(_i5)), _id11, _ev(lambda: f"{type.emoji} {type.displayName}"))
+            ui.define_spacer_zone(("gym_list_z20" + "_" + str(_i5)), _id11)
+            _id21 = ("gym_list_z21" + "_" + str(_i5))
+            ui.define_box(_id21, _id11, "H")
+            _id22 = ("gym_list_z22" + "_" + str(_i5))
+            ui.define_box(_id22, _id21, "V")
+            _id23 = ("gym_list_z23" + "_" + str(_i5))
+            ui.define_box(_id23, _id22, "V")
+            ui.define_text(("gym_list_z24" + "_" + str(_i5)), _id23, 'Equipment')
+            ui.define_text(("gym_list_z25" + "_" + str(_i5)), _id23, _ev(lambda: f"{len(equipmentList)} items"))
+            ui.define_spacer_zone(("gym_list_z26" + "_" + str(_i5)), _id11)
             if _ev(lambda: (len(equipmentList) != 0)):
-                ui.define_text(("gym_list_z24" + "_" + str(_i4)), _id9, 'Equipment')
-                _id25 = ("gym_list_z25" + "_" + str(_i4))
-                ui.define_box(_id25, _id9, "V")
-                equipmentNames = equipmentList.joinToString(", ", (lambda it=None: it.name))
-                ui.define_text(("gym_list_z26" + "_" + str(_i4)), _id25, equipmentNames)
-                _id27 = ("gym_list_z27" + "_" + str(_i4))
-                ui.define_box(_id27, _id25, "V")
+                ui.define_text(("gym_list_z28" + "_" + str(_i5)), _id11, 'Equipment')
+                _id29 = ("gym_list_z29" + "_" + str(_i5))
+                ui.define_box(_id29, _id11, "V")
+                equipmentNames = _ev(lambda: equipmentList.joinToString(", ", (lambda it=None: it.name)))
+                ui.define_text(("gym_list_z30" + "_" + str(_i5)), _id29, _ev(lambda: equipmentNames))
+                _id31 = ("gym_list_z31" + "_" + str(_i5))
+                ui.define_box(_id31, _id29, "V")
             else:
-                ui.define_text(("gym_list_z28" + "_" + str(_i4)), _id9, 'No equipment listed')
-            ui.define_spacer_zone(("gym_list_z29" + "_" + str(_i4)), _id9)
-            _id30 = ("gym_list_z30" + "_" + str(_i4))
-            ui.define_box(_id30, _id9, "H")
-            ui.define_button(("gym_list_z31" + "_" + str(_i4)), _id30, 'Delete gym')
-    _id32 = "gym_list_z32"
-    ui.define_box(_id32, _id0, "V")
-    ui.define_text("gym_list_z33", _id32, 'Gym profiles')
-    ui.define_icon("gym_list_z34", _id32, 'Back')
-    ui.define_icon("gym_list_z35", _id0, 'Add gym')
+                ui.define_text(("gym_list_z32" + "_" + str(_i5)), _id11, 'No equipment listed')
+            ui.define_spacer_zone(("gym_list_z33" + "_" + str(_i5)), _id11)
+            _id34 = ("gym_list_z34" + "_" + str(_i5))
+            ui.define_box(_id34, _id11, "H")
+            ui.define_button(("gym_list_z35" + "_" + str(_i5)), _id34, 'Delete gym')
+    _id36 = "gym_list_z36"
+    ui.define_box(_id36, _id0, "V")
+    ui.define_text("gym_list_z37", _id36, 'Gym profiles')
+    ui.define_text("gym_list_z38", _id36, '←')
+    ui.define_text("gym_list_z39", _id0, '+')
