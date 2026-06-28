@@ -2,7 +2,7 @@
 
 Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
 helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)
+the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -15,7 +15,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
       - Text[Remind you when it's time to l…]  <leaf>   size: wrap(rel)  style=settings_sub(abs)
   - Row[3]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Push]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[None]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
   - Divider[4]  <leaf>   size: wrap(rel)
   - Row[5]  <container>   size: wrap(rel)  style=settings_row(abs)
@@ -24,7 +24,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
       - Text[Only 1 more workout left to hi…]  <leaf>   size: wrap(rel)  style=settings_sub(abs)
   - Row[6]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Push]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[None]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
   - Divider[7]  <leaf>   size: wrap(rel)
   - Row[8]  <container>   size: wrap(rel)  style=settings_row(abs)
@@ -33,7 +33,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
       - Text[Peak week push and upcoming de…]  <leaf>   size: wrap(rel)  style=settings_sub(abs)
   - Row[9]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Push]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[None]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
   - Divider[10]  <leaf>   size: wrap(rel)
   - Row[11]  <container>   size: wrap(rel)  style=settings_row(abs)
@@ -42,7 +42,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
       - Text[Prompts to record qualitative …]  <leaf>   size: wrap(rel)  style=settings_sub(abs)
   - Row[12]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Push]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[In-app]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[None]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
 
   ids:

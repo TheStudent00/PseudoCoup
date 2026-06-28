@@ -2,22 +2,22 @@
 
 Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
 helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)
+the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
     - Column[1]  <container>   size: weight(1.0)(rel)
       - Text[Report a bug]  <leaf>   size: wrap(rel)  style=tb_title(abs)
   - Text[Tell us what went wrong — what…]  <leaf>   size: wrap(rel)  style=note(abs)
-  - TextField[2]  <leaf>   size: wrap(rel)
+  - TextField[What happened?]  <leaf>   size: wrap(rel)
   - Text[How bad is it?]  <leaf>   size: wrap(rel)  style=note(abs)
   - Row[4]  <container>   size: wrap(rel)  style=seg_row(abs)
     - Button[Minor]  <leaf>   size: wrap(rel)  style=seg_first_off(abs)
-    - Button[Annoying]  <leaf>   size: wrap(rel)  style=seg_mid_on(abs)
+    - Button[Annoying]  <leaf>   size: wrap(rel)  style=seg_mid_off(abs)
     - Button[Blocking]  <leaf>   size: wrap(rel)  style=seg_last_off(abs)
   - Column[5]  <container>   size: wrap(rel)  style=labeled_field(abs)
     - Text[Your name (optional)]  <leaf>   size: wrap(rel)  style=field_label(abs)
-    - TextField[1]  <leaf>   size: wrap(rel)
+    - TextField[Your name]  <leaf>   size: wrap(rel)
   - Column[6]  <container>   size: wrap(rel)  style=card(abs)
     - Text[Crash detected]  <leaf>   size: wrap(rel)  style=card_title(abs)
     - Text[We detected a crash on your la…]  <leaf>   size: wrap(rel)  style=card_body(abs)
@@ -30,7 +30,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     report_bug/Row[0]/Column[1]
     report_bug/Row[0]/Column[1]/Text[Report a bug]
     report_bug/Text[Tell us what went wrong — what…]
-    report_bug/TextField[2]
+    report_bug/TextField[What happened?]
     report_bug/Text[How bad is it?]
     report_bug/Row[4]
     report_bug/Row[4]/Button[Minor]
@@ -38,7 +38,7 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     report_bug/Row[4]/Button[Blocking]
     report_bug/Column[5]
     report_bug/Column[5]/Text[Your name (optional)]
-    report_bug/Column[5]/TextField[1]
+    report_bug/Column[5]/TextField[Your name]
     report_bug/Column[6]
     report_bug/Column[6]/Text[Crash detected]
     report_bug/Column[6]/Text[We detected a crash on your la…]
@@ -47,13 +47,17 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
 
 ---
 ## cross-side compare: Compose ReportBugScreen <-> kit report_bug
-- matched (by content anchor): 4
+- matched (by content anchor): 6
     = How bad is it?
+    = Report a bug
     = Send report
     = Tell us what went wrong — what…
     = We detected a crash on your la…
-- Compose-only (in design, MISSING from kit): 3
+    = What happened?
+- Compose-only (in design, MISSING from kit): 5
+    KT  Back
     KT  body
+    KT  option.label
     KT  primaryLabel
     KT  title
 - kit-only (ADDED by the wrapping): 7
@@ -61,6 +65,6 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     PY  Blocking
     PY  Crash detected
     PY  Minor
-    PY  Report a bug
+    PY  Your name
     PY  Your name (optional)
     PY  ←

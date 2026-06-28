@@ -2,7 +2,7 @@
 
 Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
 helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton shown.)
+the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -25,10 +25,14 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
 
 ---
 ## cross-side compare: Compose GymListScreen <-> kit gym_list
-- matched (by content anchor): 1
+- matched (by content anchor): 2
+    = Gym profiles
     = No gyms yet. Tap + to add one.
-- Compose-only (in design, MISSING from kit): 10
+- Compose-only (in design, MISSING from kit): 13
     KT  ${type.emoji} ${type.displayNa…
+    KT  Active
+    KT  Add gym
+    KT  Back
     KT  Delete gym
     KT  Equipment
     KT  No equipment listed
@@ -38,7 +42,6 @@ the Compose side. (Mock db/VM -> dynamic list items are empty; static skeleton s
     KT  label
     KT  null
     KT  value
-- kit-only (ADDED by the wrapping): 3
+- kit-only (ADDED by the wrapping): 2
     PY  +
-    PY  Gym profiles
     PY  ←

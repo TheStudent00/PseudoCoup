@@ -43,10 +43,27 @@ Both are real, both are fixable, and the path is clear. Even with them, the genu
 (static strings) and the genuine differences (e.g. the kit renders chrome as glyphs `←`/`+`
 where Compose uses `Icon(contentDescription=…)`) come through.
 
-## Where this lands
+## UPDATE — refinements done, and the corrected verdict
 
-The UI ledger now has BOTH sides and a working comparison — this is the rung that "forces the
-wrapping cleanup": it makes the divergence between the Compose design and the kit reality
-measurable and localized. Next refinements (owner's call): (a) trace with seed data so dynamic
-rows compare; (b) inline Compose composables + resolve params so both sides are fully expanded;
-then the match becomes a true node-for-node correspondence rather than a content-anchor join.
+Earlier I framed this as "forces the wrapping cleanup" / "makes the mess measurable." That
+OVERCLAIMED. The comparison does NOT show the kit wrapping is a mess. Two refinements were
+applied to remove the confounds:
+- (a) **dynamic structure** — the mock yields a couple of items per VM list, so row STRUCTURE
+  renders (content still empty); build() is wrapped so a screen that builds a repo directly
+  (bypassing the VM) yields a partial trace instead of crashing.
+- (b1) **Compose slot APIs** — `_children` now descends named-argument lambdas
+  (`Scaffold(topBar={…})`, `TopAppBar(title={Text("Report a bug")})`), not just trailing ones.
+- plus kit input-zone labels are now extracted as anchors.
+
+Each fix RAISES the match count (report_bug 4 → 6) and the residue stays explainable. Reading
+report_bug after the fixes: the remaining Compose-only / kit-only are **the same widgets** seen
+two ways — `Back` (icon contentDescription) vs `←` (kit glyph); `option.label`/`title`/`body`
+(Compose variables) vs `Annoying`/`Crash detected` (the kit's resolved literals). **Not wrong
+wiring.** The kit screens trace into real, structured trees — so the wrappers are **filled, not
+empty**, and there is **no evidence they're mis-wired**. "Mess" was the owner's word about PAST
+states (the early hand-built UI, the early transpiler); it does not describe the current kit.
+
+Honest verdict where a clean compare exists (report_bug): the kit wrapping is **substantially
+faithful** to the Compose design. Full node-for-node equality still needs variable/loop/param
+resolution on the Compose side (so `option.label` resolves to the enum's labels) and real seed
+data — that's the remaining work, but the question "mess or empty?" is answered: **neither.**
