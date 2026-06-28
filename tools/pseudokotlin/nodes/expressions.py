@@ -392,7 +392,7 @@ class Expressions:
     @kind("lambda_literal")
     def v_lambda(self, node):
         pnode = next((c for c in node.named_children if c.type == "lambda_parameters"), None)
-        params, unpacks = [], []
+        params, unpacks, scope = [], [], set()
         if pnode is not None:
             for vd in pnode.named_children:
                 if vd.type == "multi_variable_declaration":   # destructuring `(a, b)`:
@@ -400,36 +400,46 @@ class Expressions:
                     names = [self._safe(t) for t in self._destructure_names(vd)]
                     params.append(dn)                         # destructuring lambda params)
                     unpacks.append(f"{', '.join(names)} = {dn}")
+                    scope.update(names); scope.add(dn)
                 else:
                     pid = next((c for c in vd.children if c.type == "identifier"), None)
                     if pid is not None:
-                        params.append(self._safe(self.text(pid)))
+                        nm = self._safe(self.text(pid))
+                        params.append(nm); scope.add(nm)
+        if not params:
+            scope.add("it")
         ps = ", ".join(params) if params else "it=None"
         body = [c for c in self.named(node) if c.type != "lambda_parameters"]
         if not body:
             return f"(lambda {ps}: None)"
-        if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
-            return f"(lambda {ps}: {self.visit(body[0])})"   # pure expr body, no unpacking
-        # multi-statement / destructuring / statement-bodied -> hoist a named def; the
-        # suite renderer flushes it before the using statement.
-        self._lam += 1
-        name = f"_lam{self._lam}"
-        # Kotlin closures mutate captured outer variables; Python needs `nonlocal`. Any
-        # name assigned in the body that lives in an enclosing scope (not a lambda
-        # param/local) is declared nonlocal.
-        enclosing = set().union(*self._scopes) if self._scopes else set()
-        lam_local = set(params) | self._local_names(node)
-        captured = sorted((self._assigned_names(body) & enclosing) - lam_local)
-        nonlocals = [f"nonlocal {n}" for n in captured]
-        *head, last = body
-        lines = list(unpacks) + self.render_statements(head)
-        before = len(self._hoist)
-        last_line = self._distribute(last, "return ")   # block-if/when/stmt-aware
-        lines += self._hoist[before:]
-        del self._hoist[before:]
-        lines.append(last_line)
-        self._hoist.append(f"def {name}({ps}):\n{_block(nonlocals + lines)}")
-        return name
+        # the lambda's params shadow enclosing members in its body (a param `query` is the param,
+        # NOT self.query). Push them as a local scope while rendering the body.
+        self._scopes.append(scope)
+        try:
+            if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
+                return f"(lambda {ps}: {self.visit(body[0])})"   # pure expr body, no unpacking
+            # multi-statement / destructuring / statement-bodied -> hoist a named def; the
+            # suite renderer flushes it before the using statement.
+            self._lam += 1
+            name = f"_lam{self._lam}"
+            # Kotlin closures mutate captured outer variables; Python needs `nonlocal`. Any name
+            # assigned in the body that lives in an ENCLOSING scope (outside this lambda) is
+            # nonlocal (compute against the outer scopes, excluding this one).
+            enclosing = set().union(*self._scopes[:-1]) if len(self._scopes) > 1 else set()
+            lam_local = set(params) | self._local_names(node)
+            captured = sorted((self._assigned_names(body) & enclosing) - lam_local)
+            nonlocals = [f"nonlocal {n}" for n in captured]
+            *head, last = body
+            lines = list(unpacks) + self.render_statements(head)
+            before = len(self._hoist)
+            last_line = self._distribute(last, "return ")   # block-if/when/stmt-aware
+            lines += self._hoist[before:]
+            del self._hoist[before:]
+            lines.append(last_line)
+            self._hoist.append(f"def {name}({ps}):\n{_block(nonlocals + lines)}")
+            return name
+        finally:
+            self._scopes.pop()
 
     def _assigned_names(self, nodes):
         # bare-identifier targets of assignments / ++ / -- in these nodes, not crossing
