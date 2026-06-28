@@ -1,37 +1,32 @@
 # UI layout ledger (KIT side) -- progress
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=tab_row(abs)
     - Column[0]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
-      - Button[Analytics]  <leaf>   size: wrap(rel)  style=tab_off(abs)
+      - Button[Analytics]  <leaf>   size: wrap(rel)  style=tab_on(abs)
+      - Marker[1]  <leaf>   size: wrap(rel)
     - Column[1]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
       - Button[Bests]  <leaf>   size: wrap(rel)  style=tab_off(abs)
     - Column[2]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
       - Button[History]  <leaf>   size: wrap(rel)  style=tab_off(abs)
-  - Column[1]  <container>   size: wrap(rel)  style=empty(abs)
-    - Text[No workouts yet]  <leaf>   size: wrap(rel)  style=empty_title(abs)
-    - Text[Completed sessions and cardio …]  <leaf>   size: wrap(rel)  style=empty_body(abs)
-
-  ids:
-    progress/Row[0]
-    progress/Row[0]/Column[0]
-    progress/Row[0]/Column[0]/Button[Analytics]
-    progress/Row[0]/Column[1]
-    progress/Row[0]/Column[1]/Button[Bests]
-    progress/Row[0]/Column[2]
-    progress/Row[0]/Column[2]/Button[History]
-    progress/Column[1]
-    progress/Column[1]/Text[No workouts yet]
-    progress/Column[1]/Text[Completed sessions and cardio …]
+  - Column[1]  <container>   size: wrap(rel)  style=card(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=card_title_row(abs)
+      - Text[Your wins]  <leaf>   size: weight(1.0)(rel)  style=card_title_lead(abs)
+    - Row[1]  <container>   size: wrap(rel)  style=wins_row(abs)
+      - Column[0]  <container>   size: wrap(rel)  style=wins_donut(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Text[2]  <leaf>   size: wrap(rel)  style=wins_donut_count(abs)
+        - Text[wins]  <leaf>   size: wrap(rel)  style=wins_donut_unit(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)  style=wins_col(abs)
+        - Text[More than the numbers — the re…]  <leaf>   size: wrap(rel)  style=wins_body(abs)
+        - Column[1]  <container>   size: wrap(rel)  style=wins_btn_wrap(abs)
+          - Button[Log a win]  <leaf>   size: wrap(rel)  style=btn_filled(abs)
+  - Text[Log your first workout to see …]  <leaf>   size: wrap(rel)  style=note(abs)
 
 ---
 ## cross-side compare: Compose ProgressScreen <-> kit progress
-- STRUCTURAL leaf match (LCS, dynamic-aware): 5/147 Compose leaves aligned to kit (3%)
-- static content matched (by literal): 2
-    = Completed sessions and cardio …
-    = No workouts yet
-- Compose leaves NOT aligned: 142  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 61, kit-only 3)
+- distinct widget signatures matched: 5/29 = 17%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0

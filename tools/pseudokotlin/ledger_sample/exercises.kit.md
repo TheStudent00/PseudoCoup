@@ -1,8 +1,7 @@
 # UI layout ledger (KIT side) -- exercises
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -11,7 +10,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     - Button[+]  <leaf>   size: wrap(rel)  style=tb_action(abs)
   - Row[1]  <container>   size: wrap(rel)  style=tab_row(abs)
     - Column[0]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
-      - Button[All]  <leaf>   size: wrap(rel)  style=tab_off(abs)
+      - Button[All]  <leaf>   size: wrap(rel)  style=tab_on(abs)
+      - Marker[1]  <leaf>   size: wrap(rel)
     - Column[1]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
       - Button[Built-in]  <leaf>   size: wrap(rel)  style=tab_off(abs)
     - Column[2]  <container>   size: weight(1.0)(rel)  style=tab_col(abs)
@@ -21,36 +21,72 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
   - Row[2]  <container>   size: wrap(rel)  style=search_field(abs)
     - Text[⌕]  <leaf>   size: wrap(rel)  style=search_glyph(abs)
     - Text[Search exercises…]  <leaf>   size: weight(1.0)(rel)  style=search_ph(abs)
-  - Column[3]  <container>   size: wrap(rel)  style=empty(abs)
-    - Text[No exercises found.]  <leaf>   size: wrap(rel)  style=empty_title(abs)
-
-  ids:
-    exercises/Row[0]
-    exercises/Row[0]/Button[←]
-    exercises/Row[0]/Column[1]
-    exercises/Row[0]/Column[1]/Text[Exercises]
-    exercises/Row[0]/Button[+]
-    exercises/Row[1]
-    exercises/Row[1]/Column[0]
-    exercises/Row[1]/Column[0]/Button[All]
-    exercises/Row[1]/Column[1]
-    exercises/Row[1]/Column[1]/Button[Built-in]
-    exercises/Row[1]/Column[2]
-    exercises/Row[1]/Column[2]/Button[Custom]
-    exercises/Row[1]/Column[3]
-    exercises/Row[1]/Column[3]/Button[Favorites]
-    exercises/Row[2]
-    exercises/Row[2]/Text[⌕]
-    exercises/Row[2]/Text[Search exercises…]
-    exercises/Column[3]
-    exercises/Column[3]/Text[No exercises found.]
+  - Row[3]  <container>   size: wrap(rel)  style=sec_hdr_row(abs)
+    - Text[Push · 40]  <leaf>   size: weight(1.0)(rel)  style=sec_hdr_label(abs)
+    - Text[▴]  <leaf>   size: wrap(rel)  style=sec_hdr_chevron(abs)
+  - Column[4]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Arnold Press]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Front Delts · Side Delts · Dum…]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[5]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Band Tricep Overhead Press]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Triceps · Resistance Band]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[6]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Band Tricep Push Down]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Triceps · Resistance Band]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[7]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Bar Dip]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Chest · Triceps · Dip Bar]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[8]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Barbell Bench Press]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Chest · Barbell]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[9]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Barbell Overhead Press]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Front Delts · Side Delts · Bar…]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[10]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Barbell Skullcrushers]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Triceps · Barbell]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[11]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+        - Text[Barbell Upright Row]  <leaf>   size: wrap(rel)  style=lr_label(abs)
+        - Text[Side Delts · Traps · Barbell]  <leaf>   size: wrap(rel)  style=lr_sub(abs)
+      - Text[♡]  <leaf>   size: wrap(rel)  style=lr_heart(abs)
+    - Marker[1]  <leaf>   size: wrap(rel)
+  - Column[12]  <container>   size: wrap(rel)
+    - Row[0]  <container>   size: wrap(rel)  style=lr_row(abs)
+      - Column[0]  <container>   size: weight(1.0)(rel)
+  … (+1248 more nodes; 1328 total)
 
 ---
 ## cross-side compare: Compose ExercisesScreen <-> kit exercises
-- STRUCTURAL leaf match (LCS, dynamic-aware): 10/18 Compose leaves aligned to kit (55%)
-- static content matched (by literal): 3
-    = Exercises
-    = No exercises found.
-    = Search exercises…
-- Compose leaves NOT aligned: 8  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 8, kit-only 7)
+- distinct widget signatures matched: 3/6 = 50%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0

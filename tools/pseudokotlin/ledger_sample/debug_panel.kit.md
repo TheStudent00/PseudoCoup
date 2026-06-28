@@ -1,8 +1,7 @@
 # UI layout ledger (KIT side) -- debug_panel
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -42,63 +41,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
   - Button[Wipe & re-seed database]  <leaf>   size: wrap(rel)  style=btn_outlined(abs)
   - Button[Simulate crash (kills the app)]  <leaf>   size: wrap(rel)  style=btn_outlined(abs)
 
-  ids:
-    debug_panel/Row[0]
-    debug_panel/Row[0]/Button[←]
-    debug_panel/Row[0]/Column[1]
-    debug_panel/Row[0]/Column[1]/Text[Debug panel]
-    debug_panel/Text[Debug builds only. Shifts the …]
-    debug_panel/Column[2]
-    debug_panel/Column[2]/Text[Effective now]
-    debug_panel/Column[2]/Text[Offset: +0 days · Programs in …]
-    debug_panel/Text[Time travel]
-    debug_panel/Row[4]
-    debug_panel/Row[4]/Button[+1d]
-    debug_panel/Row[4]/Button[+5d]
-    debug_panel/Row[4]/Button[+1w]
-    debug_panel/Row[4]/Button[+2w]
-    debug_panel/Row[4]/Button[+1mo]
-    debug_panel/Row[4]/Button[+1y]
-    debug_panel/Row[4]/Button[-1d]
-    debug_panel/Button[Reset to real time]
-    debug_panel/Text[Activity seeding]
-    debug_panel/Text[Then advance time to cross a g…]
-    debug_panel/Button[Seed completed session (today)]
-    debug_panel/Button[Seed completed session (20 day…]
-    debug_panel/Button[Arm block-completion celebrati…]
-    debug_panel/Button[Clear all sessions]
-    debug_panel/Text[Life events (load overrides)]
-    debug_panel/Button[Maintenance — 14 days]
-    debug_panel/Button[Deload level — 14 days]
-    debug_panel/Button[Snail's pace — 14 days]
-    debug_panel/Button[Bodyweight-only — 7 days]
-    debug_panel/Text[Connectivity / diagnostics]
-    debug_panel/Button[Send test diagnostics (GitHub …]
-    debug_panel/Button[Refresh DB info]
-    debug_panel/Button[Check & repair program data]
-    debug_panel/Button[Re-sync curated programs (keep…]
-    debug_panel/Text[Danger zone]
-    debug_panel/Button[Wipe & re-seed database]
-    debug_panel/Button[Simulate crash (kills the app)]
-
 ---
 ## cross-side compare: Compose DebugPanelScreen <-> kit debug_panel
-- STRUCTURAL leaf match (LCS, dynamic-aware): 33/50 Compose leaves aligned to kit (66%)
-- static content matched (by literal): 30
-    = +1d
-    = +1mo
-    = +1w
-    = +1y
-    = +2w
-    = +5d
-    = -1d
-    = Activity seeding
-    = Arm block-completion celebrati…
-    = Bodyweight-only — 7 days
-    = Check & repair program data
-    = Clear all sessions
-    = Connectivity / diagnostics
-    = Danger zone
-    = Debug builds only. Shifts the …
-- Compose leaves NOT aligned: 17  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 11, kit-only 3)
+- distinct widget signatures matched: 31/36 = 86%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0
