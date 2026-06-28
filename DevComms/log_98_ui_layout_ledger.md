@@ -50,6 +50,24 @@ composables, 242 nodes), zero crashes. Handles nested `Box`/`Column`/`Row`, fixe
 /`Arrangement`/`verticalAlignment` (-> rel), offsets (abs), and design tokens (abs, symbolic).
 Samples in `ledger_sample/<Screen>.ui.md`.
 
+## Widget identity — content-anchored path-ids (no source annotation needed)
+
+WFL annotates at the component level (every custom composable is a named function) but NOT at
+the widget level: `testTag` 0, `semantics` 0, only 127 `contentDescription`s (accessibility
+labels, often non-unique). So inner widgets have no handle to match on across sides.
+
+Rather than require the app to add `testTag`s, each node gets a synthesized **path-id** (the
+same way a browser addresses an un-`id`'d `<div>` by CSS-path), anchored by available content:
+```
+custom composable -> its name            WflCard
+Icon / Image      -> Type[desc=…]         Icon[desc=Collapse|Expand]
+Text              -> Text["…"]            Text[$label · $count]
+container / other -> Type[index]          Row[0], Box[1]
+full id           -> path from root       WflSectionHeader/Row[0]/Icon[desc=Collapse|Expand]
+```
+Each `.ui.md` ends with a flat `ids:` block — copy-pasteable handles, and the stable key for
+the eventual Kotlin↔kit widget correspondence.
+
 ## Where this sits / what's next
 
 This is the **Kotlin side** of the UI ledger's sizing/positioning field, policy layer. Two
