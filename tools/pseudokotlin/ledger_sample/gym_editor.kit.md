@@ -41,34 +41,11 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose GymEditorScreen <-> kit gym_editor
-- matched (by content anchor): 4
+- STRUCTURAL leaf match (LCS, dynamic-aware): 7/53 Compose leaves aligned to kit (13%)
+- static content matched (by literal): 4
     = Equipment
     = Gym name
     = No equipment added yet.
     = Save
-- Compose-only (in design, MISSING from kit): 24
-    KT   · 
-    KT  Add
-    KT  Add equipment
-    KT  Back
-    KT  Cancel
-    KT  Change
-    KT  Collapse|Expand
-    KT  Decrease
-    KT  Increase
-    KT  Name (optional)
-    KT  New gym|Edit gym
-    KT  Quantity
-    KT  Remove
-    KT  Type
-    KT  Weight
-    KT  draft.name.ifBlank { draft.typ…
-    KT  label(option)
-    KT  label(selected)
-    KT  optional
-    KT  placeholder
-- kit-only (ADDED by the wrapping): 4
-    PY  +
-    PY  Edit gym
-    PY  Name
-    PY  ←
+- Compose leaves NOT aligned: 46  ·  kit leaves not aligned: 1
+- (raw content-anchor only: Compose-only 24, kit-only 4)

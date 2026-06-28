@@ -27,32 +27,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose WorkoutCooldownScreen <-> kit workout_cooldown
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 6/44 Compose leaves aligned to kit (13%)
+- static content matched (by literal): 3
     = Finish
     = Nicely done
     = 🌙
-- Compose-only (in design, MISSING from kit): 26
-    KT  ${state.activity.emoji} ${stat…
-    KT  +1 min
-    KT  Back to workout|Back to cooldo…
-    KT  Compared to when you started
-    KT  ConditioningCatalog.COOLDOWN_W…
-    KT  Cooldown|Cooldown
-    KT  Done — wrap up
-    KT  Forgot something? Back to work…
-    KT  Got it
-    KT  How are you feeling?
-    KT  I'm done
-    KT  Start ${activity.name}
-    KT  Take a few minutes to come dow…
-    KT  Why cool down?
-    KT  Your muscles are warmest right…
-    KT  activity.emoji
-    KT  activity.name
-    KT  activity.tagline
-    KT  formatMinutes(activity.default…
-    KT  formatTime(state.remainingSeco…
-- kit-only (ADDED by the wrapping): 3
-    PY  Slow walk
-    PY  Take a breath — you're all wra…
-    PY  ←
+- Compose leaves NOT aligned: 38  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 26, kit-only 3)

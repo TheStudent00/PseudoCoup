@@ -27,31 +27,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ProgramsScreen <-> kit programs
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 5/61 Compose leaves aligned to kit (8%)
+- static content matched (by literal): 3
     = No programs yet.
     = Programs
     = Tap + to build your first prog…
-- Compose-only (in design, MISSING from kit): 26
-    KT  Active
-    KT  Archive
-    KT  Back
-    KT  Cancel
-    KT  Create
-    KT  Create program
-    KT  Delete
-    KT  Delete program?
-    KT  Duplicate
-    KT  Edit
-    KT  New program
-    KT  Program name
-    KT  Program options
-    KT  Recommended for your paths
-    KT  Swap
-    KT  Swap for this program|Join pro…
-    KT  Swap to ${program.name}?
-    KT  Switching programs will restar…
-    KT  This will permanently remove t…
-    KT  desc
-- kit-only (ADDED by the wrapping): 2
-    PY  +
-    PY  ←
+- Compose leaves NOT aligned: 56  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 26, kit-only 2)

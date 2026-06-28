@@ -61,30 +61,12 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose GymListScreen <-> kit gym_list
-- matched (by content anchor): 5
+- STRUCTURAL leaf match (LCS, dynamic-aware): 16/30 Compose leaves aligned to kit (53%)
+- static content matched (by literal): 5
     = Delete gym
     = Equipment
     = Gym profiles
     = No equipment listed
     = Set active
-- Compose-only (in design, MISSING from kit): 11
-    KT  ${equipmentList.size} items
-    KT  ${type.emoji} ${type.displayNa…
-    KT  Active
-    KT  Add gym
-    KT  Back
-    KT  No gyms yet. Tap + to add one.
-    KT  equipmentNames
-    KT  gym.name
-    KT  label
-    KT  null
-    KT  value
-- kit-only (ADDED by the wrapping): 8
-    PY  +
-    PY  0 items
-    PY  Commercial Gym
-    PY  Home Gym
-    PY  ←
-    PY  ✓ Active
-    PY  🏠 Home Gym
-    PY  🏢 Big Box Gym
+- Compose leaves NOT aligned: 14  ·  kit leaves not aligned: 1
+- (raw content-anchor only: Compose-only 11, kit-only 8)

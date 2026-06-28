@@ -204,9 +204,43 @@ def render_tree(n, depth, idx, path, lines, ids):
 
 # ── cross-side compare (join on content anchor) ──────────────────────────────
 def compare(compose_ids, kit_ids):
-    ca = {a for _, _, a in compose_ids if a}
+    ca = {a for _, _, a, _ in compose_ids if a}
     ka = {a for _, _, a in kit_ids if a}
     return sorted(ca & ka), sorted(ca - ka), sorted(ka - ca)
+
+
+def _ntype(t):
+    if t in ("Text", "Button"):
+        return "T"
+    if t in ("Icon", "Image"):
+        return "I"
+    if t in ("TextField", "input_zone"):
+        return "F"
+    return None                              # container / non-content node
+
+
+def _compose_leaves(compose_ids):
+    return [(nt, a, st) for _, typ, a, st in compose_ids
+            if (nt := _ntype(typ))]
+
+
+def _kit_leaves(kit_ids):
+    return [(nt, a) for _, typ, a in kit_ids if (nt := _ntype(typ)) and a]
+
+
+def _lcs(comp, kit):
+    """longest common subsequence of the leaf sequences. A static Compose leaf matches by
+    content; a DYNAMIC leaf (a binding the kit renders resolved) matches by type+order only --
+    so a faithfully-reproduced dynamic row counts, even though its strings differ."""
+    def m(c, k):
+        return c[0] == k[0] and ((not c[2]) or c[1] == k[1])
+    n, M = len(comp), len(kit)
+    dp = [[0] * (M + 1) for _ in range(n + 1)]
+    for i in range(n - 1, -1, -1):
+        for j in range(M - 1, -1, -1):
+            dp[i][j] = (1 + dp[i + 1][j + 1] if m(comp[i], kit[j])
+                        else max(dp[i + 1][j], dp[i][j + 1]))
+    return dp[0][0]
 
 
 def run(screen_key, compose_name):
@@ -230,19 +264,23 @@ def run(screen_key, compose_name):
         if kt:
             compose_ids = UL.collect_ids(kt)
             matched, c_only, k_only = compare(compose_ids, kit_ids)
-            comp = (len(matched), len(c_only), len(k_only))
+            cl, kl = _compose_leaves(compose_ids), _kit_leaves(kit_ids)
+            struct = _lcs(cl, kl)            # ordered leaf match; dynamic by type, static by content
+            comp = (len(matched), len(c_only), len(k_only), struct, len(cl), len(kl))
             cmp_block = ["---", f"## cross-side compare: Compose {compose_name} <-> kit {screen_key}",
-                         f"- matched (by content anchor): {len(matched)}",
-                         *[f"    = {m}" for m in matched[:20]],
-                         f"- Compose-only (in design, MISSING from kit): {len(c_only)}",
-                         *[f"    KT  {m}" for m in c_only[:20]],
-                         f"- kit-only (ADDED by the wrapping): {len(k_only)}",
-                         *[f"    PY  {m}" for m in k_only[:20]], ""]
+                         f"- STRUCTURAL leaf match (LCS, dynamic-aware): {struct}/{len(cl)} "
+                         f"Compose leaves aligned to kit ({100*struct//len(cl) if cl else 0}%)",
+                         f"- static content matched (by literal): {len(matched)}",
+                         *[f"    = {m}" for m in matched[:15]],
+                         f"- Compose leaves NOT aligned: {len(cl)-struct}  ·  "
+                         f"kit leaves not aligned: {len(kl)-struct}",
+                         f"- (raw content-anchor only: Compose-only {len(c_only)}, kit-only {len(k_only)})", ""]
     L += cmp_block
     os.makedirs(OUT, exist_ok=True)
     open(os.path.join(OUT, f"{screen_key}.kit.md"), "w").write("\n".join(L))
     print(f"  {screen_key}: {len(kit_ids)} kit nodes" +
-          (f" · vs {compose_name}: matched {comp[0]} · KT-only {comp[1]} · PY-only {comp[2]}"
+          (f" · vs {compose_name}: STRUCT {comp[3]}/{comp[4]} leaves "
+           f"({100*comp[3]//comp[4] if comp[4] else 0}%) · static-content {comp[0]}"
            if comp else "") + (f"  (partial: {err.split(':')[0]})" if err else ""))
     return comp
 
@@ -256,7 +294,7 @@ def run_all():
     keys = sorted(f[:-len("_screen.py")] for f in os.listdir(os.path.join(SRC, "ui"))
                   if f.endswith("_screen.py"))
     print(f"UI kit-side ledger, ALL screens with a Compose counterpart:")
-    tot = [0, 0, 0]
+    struct_tot, leaf_tot, static_tot = 0, 0, 0
     paired = 0
     for k in keys:
         cn = _compose_for(k)
@@ -269,15 +307,15 @@ def run_all():
             print(f"  {k}: ERROR {type(e).__name__}")
             continue
         if comp:
-            for i in range(3):
-                tot[i] += comp[i]
-    m, c, p = tot
-    denom = m + c
+            static_tot += comp[0]
+            struct_tot += comp[3]
+            leaf_tot += comp[4]
     print(f"\n  AGGREGATE over {paired} paired screens:")
-    print(f"    matched anchors:     {m}")
-    print(f"    Compose-only:        {c}   (unbuilt states / unresolved vars / dynamic / real gaps)")
-    print(f"    kit-only:            {p}   (kit glyphs, resolved labels, helper extras)")
-    print(f"    anchor match rate:   {m}/{denom} = {100*m//denom if denom else 0}%  (lower bound)")
+    print(f"    STRUCTURAL leaf match: {struct_tot}/{leaf_tot} = "
+          f"{100*struct_tot//leaf_tot if leaf_tot else 0}%  (dynamic-aware, ordered)")
+    print(f"    static content matched: {static_tot}")
+    print(f"    NOTE: only gym_list is seeded so far; un-seeded screens still under-render their")
+    print(f"          dynamic rows, so this aggregate is still a lower bound until more seeders land.")
 
 
 def main():

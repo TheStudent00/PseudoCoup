@@ -83,7 +83,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose DebugPanelScreen <-> kit debug_panel
-- matched (by content anchor): 30
+- STRUCTURAL leaf match (LCS, dynamic-aware): 33/50 Compose leaves aligned to kit (66%)
+- static content matched (by literal): 30
     = +1d
     = +1mo
     = +1w
@@ -99,24 +100,5 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = Connectivity / diagnostics
     = Danger zone
     = Debug builds only. Shifts the …
-    = Deload level — 14 days
-    = Effective now
-    = Life events (load overrides)
-    = Maintenance — 14 days
-    = Re-sync curated programs (keep…
-- Compose-only (in design, MISSING from kit): 11
-    KT  Cancel
-    KT  Debug Panel
-    KT  Export & wipe
-    KT  Offset: ${if (offsetDays >= 0)…
-    KT  This erases everything — worko…
-    KT  Wipe & re-seed database?
-    KT  Wipe, no backup
-    KT  it
-    KT  label
-    KT  nowLabel
-    KT  title
-- kit-only (ADDED by the wrapping): 3
-    PY  Debug panel
-    PY  Offset: +0 days · Programs in …
-    PY  ←
+- Compose leaves NOT aligned: 17  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 11, kit-only 3)

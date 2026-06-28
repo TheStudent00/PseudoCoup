@@ -359,20 +359,29 @@ def collect_ids(path):
     out = []
 
     def anchor_of(call, subst):
+        """-> (anchor, is_static). static = a pure string literal (no $ interpolation, no
+        surrounding expression); dynamic = a binding/variable, which the kit renders resolved
+        and so can only be matched structurally (by type+position), not by string."""
         name = _name(call)
+        expr = None
         if name == "Text":
-            txt = _named_args(call).get("text") or _first_positional(call)
-            return _resolve_anchor(txt, subst) if txt else None
-        if name in ("Icon", "Image"):
-            dsc = _named_args(call).get("contentDescription")
-            return _resolve_anchor(dsc, subst) if dsc else None
-        return None
+            expr = _named_args(call).get("text") or _first_positional(call)
+        elif name in ("Icon", "Image"):
+            expr = _named_args(call).get("contentDescription")
+        if not expr:
+            return None, False
+        e = expr.strip()
+        if subst and e in subst:
+            e = subst[e]
+        static = bool(re.match(r'^"[^"$]*"$', e.strip()))
+        return _anchor(e), static
 
     def walk(call, idx, path, subst, stack):
         name = _name(call)
         seg = _segment(call, idx, cnames, subst)
         full = "/".join(path + [seg])
-        out.append((full, name, anchor_of(call, subst)))
+        anchor, static = anchor_of(call, subst)
+        out.append((full, name, anchor, static))
         if name in defs and name not in stack:           # inline the composable's definition
             params, roots = defs[name]
             argmap = _bind(call, params, subst)

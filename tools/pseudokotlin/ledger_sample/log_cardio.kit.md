@@ -83,7 +83,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose LogCardioScreen <-> kit log_cardio
-- matched (by content anchor): 10
+- STRUCTURAL leaf match (LCS, dynamic-aware): 15/30 Compose leaves aligned to kit (50%)
+- static content matched (by literal): 10
     = Activity
     = Avg HR (bpm)
     = Distance (km)
@@ -94,38 +95,5 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = Notes (optional)
     = Save
     = When
-- Compose-only (in design, MISSING from kit): 13
-    KT  Back
-    KT  Cancel
-    KT  It's already logged
-    KT  Keep both
-    KT  OK
-    KT  Oops — already logged?
-    KT  Was this already logged automa…
-    KT  null
-    KT  option.label()
-    KT  placeholder
-    KT  trailing
-    KT  type.displayName()
-    KT  whenLabel(state.selectedDate, …
-- kit-only (ADDED by the wrapping): 20
-    PY  Avg HR
-    PY  Bike
-    PY  Class
-    PY  Distance
-    PY  Elliptical
-    PY  HIIT
-    PY  High
-    PY  Hike
-    PY  Low
-    PY  Minutes
-    PY  Moderate
-    PY  Notes
-    PY  Other
-    PY  Row
-    PY  Run
-    PY  Sport
-    PY  Swim
-    PY  Today
-    PY  Walk
-    PY  ←
+- Compose leaves NOT aligned: 15  ·  kit leaves not aligned: 15
+- (raw content-anchor only: Compose-only 13, kit-only 20)

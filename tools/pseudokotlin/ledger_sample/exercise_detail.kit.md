@@ -45,35 +45,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ExerciseDetailScreen <-> kit exercise_detail
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 9/63 Compose leaves aligned to kit (14%)
+- static content matched (by literal): 3
     = Built-in
     = Movement & equipment
     = Primary muscles
-- Compose-only (in design, MISSING from kit): 29
-    KT  ${exercise.movementPattern.dis…
-    KT  Allow programming again|Never …
-    KT  Already in your program
-    KT  Back
-    KT  Cancel
-    KT  Coaching cues
-    KT  Compound|Isolation
-    KT  Custom
-    KT  Delete
-    KT  Delete exercise?
-    KT  Duplicate & Edit
-    KT  Edit
-    KT  Form notes
-    KT  Got it
-    KT  More
-    KT  Secondary muscles
-    KT  Swap all now
-    KT  Swap during workouts
-    KT  This will permanently delete \…
-    KT  Toggle favorite
-- kit-only (ADDED by the wrapping): 6
-    PY  Bilateral
-    PY  Isolation
-    PY  Mobility · Other
-    PY  ←
-    PY  ⋮
-    PY  ♡
+- Compose leaves NOT aligned: 54  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 29, kit-only 6)
