@@ -30,6 +30,7 @@ _STDLIB_METHODS = {
     "coerceAtMost":  lambda r, a: f"min({r}, {a[0]})",
     "coerceAtLeast": lambda r, a: f"max({r}, {a[0]})",
     "coerceIn":      lambda r, a: f"max({a[0]}, min({r}, {a[1]}))",
+    "floorDiv":      lambda r, a: f"({r} // {a[0]})",     # Kotlin Int.floorDiv == Python // (both floor)
     "roundToInt":    lambda r, a: f"roundToInt({r})",
     "roundToLong":   lambda r, a: f"roundToLong({r})",
     "toDouble":      lambda r, a: f"float({r})",          # numeric conversions
