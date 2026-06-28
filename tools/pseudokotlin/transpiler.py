@@ -31,10 +31,21 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._static_class = None     # the enclosing class name for those
         self._ext_patches = []        # `Recv.fn = fn` lines, flushed at module end
         self._nested_aliases = []     # `Inner = Outer.Inner` lines, flushed at module end
+        self._enum_types = set()      # enum class names -> their members/extensions see name/ordinal
 
     def transpile(self, source: bytes) -> str:
         tree = parse(source)
+        self._scan_enums(tree.root_node)     # order-independent: an extension may precede its enum
         return self.visit(tree.root_node)
+
+    def _scan_enums(self, node):
+        if node.type == "class_declaration" and any(
+                c.type == "enum_class_body" for c in node.children):
+            nm = self._name_of(node)
+            if nm:
+                self._enum_types.add(nm)
+        for c in node.children:
+            self._scan_enums(c)
 
     def render_statements(self, nodes) -> list:
         """Render statement nodes to lines, flushing each statement's hoisted helper
