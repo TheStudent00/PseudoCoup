@@ -1,8 +1,7 @@
 # UI layout ledger (KIT side) -- workout_summary
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -13,21 +12,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     - Text[No session]  <leaf>   size: wrap(rel)  style=empty_title(abs)
     - Text[No session data found.]  <leaf>   size: wrap(rel)  style=empty_body(abs)
 
-  ids:
-    workout_summary/Row[0]
-    workout_summary/Row[0]/Button[←]
-    workout_summary/Row[0]/Column[1]
-    workout_summary/Row[0]/Column[1]/Text[Workout complete]
-    workout_summary/Row[0]/Button[Done]
-    workout_summary/Column[1]
-    workout_summary/Column[1]/Text[No session]
-    workout_summary/Column[1]/Text[No session data found.]
-
 ---
 ## cross-side compare: Compose WorkoutSummaryScreen <-> kit workout_summary
-- STRUCTURAL leaf match (LCS, dynamic-aware): 5/25 Compose leaves aligned to kit (20%)
-- static content matched (by literal): 2
-    = Done
-    = Workout complete
-- Compose leaves NOT aligned: 20  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 17, kit-only 3)
+- distinct widget signatures matched: 3/9 = 33%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0

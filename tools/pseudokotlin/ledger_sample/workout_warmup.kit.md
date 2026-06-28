@@ -1,8 +1,7 @@
 # UI layout ledger (KIT side) -- workout_warmup
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
@@ -64,73 +63,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
       - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
   - Button[Skip warm-up]  <leaf>   size: wrap(rel)  style=btn_text(abs)
 
-  ids:
-    workout_warmup/Row[0]
-    workout_warmup/Row[0]/Button[←]
-    workout_warmup/Row[0]/Column[1]
-    workout_warmup/Row[0]/Column[1]/Text[Warm up]
-    workout_warmup/Row[0]/Button[?]
-    workout_warmup/Column[1]
-    workout_warmup/Column[1]/Text[Let's get you moving.]
-    workout_warmup/Column[1]/Text[Pick something fun for a few m…]
-    workout_warmup/Column[2]
-    workout_warmup/Column[2]/Row[0]
-    workout_warmup/Column[2]/Row[0]/Text[🕺]
-    workout_warmup/Column[2]/Row[0]/Column[1]
-    workout_warmup/Column[2]/Row[0]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[0]/Column[1]/Row[0]/Text[Dance to a song]
-    workout_warmup/Column[2]/Row[0]/Column[1]/Text[Put on one favourite track and…]
-    workout_warmup/Column[2]/Row[0]/Text[▶]
-    workout_warmup/Column[2]/Row[1]
-    workout_warmup/Column[2]/Row[1]/Text[☀️]
-    workout_warmup/Column[2]/Row[1]/Column[1]
-    workout_warmup/Column[2]/Row[1]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[1]/Column[1]/Row[0]/Text[Sun salutations]
-    workout_warmup/Column[2]/Row[1]/Column[1]/Text[6–8 slow rounds — hips, should…]
-    workout_warmup/Column[2]/Row[1]/Text[▶]
-    workout_warmup/Column[2]/Row[2]
-    workout_warmup/Column[2]/Row[2]/Text[🤸]
-    workout_warmup/Column[2]/Row[2]/Column[1]
-    workout_warmup/Column[2]/Row[2]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[2]/Column[1]/Row[0]/Text[Dynamic movement]
-    workout_warmup/Column[2]/Row[2]/Column[1]/Text[Leg swings, arm circles, hip c…]
-    workout_warmup/Column[2]/Row[2]/Text[▶]
-    workout_warmup/Column[2]/Row[3]
-    workout_warmup/Column[2]/Row[3]/Text[🥊]
-    workout_warmup/Column[2]/Row[3]/Column[1]
-    workout_warmup/Column[2]/Row[3]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[3]/Column[1]/Row[0]/Text[Shadow boxing]
-    workout_warmup/Column[2]/Row[3]/Column[1]/Text[Light jabs and footwork — warm…]
-    workout_warmup/Column[2]/Row[3]/Text[▶]
-    workout_warmup/Column[2]/Row[4]
-    workout_warmup/Column[2]/Row[4]/Text[🚴]
-    workout_warmup/Column[2]/Row[4]/Column[1]
-    workout_warmup/Column[2]/Row[4]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[4]/Column[1]/Row[0]/Text[Easy cardio]
-    workout_warmup/Column[2]/Row[4]/Column[1]/Text[Bike, row, or treadmill at a c…]
-    workout_warmup/Column[2]/Row[4]/Text[▶]
-    workout_warmup/Column[2]/Row[5]
-    workout_warmup/Column[2]/Row[5]/Text[🚶]
-    workout_warmup/Column[2]/Row[5]/Column[1]
-    workout_warmup/Column[2]/Row[5]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[5]/Column[1]/Row[0]/Text[Brisk walk]
-    workout_warmup/Column[2]/Row[5]/Column[1]/Text[A quick walk to raise your tem…]
-    workout_warmup/Column[2]/Row[5]/Text[▶]
-    workout_warmup/Column[2]/Row[6]
-    workout_warmup/Column[2]/Row[6]/Text[🏃]
-    workout_warmup/Column[2]/Row[6]/Column[1]
-    workout_warmup/Column[2]/Row[6]/Column[1]/Row[0]
-    workout_warmup/Column[2]/Row[6]/Column[1]/Row[0]/Text[Light jog]
-    workout_warmup/Column[2]/Row[6]/Column[1]/Text[An easy jog in place or around…]
-    workout_warmup/Column[2]/Row[6]/Text[▶]
-    workout_warmup/Button[Skip warm-up]
-
 ---
 ## cross-side compare: Compose WorkoutWarmupScreen <-> kit workout_warmup
-- STRUCTURAL leaf match (LCS, dynamic-aware): 20/31 Compose leaves aligned to kit (64%)
-- static content matched (by literal): 3
-    = Let's get you moving.
-    = Pick something fun for a few m…
-    = Skip warm-up
-- Compose leaves NOT aligned: 11  ·  kit leaves not aligned: 14
-- (raw content-anchor only: Compose-only 18, kit-only 25)
+- distinct widget signatures matched: 3/9 = 33%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0

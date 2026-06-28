@@ -1,46 +1,79 @@
 # UI layout ledger (KIT side) -- today
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Column[0]  <container>   size: wrap(rel)  style=card(abs)
     - Row[0]  <container>   size: wrap(rel)  style=card_title_row(abs)
       - Text[This week's workouts]  <leaf>   size: weight(1.0)(rel)  style=card_title_lead(abs)
-    - Text[Set up a program to see your w…]  <leaf>   size: wrap(rel)  style=note(abs)
-  - Column[1]  <container>   size: wrap(rel)  style=card(abs)
-    - Row[0]  <container>   size: wrap(rel)  style=card_title_row(abs)
-      - Marker[0]  <leaf>   size: wrap(rel)
-      - Text[1]  <leaf>   size: weight(1.0)(rel)  style=card_title_lead(abs)
-    - Text[1]  <leaf>   size: wrap(rel)  style=card_body(abs)
-    - Text[of 3 sessions this week]  <leaf>   size: wrap(rel)  style=note(abs)
-    - Progress[3]  <leaf>   size: wrap(rel)
-  - Text[No program enrolled yet. Head …]  <leaf>   size: wrap(rel)  style=note(abs)
-  - Overlay[3]  <container>   size: wrap(rel)
+      - Text[0 of 3 done]  <leaf>   size: wrap(rel)  style=card_title_trail(abs)
+    - Column[1]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Row[0]  <container>   size: wrap(rel)  style=wk_row_today(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Full Body A — Squat]  <leaf>   size: weight(1.0)(rel)  style=wk_name_today(abs)
+            - Text[Day 1]  <leaf>   size: wrap(rel)  style=wk_day_today(abs)
+          - Text[5 exercises · ~60 min]  <leaf>   size: wrap(rel)  style=wk_sub_today(abs)
+        - Text[Up next]  <leaf>   size: wrap(rel)  style=wk_pill(abs)
+    - Column[2]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Rest day]  <leaf>   size: weight(1.0)(rel)  style=wk_name_rest(abs)
+            - Text[Day 2]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+    - Column[3]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Full Body B — Hinge]  <leaf>   size: weight(1.0)(rel)  style=wk_name(abs)
+            - Text[Day 3]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+          - Text[~60 min]  <leaf>   size: wrap(rel)  style=wk_sub(abs)
+    - Column[4]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Rest day]  <leaf>   size: weight(1.0)(rel)  style=wk_name_rest(abs)
+            - Text[Day 4]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+    - Column[5]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Full Body C — Push]  <leaf>   size: weight(1.0)(rel)  style=wk_name(abs)
+            - Text[Day 5]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+          - Text[~60 min]  <leaf>   size: wrap(rel)  style=wk_sub(abs)
+    - Column[6]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Rest day]  <leaf>   size: weight(1.0)(rel)  style=wk_name_rest(abs)
+            - Text[Day 6]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+    - Column[7]  <container>   size: wrap(rel)  style=wk_outer(abs)
+      - Divider[0]  <leaf>   size: wrap(rel)
+      - Row[1]  <container>   size: wrap(rel)  style=wk_row(abs)
+        - Marker[0]  <leaf>   size: wrap(rel)
+        - Column[1]  <container>   size: weight(1.0)(rel)  style=wk_col(abs)
+          - Row[0]  <container>   size: wrap(rel)  style=wk_title_row(abs)
+            - Text[Rest day]  <leaf>   size: weight(1.0)(rel)  style=wk_name_rest(abs)
+            - Text[Day 7]  <leaf>   size: wrap(rel)  style=wk_day(abs)
+  - Row[1]  <container>   size: wrap(rel)  style=btn_filled(abs)
+    - Icon[0]  <leaf>   size: wrap(rel)
+    - Text[Start Full Body A — Squat]  <leaf>   size: wrap(rel)  style=card_title(abs)
+  - Overlay[2]  <container>   size: wrap(rel)
     - Button[+]  <leaf>   size: wrap(rel)  style=fab(abs)
-
-  ids:
-    today/Column[0]
-    today/Column[0]/Row[0]
-    today/Column[0]/Row[0]/Text[This week's workouts]
-    today/Column[0]/Text[Set up a program to see your w…]
-    today/Column[1]
-    today/Column[1]/Row[0]
-    today/Column[1]/Row[0]/Marker[0]
-    today/Column[1]/Row[0]/Text[1]
-    today/Column[1]/Text[1]
-    today/Column[1]/Text[of 3 sessions this week]
-    today/Column[1]/Progress[3]
-    today/Text[No program enrolled yet. Head …]
-    today/Overlay[3]
-    today/Overlay[3]/Button[+]
 
 ---
 ## cross-side compare: Compose TodayScreen <-> kit today
-- STRUCTURAL leaf match (LCS, dynamic-aware): 5/165 Compose leaves aligned to kit (3%)
-- static content matched (by literal): 3
-    = No program enrolled yet. Head …
-    = Set up a program to see your w…
-    = This week's workouts
-- Compose leaves NOT aligned: 160  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 72, kit-only 2)
+- distinct widget signatures matched: 3/41 = 7%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0
