@@ -255,6 +255,32 @@ def _count(call):
     return 1 + sum(_count(c) for c in _children(call))
 
 
+def collect_ids(path):
+    """-> [(full_path_id, type, content_anchor|None)] for the cross-side compare."""
+    cnames = composable_names()
+    out = []
+
+    def walk(call, idx, path):
+        name = _name(call)
+        seg = _segment(call, idx, cnames)
+        full = "/".join(path + [seg])
+        anchor = None
+        if name == "Text":
+            txt = _named_args(call).get("text") or _first_positional(call)
+            anchor = _anchor(txt) if txt else None
+        elif name in ("Icon", "Image"):
+            dsc = _named_args(call).get("contentDescription")
+            anchor = _anchor(dsc) if dsc else None
+        out.append((full, name, anchor))
+        for i, c in enumerate(_children(call)):
+            walk(c, i, path + [seg])
+
+    for cname, roots in composables(path):
+        for i, r in enumerate(roots):
+            walk(r, i, [cname])
+    return out
+
+
 def composables(path):
     root = parse(open(path, "rb").read()).root_node
     out = []
