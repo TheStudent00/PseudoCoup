@@ -19,22 +19,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose PathDetailScreen <-> kit path_detail
-- matched (by content anchor): 1
+- STRUCTURAL leaf match (LCS, dynamic-aware): 2/19 Compose leaves aligned to kit (10%)
+- static content matched (by literal): 1
     = Path not found.
-- Compose-only (in design, MISSING from kit): 14
-    KT  ${definition.minSessionsPerWee…
-    KT  Back
-    KT  Modality
-    KT  Research
-    KT  The evidence
-    KT  Why it works
-    KT  body
-    KT  citation
-    KT  definition.educationalCopy
-    KT  definition.evidenceSummary
-    KT  definition.modalityNotes
-    KT  definition.tagline
-    KT  title
-    KT  ~${definition.targetMinutesPer…
-- kit-only (ADDED by the wrapping): 1
-    PY  ←
+- Compose leaves NOT aligned: 17  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 14, kit-only 1)

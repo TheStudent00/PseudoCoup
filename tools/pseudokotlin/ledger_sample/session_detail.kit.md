@@ -43,31 +43,11 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose SessionDetailScreen <-> kit session_detail
-- matched (by content anchor): 4
+- STRUCTURAL leaf match (LCS, dynamic-aware): 10/35 Compose leaves aligned to kit (28%)
+- static content matched (by literal): 4
     = Ad-hoc Workout
     = Duration
     = Exercises
     = Volume
-- Compose-only (in design, MISSING from kit): 16
-    KT  Back
-    KT  New estimated 1RM|New $it-rep …
-    KT  Personal records
-    KT  entry.exerciseName
-    KT  formatDetailDate(uiState.start…
-    KT  formatVolume(entry.volumeKg, u…
-    KT  formatVolume(uiState.totalVolu…
-    KT  formatWeight(pr.weightKg, unit)
-    KT  it
-    KT  label
-    KT  pr.exerciseName
-    KT  uiState.exercises.size.toStrin…
-    KT  value
-    KT  weightReps
-    KT  —
-    KT  ★
-- kit-only (ADDED by the wrapping): 5
-    PY  0
-    PY  0 kg
-    PY  Thu, Jan 1 at 12:00 AM
-    PY  m
-    PY  ←
+- Compose leaves NOT aligned: 25  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 16, kit-only 5)

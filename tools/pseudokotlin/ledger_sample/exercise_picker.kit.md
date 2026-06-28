@@ -23,19 +23,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ExercisePickerScreen <-> kit exercise_picker
-- matched (by content anchor): 1
+- STRUCTURAL leaf match (LCS, dynamic-aware): 4/13 Compose leaves aligned to kit (30%)
+- static content matched (by literal): 1
     = Add exercise
-- Compose-only (in design, MISSING from kit): 9
-    KT  All muscles
-    KT  Back
-    KT  Favorites
-    KT  No exercises found.
-    KT  Remove from favourites|Add to …
-    KT  Search exercises…
-    KT  exercise.name
-    KT  group.displayName()
-    KT  muscles
-- kit-only (ADDED by the wrapping): 3
-    PY  Go back and try again.
-    PY  No day selected
-    PY  ←
+- Compose leaves NOT aligned: 9  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 9, kit-only 3)

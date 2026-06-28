@@ -25,30 +25,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose WorkoutExecutionScreen <-> kit workout_execution
-- matched (by content anchor): 1
+- STRUCTURAL leaf match (LCS, dynamic-aware): 4/558 Compose leaves aligned to kit (0%)
+- static content matched (by literal): 1
     = Finish
-- Compose-only (in design, MISSING from kit): 119
-    KT   Superset $groupLabel
-    KT   · 
-    KT  $setNumber${'a' + entry.entryI…
-    KT  ${DEFAULT_HOLD_SECONDS}s$perSi…
-    KT  ${displayTarget.fmt()} $unitLa…
-    KT  ${formatWeightField(uiState.pe…
-    KT  ${item.completedSetsCount} set…
-    KT  ${loggedHold.durationSeconds ?…
-    KT  ${plan.pctOfWorking}%
-    KT  ${row.count} × ${row.weight.fm…
-    KT  ${uiState.pendingHoldSeconds}s…
-    KT  ${warmupPct ?: 0}%|?
-    KT  (${(row.count * row.weight).fm…
-    KT  +
-    KT  +${|.format(remainder)} $unitL…
-    KT  +30s
-    KT  Add exercise
-    KT  Add set
-    KT  BAR
-    KT  Back
-- kit-only (ADDED by the wrapping): 3
-    PY  No exercises
-    PY  This session has no exercises.
-    PY  ←
+- Compose leaves NOT aligned: 554  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 119, kit-only 3)

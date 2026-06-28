@@ -19,29 +19,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose PathsScreen <-> kit paths
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 3/45 Compose leaves aligned to kit (6%)
+- static content matched (by literal): 3
     = A Path connects your training …
     = Find your path
     = Start with your why.
-- Compose-only (in design, MISSING from kit): 25
-    KT  ${definition.minSessionsPerWee…
-    KT  ${it.minSessionsPerWeek}–${it.…
-    KT  ${it.targetMinutesPerSession} …
-    KT  Add a second path
-    KT  Cancel
-    KT  Leave path
-    KT  Paths are the why. Programs ar…
-    KT  Sessions
-    KT  Start my Path
-    KT  Target
-    KT  The evidence
-    KT  What are you recovering from?
-    KT  category.displayName
-    KT  definition.name
-    KT  definition.tagline
-    KT  e.g. knee surgery, COVID, a br…
-    KT  it.evidenceSummary
-    KT  it.tagline
-    KT  label
-    KT  null
-- kit-only (ADDED by the wrapping): 0
+- Compose leaves NOT aligned: 42  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 25, kit-only 0)

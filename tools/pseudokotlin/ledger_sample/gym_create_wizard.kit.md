@@ -93,41 +93,11 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose GymCreateWizardScreen <-> kit gym_create_wizard
-- matched (by content anchor): 4
+- STRUCTURAL leaf match (LCS, dynamic-aware): 18/42 Compose leaves aligned to kit (42%)
+- static content matched (by literal): 4
     = Add new gym
     = Always included
     = Search all equipment
     = Suggested equipment is pre-che…
-- Compose-only (in design, MISSING from kit): 17
-    KT  ${selected.size} item${if (sel…
-    KT  Back
-    KT  Gym name
-    KT  Saving...|Done selecting
-    KT  Tell us about your gym
-    KT  We'll pre-load the most common…
-    KT  What does ${gymType.displayNam…
-    KT  emoji
-    KT  item.label
-    KT  null
-    KT  placeholder
-    KT  subtitle
-    KT  title
-    KT  trailing
-    KT  type.description
-    KT  type.displayName
-    KT  type.emoji
-- kit-only (ADDED by the wrapping): 14
-    PY  1 item selected
-    PY  Barbell
-    PY  Bench
-    PY  Bodyweight
-    PY  Cable Machine
-    PY  Done selecting
-    PY  Dumbbell
-    PY  Kettlebell
-    PY  Pull Up Bar
-    PY  Resistance Band
-    PY  Squat Rack
-    PY  What equipment do you have?
-    PY  ←
-    PY  ✓
+- Compose leaves NOT aligned: 24  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 17, kit-only 14)

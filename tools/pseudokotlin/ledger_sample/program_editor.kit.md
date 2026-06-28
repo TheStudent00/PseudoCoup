@@ -21,30 +21,9 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ProgramEditorScreen <-> kit program_editor
-- matched (by content anchor): 2
+- STRUCTURAL leaf match (LCS, dynamic-aware): 4/74 Compose leaves aligned to kit (5%)
+- static content matched (by literal): 2
     = Program details
     = Swap
-- Compose-only (in design, MISSING from kit): 52
-    KT   — ${macro.durationLabel}
-    KT   — ${phase.durationLabel}
-    KT  ${phase.label} · ${phase.typeL…
-    KT  ${selectedPathIds.size} select…
-    KT  Add
-    KT  Add day
-    KT  Add week
-    KT  All days and exercises in this…
-    KT  All exercises in this day will…
-    KT  Back
-    KT  Cancel
-    KT  Clone
-    KT  Close
-    KT  Collapse|Expand
-    KT  Completed
-    KT  Day name (e.g. Push A)
-    KT  Description
-    KT  Join
-    KT  Linked paths
-    KT  No details for this cycle yet.
-- kit-only (ADDED by the wrapping): 2
-    PY  No program selected.
-    PY  ←
+- Compose leaves NOT aligned: 70  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 52, kit-only 2)

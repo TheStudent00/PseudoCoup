@@ -47,7 +47,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ReportBugScreen <-> kit report_bug
-- matched (by content anchor): 7
+- STRUCTURAL leaf match (LCS, dynamic-aware): 11/38 Compose leaves aligned to kit (28%)
+- static content matched (by literal): 7
     = How bad is it?
     = Report a bug
     = Send report
@@ -55,26 +56,5 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = We detected a crash on your la…
     = What happened?
     = Your name (optional)
-- Compose-only (in design, MISSING from kit): 15
-    KT  Back
-    KT  Couldn't send
-    KT  Done
-    KT  Reporting not set up yet
-    KT  Something went wrong sending t…
-    KT  Thanks! 🙌
-    KT  This build has no report desti…
-    KT  Try again
-    KT  Your report and diagnostics we…
-    KT  body
-    KT  option.label
-    KT  placeholder
-    KT  primaryLabel
-    KT  title
-    KT  trailing
-- kit-only (ADDED by the wrapping): 6
-    PY  Annoying
-    PY  Blocking
-    PY  Crash detected
-    PY  Minor
-    PY  Your name
-    PY  ←
+- Compose leaves NOT aligned: 27  ·  kit leaves not aligned: 2
+- (raw content-anchor only: Compose-only 15, kit-only 6)

@@ -127,47 +127,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose WorkoutWarmupScreen <-> kit workout_warmup
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 20/31 Compose leaves aligned to kit (64%)
+- static content matched (by literal): 3
     = Let's get you moving.
     = Pick something fun for a few m…
     = Skip warm-up
-- Compose-only (in design, MISSING from kit): 18
-    KT  ${state.activity.emoji} ${stat…
-    KT  +1 min
-    KT  Back|Back to warm-ups
-    KT  I'm done
-    KT  Start ${activity.name}
-    KT  Start workout
-    KT  Warm up|Warm up
-    KT  Why warm up?
-    KT  You're warmed up
-    KT  activity.emoji
-    KT  activity.name
-    KT  activity.tagline
-    KT  formatMinutes(activity.default…
-    KT  formatTime(state.remainingSeco…
-    KT  it
-    KT  state.activity.phase.label()
-    KT  state.activity.tagline
-    KT  💪
-- kit-only (ADDED by the wrapping): 25
-    PY  6–8 slow rounds — hips, should…
-    PY  ?
-    PY  A quick walk to raise your tem…
-    PY  An easy jog in place or around…
-    PY  Bike, row, or treadmill at a c…
-    PY  Brisk walk
-    PY  Dance to a song
-    PY  Dynamic movement
-    PY  Easy cardio
-    PY  Leg swings, arm circles, hip c…
-    PY  Light jabs and footwork — warm…
-    PY  Light jog
-    PY  Put on one favourite track and…
-    PY  Shadow boxing
-    PY  Sun salutations
-    PY  Warm up
-    PY  ←
-    PY  ▶
-    PY  ☀️
-    PY  🏃
+- Compose leaves NOT aligned: 11  ·  kit leaves not aligned: 14
+- (raw content-anchor only: Compose-only 18, kit-only 25)
