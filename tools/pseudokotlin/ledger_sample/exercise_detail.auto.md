@@ -4,26 +4,25 @@ Every binding expression in the IR was transpiled Kt->Py and eval'd against kotl
 the transpiled viewModel. There is NO per-screen binding spec -- the transpiler IS the spec.
 
 ## leaf agreement vs hand-built (same seeded data)
-- shared (type+content):  7
+- shared (type+content):  8
 - interpreted-only:       4   (Compose representation: icon descs etc.)
     INT I: 'More'
     INT I: 'Toggle favorite'
     INT T: 'Duplicate & Edit'
     INT T: 'Never program this'
-- hand-built-only:        3   (kit glyphs/helpers)
-    HB  T: 'Squat · Barbell'
+- hand-built-only:        2   (kit glyphs/helpers)
     HB  T: '⋮'
     HB  T: '♡'
 
-## dynamic values resolved (3/4 match hand-built)
+## dynamic values resolved (4/5 match hand-built)
     OK   T: 'Compound'
     OK   T: 'Bilateral'
+    OK   T: 'Squat · Barbell'
     OK   T: 'Back Squat'
     MISS  T: 'Never program this'
-- unresolved IR exprs: 7
+- unresolved IR exprs: 6
     leaf: 'body'
     leaf: 'body'
-    leaf: '"${exercise.movementPattern.displayName()}  ·  ${exercise.equipmentType.displayName()}"'
     cond: '!exercise.instructions.isNullOrBlank()'
     cond: '!exercise.cues.isNullOrBlank()'
     cond: '!exercise.videoLink.isNullOrBlank()'
