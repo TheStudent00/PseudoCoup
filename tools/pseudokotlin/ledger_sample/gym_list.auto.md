@@ -3,8 +3,18 @@
 Every binding expression in the IR was transpiled Kt->Py and eval'd against kotlin_rt +
 the transpiled viewModel. There is NO per-screen binding spec -- the transpiler IS the spec.
 
-## result
-- resolved dynamic values matching hand-built: 4/4
+## leaf agreement vs hand-built (same seeded data)
+- shared (type+content):  7
+- interpreted-only:       3   (Compose representation: icon descs etc.)
+    INT I: 'Add gym'
+    INT I: 'Back'
+    INT T: 'Active'
+- hand-built-only:        3   (kit glyphs/helpers)
+    HB  T: '+'
+    HB  T: '←'
+    HB  T: '✓ Active'
+
+## dynamic values resolved (4/4 match hand-built)
     OK   T: 'Home Gym'
     OK   T: '🏠 Home Gym'
     OK   T: '2 items'
