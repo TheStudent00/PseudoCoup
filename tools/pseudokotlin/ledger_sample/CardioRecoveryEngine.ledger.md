@@ -1,0 +1,19 @@
+# Fidelity ledger -- CardioRecoveryEngine
+
+Structural + connective correspondence, Kotlin <-> Python. Kotlin shape read
+statically; Python shape read by introspecting the exec'd module. Behaviour is
+proven separately by oracle.py; this is the shape/wiring half.
+
+## object CardioRecoveryEngine  ==  class CardioRecoveryEngine + CardioRecoveryEngine=CardioRecoveryEngine()   [object->instance]
+- connects(1deg) KT: CardioIntensity, CardioType, TrainingExperience
+- connects(1deg) PY: CardioIntensity, CardioType, TrainingExperience   [match]
+- attrs 15/15
+  - nested data class CardioLoad  ==  class CardioLoad   [attrs 6/6]
+  - nested enum class HighIntensityFlag  ==  class HighIntensityFlag   [attrs 3/3]
+
+---
+## summary
+- frames: 1 top + 0 top-level fun · object->instance 1 · nested classes 2
+- methods: exact 10 · overload-split 0 · extension-hoist 0 · missing 0
+- connectivity (1deg sets match both sides): all frames match
+- UI sizing/positioning: n/a (engine layer is non-UI; populated for ui/ frames later)
