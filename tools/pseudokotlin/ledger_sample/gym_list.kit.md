@@ -28,7 +28,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 - matched (by content anchor): 2
     = Gym profiles
     = No gyms yet. Tap + to add one.
-- Compose-only (in design, MISSING from kit): 13
+- Compose-only (in design, MISSING from kit): 14
+    KT  ${equipmentList.size} items
     KT  ${type.emoji} ${type.displayNa…
     KT  Active
     KT  Add gym

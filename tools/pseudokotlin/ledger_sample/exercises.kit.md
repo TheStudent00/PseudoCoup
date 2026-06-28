@@ -51,12 +51,13 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = Exercises
     = No exercises found.
     = Search exercises…
-- Compose-only (in design, MISSING from kit): 7
+- Compose-only (in design, MISSING from kit): 8
     KT  $label · $count
     KT  $muscles · ${exercise.equipmen…
     KT  Collapse|Expand
     KT  New exercise
     KT  Remove from favorites|Add to f…
+    KT  category.displayName
     KT  exercise.name
     KT  t.label
 - kit-only (ADDED by the wrapping): 7

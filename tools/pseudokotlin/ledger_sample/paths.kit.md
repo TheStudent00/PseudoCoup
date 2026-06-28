@@ -23,15 +23,25 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = A Path connects your training …
     = Find your path
     = Start with your why.
-- Compose-only (in design, MISSING from kit): 10
+- Compose-only (in design, MISSING from kit): 25
+    KT  ${definition.minSessionsPerWee…
+    KT  ${it.minSessionsPerWeek}–${it.…
+    KT  ${it.targetMinutesPerSession} …
     KT  Add a second path
+    KT  Cancel
     KT  Leave path
     KT  Paths are the why. Programs ar…
+    KT  Sessions
+    KT  Start my Path
+    KT  Target
     KT  The evidence
+    KT  What are you recovering from?
+    KT  category.displayName
+    KT  definition.name
+    KT  definition.tagline
+    KT  e.g. knee surgery, COVID, a br…
     KT  it.evidenceSummary
     KT  it.tagline
     KT  label
     KT  null
-    KT  path.name
-    KT  value
 - kit-only (ADDED by the wrapping): 0

@@ -207,18 +207,26 @@ def _anchor(expr):
     return (s[:30] + "…") if len(s) > 31 else s
 
 
-def _segment(call, idx, comps):
+def _resolve_anchor(expr, subst):
+    """resolve a bare param reference (e.g. `label`) to its bound literal before anchoring."""
+    e = expr.strip()
+    if subst and e in subst:
+        e = subst[e]
+    return _anchor(e)
+
+
+def _segment(call, idx, comps, subst=None):
     """this node's id segment: component name · Type[desc=…] · Text[\"…\"] · Type[index]."""
     name = _name(call)
     if name in comps:                                    # a custom composable -> id by name
         return name
     args = _named_args(call)
     if name in ("Icon", "Image") and args.get("contentDescription"):
-        return f"{name}[desc={_anchor(args['contentDescription'])}]"
+        return f"{name}[desc={_resolve_anchor(args['contentDescription'], subst)}]"
     if name == "Text":
         txt = args.get("text") or _first_positional(call)
         if txt:
-            return f"Text[{_anchor(txt)}]"
+            return f"Text[{_resolve_anchor(txt, subst)}]"
     return f"{name}[{idx}]"
 
 
@@ -263,29 +271,119 @@ def _count(call):
     return 1 + sum(_count(c) for c in _children(call))
 
 
+_DEFS = None
+_TREES = []                                              # keep parsed trees alive (nodes ref them)
+
+
+def _comp_defs():
+    """{composable name -> (param_names, root_widget_calls)} across the whole ui/ tree, so a
+    call like LabeledField(label="…") can be inlined to its definition's widgets."""
+    global _DEFS
+    if _DEFS is None:
+        _DEFS = {}
+        for dp, _, fs in os.walk(UIROOT):
+            for f in fs:
+                if not f.endswith(".kt"):
+                    continue
+                try:
+                    tree = parse(open(os.path.join(dp, f), "rb").read())
+                except Exception:                        # noqa: BLE001
+                    continue
+                _TREES.append(tree)
+                stack = [tree.root_node]
+                while stack:
+                    n = stack.pop()
+                    if n.type == "function_declaration":
+                        mods = next((k for k in n.children if k.type == "modifiers"), None)
+                        if mods and "@Composable" in mods.text.decode():
+                            nm = next((k.text.decode() for k in n.children
+                                       if k.type == "identifier"), None)
+                            fvp = next((k for k in n.children
+                                        if k.type == "function_value_parameters"), None)
+                            params = []
+                            if fvp:
+                                for p in fvp.named_children:
+                                    if p.type == "parameter":
+                                        pn = next((k.text.decode() for k in p.children
+                                                   if k.type == "identifier"), None)
+                                        if pn:
+                                            params.append(pn)
+                            body = next((k for k in n.children
+                                         if k.type == "function_body"), None)
+                            roots = []
+                            if body:
+                                def w(x):
+                                    for c in x.children:
+                                        if c.type == "call_expression" and _is_widget(c):
+                                            roots.append(c)
+                                        else:
+                                            w(c)
+                                w(body)
+                            if nm:
+                                _DEFS[nm] = (params, roots)
+                    stack.extend(n.children)
+    return _DEFS
+
+
+def _bind(call, params, subst):
+    """{param_name -> bound arg value} for a custom-composable call site. An arg that is itself
+    a param reference is resolved through the CURRENT subst first, so a literal chains down
+    (LabeledField(label="X") -> FieldLabel(label) -> Text(label) all resolve to "X")."""
+    base, _ = _base_and_lambda(call)
+    va = next((k for k in base.children if k.type == "value_arguments"), None)
+    out, pos = {}, 0
+
+    def res(v):
+        return subst.get(v.strip(), v)
+
+    if va:
+        for a in va.named_children:
+            if a.type != "value_argument":
+                continue
+            kids = a.children
+            if len(kids) >= 3 and kids[0].type == "identifier" and kids[1].type == "=":
+                out[kids[0].text.decode()] = res(kids[2].text.decode())
+            else:
+                if pos < len(params):
+                    out[params[pos]] = res(a.text.decode())
+                pos += 1
+    return out
+
+
 def collect_ids(path):
-    """-> [(full_path_id, type, content_anchor|None)] for the cross-side compare."""
+    """-> [(full_path_id, type, content_anchor|None)] for the cross-side compare. Inlines custom
+    composables (binding literal params) so a slot/param text resolves to the same literal the
+    kit renders -- e.g. LabeledField(label="Your name") -> Text[Your name]."""
     cnames = composable_names()
+    defs = _comp_defs()
     out = []
 
-    def walk(call, idx, path):
+    def anchor_of(call, subst):
         name = _name(call)
-        seg = _segment(call, idx, cnames)
-        full = "/".join(path + [seg])
-        anchor = None
         if name == "Text":
             txt = _named_args(call).get("text") or _first_positional(call)
-            anchor = _anchor(txt) if txt else None
-        elif name in ("Icon", "Image"):
+            return _resolve_anchor(txt, subst) if txt else None
+        if name in ("Icon", "Image"):
             dsc = _named_args(call).get("contentDescription")
-            anchor = _anchor(dsc) if dsc else None
-        out.append((full, name, anchor))
-        for i, c in enumerate(_children(call)):
-            walk(c, i, path + [seg])
+            return _resolve_anchor(dsc, subst) if dsc else None
+        return None
+
+    def walk(call, idx, path, subst, stack):
+        name = _name(call)
+        seg = _segment(call, idx, cnames, subst)
+        full = "/".join(path + [seg])
+        out.append((full, name, anchor_of(call, subst)))
+        if name in defs and name not in stack:           # inline the composable's definition
+            params, roots = defs[name]
+            argmap = _bind(call, params, subst)
+            for i, r in enumerate(roots):
+                walk(r, i, path + [seg], argmap, stack + [name])
+        for i, c in enumerate(_children(call)):           # trailing + slot children
+            walk(c, i, path + [seg], subst, stack)
 
     for cname, roots in composables(path):
         for i, r in enumerate(roots):
-            walk(r, i, [cname])
+            walk(r, i, [cname], {}, [cname])
     return out
 
 

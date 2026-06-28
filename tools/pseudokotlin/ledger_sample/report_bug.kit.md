@@ -47,24 +47,34 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ReportBugScreen <-> kit report_bug
-- matched (by content anchor): 6
+- matched (by content anchor): 7
     = How bad is it?
     = Report a bug
     = Send report
     = Tell us what went wrong — what…
     = We detected a crash on your la…
     = What happened?
-- Compose-only (in design, MISSING from kit): 5
+    = Your name (optional)
+- Compose-only (in design, MISSING from kit): 15
     KT  Back
+    KT  Couldn't send
+    KT  Done
+    KT  Reporting not set up yet
+    KT  Something went wrong sending t…
+    KT  Thanks! 🙌
+    KT  This build has no report desti…
+    KT  Try again
+    KT  Your report and diagnostics we…
     KT  body
     KT  option.label
+    KT  placeholder
     KT  primaryLabel
     KT  title
-- kit-only (ADDED by the wrapping): 7
+    KT  trailing
+- kit-only (ADDED by the wrapping): 6
     PY  Annoying
     PY  Blocking
     PY  Crash detected
     PY  Minor
     PY  Your name
-    PY  Your name (optional)
     PY  ←
