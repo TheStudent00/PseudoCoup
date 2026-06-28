@@ -167,7 +167,7 @@ ui.define_button("paths_z77_start_my_path", "paths_z76_surface", "Start my Path"
 
 ---
 ## verify vs Compose source (PathsScreen)
-- distinct leaf signatures matched: 13/14 = 92%
+- distinct leaf signatures matched: 13/13 = 100%
 - generated signatures NOT in Compose (fabricated): 0
 - tree validity: 78 nodes, 0 orphan parents
 

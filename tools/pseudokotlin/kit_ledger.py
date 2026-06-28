@@ -240,7 +240,7 @@ def _ntype(t):
         return "T"
     if t in ("Icon", "Image"):
         return "I"
-    if t in ("TextField", "input_zone"):
+    if t in ("TextField", "OutlinedTextField", "BasicTextField", "input_zone"):
         return "F"
     return None                              # container / non-content node
 

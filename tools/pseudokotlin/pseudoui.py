@@ -50,7 +50,7 @@ BUTTONS = {"Button", "OutlinedButton", "TextButton", "FilledTonalButton", "Eleva
            "FloatingActionButton", "ExtendedFloatingActionButton", "IconButton",
            "IconToggleButton", "FilledIconButton", "OutlinedIconButton"}
 DIVIDERS = {"Divider", "HorizontalDivider", "VerticalDivider"}
-FIELDS = {"TextField", "OutlinedTextField", "BasicTextField"}
+FIELDS = UL.FIELDS_UI                                     # one source of truth (matches the ledger)
 
 
 # ── value helpers (resolve a param ref through the binding subst, then anchor) ──
@@ -151,8 +151,7 @@ def _emit(call, sup, subst, stack, ctx):
         _add(ctx, "divider_zone", _zid(ctx, "divider"), sup, (), "Divider", None, False)
         return
     if name in FIELDS:
-        lbl = UL._named_args(call).get("label")
-        anchor, st = (_anch(lbl, subst), _is_static(lbl, subst)) if lbl else (None, False)
+        anchor, st = UL.field_anchor(call, subst)        # keyed by label, same as the ledger
         _add(ctx, "input_zone", _zid(ctx, anchor or "field"), sup,
              ("", anchor or ""), "TextField", anchor, st)
         return

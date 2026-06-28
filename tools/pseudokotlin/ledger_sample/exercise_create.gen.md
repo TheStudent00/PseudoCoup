@@ -219,10 +219,8 @@ ui.define_icon("exercise_create_z103_save", "exercise_create_z100_topappbar", "S
 
 ---
 ## verify vs Compose source (ExerciseCreateScreen)
-- distinct leaf signatures matched: 16/18 = 88%
-- generated signatures NOT in Compose (fabricated): 2
-    GEN F:Coaching cues (optional)
-    GEN F:Form notes (optional)
+- distinct leaf signatures matched: 18/18 = 100%
+- generated signatures NOT in Compose (fabricated): 0
 - tree validity: 104 nodes, 0 orphan parents
 
 ---

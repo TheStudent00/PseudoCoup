@@ -243,7 +243,7 @@ ui.define_text("today_z234_tag", "today_z227_column", "Tag")
 ui.define_box("today_z235_flowrow", "today_z227_column", "H")
 ui.define_box("today_z236_filterchip", "today_z235_flowrow", "V")
 ui.define_text("today_z237_tag_label", "today_z236_filterchip", "tag.label")
-ui.define_input_zone("today_z238_field", "today_z227_column", "", "")
+ui.define_input_zone("today_z238_e_g_carried_all_", "today_z227_column", "", "e.g. carried all the groceries…")
 ui.define_button("today_z239_save_win", "today_z227_column", "Save win")
 ```
 
@@ -486,20 +486,21 @@ ui.define_button("today_z239_save_win", "today_z227_column", "Save win")
         - Row[flowrow]  <container>
           - Column[filterchip]  <container>
             - Text[tag.label]  <leaf>
-        - TextField[field]  <leaf>
+        - TextField[e.g. carried all the groceries…]  <leaf>
         - Button[Save win]  <leaf>
 
 ---
 ## verify vs Compose source (TodayScreen)
-- distinct leaf signatures matched: 40/41 = 97%
+- distinct leaf signatures matched: 41/41 = 100%
 - generated signatures NOT in Compose (fabricated): 0
 - tree validity: 240 nodes, 0 orphan parents
 
 ---
 ## generated  <->  hand-built kit (today_screen.py)
 - leaf signatures shared:        3
-- generated-only (other states / not in this trace): 37
+- generated-only (other states / not in this trace): 38
 - hand-built-only (helper glyphs / human representation): 0
+    GEN-only F:e.g. carried all the groceries…
     GEN-only I:Dismiss
     GEN-only I:Here's the science
     GEN-only I:·DYN·
@@ -511,4 +512,3 @@ ui.define_button("today_z239_save_win", "today_z227_column", "Save win")
     GEN-only T:Got it
     GEN-only T:How active were you while away?
     GEN-only T:How did you sleep?
-    GEN-only T:How does your body feel right …

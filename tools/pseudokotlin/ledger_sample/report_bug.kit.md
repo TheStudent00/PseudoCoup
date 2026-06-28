@@ -25,8 +25,7 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose ReportBugScreen <-> kit report_bug
-- distinct widget signatures matched: 5/14 = 35%
+- distinct widget signatures matched: 6/14 = 42%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
-- kit signatures NOT in Compose: 2
-    PY  F:What happened?
+- kit signatures NOT in Compose: 1
     PY  F:·DYN·
