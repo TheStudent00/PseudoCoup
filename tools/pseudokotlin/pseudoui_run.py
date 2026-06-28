@@ -32,6 +32,9 @@ import oracle as O                            # noqa: E402
 import ui_ledger as UL                        # noqa: E402
 import kit_ledger as KL                       # noqa: E402
 import pseudoui as G                           # noqa: E402
+from dispatch import Visitor as _V            # noqa: E402
+
+_pysafe = _V._safe                            # Kotlin id -> legal Python (keyword `def` -> `def_`)
 
 OUT = os.path.join(HERE, "ledger_sample")
 
@@ -173,7 +176,7 @@ def _ir_node(stmt, subst, stack, defs, out):
     if stmt.type == "property_declaration":               # val X = expr  ->  a scope binding
         nm, rhs = _parse_val(stmt)
         if nm and rhs:
-            out.append({"t": "bind", "name": nm, "expr": _sub(rhs, subst)})
+            out.append({"t": "bind", "name": _pysafe(nm), "expr": _sub(rhs, subst)})
         return
     if stmt.type != "call_expression":
         return
@@ -185,7 +188,7 @@ def _ir_node(stmt, subst, stack, defs, out):
         body = []
         for s in _stmts(lam):
             _ir_node(s, subst, stack, defs, body)
-        out.append({"t": "foreach", "src": _sub(src, subst), "var": var, "kids": body})
+        out.append({"t": "foreach", "src": _sub(src, subst), "var": _pysafe(var), "kids": body})
         return
     if name in ("item", "stickyHeader"):                  # LazyListScope.item{} -> transparent wrapper
         base, lam = UL._base_and_lambda(stmt)
@@ -197,14 +200,14 @@ def _ir_node(stmt, subst, stack, defs, out):
         body = []
         for s in body_stmts:
             _ir_node(s, subst, stack, defs, body)
-        out.append({"t": "foreach", "src": _sub(recv, subst), "var": var or "it", "kids": body})
+        out.append({"t": "foreach", "src": _sub(recv, subst), "var": _pysafe(var) if var else "it", "kids": body})
         return
     if _is_let(stmt):                                     # expr?.let { var -> body }
         subj, var, body_stmts = _parse_let(stmt)
         body = []
         for s in body_stmts:
             _ir_node(s, subst, stack, defs, body)
-        out.append({"t": "let", "subj": _sub(subj, subst), "var": var or "it", "kids": body})
+        out.append({"t": "let", "subj": _sub(subj, subst), "var": _pysafe(var) if var else "it", "kids": body})
         return
     if not name or not name[0].isupper():                 # lowercase call = handler/helper, not UI
         return
@@ -1052,9 +1055,84 @@ def emit_py(ir, key):
                 wrote = True
         return wrote
 
-    if not emit(ir, '"content"', '""', 1):
+    if not emit(ir, "content", '""', 1):    # the `content` param/var (the screen's content zone)
         lines.append("    pass")
     return "\n".join(lines)
+
+
+# ── (c) app migration: the generated screen as a drop-in app Screen class ──────
+# The app router mounts `Screen(db).build(ui, content_zone_id, router)`. emit_app_screen wraps the
+# generated build() in exactly that contract, backed by the TRANSPILED viewmodel -- so it can
+# replace the hand-built screen in the live app. verify_app_mount mounts it the way the router does
+# and confirms it produces the same tree as the hand-built screen.
+def build_transpiled_vm(key, db):
+    """the transpiled (1:1-with-Kotlin) viewmodel for a screen, wired to the kit db via its adapter
+    + the fixed reactive/stdlib shim -- the '1:1 backend' a generated app screen runs on."""
+    cfg = SCREEN_CFG[key]
+    ns = _load_transpiled(cfg["files"])
+    return ns[cfg["vm"]](*cfg["adapter"](ns, db))
+
+
+def emit_app_screen(ir, key, class_name):
+    """the generated build() wrapped as an app Screen class (db ctor + router-shaped build)."""
+    src = emit_py(ir, key)
+    lines = src.splitlines()
+    bi = next(i for i, l in enumerate(lines) if l.startswith("def build("))
+    head = lines[:bi]                                    # the _ev helper
+    body = lines[bi + 1:]                                # build() body (indented 4)
+    out = head + ["", f"class {class_name}:",
+                  "    def __init__(self, db):",
+                  "        self.db = db",
+                  f'        self.vm = build_transpiled_vm({key!r}, db)',
+                  "",
+                  "    def build(self, ui, content_zone_id, router):",
+                  "        viewModel = self.vm",
+                  "        content = content_zone_id"]
+    out += ["    " + l for l in body]                    # re-indent body into the method
+    return "\n".join(out) + "\n"
+
+
+def _leaves_of(recs, key):
+    roots, _ = KL.build_tree(recs, "content")
+    ids = []
+    for i, r in enumerate(roots):
+        KL.render_tree(r, 1, i, [key], [], ids)
+    return {(KL._ntype(t), a) for _, t, a in ids if KL._ntype(t) and a}
+
+
+def verify_app_mount(key="gym_list"):
+    cfg = SCREEN_CFG.get(key)
+    if not cfg:
+        print(f"  no config for {key!r}")
+        return
+    cls_name = "".join(p.capitalize() for p in key.split("_")) + "ScreenGen"
+    path = O.find_one(O.MAIN, f"{''.join(p.capitalize() for p in key.split('_'))}Screen.kt")
+    cname, ir = build_ir(path)
+    src = emit_app_screen(ir, key, cls_name)
+    os.makedirs(OUT, exist_ok=True)
+    open(os.path.join(OUT, f"{key}_screen_gen.py"), "w").write(src)
+
+    KL._setup_modules()
+    db = KL._seeded_db()
+    g = {"build_transpiled_vm": build_transpiled_vm}
+    exec(compile(src, f"{key}_screen_gen.py", "exec"), g)   # noqa: S102 -- generated, trusted
+    GenCls = g[cls_name]
+
+    router = _Router(cfg.get("sel")) if cfg.get("sel") else KL._Any()
+    gen = GenCls(db)                                     # mounted EXACTLY as AppRouter does
+    rec = KL._RecUI()
+    err = None
+    try:
+        gen.build(rec, "content", router)
+    except Exception as e:                               # noqa: BLE001
+        err = f"{type(e).__name__}: {e}"
+    gen_leaves = _leaves_of(rec.recs, key)
+    hb_leaves = set(_hb_leaves(key, _Router(cfg.get("sel")) if cfg.get("sel") else None)[0])
+    shared = sorted(gen_leaves & hb_leaves)
+    print(f"  {key}: generated app Screen class ({cls_name}, db-ctor + router build) mounted -> "
+          f"{len(rec.recs)} define_* calls; vs hand-built leaf shared {len(shared)}, "
+          f"gen-only {len(gen_leaves - hb_leaves)}, hb-only {len(hb_leaves - gen_leaves)}"
+          + (f"  (build err: {err})" if err else ""))
 
 
 def verify_emitted(key="gym_list"):
@@ -1100,6 +1178,10 @@ def main():
     if "--emit" in sys.argv:
         print(f"PseudoUI EMIT runnable screen -> ledger_sample/{key}_screen.gen.py")
         verify_emitted(key)
+        return
+    if "--app" in sys.argv:
+        print(f"PseudoUI APP-mount generated Screen class -> ledger_sample/{key}_screen_gen.py")
+        verify_app_mount(key)
         return
     if "--auto" in sys.argv:
         print(f"PseudoUI AUTO verify (transpiler-emitted bindings) -> ledger_sample/{key}.auto.md")
