@@ -360,7 +360,12 @@ class Declarations:
                 sig.append(f"{sp}={d}")
                 seen_default = True
         init_body = guards + [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
-        init_body += [self._render_property(p, as_self=True) for p in props]
+        for p in props:                                    # flush hoists (e.g. a multi-statement
+            before = len(self._hoist)                      # `combine(…){ … }` lambda -> def _lamN)
+            line = self._render_property(p, as_self=True)  # before the assignment that uses them
+            init_body += self._hoist[before:]
+            del self._hoist[before:]
+            init_body.append(line)
         for ini in inits:                                  # init { … } -> __init__ body
             blk = next((k for k in ini.named_children if k.type == "block"), None)
             if blk is not None:
