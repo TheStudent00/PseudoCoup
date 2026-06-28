@@ -9,7 +9,7 @@ def build(ui, content, viewModel):
     activePaths = _ev(lambda: viewModel.activePaths.collectAsStateWithLifecycle())
     pickerState = _ev(lambda: viewModel.pickerState.collectAsStateWithLifecycle())
     _id0 = "paths_z0"
-    ui.define_box(_id0, "content", "V")
+    ui.define_box(_id0, content, "V")
     _id1 = "paths_z1"
     ui.define_box(_id1, _id0, "V")
     if _ev(lambda: (len(activePaths) != 0)):
@@ -79,6 +79,7 @@ def build(ui, content, viewModel):
     if state is not None:
         _id43 = "paths_z43"
         ui.define_box(_id43, _id42, "V")
+        sections = _ev(lambda: PathDefinition.grouped(excludeIds=(state.enrolledPathIds if state.isAddingSecond else emptySet())))
         title = _ev(lambda: ("Add a second path" if state.isAddingSecond else "Find your Path"))
         if state.isAddingSecond:
             subtitle = "Choose one more to work toward."
@@ -89,10 +90,59 @@ def build(ui, content, viewModel):
         _id45 = "paths_z45"
         ui.define_box(_id45, _id44, "V")
         ui.define_text("paths_z46", _id45, _ev(lambda: subtitle))
-        _id47 = "paths_z47"
-        ui.define_box(_id47, _id44, "V")
-        ui.define_text("paths_z48", _id47, _ev(lambda: title))
-        ui.define_text("paths_z49", _id47, '✕')
-        _id50 = "paths_z50"
-        ui.define_box(_id50, _id44, "V")
-        ui.define_button("paths_z51", _id50, 'Start my Path')
+        for _i47, it in enumerate(_ev(lambda: sections) or []):
+            _id48 = ("paths_z48" + "_" + str(_i47))
+            ui.define_box(_id48, _id45, "V")
+            _id49 = ("paths_z49" + "_" + str(_i47))
+            ui.define_box(_id49, _id48, "V")
+            if _ev(lambda: category == PathCategory.SELF_DIRECTED):
+                ui.define_divider_zone(("paths_z51" + "_" + str(_i47)), _id49)
+            ui.define_text(("paths_z52" + "_" + str(_i47)), _id49, _ev(lambda: category.displayName))
+            for _i53, def_ in enumerate(_ev(lambda: paths) or []):
+                isSelected = _ev(lambda: (def_.id in state.selectedPathIds))
+                _id54 = ("paths_z54" + "_" + (str(_i47) + "_" + str(_i53)))
+                ui.define_box(_id54, _id45, "V")
+                _id55 = ("paths_z55" + "_" + (str(_i47) + "_" + str(_i53)))
+                ui.define_box(_id55, _id54, "V")
+                containerColor = _ev(lambda: (MaterialTheme.colorScheme.primaryContainer if isSelected else MaterialTheme.colorScheme.surface))
+                _id56 = ("paths_z56" + "_" + (str(_i47) + "_" + str(_i53)))
+                ui.define_box(_id56, _id55, "V")
+                if _ev(lambda: onClick != None):
+                    _id58 = ("paths_z58" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id58, _id56, "V")
+                else:
+                    _id59 = ("paths_z59" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id59, _id56, "V")
+                _id60 = ("paths_z60" + "_" + (str(_i47) + "_" + str(_i53)))
+                ui.define_box(_id60, _id56, "H")
+                _id61 = ("paths_z61" + "_" + (str(_i47) + "_" + str(_i53)))
+                ui.define_box(_id61, _id60, "V")
+                ui.define_text(("paths_z62" + "_" + (str(_i47) + "_" + str(_i53))), _id61, _ev(lambda: definition.name))
+                ui.define_spacer_zone(("paths_z63" + "_" + (str(_i47) + "_" + str(_i53))), _id61)
+                ui.define_text(("paths_z64" + "_" + (str(_i47) + "_" + str(_i53))), _id61, _ev(lambda: definition.tagline))
+                ui.define_spacer_zone(("paths_z65" + "_" + (str(_i47) + "_" + str(_i53))), _id61)
+                ui.define_text(("paths_z66" + "_" + (str(_i47) + "_" + str(_i53))), _id61, _ev(lambda: f"{definition.minSessionsPerWeek}–{definition.maxSessionsPerWeek} sessions/week · ~{definition.targetMinutesPerSession} min"))
+                if _ev(lambda: isSelected):
+                    ui.define_spacer_zone(("paths_z68" + "_" + (str(_i47) + "_" + str(_i53))), _id60)
+                    _id69 = ("paths_z69" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id69, _id60, "V")
+                    _id70 = ("paths_z70" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id70, _id69, "V")
+                if _ev(lambda: isSelected and def_.hasCustomName):
+                    ui.define_spacer_zone(("paths_z72" + "_" + (str(_i47) + "_" + str(_i53))), _id54)
+                    _id73 = ("paths_z73" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id73, _id54, "V")
+                    _id74 = ("paths_z74" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id74, _id73, "V")
+                    _id75 = ("paths_z75" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id75, _id74, "V")
+                    ui.define_text(("paths_z76" + "_" + (str(_i47) + "_" + str(_i53))), _id75, 'What are you recovering from?')
+                    _id77 = ("paths_z77" + "_" + (str(_i47) + "_" + str(_i53)))
+                    ui.define_box(_id77, _id73, "V")
+        _id78 = "paths_z78"
+        ui.define_box(_id78, _id44, "V")
+        ui.define_text("paths_z79", _id78, _ev(lambda: title))
+        ui.define_text("paths_z80", _id78, '✕')
+        _id81 = "paths_z81"
+        ui.define_box(_id81, _id44, "V")
+        ui.define_button("paths_z82", _id81, 'Start my Path')

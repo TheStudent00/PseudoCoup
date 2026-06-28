@@ -9,7 +9,7 @@ def build(ui, content, viewModel):
     gyms = _ev(lambda: viewModel.gyms.collectAsStateWithLifecycle())
     activeGym = _ev(lambda: viewModel.activeGym.collectAsStateWithLifecycle())
     _id0 = "gym_list_z0"
-    ui.define_box(_id0, "content", "V")
+    ui.define_box(_id0, content, "V")
     if _ev(lambda: (len(gyms) == 0)):
         _id2 = "gym_list_z2"
         ui.define_box(_id2, _id0, "V")
