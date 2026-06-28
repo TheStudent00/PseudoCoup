@@ -129,7 +129,7 @@ def _seeded_db():
     return _SEEDED_DB
 
 
-def trace(screen_key, content="content"):
+def trace(screen_key, content="content", router=None):
     _setup_modules()
     db = _seeded_db()
     mod = importlib.import_module(f"ui.{screen_key}_screen")
@@ -153,7 +153,7 @@ def trace(screen_key, content="content"):
     ui = _RecUI()
     err = None
     try:
-        screen.build(ui, content, _Any())
+        screen.build(ui, content, router if router is not None else _Any())
     except Exception as e:                   # noqa: BLE001
         err = f"{type(e).__name__}: {e}"
     return ui.recs, err
