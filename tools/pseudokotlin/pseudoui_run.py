@@ -617,14 +617,8 @@ def _enum_class(name):
         from transpiler import KtToPy
         ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
         try:
-            src = KtToPy().transpile(open(O.find_one(O.MAIN, f"{name}.kt"), "rb").read())
-            # WORKAROUND (transpiler bug): enum member methods reference the implicit `name`/
-            # `ordinal` properties unqualified; qualify them so displayName()/emoji run. The only
-            # bare `name` in a transpiled enum is inside its method bodies (all stored .name use a
-            # dot), so this is safe for these enums.
-            src = re.sub(r"(?<![.\w])name(?![\w])", "self.name", src)
-            src = re.sub(r"(?<![.\w])ordinal(?![\w])", "self.ordinal", src)
-            exec(compile(src, name, "exec"), ns)         # noqa: S102 -- transpiled enum
+            exec(compile(KtToPy().transpile(open(O.find_one(O.MAIN, f"{name}.kt"), "rb").read()),
+                         name, "exec"), ns)              # noqa: S102 -- transpiled enum
             _ENUM_REG[name] = ns.get(name)
         except Exception:                                # noqa: BLE001
             _ENUM_REG[name] = None

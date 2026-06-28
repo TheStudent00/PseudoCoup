@@ -85,6 +85,8 @@ class Declarations:
         if recv is not None:
             simple = recv.split("<")[0].strip().split(".")[-1]
             self._members = self._members | _TYPE_FIELDS.get(simple, set())
+            if simple in self._enum_types:          # extension on an enum: name/ordinal -> self.*
+                self._members = self._members | {"name", "ordinal"}
         own = set(names) | self._local_names(body_node)
         # a nested local fn mutating an enclosing fn's var needs `nonlocal` (Kotlin closes
         # over it). Methods/top-level fns have no enclosing fn scope -> no nonlocals.
@@ -301,6 +303,8 @@ class Declarations:
 
         prev = self._members
         self._members = set(ctor_params)
+        if body_node is not None and body_node.type == "enum_class_body":
+            self._members |= {"name", "ordinal"}   # implicit enum props: name.x -> self.name.x
         props, getters, lazies, methods, nested, comps, inits = [], [], [], [], [], [], []
         entries = []
         if body_node:
