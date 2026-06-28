@@ -221,8 +221,9 @@ def _segment(call, idx, comps, subst=None):
     if name in comps:                                    # a custom composable -> id by name
         return name
     args = _named_args(call)
-    if name in ("Icon", "Image") and args.get("contentDescription"):
-        return f"{name}[desc={_resolve_anchor(args['contentDescription'], subst)}]"
+    cd = args.get("contentDescription")
+    if name in ("Icon", "Image") and cd and cd.strip() != "null":   # null desc = decorative
+        return f"{name}[desc={_resolve_anchor(cd, subst)}]"
     if name == "Text":
         txt = args.get("text") or _first_positional(call)
         if txt:
@@ -373,6 +374,8 @@ def collect_ids(path):
         e = expr.strip()
         if subst and e in subst:
             e = subst[e]
+        if e.strip() == "null":                          # decorative icon/image -> no content leaf
+            return None, False
         static = bool(re.match(r'^"[^"$]*"$', e.strip()))
         return _anchor(e), static
 

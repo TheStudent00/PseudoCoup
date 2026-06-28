@@ -15,7 +15,7 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose OnboardingScreen <-> kit onboarding
-- distinct widget signatures matched: 4/54 = 7%
+- distinct widget signatures matched: 4/53 = 7%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
 - kit signatures NOT in Compose: 1
     PY  F:Your name

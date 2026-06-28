@@ -11,6 +11,6 @@ A recording UI captured every define_* call; tree rebuilt from the explicit pare
 
 ---
 ## cross-side compare: Compose PathsScreen <-> kit paths
-- distinct widget signatures matched: 3/15 = 20%
+- distinct widget signatures matched: 3/14 = 21%
   (static leaf by content; dynamic binding by type -- instance counts ignored)
 - kit signatures NOT in Compose: 0
