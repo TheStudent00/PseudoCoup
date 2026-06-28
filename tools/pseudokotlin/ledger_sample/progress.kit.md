@@ -29,31 +29,9 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ProgressScreen <-> kit progress
-- matched (by content anchor): 2
+- STRUCTURAL leaf match (LCS, dynamic-aware): 5/147 Compose leaves aligned to kit (3%)
+- static content matched (by literal): 2
     = Completed sessions and cardio …
     = No workouts yet
-- Compose-only (in design, MISSING from kit): 61
-    KT  $it bpm
-    KT  ${cardio.durationMinutes} min
-    KT  ${session.setCount} sets
-    KT  %.1f km
-    KT  1 PR|${session.prCount} PRs
-    KT  Ad-hoc Workout
-    KT  Best
-    KT  Cardio
-    KT  Exercise
-    KT  Foundational total · best e1RM…
-    KT  How you feel after training
-    KT  Keep setting PRs on your main …
-    KT  Last 30 days
-    KT  Last 7 days
-    KT  Lifting and cardio combined.
-    KT  Log a few sets to start tracki…
-    KT  Log a win
-    KT  Log your first workout to see …
-    KT  More than the numbers — the re…
-    KT  No bests yet
-- kit-only (ADDED by the wrapping): 3
-    PY  Analytics
-    PY  Bests
-    PY  History
+- Compose leaves NOT aligned: 142  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 61, kit-only 3)

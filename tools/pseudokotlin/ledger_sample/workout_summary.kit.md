@@ -25,28 +25,9 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose WorkoutSummaryScreen <-> kit workout_summary
-- matched (by content anchor): 2
+- STRUCTURAL leaf match (LCS, dynamic-aware): 5/25 Compose leaves aligned to kit (20%)
+- static content matched (by literal): 2
     = Done
     = Workout complete
-- Compose-only (in design, MISSING from kit): 17
-    KT  ${summary.completedSets} sets
-    KT  Duration
-    KT  Edit workout
-    KT  Exercise summary
-    KT  Exercises
-    KT  New estimated 1RM|New $it-rep …
-    KT  Personal records
-    KT  Volume
-    KT  formatVolume(uiState.totalVolu…
-    KT  formatWeight(pr.weightKg, unit)
-    KT  label
-    KT  pr.exerciseName
-    KT  summary.exerciseName
-    KT  topStr
-    KT  uiState.exerciseSummaries.size…
-    KT  value
-    KT  —
-- kit-only (ADDED by the wrapping): 3
-    PY  No session
-    PY  No session data found.
-    PY  ←
+- Compose leaves NOT aligned: 20  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 17, kit-only 3)

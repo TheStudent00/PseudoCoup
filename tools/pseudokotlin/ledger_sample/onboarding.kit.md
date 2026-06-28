@@ -23,30 +23,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose OnboardingScreen <-> kit onboarding
-- matched (by content anchor): 1
+- STRUCTURAL leaf match (LCS, dynamic-aware): 4/237 Compose leaves aligned to kit (1%)
+- static content matched (by literal): 1
     = Let's go →
-- Compose-only (in design, MISSING from kit): 91
-    KT  ${definition.minSessionsPerWee…
-    KT  ${lift.label} (${weightUnit.na…
-    KT  ${path.minSessionsPerWeek}–${p…
-    KT  ${program.totalWeeks} week${if…
-    KT  ${selected.size} item${if (sel…
-    KT  A bit about your body
-    KT  Always included
-    KT  Are you training right now?
-    KT  Back
-    KT  Back to options
-    KT  Bodyweight (${weightUnit.name.…
-    KT  Calibrate with us
-    KT  Choose your first path
-    KT  Configure equipment later
-    KT  Continue
-    KT  Continue →
-    KT  Done selecting
-    KT  Enter what you can — leave any…
-    KT  Enter your numbers
-    KT  Enter your numbers|Calibrate w…
-- kit-only (ADDED by the wrapping): 3
-    PY  Tap below and we'll set up you…
-    PY  We'll load a starter program t…
-    PY  You're all set
+- Compose leaves NOT aligned: 233  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 91, kit-only 3)

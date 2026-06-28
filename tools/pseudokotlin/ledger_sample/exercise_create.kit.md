@@ -107,7 +107,8 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ExerciseCreateScreen <-> kit exercise_create
-- matched (by content anchor): 13
+- STRUCTURAL leaf match (LCS, dynamic-aware): 23/55 Compose leaves aligned to kit (41%)
+- static content matched (by literal): 13
     = Base starting weight on (optio…
     = Coaching cues (optional)
     = Compound
@@ -121,27 +122,5 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
     = Secondary muscles
     = Unilateral
     = Video link (optional)
-- Compose-only (in design, MISSING from kit): 13
-    KT  , 
-    KT  Back
-    KT  Change
-    KT  Edit exercise|New exercise
-    KT  Name is required
-    KT  Select at least one primary mu…
-    KT  label
-    KT  label(option)
-    KT  label(selected)
-    KT  null
-    KT  placeholder
-    KT  title
-    KT  trailing
-- kit-only (ADDED by the wrapping): 9
-    PY  Barbell
-    PY  Name
-    PY  New exercise
-    PY  None — start light
-    PY  Push Horizontal
-    PY  Select muscles
-    PY  Video link
-    PY  ←
-    PY  ▾
+- Compose leaves NOT aligned: 32  ·  kit leaves not aligned: 4
+- (raw content-anchor only: Compose-only 13, kit-only 9)

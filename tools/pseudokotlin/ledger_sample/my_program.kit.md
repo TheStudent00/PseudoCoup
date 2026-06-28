@@ -247,34 +247,9 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose MyProgramScreen <-> kit my_program
-- matched (by content anchor): 2
+- STRUCTURAL leaf match (LCS, dynamic-aware): 29/82 Compose leaves aligned to kit (35%)
+- static content matched (by literal): 2
     = Enrolled
     = View other programs
-- Compose-only (in design, MISSING from kit): 43
-    KT   — ${macro.durationLabel}
-    KT   — ${phase.durationLabel}
-    KT  ${phase.label} · ${phase.typeL…
-    KT  +1 wk
-    KT  Active
-    KT  Active adjustments
-    KT  Browse programs
-    KT  Close
-    KT  Close menu|Update program
-    KT  Completed
-    KT  End
-    KT  Injury — ${inj.bodyPart}
-    KT  Join a program to see your tra…
-    KT  Manage
-    KT  No details for this cycle yet.
-    KT  No exercises programmed for th…
-    KT  No program yet
-    KT  The science behind this
-    KT  Things currently changing your…
-    KT  This cycle
-- kit-only (ADDED by the wrapping): 6
-    PY  +
-    PY  Mesocycle 0 · Accumulation
-    PY  Progression
-    PY  Week 0
-    PY  — 2 weeks
-    PY  — 4 weeks
+- Compose leaves NOT aligned: 53  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 43, kit-only 6)

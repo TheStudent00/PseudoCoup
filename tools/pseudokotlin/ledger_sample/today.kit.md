@@ -37,31 +37,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose TodayScreen <-> kit today
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 5/165 Compose leaves aligned to kit (3%)
+- static content matched (by literal): 3
     = No program enrolled yet. Head …
     = Set up a program to see your w…
     = This week's workouts
-- Compose-only (in design, MISSING from kit): 72
-    KT  $doneCount of $frequencyPerWee…
-    KT  $doneCount of $totalCount done
-    KT  5 seconds. Helps you spot patt…
-    KT  Adding weight every session ha…
-    KT  Apply restart weights
-    KT  AutoregulationScience.DELOAD_I…
-    KT  AutoregulationScience.PROGRESS…
-    KT  Before we start
-    KT  Close
-    KT  Close actions|Open actions
-    KT  Dismiss
-    KT  Energy right now?
-    KT  Got it
-    KT  Here's the science
-    KT  How active were you while away?
-    KT  How did you sleep?
-    KT  How does your body feel right …
-    KT  I'm fine, continue
-    KT  It's been $gapLabel
-    KT  Keep showing up. That's what i…
-- kit-only (ADDED by the wrapping): 2
-    PY  +
-    PY  of 3 sessions this week
+- Compose leaves NOT aligned: 160  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 72, kit-only 2)

@@ -27,30 +27,7 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ProgramDayEditorScreen <-> kit program_day_editor
-- matched (by content anchor): 0
-- Compose-only (in design, MISSING from kit): 27
-    KT  ${EffortScale.header(workoutMo…
-    KT  Add exercise
-    KT  Back
-    KT  Cancel
-    KT  Day
-    KT  Edit prescription
-    KT  Exercise options
-    KT  Group with next
-    KT  Load (${weightUnit.label()})
-    KT  Move down
-    KT  Move up
-    KT  No exercises yet.\nTap + to ad…
-    KT  Notes
-    KT  Remove
-    KT  Remove exercise?
-    KT  Remove from superset
-    KT  Reps max
-    KT  Reps min
-    KT  Rest (sec)
-    KT  SUPERSET
-- kit-only (ADDED by the wrapping): 4
-    PY  +
-    PY  No exercises yet.
-    PY  Tap + to add from the library.
-    PY  ←
+- STRUCTURAL leaf match (LCS, dynamic-aware): 4/101 Compose leaves aligned to kit (3%)
+- static content matched (by literal): 0
+- Compose leaves NOT aligned: 97  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 27, kit-only 4)

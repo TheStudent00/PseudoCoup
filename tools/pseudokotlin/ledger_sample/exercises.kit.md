@@ -47,24 +47,10 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ExercisesScreen <-> kit exercises
-- matched (by content anchor): 3
+- STRUCTURAL leaf match (LCS, dynamic-aware): 10/18 Compose leaves aligned to kit (55%)
+- static content matched (by literal): 3
     = Exercises
     = No exercises found.
     = Search exercises…
-- Compose-only (in design, MISSING from kit): 8
-    KT  $label · $count
-    KT  $muscles · ${exercise.equipmen…
-    KT  Collapse|Expand
-    KT  New exercise
-    KT  Remove from favorites|Add to f…
-    KT  category.displayName
-    KT  exercise.name
-    KT  t.label
-- kit-only (ADDED by the wrapping): 7
-    PY  +
-    PY  All
-    PY  Built-in
-    PY  Custom
-    PY  Favorites
-    PY  ←
-    PY  ⌕
+- Compose leaves NOT aligned: 8  ·  kit leaves not aligned: 0
+- (raw content-anchor only: Compose-only 8, kit-only 7)
