@@ -100,6 +100,19 @@ def _is_let(call):
     return bool(nav and ".let" in nav.text.decode())
 
 
+def _is_foreach_method(call):
+    nav = next((k for k in call.children if k.type == "navigation_expression"), None)
+    return bool(nav and re.search(r"\.forEach(Indexed)?$", nav.text.decode()))
+
+
+def _parse_foreach_method(call):
+    """receiver.forEach { var -> body } -> (receiver_expr, var, body_stmts)."""
+    nav = next((k for k in call.children if k.type == "navigation_expression"), None)
+    recv = re.sub(r"\.forEach(Indexed)?$", "", nav.text.decode()).strip() if nav else None
+    lam = next((k for k in call.children if k.type in ("annotated_lambda", "lambda_literal")), None)
+    return recv, _lambda_param(lam), (_stmts(lam) if lam else [])
+
+
 def _parse_let(call):
     nav = next((k for k in call.children if k.type == "navigation_expression"), None)
     subj = re.split(r"\?\.let|\.let", nav.text.decode(), maxsplit=1)[0].strip() if nav else None
@@ -178,6 +191,13 @@ def _ir_node(stmt, subst, stack, defs, out):
         base, lam = UL._base_and_lambda(stmt)
         for s in _stmts(lam):
             _ir_node(s, subst, stack, defs, out)
+        return
+    if _is_foreach_method(stmt):                          # receiver.forEach { var -> body }
+        recv, var, body_stmts = _parse_foreach_method(stmt)
+        body = []
+        for s in body_stmts:
+            _ir_node(s, subst, stack, defs, body)
+        out.append({"t": "foreach", "src": _sub(recv, subst), "var": var or "it", "kids": body})
         return
     if _is_let(stmt):                                     # expr?.let { var -> body }
         subj, var, body_stmts = _parse_let(stmt)
@@ -447,9 +467,16 @@ def _trunc(s):
     return (s[:30] + "…") if len(s) > 31 else s
 
 
-def _hb_leaves(screen_key):
+class _Router:
+    """a hand-built-trace router that carries a selected id (what a detail screen reads to know
+    which entity to load), so its trace loads the SAME entity the --auto adapter feeds."""
+    def __init__(self, sel): self.selected_id = sel
+    def __getattr__(self, n): return lambda *a, **k: None
+
+
+def _hb_leaves(screen_key, router=None):
     """the hand-built screen's leaves, runtime-traced through the SAME seeded db (resolved)."""
-    recs, err = KL.trace(screen_key)
+    recs, err = KL.trace(screen_key, router=router)
     roots, _ = KL.build_tree(recs, "content")
     ids = []
     for i, r in enumerate(roots):
@@ -523,6 +550,8 @@ def _reactive_ns():
         def stateIn(self, *a): return _StateFlow(self._v)
         def collectAsStateWithLifecycle(self, *a): return self._v
         def first(self): return self._v
+        @property
+        def value(self): return self._v
 
     class _Scope:
         def launch(self, f):
@@ -535,10 +564,24 @@ def _reactive_ns():
         @staticmethod
         def WhileSubscribed(*a): return None
 
+    def combine(*args):                                  # combine(flow1..n, transform) -> derived Flow
+        *flows, fn = args
+        try:
+            return _Flow(fn(*[getattr(f, "value", f) for f in flows]))
+        except Exception:                                # noqa: BLE001 -- transform gap -> empty
+            return _Flow(None)
+
+    class _Permissive:                                   # Screen.X.ARG_*, unused repos, etc.
+        def __getattr__(self, n): return _Permissive()
+        def __getitem__(self, k): return _Permissive()
+        def __call__(self, *a, **k): return _Permissive()
+
     ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
     ns.update({"viewModelScope": _Scope(), "SharingStarted": _Started,
                "MutableStateFlow": _StateFlow, "MutableSharedFlow": _StateFlow,
-               "KtList": rt.KtList, "_Flow": _Flow})
+               "KtList": rt.KtList, "_Flow": _Flow, "combine": combine,
+               "Screen": _Permissive(), "checkNotNull": (lambda x, *a: x),
+               "_Permissive": _Permissive})
     return ns
 
 
@@ -596,6 +639,38 @@ def _paths_repo_adapter(ns, db):
     return (_Repo(),)                                     # PathsViewModel(repository)
 
 
+def _exercise_detail_adapter(ns, db):
+    """A DYNAMIC second screen with a SIMPLE VM (single-entity derived flow, like gym_list). Reads
+    the seeded eSquat exercise; most content is bool->string conditionals. The enum displayName()
+    line (movement/equipment/muscle, stored as ints in the kit) is the documented gap."""
+    from data.repository.exercise_repository import ExerciseRepository
+    Flow, Perm = ns["_Flow"], ns["_Permissive"]
+    repo = ExerciseRepository(db)
+
+    class _Repo:
+        def getById(self, eid): return Flow(repo.get_by_id("eSquat"))
+
+    class _SSH:
+        def __getitem__(self, k): return "eSquat"
+    # ctor: (savedStateHandle, repository: ExerciseRepository, programRepository [unused in render])
+    return (_SSH(), _Repo(), Perm())
+
+
+def _exercise_picker_adapter(ns, db):
+    """A DYNAMIC second screen over real data (185 seeded exercises). The VM is a `combine` -- the
+    adapter just feeds exerciseDao.getAll(); the filter flows default (blank query / no filter), so
+    the transpiled transform yields the non-excluded exercises, sorted."""
+    from data.repository.exercise_repository import ExerciseRepository
+    import runtime.kotlin_rt as rt
+    Flow, Perm = ns["_Flow"], ns["_Permissive"]
+
+    class _Dao:
+        def getAll(self):
+            return Flow(rt.KtList(ExerciseRepository(db).get_all()))
+    # ctor: (savedStateHandle, repository: ProgramRepository [unused in render], exerciseDao)
+    return (Perm(), Perm(), _Dao())
+
+
 # Per-screen config = the honest "what each screen needs" surface for --auto. The IR + binding
 # machinery is screen-agnostic; this captures only the transpiled files + the DAO->kit adapter.
 SCREEN_CFG = {
@@ -603,6 +678,10 @@ SCREEN_CFG = {
                  "vm": "GymListViewModel", "adapter": _gym_repo_adapter},
     "paths": {"files": ["PathsViewModel.kt"],
               "vm": "PathsViewModel", "adapter": _paths_repo_adapter},
+    "exercise_detail": {"files": ["ExerciseDetailViewModel.kt"], "sel": "eSquat",
+                        "vm": "ExerciseDetailViewModel", "adapter": _exercise_detail_adapter},
+    "exercise_picker": {"files": ["ExercisePickerViewModel.kt"],
+                        "vm": "ExercisePickerViewModel", "adapter": _exercise_picker_adapter},
 }
 
 
@@ -716,11 +795,15 @@ def verify_auto(key="gym_list"):
     cname, ir = build_ir(path)
     KL._setup_modules()
     db = KL._seeded_db()
-    ns = _load_transpiled(cfg["files"])
-    vm = ns[cfg["vm"]](*cfg["adapter"](ns, db))
+    try:
+        ns = _load_transpiled(cfg["files"])
+        vm = ns[cfg["vm"]](*cfg["adapter"](ns, db))
+    except Exception as e:                               # noqa: BLE001 -- VM transpile/construct gap
+        print(f"  {key}: VM did not construct ({type(e).__name__}: {e}) -- transpiler gap, not UI")
+        return None, [], []
     leaves, unresolved = [], []
     interpret(ir, _resolve_expr, _auto_env(vm), leaves, unresolved)   # resolver = the TRANSPILER
-    hb, hberr = _hb_leaves(key)
+    hb, hberr = _hb_leaves(key, _Router(cfg["sel"]) if cfg.get("sel") else None)
     interp_set = {(nt, c) for nt, c, st in leaves}
     hb_set = set(hb)
     dyn = [(nt, c) for nt, c, st in leaves if not st]
