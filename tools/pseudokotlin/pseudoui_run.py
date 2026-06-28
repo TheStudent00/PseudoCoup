@@ -283,6 +283,33 @@ def _comp_bodies():
     return _BODIES
 
 
+# Representation map: the kit backend draws certain Compose icons as text glyphs (its top_bar/fab/
+# chip helpers), and folds an AssistChip's leading check into the label. Applying it to the IR makes
+# the generated trace match the hand-built kit's glyph convention -- so generated could REPLACE it.
+_GLYPH = {"Back": "←", "Add": "+", "Add gym": "+", "Close": "✕", "Cancel": "✕"}
+
+
+def _represent(nodes):
+    for n in nodes:
+        t = n["t"]
+        if t == "leaf" and n["kind"] == "icon" and n["static"] and n["expr"]:
+            g = _GLYPH.get(_static_lit(n["expr"]))
+            if g:
+                n.update(kind="text", ctype="Text", expr=f'"{g}"')
+        elif t == "box":
+            if n.get("name") == "AssistChip" and any(
+                    c["t"] == "leaf" and c["kind"] == "icon" for c in n["kids"]):
+                for c in n["kids"]:                      # fold the check glyph into the chip label
+                    if c["t"] == "leaf" and c["kind"] == "text" and c["static"] and c["expr"]:
+                        c["expr"] = f'"✓ {_static_lit(c["expr"])}"'
+                        break
+            _represent(n["kids"])
+        elif t == "if":
+            _represent(n["then"]); _represent(n["else"])
+        elif t in ("foreach", "let"):
+            _represent(n["kids"])
+
+
 def build_ir(compose_path):
     comps = UL.composables(compose_path)
     cname, _ = G._entry(comps)
@@ -291,6 +318,7 @@ def build_ir(compose_path):
     out = []
     for s in _stmts(body):
         _ir_node(s, {}, [cname], defs, out)
+    _represent(out)                                      # kit glyph convention (←/+/✓)
     return cname, out
 
 
@@ -735,15 +763,28 @@ _EMIT_CACHE = {}
 
 
 def _py_expr(kt):
-    """transpile a Kotlin expression to a Python expression string (the RHS), cached."""
+    """transpile a Kotlin expr to a SINGLE-LINE Python expression (RHS), or None if it transpiles
+    to a multi-line statement (a Kotlin if/when value) -- those go through _py_stmt instead."""
     if kt not in _EMIT_CACHE:
         from transpiler import KtToPy
         try:
             out = KtToPy().transpile(f"val __r = {kt}".encode()).strip()
-            _EMIT_CACHE[kt] = out.split("=", 1)[1].strip() if "=" in out else None
         except Exception:                                # noqa: BLE001
-            _EMIT_CACHE[kt] = None
+            out = None
+        _EMIT_CACHE[kt] = (out.split("=", 1)[1].strip()
+                           if out and "\n" not in out and out.startswith("__r") else None)
     return _EMIT_CACHE[kt]
+
+
+def _py_stmt(kt, target):
+    """transpiled Python statement(s) assigning `target = <kt>` -- handles the multi-line
+    if/when forms. -> list of source lines (indent-0), or None."""
+    from transpiler import KtToPy
+    try:
+        out = KtToPy().transpile(f"val {target} = {kt}".encode()).strip()
+    except Exception:                                    # noqa: BLE001
+        return None
+    return out.splitlines() if out else None
 
 
 _LEAF_FN = {"text": "define_text", "button": "define_button", "icon": "define_icon",
@@ -788,6 +829,27 @@ def emit_py(ir, key):
         base = f'"{key}_z{m}"'
         return base if suffix == '""' else f'({base} + "_" + {suffix})'
 
+    def assign(kt, target, pad):
+        """emit `target = <kt>` -- single-line wrapped in _ev (tolerates unbound params), else the
+        transpiled multi-line block (a Kotlin if/when value; references bound vars, so safe)."""
+        e = _py_expr(kt)
+        if e is not None:
+            lines.append(f"{pad}{target} = _ev(lambda: {e})")
+            return
+        st = _py_stmt(kt, target)
+        if st:
+            lines.extend(pad + ln for ln in st)
+        else:
+            lines.append(f"{pad}{target} = None")
+
+    def value(kt, m, pad):
+        """-> a Python expression for kt (inline if single-line; else a temp assigned just above)."""
+        e = _py_expr(kt)
+        if e is not None:
+            return f"_ev(lambda: {e})"
+        assign(kt, f"_t{m}", pad)
+        return f"_t{m}"
+
     def emit(nodes, sup, suffix, ind):
         pad = "    " * ind
         wrote = False
@@ -796,7 +858,7 @@ def emit_py(ir, key):
             if t == "bind":
                 if n["name"] not in needed:              # prune dead styling binds
                     continue
-                lines.append(f"{pad}{n['name']} = {_py_expr(n['expr']) or 'None'}"); wrote = True
+                assign(n["expr"], n["name"], pad); wrote = True
             elif t == "box":
                 m = ctr[0]; ctr[0] += 1
                 lines.append(f"{pad}_id{m} = {zid(m, suffix)}")
@@ -804,25 +866,21 @@ def emit_py(ir, key):
                 emit(n["kids"], f"_id{m}", suffix, ind); wrote = True
             elif t == "foreach":
                 m = ctr[0]; ctr[0] += 1
-                src = _py_expr(n["src"]) or "[]"
+                src = value(n["src"], m, pad)
                 nsuf = f"str(_i{m})" if suffix == '""' else f'({suffix} + "_" + str(_i{m}))'
-                lines.append(f"{pad}for _i{m}, {n['var']} in enumerate({src}):")
-                emit(n["kids"], sup, nsuf, ind + 1); wrote = True
+                lines.append(f"{pad}for _i{m}, {n['var']} in enumerate({src} or []):")
+                emit(n["kids"], sup, nsuf, ind + 1) or lines.append(f"{pad}    pass")
+                wrote = True
             elif t == "if":
-                cond = _py_expr(n["cond"])
-                if cond is None:
-                    lines.append(f"{pad}# unresolved cond ({n['cond']}); taking else branch")
-                    if n["else"]:
-                        emit(n["else"], sup, suffix, ind)
-                    continue
-                lines.append(f"{pad}if _ev(lambda: {cond}):")
+                m = ctr[0]; ctr[0] += 1
+                lines.append(f"{pad}if {value(n['cond'], m, pad)}:")   # value() wraps in _ev itself
                 emit(n["then"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
                 if n["else"]:
                     lines.append(f"{pad}else:")
                     emit(n["else"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
                 wrote = True
             elif t == "let":
-                lines.append(f"{pad}{n['var']} = {_py_expr(n['subj']) or 'None'}")
+                assign(n["subj"], n["var"], pad)
                 lines.append(f"{pad}if {n['var']} is not None:")
                 emit(n["kids"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
                 wrote = True
@@ -838,7 +896,7 @@ def emit_py(ir, key):
                 if spacing:
                     lines.append(f"{pad}ui.{fn}({z}, {sup})")
                 else:
-                    val = repr(_static_lit(n["expr"])) if n["static"] else (_py_expr(n["expr"]) or '""')
+                    val = repr(_static_lit(n["expr"])) if n["static"] else value(n["expr"], m, pad)
                     arg = f'"", {val}' if n["kind"] == "input_zone" else val
                     lines.append(f"{pad}ui.{fn}({z}, {sup}, {arg})")
                 wrote = True
