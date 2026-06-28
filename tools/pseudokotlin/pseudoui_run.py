@@ -8,15 +8,19 @@ app's real seeded data -- looping real rows, taking the branch the real data sel
 each binding to its real value -- and emits the same kind of `define_*` trace the hand-built
 screen produces. Comparing the two RESOLVED traces is the dynamic/functional-equivalence check.
 
-The honest seam (discovered from the code -- see DevComms): the kit deliberately RESHAPED Compose's
-data path (GymWithEquipment -> profile + a separate equipment_for(id) query; activeGym?.id==id ->
-a per-row isActive flag; setActive(gym) -> set_active(gym.id)). So behaviour is NOT purely
-mechanical from Compose -- it needs a per-screen BINDING SPEC that declares those reshapings. The
-IR (control-flow skeleton) is generated; the binding spec (data-path) is declared, explicit, and
-inspectable -- not buried in hand-code. This file proves the loop closes on gym_list.
+Three binding strategies (resolve an IR expression -> a value), increasing in fidelity-to-Kotlin:
+  default  reshaped spec   -- hand lambdas mapping Compose->kit (the kit RESHAPED the data path:
+                              GymWithEquipment -> profile + equipment_for(id); activeGym -> isActive).
+  --1to1   transpiled VM    -- run against KtToPy(GymListViewModel); hand spec is Kotlin-shaped.
+  --auto   the TRANSPILER   -- NO hand spec: each IR expression (val RHS, cond, src, leaf) is
+                              transpiled Kt->Py and eval'd against kotlin_rt + the transpiled VM.
+The --auto path is the repeatable crank: structure, control flow, the viewmodel, AND the bindings
+all derive mechanically from Kotlin; only a fixed reactive/DAO/stdlib shim is supplied once.
 
-Usage:  python3 pseudoui_run.py gym_list --ir       # dump the generated IR
-        python3 pseudoui_run.py gym_list             # interpret vs hand-built (runtime verify)
+Usage:  python3 pseudoui_run.py gym_list --ir     # dump the generated IR (incl. val binds)
+        python3 pseudoui_run.py gym_list           # reshaped-spec runtime verify vs hand-built
+        python3 pseudoui_run.py gym_list --1to1    # transpiled VM + Kotlin-shaped spec
+        python3 pseudoui_run.py gym_list --auto    # transpiler-emitted bindings (no hand spec)
 """
 import os
 import re
@@ -103,6 +107,25 @@ def _parse_let(call):
     return subj, _lambda_param(lam), (_stmts(lam) if lam else [])
 
 
+def _parse_val(pd):
+    """a `val X = expr` or `val X by delegate` -> (name, rhs_kotlin_expr)."""
+    vd = next((k for k in pd.children if k.type == "variable_declaration"), None)
+    name = None
+    if vd is not None:
+        idc = next((c for c in vd.children if c.type == "identifier"), None)
+        name = idc.text.decode() if idc else vd.text.decode().strip()
+    delegate = next((k for k in pd.children if k.type == "property_delegate"), None)
+    if delegate is not None:                              # `by <expr>` (e.g. collectAsState)
+        return name, re.sub(r"^by\s+", "", delegate.text.decode()).strip()
+    eq, rhs = False, None                                 # `= <expr>`
+    for k in pd.children:
+        if k.type == "=":
+            eq = True
+        elif eq and k.type != ";":
+            rhs = k.text.decode(); break
+    return name, rhs
+
+
 def _parse_if(node):
     cond_nodes, blocks, state, seen_else = [], [], "pre", False
     for k in node.children:
@@ -134,8 +157,13 @@ def _ir_node(stmt, subst, stack, defs, out):
             _ir_node(s, subst, stack, defs, else_ir)
         out.append({"t": "if", "cond": _sub(cond, subst), "then": then_ir, "else": else_ir})
         return
+    if stmt.type == "property_declaration":               # val X = expr  ->  a scope binding
+        nm, rhs = _parse_val(stmt)
+        if nm and rhs:
+            out.append({"t": "bind", "name": nm, "expr": _sub(rhs, subst)})
+        return
     if stmt.type != "call_expression":
-        return                                            # property_declaration etc. -> binding spec
+        return
     name = UL._name(stmt)
     if name == "items":                                   # LazyList items(src){ var -> body }
         src = UL._first_positional(stmt)
@@ -280,6 +308,8 @@ def _dump(ir, depth, lines):
         elif n["t"] == "let":
             lines.append(f"{ind}LET {n['var']} = {n['subj']} (if non-null):")
             _dump(n["kids"], depth + 1, lines)
+        elif n["t"] == "bind":
+            lines.append(f"{ind}val {n['name']} = {n['expr']}")
         elif n["t"] == "leaf":
             tag = "static" if n["static"] else "DYN"
             lines.append(f"{ind}{n['ctype']}<{tag}> {n['expr']!r}")
@@ -319,49 +349,62 @@ SPECS = {"gym_list": _gym_list_spec}
 
 
 # ── interpreter: run the IR against real seeded data -> resolved leaves ─────────
-def _resolve_leaf(n, spec, env):
-    e = n["expr"]
-    if e is None:
-        return None
-    if n["static"]:
-        m = re.match(r'^"(.*)"$', e.strip())
-        return m.group(1) if m else e
-    f = spec.get(e)
-    return f(env) if f else None                          # unresolved binding -> drop (reported)
+# `resolve(expr, env) -> value | _UNRESOLVED` is the binding strategy: either a hand-written spec
+# (_spec_resolver) or, for path (c)+, the transpiler itself (_auto_resolver).
+_UNRESOLVED = object()
 
 
-def interpret(ir, spec, env, out, unresolved):
+def _static_lit(e):
+    m = re.match(r'^"(.*)"$', (e or "").strip())
+    return m.group(1) if m else e
+
+
+def _spec_resolver(spec):
+    def r(expr, env):
+        f = spec.get(expr)
+        return f(env) if f else _UNRESOLVED
+    return r
+
+
+def interpret(ir, resolve, env, out, unresolved):
     for n in ir:
         t = n["t"]
-        if t == "box":
-            interpret(n["kids"], spec, env, out, unresolved)
+        if t == "bind":                                   # val X = expr -> extend scope (best effort)
+            v = resolve(n["expr"], env)
+            if v is not _UNRESOLVED:
+                env = {**env, n["name"]: v}
+        elif t == "box":
+            interpret(n["kids"], resolve, env, out, unresolved)
         elif t == "foreach":
-            src = spec.get(n["src"])
-            for it in (src(env) if src else []):
-                e2 = dict(env); e2[n["var"]] = it
-                interpret(n["kids"], spec, e2, out, unresolved)
+            v = resolve(n["src"], env)
+            if v is _UNRESOLVED:
+                unresolved.append(("src", n["src"])); v = []
+            for it in v:
+                interpret(n["kids"], resolve, {**env, n["var"]: it}, out, unresolved)
         elif t == "if":
-            f = spec.get(n["cond"])
-            if f is None:
-                unresolved.append(("cond", n["cond"]))
-            branch = n["then"] if (f and f(env)) else n["else"]
-            interpret(branch, spec, env, out, unresolved)
+            v = resolve(n["cond"], env)
+            if v is _UNRESOLVED:
+                unresolved.append(("cond", n["cond"])); v = False
+            interpret(n["then"] if v else n["else"], resolve, env, out, unresolved)
         elif t == "let":
-            f = spec.get(n["subj"])
-            if f is None:
+            v = resolve(n["subj"], env)
+            if v is _UNRESOLVED:
                 unresolved.append(("let", n["subj"]))
-            subj = f(env) if f else None
-            if subj is not None:
-                e2 = dict(env); e2[n["var"]] = subj
-                interpret(n["kids"], spec, e2, out, unresolved)
+            elif v is not None:
+                interpret(n["kids"], resolve, {**env, n["var"]: v}, out, unresolved)
         elif t == "leaf":
             nt = KL._ntype(n["ctype"])
             if not nt:
                 continue
-            if not n["static"] and n["expr"] and n["expr"] not in spec:
-                unresolved.append(("leaf", n["expr"]))
-            content = _resolve_leaf(n, spec, env)
-            if content is not None and content != "":
+            if n["static"]:
+                content = _static_lit(n["expr"])
+            elif not n["expr"]:
+                continue
+            else:
+                content = resolve(n["expr"], env)
+                if content is _UNRESOLVED:
+                    unresolved.append(("leaf", n["expr"])); continue
+            if content is not None and str(content) != "":
                 out.append((nt, _trunc(content), n["static"]))   # match the ledger's 30-char anchor
 
 
@@ -388,7 +431,7 @@ def verify(key):
     db = KL._seeded_db()
     spec = SPECS[key](db)
     leaves, unresolved = [], []
-    interpret(ir, spec, {}, leaves, unresolved)
+    interpret(ir, _spec_resolver(spec), {}, leaves, unresolved)
     hb, hberr = _hb_leaves(key)
 
     interp_set = {(nt, c) for nt, c, st in leaves}
@@ -430,6 +473,8 @@ def _reactive_ns():
     """the fixed reactive shim the transpiled VM runs against (Flow/stateIn/scope -> synchronous)."""
     class _StateFlow:
         def __init__(self, v): self.value = v
+        def collectAsStateWithLifecycle(self, *a): return self.value   # Compose `by` delegate -> value
+        def collectAsState(self, *a): return self.value
 
     class _Flow:
         def __init__(self, v): self._v = v
@@ -462,6 +507,7 @@ def _gym_repo_adapter(ns, db):
     (GymWithEquipment bundling profile+equipment; gymType int -> GymType enum)."""
     from domain.gym_service import GymService
     from data.repository.gym_equipment_repository import GymEquipmentRepository
+    import runtime.kotlin_rt as rt                        # KtList so .joinToString/.isNotEmpty work
     GWE, GProf, GT, Flow = ns["GymWithEquipment"], ns["GymProfileEntity"], ns["GymType"], ns["_Flow"]
 
     def lift(g):
@@ -471,7 +517,8 @@ def _gym_repo_adapter(ns, db):
     class _Repo:
         def getAllWithEquipment(self):
             eq = GymEquipmentRepository(db)
-            return Flow([GWE(lift(g), eq.get_by_gym(g.id)) for g in GymService(db).get_all()])
+            return Flow(rt.KtList(GWE(lift(g), rt.KtList(eq.get_by_gym(g.id)))
+                                  for g in GymService(db).get_all()))
 
         def getActive(self):
             act = [g for g in GymService(db).get_all() if g.isActive]
@@ -514,7 +561,7 @@ def verify_1to1(key="gym_list"):
     vm = ns["GymListViewModel"](_gym_repo_adapter(ns, db))   # the TRANSPILED VM, real data
     spec = _gym_list_spec_1to1(vm)
     leaves, unresolved = [], []
-    interpret(ir, spec, {}, leaves, unresolved)
+    interpret(ir, _spec_resolver(spec), {}, leaves, unresolved)
     hb, hberr = _hb_leaves(key)
     interp_set = {(nt, c) for nt, c, st in leaves}
     hb_set = set(hb)
@@ -550,9 +597,80 @@ def verify_1to1(key="gym_list"):
     return dyn_matched, dyn
 
 
+# ── (c)+ AUTO binding: the spec is the TRANSPILER, not hand-written ────────────
+# No per-screen lambdas. Each binding expression in the IR (val RHS, if cond, foreach src, ?.let
+# subject, dynamic leaf) is transpiled Kt->Py and eval'd against an env of kotlin_rt (the stdlib
+# runtime) + the transpiled `viewModel` + the scope's resolved `val`s. This is the repeatable crank.
+_TP_EXPR_CACHE = {}
+
+
+def _resolve_expr(expr, env):
+    if expr not in _TP_EXPR_CACHE:
+        from transpiler import KtToPy
+        try:
+            _TP_EXPR_CACHE[expr] = KtToPy().transpile(f"val __r = {expr}".encode())
+        except Exception:                                # noqa: BLE001 -- transpile gap -> unresolved
+            _TP_EXPR_CACHE[expr] = None
+    py = _TP_EXPR_CACHE[expr]
+    if not py:
+        return _UNRESOLVED
+    g = dict(env)
+    try:
+        exec(compile(py, "<expr>", "exec"), g)           # noqa: S102 -- transpiled, trusted
+    except Exception:                                    # noqa: BLE001 -- runtime gap -> unresolved
+        return _UNRESOLVED
+    return g.get("__r", _UNRESOLVED)
+
+
+def _auto_env(vm):
+    """eval namespace: the Kotlin stdlib runtime (kotlin_rt) + the transpiled viewModel."""
+    import runtime.kotlin_rt as rt
+    env = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+    env["viewModel"] = vm
+    return env
+
+
+def verify_auto(key="gym_list"):
+    path = O.find_one(O.MAIN, f"{''.join(p.capitalize() for p in key.split('_'))}Screen.kt")
+    cname, ir = build_ir(path)
+    KL._setup_modules()
+    db = KL._seeded_db()
+    ns = _load_transpiled(["GymType.kt", "GymProfileEntity.kt", "GymListViewModel.kt"])
+    vm = ns["GymListViewModel"](_gym_repo_adapter(ns, db))
+    leaves, unresolved = [], []
+    interpret(ir, _resolve_expr, _auto_env(vm), leaves, unresolved)   # resolver = the TRANSPILER
+    hb, hberr = _hb_leaves(key)
+    interp_set = {(nt, c) for nt, c, st in leaves}
+    hb_set = set(hb)
+    dyn = [(nt, c) for nt, c, st in leaves if not st]
+    dyn_matched = [(nt, c) for nt, c in dyn if (nt, c) in hb_set]
+    samples = sorted(e for e in _TP_EXPR_CACHE if _TP_EXPR_CACHE[e] and not e.startswith('"'))[:8]
+
+    L = [f"# PseudoUI AUTO verify -- {key}: bindings emitted by the TRANSPILER (no hand spec)", "",
+         "Every binding expression in the IR was transpiled Kt->Py and eval'd against kotlin_rt +",
+         "the transpiled viewModel. There is NO per-screen binding spec -- the transpiler IS the spec.", "",
+         f"## result",
+         f"- resolved dynamic values matching hand-built: {len(dyn_matched)}/{len(dyn)}",
+         *[f"    {'OK ' if (nt,c) in hb_set else 'MISS'}  {nt}: {c!r}" for nt, c, st in leaves if not st],
+         f"- unresolved IR exprs: {len(unresolved)}",
+         *[f"    {kind}: {e!r}" for kind, e in unresolved],
+         "", "## sample of the transpiler-emitted bindings (Kotlin -> Python, mechanical)",
+         *[f"    {e!r}\n      -> {(_TP_EXPR_CACHE[e] or '').strip()}" for e in samples],
+         *( [f"\n(hand-built trace partial: {hberr})"] if hberr else [] ), ""]
+    os.makedirs(OUT, exist_ok=True)
+    open(os.path.join(OUT, f"{key}.auto.md"), "w").write("\n".join(L))
+    print(f"  {key} (AUTO, transpiler-emitted bindings): {len(dyn_matched)}/{len(dyn)} dynamic values "
+          f"match hand-built, unresolved {len(unresolved)}; NO hand-written spec")
+    return dyn_matched, dyn, unresolved
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     key = args[0] if args else "gym_list"
+    if "--auto" in sys.argv:
+        print(f"PseudoUI AUTO verify (transpiler-emitted bindings) -> ledger_sample/{key}.auto.md")
+        verify_auto(key)
+        return
     if "--1to1" in sys.argv:
         print(f"PseudoUI 1:1 verify (transpiled VM) -> ledger_sample/{key}.1to1.md")
         verify_1to1(key)
