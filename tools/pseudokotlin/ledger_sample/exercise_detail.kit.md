@@ -45,35 +45,35 @@ the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE 
 
 ---
 ## cross-side compare: Compose ExerciseDetailScreen <-> kit exercise_detail
-- matched (by content anchor): 1
+- matched (by content anchor): 3
     = Built-in
-- Compose-only (in design, MISSING from kit): 24
+    = Movement & equipment
+    = Primary muscles
+- Compose-only (in design, MISSING from kit): 29
     KT  ${exercise.movementPattern.dis…
     KT  Allow programming again|Never …
     KT  Already in your program
     KT  Back
     KT  Cancel
+    KT  Coaching cues
     KT  Compound|Isolation
     KT  Custom
     KT  Delete
     KT  Delete exercise?
     KT  Duplicate & Edit
     KT  Edit
+    KT  Form notes
     KT  Got it
     KT  More
+    KT  Secondary muscles
     KT  Swap all now
     KT  Swap during workouts
     KT  This will permanently delete \…
     KT  Toggle favorite
-    KT  Unilateral|Bilateral
-    KT  \| is in $where. |Swap it for …
-    KT  exercise.cues
-- kit-only (ADDED by the wrapping): 8
+- kit-only (ADDED by the wrapping): 6
     PY  Bilateral
     PY  Isolation
     PY  Mobility · Other
-    PY  Movement & equipment
-    PY  Primary muscles
     PY  ←
     PY  ⋮
     PY  ♡

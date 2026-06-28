@@ -47,9 +47,27 @@ class _Any:
     def __bool__(self): return False
     def __len__(self): return 0
     def __str__(self): return ""
+    def __format__(self, spec): return ""
     def __getitem__(self, k): return _Any()
     def __hash__(self): return 0
     def __eq__(self, o): return False
+    def __int__(self): return 0                  # survive numeric coercion / arithmetic in build()
+    def __float__(self): return 0.0
+    def __index__(self): return 0
+    def __add__(self, o): return _Any()
+    def __radd__(self, o): return _Any()
+    def __sub__(self, o): return _Any()
+    def __rsub__(self, o): return _Any()
+    def __mul__(self, o): return _Any()
+    def __rmul__(self, o): return _Any()
+    def __truediv__(self, o): return _Any()
+    def __rtruediv__(self, o): return _Any()
+    def __floordiv__(self, o): return _Any()
+    def __mod__(self, o): return _Any()
+    def __lt__(self, o): return False
+    def __gt__(self, o): return False
+    def __le__(self, o): return False
+    def __ge__(self, o): return False
 
 
 class _RecUI:
@@ -186,12 +204,13 @@ def run(screen_key, compose_name):
     L += ["", "  ids:"] + [f"    {x[0]}" for x in kit_ids] + [""]
 
     # compare to the Compose side
-    cmp_block = []
+    cmp_block, comp = [], None
     if compose_name:
         kt = O.find_one(O.MAIN, f"{compose_name}.kt")
         if kt:
             compose_ids = UL.collect_ids(kt)
             matched, c_only, k_only = compare(compose_ids, kit_ids)
+            comp = (len(matched), len(c_only), len(k_only))
             cmp_block = ["---", f"## cross-side compare: Compose {compose_name} <-> kit {screen_key}",
                          f"- matched (by content anchor): {len(matched)}",
                          *[f"    = {m}" for m in matched[:20]],
@@ -202,13 +221,49 @@ def run(screen_key, compose_name):
     L += cmp_block
     os.makedirs(OUT, exist_ok=True)
     open(os.path.join(OUT, f"{screen_key}.kit.md"), "w").write("\n".join(L))
-    nmatch = len([1 for x in cmp_block if x.startswith("    =")]) if cmp_block else 0
     print(f"  {screen_key}: {len(kit_ids)} kit nodes" +
-          (f" · compare vs {compose_name}: {nmatch} matched anchors" if compose_name else "") +
-          f" -> ledger_sample/{screen_key}.kit.md")
+          (f" · vs {compose_name}: matched {comp[0]} · KT-only {comp[1]} · PY-only {comp[2]}"
+           if comp else "") + (f"  (partial: {err.split(':')[0]})" if err else ""))
+    return comp
+
+
+def _compose_for(key):
+    cand = "".join(p.capitalize() for p in key.split("_")) + "Screen"
+    return cand if O.find_one(O.MAIN, f"{cand}.kt") else None
+
+
+def run_all():
+    keys = sorted(f[:-len("_screen.py")] for f in os.listdir(os.path.join(SRC, "ui"))
+                  if f.endswith("_screen.py"))
+    print(f"UI kit-side ledger, ALL screens with a Compose counterpart:")
+    tot = [0, 0, 0]
+    paired = 0
+    for k in keys:
+        cn = _compose_for(k)
+        if not cn:
+            continue
+        paired += 1
+        try:
+            comp = run(k, cn)
+        except Exception as e:                           # noqa: BLE001
+            print(f"  {k}: ERROR {type(e).__name__}")
+            continue
+        if comp:
+            for i in range(3):
+                tot[i] += comp[i]
+    m, c, p = tot
+    denom = m + c
+    print(f"\n  AGGREGATE over {paired} paired screens:")
+    print(f"    matched anchors:     {m}")
+    print(f"    Compose-only:        {c}   (unbuilt states / unresolved vars / dynamic / real gaps)")
+    print(f"    kit-only:            {p}   (kit glyphs, resolved labels, helper extras)")
+    print(f"    anchor match rate:   {m}/{denom} = {100*m//denom if denom else 0}%  (lower bound)")
 
 
 def main():
+    if "--all" in sys.argv:
+        run_all()
+        return
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     compose = None
     if "--compose" in sys.argv:
