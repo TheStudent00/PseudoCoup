@@ -421,9 +421,142 @@ def verify(key):
     return dyn_matched, dyn, shared
 
 
+# ── (c) the 1:1 path: run the IR against the TRANSPILED viewmodel ──────────────
+# Proves the thesis: when the screen binds to the transpiled (1:1-with-Kotlin) viewmodel + entities
+# instead of a hand-reshaped one, the binding spec collapses to the KOTLIN expressions themselves
+# (mechanical Kt->Py syntax). The only non-1:1 parts are a FIXED reactive shim (Flow/stateIn/
+# coroutine -> pull) and a Room-DAO -> InMemoryDb adapter (a framework boundary, ported once).
+def _reactive_ns():
+    """the fixed reactive shim the transpiled VM runs against (Flow/stateIn/scope -> synchronous)."""
+    class _StateFlow:
+        def __init__(self, v): self.value = v
+
+    class _Flow:
+        def __init__(self, v): self._v = v
+        def stateIn(self, *a): return _StateFlow(self._v)
+
+    class _Scope:
+        def launch(self, f): return f()
+
+    class _Started:
+        @staticmethod
+        def WhileSubscribed(*a): return None
+
+    return {"viewModelScope": _Scope(), "SharingStarted": _Started, "emptyList": (lambda: []),
+            "KtList": list, "_Flow": _Flow}
+
+
+def _load_transpiled(files):
+    """transpile each .kt and exec into ONE namespace (so the classes see each other + the shim)."""
+    from transpiler import KtToPy
+    ns = _reactive_ns()
+    for f in files:
+        p = O.find_one(O.MAIN, f)
+        py = KtToPy().transpile(open(p, "rb").read())
+        exec(compile(py, f, "exec"), ns)                 # noqa: S102 -- transpiled, trusted
+    return ns
+
+
+def _gym_repo_adapter(ns, db):
+    """Room-DAO boundary, ported to the kit InMemoryDb: yields the transpiled Kotlin shapes
+    (GymWithEquipment bundling profile+equipment; gymType int -> GymType enum)."""
+    from domain.gym_service import GymService
+    from data.repository.gym_equipment_repository import GymEquipmentRepository
+    GWE, GProf, GT, Flow = ns["GymWithEquipment"], ns["GymProfileEntity"], ns["GymType"], ns["_Flow"]
+
+    def lift(g):
+        gt = GT.entries[int(g.gymType)] if g.gymType is not None else None
+        return GProf(g.id, g.name, g.isActive, gt, g.createdAt, g.updatedAt)
+
+    class _Repo:
+        def getAllWithEquipment(self):
+            eq = GymEquipmentRepository(db)
+            return Flow([GWE(lift(g), eq.get_by_gym(g.id)) for g in GymService(db).get_all()])
+
+        def getActive(self):
+            act = [g for g in GymService(db).get_all() if g.isActive]
+            return Flow(lift(act[0]) if act else None)
+
+        def setActive(self, gid): GymService(db).set_active(gid)
+        def deleteGym(self, gid): GymService(db).delete_gym(gid)
+    return _Repo()
+
+
+def _gym_list_spec_1to1(vm):
+    """The 1:1 binding spec: every value is the KOTLIN expression, syntactically Kt->Py'd against
+    the transpiled shapes. NO reshaping -- contrast _gym_list_spec (which reshaped). `gym` is the
+    Kotlin `val gym = gymWithEquipment.profile`; `gyms`/`activeGym` are collectAsState() of the
+    StateFlows. Each comment is the verbatim Kotlin."""
+    def gw(env): return env["gymWithEquipment"]
+    return {
+        "gyms": lambda env: vm.gyms.value,                                    # viewModel.gyms
+        "gyms.isEmpty()": lambda env: len(vm.gyms.value) == 0,                # gyms.isEmpty()
+        "activeGym?.id == gymWithEquipment.profile.id":                       # activeGym?.id == ...
+            lambda env: vm.activeGym.value is not None and vm.activeGym.value.id == gw(env).profile.id,
+        "gym.gymType": lambda env: gw(env).profile.gymType,                   # gym.gymType
+        "equipmentList.isNotEmpty()": lambda env: len(gw(env).equipment) > 0,  # equipmentList.isNotEmpty()
+        "gym.name": lambda env: gw(env).profile.name,                        # gym.name
+        '"${type.emoji} ${type.displayName}"':                               # "${type.emoji} ${type.displayName}"
+            lambda env: env["type"].emoji + " " + env["type"].displayName,
+        '"${equipmentList.size} items"':                                     # "${equipmentList.size} items"
+            lambda env: str(len(gw(env).equipment)) + " items",
+        "equipmentNames": lambda env: ", ".join(e.name for e in gw(env).equipment),  # joinToString(", "){it.name}
+        "onClick != null": lambda env: True,
+    }
+
+
+def verify_1to1(key="gym_list"):
+    path = O.find_one(O.MAIN, f"{''.join(p.capitalize() for p in key.split('_'))}Screen.kt")
+    cname, ir = build_ir(path)
+    KL._setup_modules()
+    db = KL._seeded_db()
+    ns = _load_transpiled(["GymType.kt", "GymProfileEntity.kt", "GymListViewModel.kt"])
+    vm = ns["GymListViewModel"](_gym_repo_adapter(ns, db))   # the TRANSPILED VM, real data
+    spec = _gym_list_spec_1to1(vm)
+    leaves, unresolved = [], []
+    interpret(ir, spec, {}, leaves, unresolved)
+    hb, hberr = _hb_leaves(key)
+    interp_set = {(nt, c) for nt, c, st in leaves}
+    hb_set = set(hb)
+    dyn = [(nt, c) for nt, c, st in leaves if not st]
+    dyn_matched = [(nt, c) for nt, c in dyn if (nt, c) in hb_set]
+    reshaping = sum(1 for v in _gym_list_spec(db).values() if v)  # entries in the OLD reshaping spec
+
+    L = [f"# PseudoUI 1:1 verify -- {key}: IR bound to the TRANSPILED viewmodel", "",
+         "The screen's IR (mechanical) interpreted against the TRANSPILED GymListViewModel + entities",
+         "+ GymType (1:1 with Kotlin), over the seeded data. The binding spec is now the KOTLIN",
+         "expressions themselves (mechanical Kt->Py), not reshaping judgments.", "",
+         f"## result",
+         f"- resolved dynamic values matching hand-built: {len(dyn_matched)}/{len(dyn)}",
+         *[f"    {'OK ' if (nt,c) in hb_set else 'MISS'}  {nt}: {c!r}" for nt, c, st in leaves if not st],
+         f"- unresolved IR exprs: {len(unresolved)}",
+         "", "## the collapse (the point of path c)",
+         f"- reshaped spec (kit VM):  {reshaping} entries that RE-MAP Compose->kit",
+         f"    e.g. activeGym?.id==id  ->  item.isActive   (per-row flag)",
+         f"         gymWithEquipment.equipment  ->  vm.equipment_for(id)   (separate query)",
+         f"- 1:1 spec (transpiled VM): the SAME {len(_gym_list_spec_1to1(vm))} expressions, but each is",
+         f"    the Kotlin source syntactically Kt->Py'd (identity of shape):",
+         f"         activeGym?.id==id  ->  vm.activeGym.value.id == gw.profile.id",
+         f"         gymWithEquipment.equipment  ->  gymWithEquipment.equipment   (identity)",
+         "", "## the only non-1:1 seams (fixed, not per-screen)",
+         "- reactive shim: Flow/stateIn/viewModelScope/launch -> synchronous pull (~8 lines).",
+         "- Room DAO -> InMemoryDb adapter: getAllWithEquipment bundles profile+equipment and",
+         "  lifts gymType int -> GymType enum (the storage boundary the kit reshaped away).",
+         *( [f"\n(hand-built trace partial: {hberr})"] if hberr else [] ), ""]
+    os.makedirs(OUT, exist_ok=True)
+    open(os.path.join(OUT, f"{key}.1to1.md"), "w").write("\n".join(L))
+    print(f"  {key} (1:1 transpiled VM): {len(dyn_matched)}/{len(dyn)} dynamic values match hand-built, "
+          f"unresolved {len(unresolved)}; binding is now Kotlin-shaped (identity), not reshaping")
+    return dyn_matched, dyn
+
+
 def main():
     args = [a for a in sys.argv[1:] if not a.startswith("-")]
     key = args[0] if args else "gym_list"
+    if "--1to1" in sys.argv:
+        print(f"PseudoUI 1:1 verify (transpiled VM) -> ledger_sample/{key}.1to1.md")
+        verify_1to1(key)
+        return
     compose = G._compose_for_key(key) if hasattr(G, "_compose_for_key") else \
         "".join(p.capitalize() for p in key.split("_")) + "Screen"
     path = O.find_one(O.MAIN, f"{compose}.kt")
