@@ -85,36 +85,59 @@ class _RecUI:
         return lambda *a, **k: _Any()
 
 
-# Per-screen seeders: insert real rows into a real (in-memory) Db so the dynamic rows render
-# through the ACTUAL repo->service->VM path -- a faithful vertical-slice trace, not a mock.
-def _seed_gym_list(db):
-    from data.repository.gym_profile_repository import GymProfileRepository
-    from data.db.entity.gym_profile_entity import GymProfileEntity
-    r = GymProfileRepository(db)
-    r.insert(GymProfileEntity("g1", "Home Gym", True, 0, 0.0, 0.0))
-    r.insert(GymProfileEntity("g2", "Commercial Gym", False, 1, 0.0, 0.0))
+_STUBBED = False
+_SEEDED_DB = None
 
 
-SEEDERS = {"gym_list": _seed_gym_list}
-
-
-def trace(screen_key, content="content"):
+def _setup_modules():
+    """stub `kit` (avoid Kivy/display) and `pseudodart.discipline` (the engines import a no-op
+    discipline decorator) so the whole app -- engines included -- imports headlessly."""
+    global _STUBBED
+    if _STUBBED:
+        return
     ks = types.ModuleType("kit")
     ks.UI = _RecUI
     ks.Event = type("Event", (), {})
     sys.modules["kit"] = ks
+    pd = types.ModuleType("pseudodart")
+    disc = types.ModuleType("pseudodart.discipline")
+
+    def dart_extern(*a, **k):
+        return a[0] if (len(a) == 1 and callable(a[0]) and not k) else (lambda f: f)
+    disc.dart_extern = dart_extern
+    pd.discipline = disc
+    sys.modules["pseudodart"] = pd
+    sys.modules["pseudodart.discipline"] = disc
     if SRC not in sys.path:
         sys.path.insert(0, SRC)
+    _STUBBED = True
+
+
+def _seeded_db():
+    """the app's OWN seed (AppMain._seed) on a fresh InMemoryDb -- the real faithful state
+    (185 exercises, 3 programs, 4 paths, gym, sessions, program hierarchy). One call seeds
+    every screen; no per-screen seeders."""
+    global _SEEDED_DB
+    if _SEEDED_DB is None:
+        from data.db.db import InMemoryDb
+        am = importlib.import_module("ui.app_main")
+        db = InMemoryDb()
+        app = am.AppMain.__new__(am.AppMain)
+        app.db = db
+        app._seed()
+        _SEEDED_DB = db
+    return _SEEDED_DB
+
+
+def trace(screen_key, content="content"):
+    _setup_modules()
+    db = _seeded_db()
     mod = importlib.import_module(f"ui.{screen_key}_screen")
     cls = next(v for k, v in vars(mod).items()
                if isinstance(v, type) and k.endswith("Screen"))
-    seeder = SEEDERS.get(screen_key)
-    if seeder:                               # faithful path: real seeded Db + the real VM
-        from data.db.db import InMemoryDb
-        db = InMemoryDb()
-        seeder(db)
+    try:                                     # faithful: real seeded Db -> real VM -> real rows
         screen = cls(db)
-    else:                                    # mock path: permissive stand-in, static skeleton
+    except Exception:                        # noqa: BLE001 -- a different ctor; fall back to mock
         try:
             screen = cls(_Any())
         except Exception:                    # noqa: BLE001
@@ -123,7 +146,10 @@ def trace(screen_key, content="content"):
                      "_setactive_zone_ids", "_setactive_gym_ids"):
             if not hasattr(screen, attr):
                 setattr(screen, attr, [])
-        screen.vm = _Any()
+        if not hasattr(screen, "vm"):
+            screen.vm = _Any()
+        if not hasattr(screen, "db"):
+            screen.db = db
     ui = _RecUI()
     err = None
     try:
@@ -243,44 +269,52 @@ def _lcs(comp, kit):
     return dp[0][0]
 
 
+def _sig_match(compose_ids, kit_ids):
+    """instance-count-robust: compare the SETS of distinct leaf signatures. A static leaf ->
+    (type, content); a dynamic binding -> (type, DYN). kit content that isn't a Compose static
+    literal is treated as DYN (the kit renders bindings resolved). -> (matched, comp, kit)."""
+    comp_static = {a for _, t, a, st in compose_ids if st and a and _ntype(t)}
+    comp_sigs, kit_sigs = set(), set()
+    for _, t, a, st in compose_ids:
+        if (nt := _ntype(t)):
+            comp_sigs.add((nt, a) if (st and a) else (nt, "·DYN·"))
+    for _, t, a in kit_ids:
+        if (nt := _ntype(t)) and a:
+            kit_sigs.add((nt, a) if a in comp_static else (nt, "·DYN·"))
+    return comp_sigs & kit_sigs, comp_sigs, kit_sigs
+
+
 def run(screen_key, compose_name):
     recs, err = trace(screen_key)
     roots, nodes = build_tree(recs, "content")
-    name = "".join(p.capitalize() for p in screen_key.split("_"))
     L = [f"# UI layout ledger (KIT side) -- {screen_key}", "",
-         "Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.",
-         "helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as",
-         "the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)",
+         "Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).",
+         "A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.",
          *( [f"(partial trace -- build raised {err} after the nodes below)"] if err else [] ), ""]
-    kit_ids = []
+    kit_ids, tree = [], []
     for i, r in enumerate(roots):
-        render_tree(r, 1, i, [screen_key], L, kit_ids)
-    L += ["", "  ids:"] + [f"    {x[0]}" for x in kit_ids] + [""]
+        render_tree(r, 1, i, [screen_key], tree, kit_ids)
+    CAP = 80
+    L += tree[:CAP] + ([f"  … (+{len(tree)-CAP} more nodes; {len(kit_ids)} total)"] if len(tree) > CAP else [])
 
-    # compare to the Compose side
     cmp_block, comp = [], None
-    if compose_name:
-        kt = O.find_one(O.MAIN, f"{compose_name}.kt")
-        if kt:
-            compose_ids = UL.collect_ids(kt)
-            matched, c_only, k_only = compare(compose_ids, kit_ids)
-            cl, kl = _compose_leaves(compose_ids), _kit_leaves(kit_ids)
-            struct = _lcs(cl, kl)            # ordered leaf match; dynamic by type, static by content
-            comp = (len(matched), len(c_only), len(k_only), struct, len(cl), len(kl))
-            cmp_block = ["---", f"## cross-side compare: Compose {compose_name} <-> kit {screen_key}",
-                         f"- STRUCTURAL leaf match (LCS, dynamic-aware): {struct}/{len(cl)} "
-                         f"Compose leaves aligned to kit ({100*struct//len(cl) if cl else 0}%)",
-                         f"- static content matched (by literal): {len(matched)}",
-                         *[f"    = {m}" for m in matched[:15]],
-                         f"- Compose leaves NOT aligned: {len(cl)-struct}  ·  "
-                         f"kit leaves not aligned: {len(kl)-struct}",
-                         f"- (raw content-anchor only: Compose-only {len(c_only)}, kit-only {len(k_only)})", ""]
+    if compose_name and (kt := O.find_one(O.MAIN, f"{compose_name}.kt")):
+        compose_ids = UL.collect_ids(kt)
+        matched, comp_sigs, kit_sigs = _sig_match(compose_ids, kit_ids)
+        extra = sorted(kit_sigs - comp_sigs)
+        fid = 100 * len(matched) // len(comp_sigs) if comp_sigs else 0
+        comp = (len(matched), len(comp_sigs), len(kit_sigs))
+        cmp_block = ["", "---", f"## cross-side compare: Compose {compose_name} <-> kit {screen_key}",
+                     f"- distinct widget signatures matched: {len(matched)}/{len(comp_sigs)} = {fid}%",
+                     "  (static leaf by content; dynamic binding by type -- instance counts ignored)",
+                     f"- kit signatures NOT in Compose: {len(kit_sigs - comp_sigs)}",
+                     *[f"    PY  {t}:{c}" for t, c in extra[:15]], ""]
     L += cmp_block
     os.makedirs(OUT, exist_ok=True)
     open(os.path.join(OUT, f"{screen_key}.kit.md"), "w").write("\n".join(L))
     print(f"  {screen_key}: {len(kit_ids)} kit nodes" +
-          (f" · vs {compose_name}: STRUCT {comp[3]}/{comp[4]} leaves "
-           f"({100*comp[3]//comp[4] if comp[4] else 0}%) · static-content {comp[0]}"
+          (f" · vs {compose_name}: {comp[0]}/{comp[1]} sigs "
+           f"({100*comp[0]//comp[1] if comp[1] else 0}%) · kit-extra {comp[2]-comp[0]}"
            if comp else "") + (f"  (partial: {err.split(':')[0]})" if err else ""))
     return comp
 
@@ -293,9 +327,10 @@ def _compose_for(key):
 def run_all():
     keys = sorted(f[:-len("_screen.py")] for f in os.listdir(os.path.join(SRC, "ui"))
                   if f.endswith("_screen.py"))
-    print(f"UI kit-side ledger, ALL screens with a Compose counterpart:")
-    struct_tot, leaf_tot, static_tot = 0, 0, 0
+    print(f"UI kit-side ledger, ALL screens with a Compose counterpart (app-seeded):")
+    matched_tot, sig_tot, extra_tot = 0, 0, 0
     paired = 0
+    rows = []
     for k in keys:
         cn = _compose_for(k)
         if not cn:
@@ -307,15 +342,17 @@ def run_all():
             print(f"  {k}: ERROR {type(e).__name__}")
             continue
         if comp:
-            static_tot += comp[0]
-            struct_tot += comp[3]
-            leaf_tot += comp[4]
-    print(f"\n  AGGREGATE over {paired} paired screens:")
-    print(f"    STRUCTURAL leaf match: {struct_tot}/{leaf_tot} = "
-          f"{100*struct_tot//leaf_tot if leaf_tot else 0}%  (dynamic-aware, ordered)")
-    print(f"    static content matched: {static_tot}")
-    print(f"    NOTE: only gym_list is seeded so far; un-seeded screens still under-render their")
-    print(f"          dynamic rows, so this aggregate is still a lower bound until more seeders land.")
+            matched_tot += comp[0]
+            sig_tot += comp[1]
+            extra_tot += comp[2] - comp[0]
+            rows.append((k, comp[0], comp[1]))
+    print(f"\n  per-screen signature fidelity (matched/Compose-distinct):")
+    for k, m, s in sorted(rows, key=lambda r: -(r[1] / r[2] if r[2] else 0)):
+        print(f"    {k:22} {m:3}/{s:<3} = {100*m//s if s else 0:3}%")
+    print(f"\n  AGGREGATE over {paired} app-seeded screens:")
+    print(f"    distinct widget signatures matched: {matched_tot}/{sig_tot} = "
+          f"{100*matched_tot//sig_tot if sig_tot else 0}%")
+    print(f"    kit signatures not in Compose:      {extra_tot}  (glyphs/helper extras/representation)")
 
 
 def main():

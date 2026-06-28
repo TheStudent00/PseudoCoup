@@ -1,36 +1,57 @@
 # UI layout ledger (KIT side) -- workout_cooldown
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
     - Column[1]  <container>   size: weight(1.0)(rel)
-      - Text[Slow walk]  <leaf>   size: wrap(rel)  style=tb_title(abs)
-  - Column[1]  <container>   size: wrap(rel)  style=cfv_col(abs)
-    - Text[🌙]  <leaf>   size: wrap(rel)  style=cfv_emoji(abs)
-    - Text[Nicely done]  <leaf>   size: wrap(rel)  style=cfv_headline(abs)
-    - Text[Take a breath — you're all wra…]  <leaf>   size: wrap(rel)  style=cfv_subtext(abs)
-    - Button[Finish]  <leaf>   size: wrap(rel)  style=cfv_primary(abs)
-
-  ids:
-    workout_cooldown/Row[0]
-    workout_cooldown/Row[0]/Button[←]
-    workout_cooldown/Row[0]/Column[1]
-    workout_cooldown/Row[0]/Column[1]/Text[Slow walk]
-    workout_cooldown/Column[1]
-    workout_cooldown/Column[1]/Text[🌙]
-    workout_cooldown/Column[1]/Text[Nicely done]
-    workout_cooldown/Column[1]/Text[Take a breath — you're all wra…]
-    workout_cooldown/Column[1]/Button[Finish]
+      - Text[Cooldown]  <leaf>   size: wrap(rel)  style=tb_title(abs)
+    - Button[?]  <leaf>   size: wrap(rel)  style=tb_action(abs)
+  - Column[1]  <container>   size: wrap(rel)  style=prog_header(abs)
+    - Text[Take a few minutes to come dow…]  <leaf>   size: wrap(rel)  style=prog_hdr_title(abs)
+    - Text[Your muscles are warmest right…]  <leaf>   size: wrap(rel)  style=prog_hdr_body(abs)
+  - Column[2]  <container>   size: wrap(rel)  style=cap_col(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=cap_card(abs)
+      - Text[🚶]  <leaf>   size: wrap(rel)  style=cap_emoji(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)
+        - Row[0]  <container>   size: wrap(rel)  style=cap_titlerow(abs)
+          - Text[Slow walk]  <leaf>   size: wrap(rel)  style=cap_name(abs)
+        - Text[A few easy minutes of walking …]  <leaf>   size: wrap(rel)  style=cap_tagline(abs)
+      - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
+    - Row[1]  <container>   size: wrap(rel)  style=cap_card(abs)
+      - Text[🫁]  <leaf>   size: wrap(rel)  style=cap_emoji(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)
+        - Row[0]  <container>   size: wrap(rel)  style=cap_titlerow(abs)
+          - Text[Box breathing]  <leaf>   size: wrap(rel)  style=cap_name(abs)
+        - Text[In 4, hold 4, out 4, hold 4 — …]  <leaf>   size: wrap(rel)  style=cap_tagline(abs)
+      - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
+    - Row[2]  <container>   size: wrap(rel)  style=cap_card(abs)
+      - Text[🦵]  <leaf>   size: wrap(rel)  style=cap_emoji(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)
+        - Row[0]  <container>   size: wrap(rel)  style=cap_titlerow(abs)
+          - Text[Static stretches]  <leaf>   size: wrap(rel)  style=cap_name(abs)
+        - Text[Optional, and the best time fo…]  <leaf>   size: wrap(rel)  style=cap_tagline(abs)
+      - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
+    - Row[3]  <container>   size: wrap(rel)  style=cap_card(abs)
+      - Text[🧘]  <leaf>   size: wrap(rel)  style=cap_emoji(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)
+        - Row[0]  <container>   size: wrap(rel)  style=cap_titlerow(abs)
+          - Text[Gentle yoga flow]  <leaf>   size: wrap(rel)  style=cap_name(abs)
+        - Text[Child's pose → cat-cow → downw…]  <leaf>   size: wrap(rel)  style=cap_tagline(abs)
+      - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
+    - Row[4]  <container>   size: wrap(rel)  style=cap_card(abs)
+      - Text[🎶]  <leaf>   size: wrap(rel)  style=cap_emoji(abs)
+      - Column[1]  <container>   size: weight(1.0)(rel)
+        - Row[0]  <container>   size: wrap(rel)  style=cap_titlerow(abs)
+          - Text[Slow dance]  <leaf>   size: wrap(rel)  style=cap_name(abs)
+        - Text[One slow song — gentle active …]  <leaf>   size: wrap(rel)  style=cap_tagline(abs)
+      - Text[▶]  <leaf>   size: wrap(rel)  style=cap_play(abs)
+  - Button[Forgot something? Back to work…]  <leaf>   size: wrap(rel)  style=btn_outlined(abs)
+  - Button[Done — wrap up]  <leaf>   size: wrap(rel)  style=btn_text(abs)
 
 ---
 ## cross-side compare: Compose WorkoutCooldownScreen <-> kit workout_cooldown
-- STRUCTURAL leaf match (LCS, dynamic-aware): 6/44 Compose leaves aligned to kit (13%)
-- static content matched (by literal): 3
-    = Finish
-    = Nicely done
-    = 🌙
-- Compose leaves NOT aligned: 38  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 26, kit-only 3)
+- distinct widget signatures matched: 4/14 = 28%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0

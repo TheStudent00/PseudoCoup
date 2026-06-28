@@ -1,36 +1,43 @@
 # UI layout ledger (KIT side) -- programs
 
-Python/kit side, runtime-traced: a recording UI captured every define_* call (incl.
-helper-emitted), tree rebuilt from the explicit parent ids. Same normalized schema as
-the Compose side. (Mock db/VM; a couple of mock items per list so row STRUCTURE renders.)
+Python/kit side, runtime-traced through the app's OWN seeded InMemoryDb (real data).
+A recording UI captured every define_* call; tree rebuilt from the explicit parent ids.
 
   - Row[0]  <container>   size: wrap(rel)  style=top_bar(abs)
     - Button[←]  <leaf>   size: wrap(rel)  style=tb_back(abs)
     - Column[1]  <container>   size: weight(1.0)(rel)
       - Text[Programs]  <leaf>   size: wrap(rel)  style=tb_title(abs)
-  - Column[1]  <container>   size: wrap(rel)  style=empty(abs)
-    - Text[No programs yet.]  <leaf>   size: wrap(rel)  style=empty_title(abs)
-    - Text[Tap + to build your first prog…]  <leaf>   size: wrap(rel)  style=empty_body(abs)
-  - Overlay[2]  <container>   size: wrap(rel)
+  - Text[Active]  <leaf>   size: wrap(rel)  style=section_header(abs)
+  - Column[2]  <container>   size: wrap(rel)  style=prog_card_active(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=prog_top(abs)
+      - Text[3-Day Full Body — Ground Up]  <leaf>   size: weight(1.0)(rel)  style=prog_name(abs)
+      - Text[Active]  <leaf>   size: wrap(rel)  style=outline_pill(abs)
+    - Row[1]  <container>   size: wrap(rel)  style=prog_pill_row(abs)
+      - Text[Ground Up]  <leaf>   size: wrap(rel)  style=outline_pill(abs)
+    - Text[Three macrocycles that walk a …]  <leaf>   size: wrap(rel)  style=prog_desc(abs)
+  - Column[3]  <container>   size: wrap(rel)  style=prog_card(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=prog_top(abs)
+      - Text[Hypertrophy Base]  <leaf>   size: weight(1.0)(rel)  style=prog_name(abs)
+    - Row[1]  <container>   size: wrap(rel)  style=prog_pill_row(abs)
+      - Text[General Fitness]  <leaf>   size: wrap(rel)  style=outline_pill(abs)
+    - Text[4-day upper/lower hypertrophy …]  <leaf>   size: wrap(rel)  style=prog_desc(abs)
+    - Column[3]  <container>   size: wrap(rel)  style=prog_swap_wrap(abs)
+      - Button[Swap for this program]  <leaf>   size: wrap(rel)  style=tonal(abs)
+    - Button[⋮]  <leaf>   size: wrap(rel)  style=prog_menu(abs)
+  - Column[4]  <container>   size: wrap(rel)  style=prog_card(abs)
+    - Row[0]  <container>   size: wrap(rel)  style=prog_top(abs)
+      - Text[Strength Starter]  <leaf>   size: weight(1.0)(rel)  style=prog_name(abs)
+    - Row[1]  <container>   size: wrap(rel)  style=prog_pill_row(abs)
+      - Text[Strength Foundations]  <leaf>   size: wrap(rel)  style=outline_pill(abs)
+    - Text[A 3-day per week intro strengt…]  <leaf>   size: wrap(rel)  style=prog_desc(abs)
+    - Column[3]  <container>   size: wrap(rel)  style=prog_swap_wrap(abs)
+      - Button[Swap for this program]  <leaf>   size: wrap(rel)  style=tonal(abs)
+    - Button[⋮]  <leaf>   size: wrap(rel)  style=prog_menu(abs)
+  - Overlay[5]  <container>   size: wrap(rel)
     - Button[+]  <leaf>   size: wrap(rel)  style=fab(abs)
-
-  ids:
-    programs/Row[0]
-    programs/Row[0]/Button[←]
-    programs/Row[0]/Column[1]
-    programs/Row[0]/Column[1]/Text[Programs]
-    programs/Column[1]
-    programs/Column[1]/Text[No programs yet.]
-    programs/Column[1]/Text[Tap + to build your first prog…]
-    programs/Overlay[2]
-    programs/Overlay[2]/Button[+]
 
 ---
 ## cross-side compare: Compose ProgramsScreen <-> kit programs
-- STRUCTURAL leaf match (LCS, dynamic-aware): 5/61 Compose leaves aligned to kit (8%)
-- static content matched (by literal): 3
-    = No programs yet.
-    = Programs
-    = Tap + to build your first prog…
-- Compose leaves NOT aligned: 56  ·  kit leaves not aligned: 0
-- (raw content-anchor only: Compose-only 26, kit-only 2)
+- distinct widget signatures matched: 3/20 = 15%
+  (static leaf by content; dynamic binding by type -- instance counts ignored)
+- kit signatures NOT in Compose: 0
