@@ -221,10 +221,20 @@ def _sub(expr, subst):
     return subst.get(e, expr)
 
 
+def _onclick(call, subst):
+    """the resolved onClick handler expr of a clickable widget (None / no-op `{}` -> None)."""
+    oc = UL._named_args(call).get("onClick")
+    if not oc:
+        return None
+    r = _sub(oc, subst)
+    return None if re.sub(r"[\s{}]", "", r) == "" else r
+
+
 def _ir_widget(call, name, subst, stack, defs, out):
     if name in G.BUTTONS:
         kind, ct, anchor, st, expr = _btn(call, subst)
-        out.append({"t": "leaf", "kind": kind, "ctype": ct, "expr": expr, "static": st})
+        out.append({"t": "leaf", "kind": kind, "ctype": ct, "expr": expr, "static": st,
+                    "onclick": _onclick(call, subst)})
         return
     if name == "Text":
         e = G._text_expr(call)
@@ -258,7 +268,8 @@ def _ir_widget(call, name, subst, stack, defs, out):
             _ir_node(s, argmap, stack + [name], defs, kids)
     for s in _child_stmts(call):                          # call-site slot/trailing content
         _ir_node(s, subst, stack, defs, kids)
-    out.append({"t": "box", "orient": orient, "name": name, "kids": kids})
+    out.append({"t": "box", "orient": orient, "name": name, "kids": kids,
+                "onclick": _onclick(call, subst)})        # clickable container (e.g. WflCard onClick=onEdit)
 
 
 def _btn(call, subst):
@@ -970,6 +981,38 @@ def _needed_binds(ir):
     return {b for b in set(binds) if re.search(rf"\b{re.escape(b)}\b", blob)}
 
 
+# Per-screen NAV map (the declarative part: which Compose nav-callback -> which app route). The
+# route TARGETS live in the app's NavHost, not the screen's Compose, so they are declared here --
+# like the data adapter. VM ACTIONS (viewModel.X) are mechanical and need no entry.
+NAV_HANDLERS = {
+    "gym_list": {
+        "subs": {"onNavigateBack": "self._nav_back", "onNavigateToEditor": "self._nav_editor"},
+        "methods": [
+            "    def _nav_back(self):",
+            "        self.router.navigate('you')",
+            "    def _nav_editor(self, gymId=None):",
+            "        if gymId is None:",
+            "            self.router.navigate('gym_create_wizard')",
+            "        else:",
+            "            self.router.selected_id = gymId",
+            "            self.router.navigate('gym_editor')",
+        ],
+    },
+}
+
+
+def _handler_body(oc, subs):
+    """a Kotlin onClick (`{ viewModel.delete(x) }` / `onNavigateBack`) -> a Python expression:
+    viewModel -> self.vm, each nav callback -> its declared self._nav_*; a bare ref gets called."""
+    body = oc.strip()
+    if body.startswith("{") and body.endswith("}"):
+        body = body[1:-1].strip()
+    py = _py_expr(body) or body
+    for k, v in subs.items():
+        py = re.sub(rf"\b{re.escape(k)}\b", v, py)
+    return py if "(" in body else py + "()"
+
+
 def emit_py(ir, key):
     """-> Python source of `def build(ui, content, viewModel):` reproducing the screen."""
     lines = ["def _ev(f):", "    try:", "        return f()",
@@ -977,6 +1020,19 @@ def emit_py(ir, key):
              "def build(ui, content, viewModel):"]
     ctr = [0]
     needed = _needed_binds(ir)
+    subs = {"viewModel": "self.vm", **NAV_HANDLERS.get(key, {}).get("subs", {})}
+
+    def handler(node, zexpr, loopvars, pad):
+        oc = node.get("onclick")
+        if not oc:
+            return
+        body = _handler_body(oc, subs)
+        if not body:
+            return
+        m = ctr[0]; ctr[0] += 1
+        caps = "".join(f", {v}={v}" for v in loopvars)
+        lines.append(f"{pad}def _h{m}(evt{caps}): {body}")
+        lines.append(f"{pad}ui.on_click({zexpr}, _h{m})")
 
     def zid(m, suffix):
         base = f'"{key}_z{m}"'
@@ -1003,7 +1059,7 @@ def emit_py(ir, key):
         assign(kt, f"_t{m}", pad)
         return f"_t{m}"
 
-    def emit(nodes, sup, suffix, ind):
+    def emit(nodes, sup, suffix, ind, loopvars=()):
         pad = "    " * ind
         wrote = False
         for n in nodes:
@@ -1016,26 +1072,29 @@ def emit_py(ir, key):
                 m = ctr[0]; ctr[0] += 1
                 lines.append(f"{pad}_id{m} = {zid(m, suffix)}")
                 lines.append(f'{pad}ui.define_box(_id{m}, {sup}, "{n["orient"]}")')
-                emit(n["kids"], f"_id{m}", suffix, ind); wrote = True
+                handler(n, f"_id{m}", loopvars, pad)
+                emit(n["kids"], f"_id{m}", suffix, ind, loopvars); wrote = True
             elif t == "foreach":
                 m = ctr[0]; ctr[0] += 1
                 src = value(n["src"], m, pad)
                 nsuf = f"str(_i{m})" if suffix == '""' else f'({suffix} + "_" + str(_i{m}))'
                 lines.append(f"{pad}for _i{m}, {n['var']} in enumerate({src} or []):")
-                emit(n["kids"], sup, nsuf, ind + 1) or lines.append(f"{pad}    pass")
+                emit(n["kids"], sup, nsuf, ind + 1, loopvars + (n["var"],)) \
+                    or lines.append(f"{pad}    pass")
                 wrote = True
             elif t == "if":
                 m = ctr[0]; ctr[0] += 1
                 lines.append(f"{pad}if {value(n['cond'], m, pad)}:")   # value() wraps in _ev itself
-                emit(n["then"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                emit(n["then"], sup, suffix, ind + 1, loopvars) or lines.append(f"{pad}    pass")
                 if n["else"]:
                     lines.append(f"{pad}else:")
-                    emit(n["else"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                    emit(n["else"], sup, suffix, ind + 1, loopvars) or lines.append(f"{pad}    pass")
                 wrote = True
             elif t == "let":
                 assign(n["subj"], n["var"], pad)
                 lines.append(f"{pad}if {n['var']} is not None:")
-                emit(n["kids"], sup, suffix, ind + 1) or lines.append(f"{pad}    pass")
+                emit(n["kids"], sup, suffix, ind + 1, loopvars + (n["var"],)) \
+                    or lines.append(f"{pad}    pass")
                 wrote = True
             elif t == "leaf":
                 fn = _LEAF_FN.get(n["kind"])
@@ -1052,6 +1111,7 @@ def emit_py(ir, key):
                     val = repr(_static_lit(n["expr"])) if n["static"] else value(n["expr"], m, pad)
                     arg = f'"", {val}' if n["kind"] == "input_zone" else val
                     lines.append(f"{pad}ui.{fn}({z}, {sup}, {arg})")
+                    handler(n, z, loopvars, pad)
                 wrote = True
         return wrote
 
@@ -1100,6 +1160,7 @@ def emit_app_screen(ir, key, class_name):
         "",
         "    def screen_id(self):",
         f"        return {key!r}",
+        ""] + NAV_HANDLERS.get(key, {}).get("methods", []) + [
         "",
         "    def build(self, ui, content_zone_id, router):",
         "        self.owned_ids = []",

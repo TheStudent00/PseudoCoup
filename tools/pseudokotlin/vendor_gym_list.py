@@ -102,6 +102,7 @@ from generated.reactive_shim import Flow
 from generated.gym_list_kt import (GymListViewModel, GymProfileEntity, GymWithEquipment, GymType)
 from domain.gym_service import GymService
 from data.repository.gym_equipment_repository import GymEquipmentRepository
+from reactive import invalidate                  # action -> repaint (Kotlin Flow re-emit analog)
 
 
 def _lift(g):
@@ -122,9 +123,9 @@ class _GymRepo:
         act = [g for g in GymService(self.db).get_all() if g.isActive]
         return Flow(_lift(act[0]) if act else None)
 
-    def setActive(self, gid): GymService(self.db).set_active(gid)
+    def setActive(self, gid): GymService(self.db).set_active(gid); invalidate()
 
-    def deleteGym(self, gid): GymService(self.db).delete_gym(gid)
+    def deleteGym(self, gid): GymService(self.db).delete_gym(gid); invalidate()
 
 
 def make_vm(db):
