@@ -9,6 +9,7 @@ the consumer passes a `lead` ("return " / "x = ") that is distributed onto each
 branch's value. Simple expression branches stay ternaries.
 """
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -168,7 +169,12 @@ class Statements:
         var_txt = self.text(var) if var is not None else "item"
         body = next((c for c in node.children if c.type == "block"), None)
         it = self._loop_iterable(node, exclude=var)
-        return f"for {var_txt} in {it}:\n{self._suite(body)}"
+        # track the loop var(s) so a lambda created in the body captures them PER ITERATION (Kotlin
+        # semantics), not by late-bound reference (the Python default).
+        self._loop_vars.append(re.findall(r"[A-Za-z_]\w*", var_txt))
+        suite = self._suite(body)
+        self._loop_vars.pop()
+        return f"for {var_txt} in {it}:\n{suite}"
 
     @kind("while_statement")
     def v_while(self, node):

@@ -5,6 +5,7 @@ guarantees parses (MAP), routes a no-Python-equivalent to a shim (WRAP, e.g.
 grammar's actual named kinds (verified against parse.named_kinds()).
 """
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
@@ -452,7 +453,8 @@ class Expressions:
         self._scopes.append(scope)
         try:
             if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
-                return f"(lambda {ps}: {self.visit(body[0])})"   # pure expr body, no unpacking
+                expr = self.visit(body[0])                       # pure expr body, no unpacking
+                return f"(lambda {ps}{self._captured_loops(expr, scope)}: {expr})"
             # multi-statement / destructuring / statement-bodied -> hoist a named def; the
             # suite renderer flushes it before the using statement.
             self._lam += 1
@@ -471,10 +473,22 @@ class Expressions:
             lines += self._hoist[before:]
             del self._hoist[before:]
             lines.append(last_line)
-            self._hoist.append(f"def {name}({ps}):\n{_block(nonlocals + lines)}")
+            caps = self._captured_loops("\n".join(lines), scope)
+            self._hoist.append(f"def {name}({ps}{caps}):\n{_block(nonlocals + lines)}")
             return name
         finally:
             self._scopes.pop()
+
+    def _captured_loops(self, body_text, local):
+        """Per-iteration capture: for each enclosing for-loop variable referenced in this lambda's body
+        (and not shadowed by its own params), bind it as a default arg -- so a lambda made in a loop sees
+        that iteration's value (Kotlin), not the final one (Python's late-bound default)."""
+        out, seen = [], set()
+        for v in (n for level in self._loop_vars for n in level):
+            if v not in local and v not in seen and re.search(rf"\b{re.escape(v)}\b", body_text):
+                seen.add(v)
+                out.append(f", {v}={v}")
+        return "".join(out)
 
     def _assigned_names(self, nodes):
         # bare-identifier targets of assignments / ++ / -- in these nodes, not crossing
