@@ -523,11 +523,16 @@ class Declarations:
         self._static_members, self._static_class = names, cls_name
         out = []
         for p in cprops:                                   # companion props -> class-level
+            before = len(self._hoist)
             r = self._render_property(p, as_self=False)
+            hoisted = self._hoist[before:]                    # e.g. an object-literal's lifted class
+            del self._hoist[before:]                          # -> emit it before the use, not drop it
             if "=" in r and cls_name in r.split("=", 1)[1]:   # initializer references the
-                self._ext_patches.append(f"{cls_name}.{r}")   # enclosing class -> defer to
-            else:                                             # module level (the class isn't
-                out.append(r)                                 # bound during its own body)
+                self._ext_patches += hoisted                  # enclosing class -> defer to
+                self._ext_patches.append(f"{cls_name}.{r}")   # module level (the class isn't
+            else:                                             # bound during its own body)
+                out += hoisted
+                out.append(r)
             if self._is_const(p):       # `const val` is import-and-use-bare across files;
                 cn = self._name_of(p, deep=True)              # alias it to the module level
                 if cn:
