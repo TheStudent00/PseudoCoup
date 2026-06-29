@@ -101,10 +101,15 @@ All now covered — real wrappers where Python has an equivalent (a synchronous 
 Flow/StateFlow, <code>java_rt</code>, <code>json_rt</code>), honest stubs where it doesn't
 (<code>android_rt</code>). 0 real non-UI gaps. And <code>generate</code> now emits the imports: <b>106
 foundation files carry <code>from runtime.&lt;wrapper&gt; import &lt;name&gt;</code></b>.</p>
-<p class="num mut" style="margin-top:8px"><b>Two deeper truths the checklist exposed</b> — now the mapped
-remaining work. <b>The data layer:</b> the reactive flows are fed by Room DAOs whose query bodies Room
-<i>generates at compile time</i> — not in the source to transpile — so a DAO-backed flow has the shape but
-no data until the data layer is implemented (the pure-logic engines don't touch this and run today).
+<p class="num mut" style="margin-top:8px"><b>Two deeper truths the checklist exposed.</b>
+<b>The data layer — now RUNS:</b> the reactive flows are fed by Room DAOs whose query bodies Room
+<i>generates at compile time</i> — not in the source. That looked like a wall, but Room's <code>@Query</code>
+strings are real SQLite SQL and Python ships <code>sqlite3</code>, so it's faithfully implementable. Built
+<code>runtime/room.py</code> (sqlite3-backed, with the entity↔row converters) and the transpiler now turns an
+<code>@Entity</code> into a table schema and an <code>@Dao</code>'s <code>@Query</code> into a body that runs
+the SQL — verified end-to-end: the real transpiled <code>ExerciseDao.getByMuscleGroup</code> runs on sqlite3
+(<code>datalayer_e2e.py</code>). Remaining: <code>@Update</code>/<code>@Delete</code> writes + the
+<code>@Database</code> wiring for the full instrumented suite.
 <b>Platform glue</b> (Activities, notifications, Firebase, WorkManager) is off-device by nature — stubbed to
 resolve names, not to run; when a piece must run, lift that logic into the domain layer.</p>
 </div>
