@@ -139,8 +139,12 @@ class Expressions:
             return f"{fn}({self.visit(inner[0]) if inner else ''})"
         left, right = self.visit(kids[0]), self.visit(kids[-1])
         if op == "?:":                                  # elvis: a ?: b
-            if not self.is_value(kids[-1]):             # a ?: return/throw -> guard
-                self._lam += 1                          # `val x = e ?: return d` becomes
+            rhs = kids[-1]                               # a ?: return/throw/continue/break -> guard
+            cf = not self.is_value(rhs) or (             # (continue/break parse as identifiers, so
+                rhs.type == "identifier"                 #  check text -- control flow is not a value
+                and self.text(rhs) in ("continue", "break"))
+            if cf:
+                self._lam += 1                          # `val x = e ?: continue` becomes
                 tmp = f"_elv{self._lam}"                # tmp = e; if tmp is None: <stmt>
                 self._hoist.append(
                     f"{tmp} = {left}\nif {tmp} is None:\n{_block([right])}")
@@ -277,6 +281,10 @@ class Expressions:
                 return f"(not {x})" if pre == "!" else (f"{pre}{x}" if pre else x)
 
             recv = self._strip_prefix(self.visit(nk[0]), pre)
+            if sel in ("ifEmpty", "ifBlank") and trailing is not None:
+                g = self._empty_guard(recv, sel, self._lambda_node(trailing))
+                if g is not None:                            # `s.ifEmpty { continue }` -> guard
+                    return _wrap(g)
             if sel in _SCOPE_FNS and trailing is not None:   # x.let { it… } -> f(x)
                 lam = self._lambda_node(trailing)
                 if self._has_nonlocal_return(lam):      # `x?.let { return it }` guard:
@@ -352,6 +360,25 @@ class Expressions:
             block = [f"{tmp} = {recv}", *inner]
         self._hoist.append("\n".join(block))
         return "None"
+
+    def _empty_guard(self, recv, sel, lam):
+        # `s.ifEmpty/ifBlank { continue/break/return/throw }` -> a guard: control flow can't be a
+        # lambda value. Eval recv once into a temp; if it's empty, run the (control-flow) body; the
+        # expression value is the temp (the non-empty receiver). Returns None for an ordinary
+        # default-value lambda -- those keep the normal call form.
+        body = [c for c in self.named(lam) if c.type != "lambda_parameters"]
+        last = body[-1] if body else None
+        is_cf = last is not None and (
+            last.type in ("return_expression", "jump_expression", "throw_expression")
+            or (last.type == "identifier" and self.text(last) in ("continue", "break")))
+        if not is_cf:
+            return None
+        self._lam += 1
+        tmp = f"_ife{self._lam}"
+        test = f"not {tmp}.strip()" if sel == "ifBlank" else f"not {tmp}"   # ifEmpty: falsy = empty
+        self._hoist.append(
+            f"{tmp} = {recv}\nif {test}:\n{_block(self.render_statements(body))}")
+        return tmp
 
     def _lambda_param(self, lam):
         pnode = next((c for c in lam.named_children
