@@ -89,15 +89,17 @@ foundation files carry `from runtime.<wrapper> import <name>`** — a use of an 
 module that wraps it, in the code itself.
 
 **Two deeper truths the checklist exposed:**
-- **The data layer — now RUNS.** The reactive flows are fed by Room DAOs whose query bodies Room *generates
-  at compile time* — not in the Kotlin source. That looked like a wall. But Room's `@Query` strings are real
-  SQLite SQL, and Python ships `sqlite3` — so the data layer is *faithfully* implementable, not stubbed.
-  Built: `runtime/room.py` (a sqlite3-backed Room — entity↔row converters, query/insert) and `datalayer.py`
-  (the transpiler now turns an `@Entity` into a table schema and an `@Dao`'s `@Query` into a body that runs
-  the SQL). Verified end-to-end: the *real transpiled* `ExerciseDao.getByMuscleGroup` runs on sqlite3 with
-  whole-token matching (`datalayer_e2e.py`, the headless twin of the instrumented test). Remaining: `@Update`/
-  `@Delete` write ops (need generated SQL) and the `@Database` wiring (`Room.databaseBuilder` → the full
-  `WorkoutDatabase`) so the entire instrumented suite runs.
+- **The data layer — now RUNS, end to end.** The reactive flows are fed by Room DAOs whose query bodies Room
+  *generates at compile time* — not in the Kotlin source. That looked like a wall. But Room's `@Query` strings
+  are real SQLite SQL, and Python ships `sqlite3` — so the data layer is *faithfully* implementable, not
+  stubbed. Built: `runtime/room.py` (a sqlite3-backed Room — entity↔row converters, the `Room` builder) and
+  `datalayer.py` (the transpiler turns `@Entity`→a table schema, `@Dao`'s `@Query`/`@Insert`/`@Update`/`@Delete`
+  →real bodies, and `@Database`→a `WorkoutDatabase` that registers every entity and wires the DAO accessors).
+  Verified: the actual instrumented-test path —
+  `Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java).build().exerciseDao()` — runs
+  `getByMuscleGroup` (whole-token matching) + update + delete on sqlite3 (`datalayer_e2e.py`). Remaining is
+  smaller now: `@Transaction` methods, and wiring the oracle to the instrumented `androidTest` classes
+  themselves (they need `AndroidJUnit4`/`ApplicationProvider` stubs) so the suite runs as written.
 - **Platform glue.** Activities, notifications, Firebase, WorkManager are off-device by nature — stubbed to
   resolve names, not to run. When a piece must run (e.g. notification content built from domain data), lift
   that logic into the domain layer where it's testable.
