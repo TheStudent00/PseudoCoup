@@ -287,6 +287,30 @@ class Declarations:
         self._ext_patches.append(f"{name} = {name}()")
         return cls
 
+    @kind("object_literal")
+    def v_object_literal(self, node):
+        # `object : Super(args), Iface { members }` (an anonymous object in expression position) ->
+        # hoist a local class above and return an instance, passing the super's constructor args.
+        self._lam += 1
+        cname = f"_Obj{self._lam}"
+        bases, ctor_args = [], ""
+        dss = next((c for c in node.named_children if c.type == "delegation_specifiers"), None)
+        for ds in (dss.named_children if dss is not None else []):
+            if ds.type != "delegation_specifier":
+                continue
+            ci = next((c for c in ds.named_children if c.type == "constructor_invocation"), None)
+            ut = next((c for c in (ci or ds).named_children if c.type == "user_type"), None)
+            if ut is not None:
+                bases.append(self.text(ut).split("<")[0].strip())
+            if ci is not None and not ctor_args:                     # the super's ctor args -> instance
+                va = next((c for c in ci.named_children if c.type == "value_arguments"), None)
+                ctor_args = self._render_args(va)
+        cls = self._render_class(node, cname)
+        if bases:                                                     # carry the supertype(s)
+            cls = cls.replace(f"class {cname}:", f"class {cname}({', '.join(bases)}):", 1)
+        self._hoist.append(cls)
+        return f"{cname}({ctor_args})"
+
     def _render_class(self, node, name):
         body_node = next((c for c in node.children
                           if c.type in ("class_body", "enum_class_body")), None)
