@@ -82,11 +82,16 @@ synchronous `coroutines` Flow/StateFlow, `java_rt` time/UUID, `json_rt`), honest
 foundation files carry `from runtime.<wrapper> import <name>`** — a use of an external module maps to the
 module that wraps it, in the code itself.
 
-**Two deeper truths the checklist exposed — now the mapped-out remaining work:**
-- **The data layer.** The reactive flows are fed by Room DAOs whose query bodies Room *generates at compile
-  time* — not in the Kotlin source to transpile. A DAO-backed flow has the right shape but carries no data
-  until the data layer is implemented (a fake DB running the `@Query` SQL, or hand-written DAOs). The
-  pure-logic engines (the 11 oracle-verified) don't touch this and run today.
+**Two deeper truths the checklist exposed:**
+- **The data layer — now RUNS.** The reactive flows are fed by Room DAOs whose query bodies Room *generates
+  at compile time* — not in the Kotlin source. That looked like a wall. But Room's `@Query` strings are real
+  SQLite SQL, and Python ships `sqlite3` — so the data layer is *faithfully* implementable, not stubbed.
+  Built: `runtime/room.py` (a sqlite3-backed Room — entity↔row converters, query/insert) and `datalayer.py`
+  (the transpiler now turns an `@Entity` into a table schema and an `@Dao`'s `@Query` into a body that runs
+  the SQL). Verified end-to-end: the *real transpiled* `ExerciseDao.getByMuscleGroup` runs on sqlite3 with
+  whole-token matching (`datalayer_e2e.py`, the headless twin of the instrumented test). Remaining: `@Update`/
+  `@Delete` write ops (need generated SQL) and the `@Database` wiring (`Room.databaseBuilder` → the full
+  `WorkoutDatabase`) so the entire instrumented suite runs.
 - **Platform glue.** Activities, notifications, Firebase, WorkManager are off-device by nature — stubbed to
   resolve names, not to run. When a piece must run (e.g. notification content built from domain data), lift
   that logic into the domain layer where it's testable.
