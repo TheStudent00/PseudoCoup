@@ -264,11 +264,12 @@ class Expressions:
         # `f(args) { lambda }` parses as (f(args))(lambda) -- the trailing lambda is an
         # EXTRA argument to the inner call, not a second call. Merge it in.
         if trailing is not None and callee.type == "call_expression" and own_args is None:
-            in_args = self._render_args(next((c for c in callee.children
-                                              if c.type == "value_arguments"), None))
+            in_args_node = next((c for c in callee.children
+                                 if c.type == "value_arguments"), None)
+            in_args = self._render_args(in_args_node)
             in_fn = self.visit(self.named(callee)[0])
             lam = self._lambda_str(trailing)
-            return f"{in_fn}({f'{in_args}, {lam}' if in_args else lam})"
+            return f"{in_fn}({self._join_trailing(in_args, lam, in_args_node)})"
         if callee.type == "navigation_expression":
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
@@ -302,14 +303,14 @@ class Expressions:
             args = self._render_args(own_args)
             if trailing is not None:
                 lam = self._lambda_str(trailing)
-                args = f"{args}, {lam}" if args else lam
+                args = self._join_trailing(args, lam, own_args)
             call = f"{recv}.{self._safe(sel)}({args})"
             return _wrap(f"({call} if {recv} is not None else None)" if safe else call)
         fn = self.visit(callee)
         args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`
             lam = self._lambda_str(trailing)
-            args = f"{args}, {lam}" if args else lam
+            args = self._join_trailing(args, lam, own_args)
         return f"{fn}({args})"
 
     def _leading_prefix(self, node):
@@ -565,6 +566,22 @@ class Expressions:
             elif kids:
                 parts.append(self.visit(kids[-1]))
         return ", ".join(parts)
+
+    def _has_named_arg(self, args_node):
+        """True if any explicit argument is passed BY NAME (`name = value`)."""
+        if not args_node:
+            return False
+        return any(a.type == "value_argument" and any(c.type == "=" for c in a.children)
+                   and len(a.named_children) > 1 for a in args_node.named_children)
+
+    def _join_trailing(self, args_str, lam, args_node):
+        # A trailing lambda after a named argument is positional-after-keyword (invalid Python), so
+        # give it a name. `content` is the correct slot name for most Compose calls; the wrong few
+        # fail LOUDLY (unexpected-keyword) rather than silently, and get the real name when callee
+        # signatures land. Only kicks in when a named argument actually precedes the lambda.
+        if self._has_named_arg(args_node):
+            return f"{args_str}, content={lam}" if args_str else f"content={lam}"
+        return f"{args_str}, {lam}" if args_str else lam
 
     def _string_to_fstring(self, node):
         segs, interp = [], False
