@@ -172,6 +172,8 @@ def database_patches(class_node, name):
     init += [f"    self._db.register({e})" for e in ents]
     patches = ["\n".join(init), f"{name}.__init__ = _{name}_init"]
     patches += [f"{name}.{nm} = lambda self: {dao}(self._db)" for nm, dao in accessors]
+    patches += [f"{name}.openHelper = property(lambda self: self._db.openHelper)",
+                f"{name}.close = lambda self: self._db.close()"]
     return patches
 
 

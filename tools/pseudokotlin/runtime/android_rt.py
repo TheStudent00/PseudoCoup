@@ -94,6 +94,12 @@ class ActivityResultContracts:
     RequestPermission = _Stub
 
 
+class ApplicationProvider:          # androidx.test -- getApplicationContext() in instrumented tests
+    @staticmethod
+    def getApplicationContext():
+        return _Stub()
+
+
 class ContextCompat:
     @staticmethod
     def getSystemService(*a, **k):
