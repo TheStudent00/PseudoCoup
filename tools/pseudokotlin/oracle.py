@@ -17,6 +17,7 @@ Compile-clean only proves the Python parses; this proves it BEHAVES. Usage:
   python3 oracle.py NotificationTriggers --jvm     # cross-check vs the JVM test
   python3 oracle.py --all                          # every engine with a *Test
 """
+import ast
 import os
 import re
 import subprocess
@@ -50,13 +51,16 @@ def find_one(root, leaf):
 
 
 def transpile(path):
-    """Transpile a .kt file, cached. Returns None if it does not transpile (so a
-    dep that fails surfaces as an honest NameError downstream, not a crash)."""
+    """Transpile a .kt file, cached. Returns None if it does not transpile OR emits Python that
+    doesn't parse (so an unusable dep -- e.g. an incomplete UI file -- surfaces as an honest NameError
+    downstream, not a crash). The engine files themselves emit valid Python and run."""
     if path not in _TP_CACHE:
         try:
             with open(path, "rb") as f:
-                _TP_CACHE[path] = KtToPy().transpile(f.read())
-        except Untranspilable:
+                code = KtToPy().transpile(f.read())
+            ast.parse(code)                      # emitted-but-invalid dep -> treated as not-transpiled
+            _TP_CACHE[path] = code
+        except (Untranspilable, SyntaxError):
             _TP_CACHE[path] = None
     return _TP_CACHE[path]
 

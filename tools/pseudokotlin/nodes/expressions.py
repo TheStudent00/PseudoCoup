@@ -96,6 +96,8 @@ class Expressions:
                  "continue": "continue", "break": "break"}
         if t in const:
             return const[t]
+        if t in self._delegated:                            # `val/var x by D` -> read/write via x.value
+            return f"{self._safe(t)}.value"
         shadowed = any(t in s for s in self._scopes)
         if not shadowed and t in self._static_members:      # companion -> ClassName.x
             return f"{self._static_class}.{self._safe(t)}"

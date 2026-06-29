@@ -92,7 +92,10 @@ class Declarations:
         # over it). Methods/top-level fns have no enclosing fn scope -> no nonlocals.
         nonlocals = self._nonlocals(body_node, own)
         self._scopes.append(own)
+        _saved_deleg = self._delegated                  # `by` delegates are function-local; inherit
+        self._delegated = set(self._delegated)          # enclosing ones (closures), drop local on exit
         body = self._render_function_body(body_node, prefix=nonlocals + guards)
+        self._delegated = _saved_deleg
         self._scopes.pop()
         self._members = prev_m
         decos = ([decorator] if decorator else []) + \
@@ -551,8 +554,17 @@ class Declarations:
         if getter is not None:  # top-level / extension computed property -> function
             return self._render_ext_getter(node, getter)
         deleg = next((c for c in node.children if c.type == "property_delegate"), None)
-        if deleg is not None:   # `by lazy`/`by …` only modelled as a class member
-            raise Untranspilable(deleg, "delegated property outside a class body")
+        if deleg is not None:
+            # `val/var x by D` at function scope (Compose `by remember`/`by collectAsState`, Kotlin
+            # `by lazy`): bind x to the delegate object; every read/write of x then goes through
+            # `x.value` (Kotlin reads a delegate via getValue/setValue, which for State/MutableState/
+            # Lazy is `.value`). The read/write rewrite is in v_identifier via self._delegated.
+            name = self._name_of(node, deep=True) or "_prop"
+            expr = next((c for c in self.named(deleg)), None)
+            val = self.visit(expr) if expr is not None else "None"
+            line = f"{self._safe(name)} = {val}"
+            self._delegated.add(name)
+            return line
         mvd = next((c for c in node.children
                     if c.type == "multi_variable_declaration"), None)
         if mvd is not None:     # destructuring `val (a, b) = expr` -> a, b = expr
