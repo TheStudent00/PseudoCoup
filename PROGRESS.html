@@ -3,196 +3,112 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>WFL → PseudoCoup — Progress Dashboard</title>
+<title>WFL → Python — project dashboard</title>
 <style>
-  :root{
-    --bg:#0f1320; --panel:#171c2e; --panel2:#1e2540; --ink:#e8ecf7; --muted:#9aa6c4;
-    --line:#2a3354; --accent:#6ea8fe; --good:#3fd68b; --warn:#f5c451; --defer:#b58bf0;
-    --bad:#ff6b6b;
-  }
-  *{box-sizing:border-box}
-  body{margin:0;background:linear-gradient(160deg,#0f1320,#0c0f1a);color:var(--ink);
-    font:15px/1.5 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    padding:32px 28px 80px;max-width:1180px;margin:0 auto}
-  h1{font-size:24px;margin:0 0 2px;letter-spacing:.2px}
-  h2{font-size:15px;text-transform:uppercase;letter-spacing:1.4px;color:var(--muted);
-    margin:38px 0 14px;font-weight:600}
-  .sub{color:var(--muted);font-size:13px;margin:0 0 4px}
-  a{color:var(--accent);text-decoration:none} a:hover{text-decoration:underline}
-  .legend{display:flex;flex-wrap:wrap;gap:14px;margin:16px 0 0;font-size:12.5px;color:var(--muted)}
-  .legend span{display:inline-flex;align-items:center;gap:6px}
-  .dot{width:10px;height:10px;border-radius:50%;display:inline-block}
-  .d-good{background:var(--good)} .d-warn{background:var(--warn)} .d-defer{background:var(--defer)}
-  .d-bad{background:var(--bad)} .d-unk{background:#6b7693}
-
-  /* pipeline */
-  .pipe{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:22px;
-    display:flex;flex-direction:column;gap:10px}
-  .node{background:var(--panel2);border:1px solid var(--line);border-radius:10px;padding:12px 16px}
-  .node .lbl{font-weight:600} .node .meta{color:var(--muted);font-size:12.5px;margin-top:2px}
-  .arrow{color:var(--muted);text-align:center;font-size:13px;letter-spacing:.5px}
-  .branch{display:flex;gap:12px;flex-wrap:wrap}
-  .branch .node{flex:1;min-width:280px}
-  .src{border-color:#3a4a2e;background:#19200f}
-  .tag{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:11.5px;color:var(--muted)}
-
-  /* track cards */
-  .tracks{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-  @media(max-width:820px){.tracks{grid-template-columns:1fr}}
-  .card{background:var(--panel);border:1px solid var(--line);border-radius:14px;padding:18px}
-  .card h3{margin:0 0 2px;font-size:16px}
-  .card .role{color:var(--muted);font-size:12.5px;margin-bottom:12px}
-  .bar{height:9px;border-radius:6px;background:#222a45;overflow:hidden;margin:10px 0 6px}
-  .bar>i{display:block;height:100%;background:linear-gradient(90deg,#3fd68b,#6ea8fe)}
-  .num{font-size:13px;color:var(--muted)}
-  .badge{display:inline-block;font-size:11px;font-weight:700;padding:3px 9px;border-radius:999px;
-    letter-spacing:.4px}
-  .b-good{background:rgba(63,214,139,.16);color:var(--good)}
-  .b-warn{background:rgba(245,196,81,.16);color:var(--warn)}
-  .b-defer{background:rgba(181,139,240,.16);color:var(--defer)}
-  .b-unk{background:rgba(107,118,147,.18);color:#aab4d0}
-
-  /* tables */
-  table{width:100%;border-collapse:collapse;background:var(--panel);border:1px solid var(--line);
-    border-radius:12px;overflow:hidden}
-  th,td{text-align:left;padding:11px 14px;border-bottom:1px solid var(--line);vertical-align:top}
-  th{font-size:11.5px;text-transform:uppercase;letter-spacing:.8px;color:var(--muted);background:#141a2c}
-  tr:last-child td{border-bottom:none}
-  td.st{white-space:nowrap;font-weight:700}
-  code{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;
-    background:#222a45;padding:1px 6px;border-radius:5px;color:#cdd7f5}
-  .mut{color:var(--muted)}
-
-  /* callout */
-  .callout{background:linear-gradient(180deg,#241d3a,#1c1730);border:1px solid #4a3b70;
-    border-radius:14px;padding:18px 20px;margin-top:8px}
-  .callout b{color:#d9c8ff}
-  ul.clean{margin:8px 0 0;padding-left:20px} ul.clean li{margin:5px 0}
-  .foot{margin-top:40px;color:var(--muted);font-size:12px;text-align:center}
-  .pill{font-size:11px;color:var(--muted);border:1px solid var(--line);border-radius:999px;padding:2px 10px}
+  body{margin:0;background:#0f1320;color:#e8ecf7;
+    font:15px/1.6 -apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    padding:32px 28px 80px;max-width:1000px;margin:0 auto}
+  h1{font-size:23px;margin:0 0 4px}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:1.5px;color:#9aa6c4;margin:34px 0 12px}
+  .sub{color:#9aa6c4;font-size:13px;margin:0 0 4px}
+  code{font-family:ui-monospace,Menlo,monospace;font-size:12.5px;background:#222a45;
+    padding:1px 6px;border-radius:5px;color:#cdd7f5}
+  .panel{background:#171c2e;border:1px solid #2a3354;border-radius:12px;padding:18px 20px;margin:0}
+  .goal{background:linear-gradient(180deg,#10241b,#0f1d18);border:1px solid #2f5d45}
+  pre{font-family:ui-monospace,Menlo,monospace;font-size:13px;line-height:1.5;color:#cdd7f5;
+    margin:0;white-space:pre;overflow-x:auto}
+  ol{margin:6px 0 0;padding-left:22px} ol li{margin:8px 0}
+  ul{margin:6px 0 0;padding-left:20px} ul li{margin:5px 0}
+  .num{font-size:13px;color:#cdd7f5}
+  b.big{font-size:17px;color:#fff}
+  .gloss dt{font-weight:600;color:#cfe0ff;margin-top:12px}
+  .gloss dd{margin:2px 0 0 16px;color:#c3ccdf}
+  .gloss .ex{color:#9aa6c4;font-size:13px;margin-top:2px}
+  .mut{color:#9aa6c4}
 </style>
 </head>
 <body>
 
-<h1>WFL → PseudoCoup — Progress Dashboard</h1>
-<p class="sub">Living status. Pairs with <a href="PROGRESS.md">PROGRESS.md</a> /
-<a href="PROJECT_MAP.md">PROJECT_MAP.md</a> · reload to refresh.</p>
-<p class="sub"><span class="pill">Last updated: 2026-06-28</span>
-<span class="pill" id="loaded"></span></p>
+<h1>WFL → Python — project dashboard</h1>
+<p class="sub">What the project is, the one goal now, and where it stands. Reload to refresh.</p>
+<p class="sub mut">Updated 2026-06-29, after regenerating the foundation with the advanced transpiler.</p>
 
-<div class="legend">
-  <span><i class="dot d-good"></i> done / verified</span>
-  <span><i class="dot d-warn"></i> in progress</span>
-  <span><i class="dot d-defer"></i> deferred by plan</span>
-  <span><i class="dot d-unk"></i> unknown / old</span>
-  <span><i class="dot d-bad"></i> blocked</span>
+<h2>What the project is</h2>
+<div class="panel">
+<pre>WFL  (the original Kotlin app)              upstream ~/Programming/WFL — untouched source of truth
+  │
+  │   copied, then edited to "meet the transpiler in the middle"
+  ▼
+WFL_MixingCenter/WFL/  (the Kotlin copy)    edits kept honest by WFL's own tests
+  │
+  │   KtToPy  — the advanced transpiler  (lives in PseudoCoup/tools/pseudokotlin)
+  ▼
+WFL_MixingCenter/*.py  (THE FOUNDATION)     the 1:1 Python the transpiler produces</pre>
+<p class="num" style="margin:14px 0 0">The <b>foundation</b> is the 1:1 Python KtToPy produces from the
+Kotlin copy. It is the thing everything else is built on. It is meant to carry the framework the
+transpiler system provides — the 1:1s, wrappers, ledger, tags, structure, connectivity. Nothing in it
+exists without a Kotlin source.</p>
 </div>
 
-<h2>The pipeline</h2>
-<div class="pipe">
-  <div class="node src"><div class="lbl">WFL — Kotlin · SOURCE OF TRUTH</div>
-    <div class="meta">the original app; everything must trace back here</div></div>
-  <div class="arrow">▼ &nbsp;(A) Kt → Py transpiler · 1:1 · "map·wrap·fail"</div>
-  <div class="node"><div class="lbl">WFL Python — canonical 1:1 &nbsp;<span class="tag">[WFL_MixingCenter]</span></div>
-    <div class="meta">+ the kit (imperative zone API) + screens (PseudoUI) + reactivity (State/recompose)</div></div>
-  <div class="arrow">▼ &nbsp;(B) per-target transpile + kit</div>
-  <div class="branch">
-    <div class="node"><div class="lbl">WFL_PseudoCoup — Kivy + Flutter</div>
-      <div class="meta">(B1) Py → Dart <span class="tag">[PseudoDart]</span> · kit = PseudoFlutter</div></div>
-    <div class="node"><div class="lbl">WFL_PyHaxe — Haxe</div>
-      <div class="meta">(B2) Py → Haxe <span class="tag">[PyHaxe]</span> · kit = PyHaxeUI</div></div>
-  </div>
-</div>
-
-<h2>The three tracks <span class="mut" style="text-transform:none;letter-spacing:0;font-weight:400">(the project's own framing, log_96)</span></h2>
-<div class="tracks">
-  <div class="card">
-    <h3>Track B <span class="badge b-warn">IN PROGRESS</span></h3>
-    <div class="role">transpiler center — Kt→Py of the whole app · <b>the documented priority</b></div>
-    <div class="bar"><i style="width:76%"></i></div>
-    <div class="num">via canonical <b>KtToPy</b>: repos <b>20/20 parse</b> · <b>19/20</b> construct (DI)</div>
-    <div class="num"><b>16/20</b> run real methods (was 14; vs literal ~1/20)</div>
-    <div class="num mut" style="margin-top:6px">2 bugs fixed + shim flow-operator-complete (oracle 11/11). gym_list runs on the transpiled GymRepository — swap-under done (log_126→128)</div>
-  </div>
-  <div class="card">
-    <h3>Track A <span class="badge b-good">MATURE</span></h3>
-    <div class="role">hand-built UI — ~30 screens written by hand on the kit (not transpiled)</div>
-    <div class="bar"><i style="width:100%"></i></div>
-    <div class="num">~30 screens · the baseline</div>
-    <div class="num mut" style="margin-top:6px">"65/65" = a Track-A assertion/coverage count — <b>not</b> the 36 golden PNGs</div>
-  </div>
-  <div class="card">
-    <h3>Bucket 3 <span class="badge b-defer">DEFERRED → ACTIVE</span></h3>
-    <div class="role">PseudoUI swap-in — make the literal WFL Python a <i>runnable app</i></div>
-    <div class="bar"><i style="width:25%"></i></div>
-    <div class="num">gym_list = complete interactive drop-in</div>
-    <div class="num mut" style="margin-top:6px">officially deferred until non-UI closes — <b>see the note below</b></div>
-  </div>
-</div>
-
-<div class="callout">
-  ✅ <b>Sequencing reality (probed, log_124→125).</b> The breadth work IS ahead of the foundation —
-  generated screens run on the <b>hand-built</b> domain (in <code>WFL_PseudoCoup/src/domain</code>)
-  because the <b>transpiled</b> domain in <code>WFL_MixingCenter</code> doesn't run. BUT
-  <code>WFL_MixingCenter</code> is <b>stale old-transpiler output</b>: the canonical <b>KtToPy</b> already restores DI and runs
-  a real repository end-to-end (<code>GymRepository</code>: construct + read + write), with <b>14/20</b>
-  repos loading. The parse-clean → runnable jump is therefore <b>small &amp; bounded</b>: regenerate the
-  domain with KtToPy + supply a runtime namespace (kotlin_rt + transpiled entities + UUID/System/Flow) +
-  fix <b>2</b> transpiler bugs. Then the screens can trace through a real floor.
-</div>
-
-<h2>Component status</h2>
-<table>
-  <tr><th>Component</th><th>St</th><th>Where it stands</th><th>Proof</th></tr>
-  <tr><td><b>Kt→Py transpiler</b></td><td class="st" style="color:var(--warn)">🟡</td>
-    <td><code>tools/pseudokotlin</code> (<b>KtToPy</b> = canonical; oracle uses it).
-      <code>literal_transpiler.py</code> = the original donor (superseded). 4 bugs fixed this session.</td>
-    <td><code>oracle.py --all</code> → 11/11 green</td></tr>
-  <tr><td>— verification ladder</td><td class="st" style="color:var(--warn)">🟡</td>
-    <td>compile → oracle (11 engines) → fuzz (5000, 0 div) → ledger (structural + UI).
-      UI ledger <b>geometry layer</b> not built.</td>
-    <td><code>oracle.py</code>,<code>fuzz.py</code>,<code>ledger.py</code></td></tr>
-  <tr><td><b>The kit</b> (PseudoFlutter)</td><td class="st" style="color:var(--good)">✅</td>
-    <td>Imperative zone API; Kivy (<code>kit.py</code>) + Flutter (<code>kit.dart</code>); both retained-mode.</td>
-    <td>app smoke 30/30</td></tr>
-  <tr><td><b>Reactivity</b> (State/recompose)</td><td class="st" style="color:var(--good)">✅</td>
-    <td>Works; false-reactive = redraw-whole-screen per event (correct, not efficient).</td>
-    <td>log_121 · <code>reactive.py</code></td></tr>
-  <tr><td><b>Py→Dart</b> → Flutter</td><td class="st" style="color:var(--good)">✅</td>
-    <td><code>tools/transpile.py</code> → <code>app_flutter/lib</code>; <b>36 golden PNGs</b>.</td>
-    <td><code>flutter test</code></td></tr>
-  <tr><td><b>Py→Haxe</b> → WFL_PyHaxe</td><td class="st" style="color:#aab4d0">🟡</td>
-    <td><b>Older/partial — no viewmodel layer</b>, 580 <code>.hx</code>, last 2026-06-19; dormant for the main port.</td>
-    <td>WFL_PyHaxe SESSION_STATUS</td></tr>
-</table>
-
-<h2>PseudoUI generator — detail <span class="mut" style="text-transform:none;letter-spacing:0;font-weight:400">(Bucket 3, logs 104–122)</span></h2>
-<table>
-  <tr><th>Layer</th><th>St</th><th>Note</th></tr>
-  <tr><td>Structure (Compose → kit <code>define_*</code>)</td><td class="st" style="color:var(--good)">✅</td><td>99% leaf coverage, 0 fabricated/orphan across 24 screens</td></tr>
-  <tr><td>Control-flow IR + bind to transpiled VM</td><td class="st" style="color:var(--good)">✅</td><td>per-screen binding is mechanical Kt→Py</td></tr>
-  <tr><td>Generality (2nd/3rd screens)</td><td class="st" style="color:var(--warn)">🟡</td><td>paths 3/3 · exercise_detail 4/5 · exercise_picker renders 185</td></tr>
-  <tr><td>Enum lift · emit runnable · representation map</td><td class="st" style="color:var(--good)">✅</td><td>complete match on gym_list/paths</td></tr>
-  <tr><td>Vendored · routed · handlers · re-render fix</td><td class="st" style="color:var(--good)">✅</td><td>logs 117–120; smoke 30/30</td></tr>
-  <tr><td><b>Net: gym_list = complete interactive drop-in</b></td><td class="st" style="color:var(--good)">✅</td><td>test_gym_list_gen — 10/10 render + 4 handlers + re-render</td></tr>
-</table>
-<p class="mut" style="font-size:13px">Per-screen cost for the next generated screen: a DAO adapter + a nav
-map (~10–20 lines) + <code>MutableStateFlow → State</code> for UI-flag screens. Everything else is screen-agnostic.</p>
-
-<h2>Backlog</h2>
-<ul class="clean">
-  <li>✅ <b>Breadth</b> — exercise_detail is a 2nd VENDORED interactive drop-in (transpiled VM + enums + enum-lift): renders (7 shared) + SharedFlow edit-nav + reactive exclude-prompt dialog (test MATCH). Generator gained lazy/id-aware VM + <b>file-aware composable resolution → 100% Compose coverage</b> (496/496). Not routed (DropdownMenu collapse unmodeled). logs 129–133</li>
-  <li>🔵 <b>Depth</b> — Python→Dart of the generated screen for Flutter pixel goldens</li>
-  <li>🔵 <b>Efficient near-true-reactivity</b> (reconciled redraw) — kit-only, correctness-preserving (log_122)</li>
-  <li>🔵 <b>UI ledger geometry layer</b> — rendered-box diff; ground truth = original app via <code>dualtrace</code></li>
-  <li>🔵 <b>Close Track B</b> — the <code>.dp</code>/<code>.sp</code> blocker + 62 failing files (documented critical path)</li>
+<h2>The one goal now — complete the transpiler</h2>
+<div class="panel goal">
+<p class="num" style="margin:0 0 10px">We work on this and nothing else until the foundation is solid.</p>
+<p class="num"><b class="big">196 / 254</b> Kotlin files transpile to parse-clean Python
+(<b>212</b> written, 196 parse). The other <b>42</b> are transpiler errors — almost all the same gap:</p>
+<ul>
+<li><b><code>delegated property outside a class body</code></b> — the Compose <code>val x by …</code>
+delegate written at the top of a <code>@Composable</code> function (not inside a class). KtToPy only
+handles it inside a class today. This one gap blocks <b>~28 UI screens</b>. <b>First target:</b> handle
+the <code>by</code> delegate at function/top level.</li>
+<li>A few others: an <code>object_literal</code> (<code>WorkoutDatabase</code>), a <code>type_test</code>
+(<code>DebugPanelViewModel</code>).</li>
+<li><b>16</b> files transpile but don't parse (emitted-but-invalid) — separate, smaller.</li>
 </ul>
+<p class="num mut" style="margin-top:10px">Parse-clean is not the same as runnable; runnability is a
+later check. The metric now is: does every Kotlin construct in the copy transpile.</p>
+<p class="num mut" style="margin-top:6px">Regenerate any time with
+<code>python3 tools/pseudokotlin/build_mixingcenter.py</code>.</p>
+</div>
 
-<p class="foot">Update this file alongside PROGRESS.md each session · WFL → PseudoCoup</p>
+<h2>The plan, in order</h2>
+<div class="panel">
+<ol>
+<li><b>Complete the transpiler</b> → the foundation (<code>WFL_MixingCenter</code>) is solid. <span class="mut">← we are here</span></li>
+<li><b>Evaluate set-aside parts.</b> Bring a part (e.g. a UI screen) into the foundation only after
+rigorous validation that it keeps structure/connectivity. If a part is invalid or mangled, don't fix it —
+<b>paint-by-numbers</b> a fresh one (or mechanize it when the part-type allows).</li>
+<li><b>Upgrade the UI to PseudoUI discipline.</b> A salvaged part that is already valid Python, passes the
+ledger validation, and carries the discipline gets used — extra discipline is not a reason to ignore it.</li>
+</ol>
+</div>
 
-<script>
-  document.getElementById('loaded').textContent =
-    'viewed: ' + new Date().toLocaleString();
-</script>
+<h2>Set aside (not failed — parked, picked up later only if it validates)</h2>
+<div class="panel">
+<ul>
+<li><code>WFL_PseudoCoup</code> — an earlier hand-built effort (the per-rigor "trusted baseline" idea that
+got cratered). Its hand-built code is untrusted until validated against the foundation.</li>
+<li>The PseudoUI generator + swap-in work done in <code>WFL_PseudoCoup</code> in prior conversations. The
+generator <i>tool</i> may be reused later for "paint-by-numbers a screen fresh," but only aimed at the
+foundation, not at matching <code>WFL_PseudoCoup</code>.</li>
+<li>The transpiler fixes made along the way (e.g. <code>expr ?: continue</code>) are <b>not</b> set aside —
+they live in <code>tools/pseudokotlin</code> and improve KtToPy directly.</li>
+</ul>
+</div>
+
+<h2>Glossary (your terms, anchored)</h2>
+<div class="panel gloss">
+<dl>
+<dt>foundation</dt><dd>the 1:1 Python KtToPy produces from the Kotlin copy — <code>WFL_MixingCenter/*.py</code>.
+<div class="ex">e.g. <code>data/repository/GymRepository.py</code>, transpiled from the matching <code>.kt</code>.</div></dd>
+<dt>meet the transpiler in the middle</dt><dd>editing the Kotlin copy (<code>WFL_MixingCenter/WFL/</code>) so the
+transpiler can handle it, verified by WFL's own tests.<div class="ex">e.g. the <code>SampleProgramData</code> change committed to WFL_MixingCenter.</div></dd>
+<dt>complete the transpiler</dt><dd>KtToPy handles every Kotlin construct in the copy, so all 254 files transpile and the gaps (like the <code>by</code>-delegate error) are gone.</dd>
+<dt>set aside</dt><dd>parked, out of scope now, picked up later only if it validates. Not discarded.<div class="ex">e.g. the WFL_PseudoCoup screens.</div></dd>
+<dt>paint-by-numbers</dt><dd>build a fresh part by hand following the foundation's structure, when a set-aside part is too mangled to validate.</dd>
+<dt>ledger / structure / connectivity</dt><dd>the accounting that proves each Python object traces to its Kotlin source and is wired the same way — used to validate a swap-in.</dd>
+<dt>PseudoUI discipline</dt><dd>the constrained Python style the UI should follow; applied later, after the foundation is solid.</dd>
+</dl>
+</div>
+
 </body>
 </html>
