@@ -21,7 +21,8 @@ class _Track:                             # records every define_*'s zone id -> 
 class GymListScreenGen:
     def __init__(self, db):
         self.db = db
-        self.vm = build_transpiled_vm('gym_list', db)
+        self.vm = None
+        self._vm_sel = None
         self.owned_ids = []
 
     def screen_id(self):
@@ -40,6 +41,10 @@ class GymListScreenGen:
         self.owned_ids = []
         ui = _Track(ui, self.owned_ids)
         self.router = router
+        _sel = getattr(router, 'selected_id', None)
+        if self.vm is None or self._vm_sel != _sel:
+            self.vm = build_transpiled_vm('gym_list', self.db, _sel)
+            self._vm_sel = _sel
         viewModel = self.vm
         content = content_zone_id
         gyms = _ev(lambda: viewModel.gyms.collectAsStateWithLifecycle())

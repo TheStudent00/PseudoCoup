@@ -739,7 +739,7 @@ def _lift(obj, entity_name):
     return _LiftProxy(obj, fmap) if (fmap and obj is not None) else obj
 
 
-def _gym_repo_adapter(ns, db):
+def _gym_repo_adapter(ns, db, sel=None):
     """Room-DAO boundary, ported to the kit InMemoryDb: yields the transpiled Kotlin shapes
     (GymWithEquipment bundling profile+equipment; gymType int -> GymType enum)."""
     from domain.gym_service import GymService
@@ -770,7 +770,7 @@ def _gym_repo_adapter(ns, db):
     return (_Repo(),)                                     # GymListViewModel(repo)
 
 
-def _paths_repo_adapter(ns, db):
+def _paths_repo_adapter(ns, db, sel=None):
     """A SECOND screen's boundary -- notably THINNER than gym_list's: PathEntity.name is a string,
     so there is no enum lift and no bundling. Just expose the kit's active paths as a Flow."""
     from domain.path_service import PathService
@@ -786,7 +786,7 @@ def _paths_repo_adapter(ns, db):
     return (_Repo(),)                                     # PathsViewModel(repository)
 
 
-def _exercise_detail_adapter(ns, db):
+def _exercise_detail_adapter(ns, db, sel=None):
     """A DYNAMIC second screen with a SIMPLE VM (single-entity derived flow, like gym_list). Reads
     the seeded eSquat exercise; most content is bool->string conditionals. The enum displayName()
     line (movement/equipment/muscle, stored as ints in the kit) is the documented gap."""
@@ -809,12 +809,12 @@ def _exercise_detail_adapter(ns, db):
         def countExerciseOccurrences(self, eid): return 1
 
     class _SSH:
-        def __getitem__(self, k): return "eSquat"
+        def __getitem__(self, k): return sel or "eSquat"
     # ctor: (savedStateHandle, repository: ExerciseRepository, programRepository)
     return (_SSH(), _Repo(), _Prog())
 
 
-def _exercise_picker_adapter(ns, db):
+def _exercise_picker_adapter(ns, db, sel=None):
     """A DYNAMIC second screen over real data (185 seeded exercises). The VM is a `combine` -- the
     adapter just feeds exerciseDao.getAll(); the filter flows default (blank query / no filter), so
     the transpiled transform yields the non-excluded exercises, sorted."""
@@ -1215,12 +1215,13 @@ def emit_py(ir, key):
 # generated build() in exactly that contract, backed by the TRANSPILED viewmodel -- so it can
 # replace the hand-built screen in the live app. verify_app_mount mounts it the way the router does
 # and confirms it produces the same tree as the hand-built screen.
-def build_transpiled_vm(key, db):
+def build_transpiled_vm(key, db, sel=None):
     """the transpiled (1:1-with-Kotlin) viewmodel for a screen, wired to the kit db via its adapter
-    + the fixed reactive/stdlib shim -- the '1:1 backend' a generated app screen runs on."""
+    + the fixed reactive/stdlib shim -- the '1:1 backend' a generated app screen runs on. `sel` is the
+    router's selected_id (a detail screen's entity id); adapters that don't need it ignore it."""
     cfg = SCREEN_CFG[key]
     ns = _load_transpiled(cfg["files"])
-    return ns[cfg["vm"]](*cfg["adapter"](ns, db))
+    return ns[cfg["vm"]](*cfg["adapter"](ns, db, sel))
 
 
 def emit_app_screen(ir, key, class_name):
@@ -1245,7 +1246,8 @@ def emit_app_screen(ir, key, class_name):
         "", "", f"class {class_name}:",
         "    def __init__(self, db):",
         "        self.db = db",
-        f'        self.vm = build_transpiled_vm({key!r}, db)',
+        "        self.vm = None",         # constructed lazily on first build (router/selected_id ready)
+        "        self._vm_sel = None",
         "        self.owned_ids = []",
         "",
         "    def screen_id(self):",
@@ -1256,9 +1258,15 @@ def emit_app_screen(ir, key, class_name):
         "        self.owned_ids = []",
         "        ui = _Track(ui, self.owned_ids)",
         "        self.router = router",
-        "        viewModel = self.vm",
-        ] + [f"        self.vm.{flow}.collect({cb})    # LaunchedEffect collect -> nav callback"
+        "        _sel = getattr(router, 'selected_id', None)",
+        # construct once per selected-id: state (e.g. a dialog flag) persists across recompose,
+        # but a navigate to a different entity rebuilds the VM for the new id.
+        "        if self.vm is None or self._vm_sel != _sel:",
+        f"            self.vm = build_transpiled_vm({key!r}, self.db, _sel)",
+        "            self._vm_sel = _sel",
+        ] + [f"            self.vm.{flow}.collect({cb})    # LaunchedEffect collect -> nav callback"
              for flow, cb in NAV_HANDLERS.get(key, {}).get("nav_flows", {}).items()] + [
+        "        viewModel = self.vm",
         "        content = content_zone_id"]
     out += ["    " + l for l in body]                    # re-indent body into the method
     return "\n".join(out) + "\n"
