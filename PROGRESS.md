@@ -22,6 +22,42 @@ The **foundation** is the 1:1 Python KtToPy produces from the Kotlin copy. It is
 else is built on. It is meant to carry the framework the transpiler system provides — the 1:1s,
 wrappers, ledger, tags, structure, connectivity. Nothing in it exists without a Kotlin source.
 
+## How the transpiler is built (the architecture)
+
+A transpiler is a compiler whose output is source code. The spine is a pipeline where each stage hands
+the next a *richer* version of the program, under one rule: **resolve before you translate** — never emit
+a name until you know what it refers to.
+
+```
+Kotlin source
+   │  1. parse                       tree-sitter — done
+   ▼
+syntax tree           shape only: `SimpleDateFormat(p)` is "a call", meaning unknown
+   │  2. resolve   ← imports + scopes + declarations
+   ▼
+resolved tree         every name tagged: local | member | app class | EXTERNAL + origin
+   │  3. map       ← wrapper registry keyed by origin
+   ▼
+Python model          java.text.SimpleDateFormat  →  runtime/java_text.py : SimpleDateFormat
+   │  4. generate     emit imports + code
+   ▼
+Python source   +   runtime library (wrappers organized by origin)
+```
+
+- **resolve** is the phase that was missing. `import java.text.SimpleDateFormat` binds the bare name
+  `SimpleDateFormat`, in that file, to the external symbol `java.text.SimpleDateFormat`. Kotlin's default
+  imports (`kotlin.collections.*`, `java.lang.*`) are the same, implicit. After this pass every name is
+  classified, and the full external-dependency set is a printable fact — not a runtime surprise.
+- **registry** maps a fully-qualified name to the Python wrapper that stands in for it. The import gives
+  the key; the registry gives the target. A missing wrapper is a BUILD-TIME gap you can list, never a
+  `NameError` tripped over at runtime.
+- **map / wrap / fail** (the existing instinct) becomes precise: map an app construct, wrap a *resolved*
+  external to its registry wrapper, fail loudly on a resolved external with no wrapper.
+
+This replaces runtime whack-a-mole with a checklist — the 367 external names the imports already declare,
+each routed to a wrapper by its origin package. **The construct handlers and the oracle keep working; they
+bolt onto the `map` stage.** What was missing sits between `parse` and `map`, and building it is the work.
+
 ## The one goal now — complete the transpiler
 
 We work on this and nothing else until the foundation is solid. The transpiler is checked by three
@@ -55,6 +91,13 @@ keeping `F`/`f` digits; `a?.b = v` → a guarded assignment; anonymous objects �
 ## The plan, in order
 
 1. **Complete the transpiler** → the foundation (`WFL_MixingCenter`) is solid. ← we are here
+   1a. Construct translation (the `map` stage) — **done**: 254/254 parse, 165/165 non-UI load, oracle 11/11.
+   1b. **Build the `resolve` phase** — the import table + scopes + a project symbol table, so every name is
+       classified (local / member / app class / external + origin) before it is translated.
+   1c. **Wrapper registry keyed by fully-qualified name**, and the build-time external-reference checklist
+       that lists every external use and whether a wrapper covers it (replaces the runtime load-gate hunt).
+   1d. **Emit imports in the generated Python** — external uses import from their origin wrapper module,
+       app classes from their module path. Files become real modules, not a flat namespace.
 2. **Evaluate set-aside parts.** Bring a part (e.g. a UI screen) into the foundation only after rigorous
    validation that it keeps structure/connectivity. If a part is invalid or mangled, don't fix it —
    **paint-by-numbers** a fresh one (or mechanize it when the part-type allows).
