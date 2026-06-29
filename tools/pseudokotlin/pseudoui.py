@@ -181,7 +181,7 @@ def generate(compose_path, screen_key):
     comps = UL.composables(compose_path)
     cname, roots = _entry(comps)
     ctx = {"recs": [], "kit_ids": [], "gen_static": set(), "n": 0,
-           "pfx": _slug(screen_key) + "_z", "defs": UL._comp_defs()}
+           "pfx": _slug(screen_key) + "_z", "defs": UL._comp_defs_for(compose_path)}
     for r in roots:
         _emit(r, "content", {}, [cname], ctx)
     return cname, ctx

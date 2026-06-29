@@ -3,7 +3,7 @@
 Mechanically generated from the Compose @Composable tree: each node mapped to a kit
 define_* call with a content-anchored, referenceable zone id. NOT hand-written.
 
-## generated define_* sequence  (82 calls)
+## generated define_* sequence  (70 calls)
 ```python
 ui.define_box("exercise_detail_z00_launchedeffect", "content", "V")
 ui.define_box("exercise_detail_z01_launchedeffect", "content", "V")
@@ -22,71 +22,59 @@ ui.define_text("exercise_detail_z13_unilateral_bilat", "exercise_detail_z12_sugg
 ui.define_box("exercise_detail_z14_detailsection", "exercise_detail_z04_lazycolumn", "V")
 ui.define_box("exercise_detail_z15_column", "exercise_detail_z14_detailsection", "V")
 ui.define_text("exercise_detail_z16_primary_muscles", "exercise_detail_z15_column", "Primary muscles")
-ui.define_spacer_zone("exercise_detail_z17_spacer", "exercise_detail_z15_column")
-ui.define_text("exercise_detail_z18_body", "exercise_detail_z15_column", "body")
-ui.define_box("exercise_detail_z19_flowrow", "exercise_detail_z14_detailsection", "H")
-ui.define_box("exercise_detail_z20_assistchip", "exercise_detail_z19_flowrow", "V")
-ui.define_text("exercise_detail_z21_m_displayname", "exercise_detail_z20_assistchip", "m.displayName()")
-ui.define_box("exercise_detail_z22_detailsection", "exercise_detail_z04_lazycolumn", "V")
-ui.define_box("exercise_detail_z23_column", "exercise_detail_z22_detailsection", "V")
-ui.define_text("exercise_detail_z24_secondary_muscle", "exercise_detail_z23_column", "Secondary muscles")
-ui.define_spacer_zone("exercise_detail_z25_spacer", "exercise_detail_z23_column")
-ui.define_text("exercise_detail_z26_body", "exercise_detail_z23_column", "body")
-ui.define_box("exercise_detail_z27_flowrow", "exercise_detail_z22_detailsection", "H")
-ui.define_box("exercise_detail_z28_suggestionchip", "exercise_detail_z27_flowrow", "V")
-ui.define_text("exercise_detail_z29_m_displayname", "exercise_detail_z28_suggestionchip", "m.displayName()")
-ui.define_box("exercise_detail_z30_detailsection", "exercise_detail_z04_lazycolumn", "V")
-ui.define_box("exercise_detail_z31_column", "exercise_detail_z30_detailsection", "V")
-ui.define_text("exercise_detail_z32_movement_equipme", "exercise_detail_z31_column", "Movement & equipment")
-ui.define_spacer_zone("exercise_detail_z33_spacer", "exercise_detail_z31_column")
-ui.define_text("exercise_detail_z34_body", "exercise_detail_z31_column", "body")
-ui.define_text("exercise_detail_z35_exercise_movemen", "exercise_detail_z30_detailsection", "${exercise.movementPattern.dis…")
-ui.define_divider_zone("exercise_detail_z36_divider", "exercise_detail_z04_lazycolumn")
-ui.define_spacer_zone("exercise_detail_z37_spacer", "exercise_detail_z04_lazycolumn")
-ui.define_box("exercise_detail_z38_detailsection", "exercise_detail_z04_lazycolumn", "V")
-ui.define_box("exercise_detail_z39_column", "exercise_detail_z38_detailsection", "V")
-ui.define_text("exercise_detail_z40_form_notes", "exercise_detail_z39_column", "Form notes")
-ui.define_spacer_zone("exercise_detail_z41_spacer", "exercise_detail_z39_column")
-ui.define_text("exercise_detail_z42_body", "exercise_detail_z39_column", "body")
-ui.define_text("exercise_detail_z43_exercise_instruc", "exercise_detail_z38_detailsection", "exercise.instructions")
-ui.define_box("exercise_detail_z44_detailsection", "exercise_detail_z04_lazycolumn", "V")
-ui.define_box("exercise_detail_z45_column", "exercise_detail_z44_detailsection", "V")
-ui.define_text("exercise_detail_z46_coaching_cues", "exercise_detail_z45_column", "Coaching cues")
-ui.define_spacer_zone("exercise_detail_z47_spacer", "exercise_detail_z45_column")
-ui.define_text("exercise_detail_z48_body", "exercise_detail_z45_column", "body")
-ui.define_text("exercise_detail_z49_exercise_cues", "exercise_detail_z44_detailsection", "exercise.cues")
-ui.define_box("exercise_detail_z50_detailsection", "exercise_detail_z04_lazycolumn", "V")
-ui.define_box("exercise_detail_z51_column", "exercise_detail_z50_detailsection", "V")
-ui.define_text("exercise_detail_z52_video_reference", "exercise_detail_z51_column", "Video reference")
-ui.define_spacer_zone("exercise_detail_z53_spacer", "exercise_detail_z51_column")
-ui.define_text("exercise_detail_z54_body", "exercise_detail_z51_column", "body")
-ui.define_text("exercise_detail_z55_exercise_videoli", "exercise_detail_z50_detailsection", "exercise.videoLink")
-ui.define_box("exercise_detail_z56_topappbar", "exercise_detail_z02_scaffold", "V")
-ui.define_text("exercise_detail_z57_text", "exercise_detail_z56_topappbar", "")
-ui.define_icon("exercise_detail_z58_back", "exercise_detail_z56_topappbar", "Back")
-ui.define_icon("exercise_detail_z59_toggle_favorite", "exercise_detail_z56_topappbar", "Toggle favorite")
-ui.define_icon("exercise_detail_z60_more", "exercise_detail_z56_topappbar", "More")
-ui.define_box("exercise_detail_z61_dropdownmenu", "exercise_detail_z56_topappbar", "V")
-ui.define_box("exercise_detail_z62_dropdownmenuitem", "exercise_detail_z61_dropdownmenu", "V")
-ui.define_text("exercise_detail_z63_duplicate_edit", "exercise_detail_z62_dropdownmenuitem", "Duplicate & Edit")
-ui.define_box("exercise_detail_z64_dropdownmenuitem", "exercise_detail_z61_dropdownmenu", "V")
-ui.define_text("exercise_detail_z65_allow_programmin", "exercise_detail_z64_dropdownmenuitem", "Allow programming again|Never …")
-ui.define_box("exercise_detail_z66_dropdownmenuitem", "exercise_detail_z61_dropdownmenu", "V")
-ui.define_text("exercise_detail_z67_edit", "exercise_detail_z66_dropdownmenuitem", "Edit")
-ui.define_box("exercise_detail_z68_dropdownmenuitem", "exercise_detail_z61_dropdownmenu", "V")
-ui.define_text("exercise_detail_z69_delete", "exercise_detail_z68_dropdownmenuitem", "Delete")
-ui.define_box("exercise_detail_z70_alertdialog", "content", "V")
-ui.define_text("exercise_detail_z71_delete_exercise", "exercise_detail_z70_alertdialog", "Delete exercise?")
-ui.define_text("exercise_detail_z72_this_will_perman", "exercise_detail_z70_alertdialog", "This will permanently delete \…")
-ui.define_button("exercise_detail_z73_delete", "exercise_detail_z70_alertdialog", "Delete")
-ui.define_button("exercise_detail_z74_cancel", "exercise_detail_z70_alertdialog", "Cancel")
-ui.define_box("exercise_detail_z75_alertdialog", "content", "V")
-ui.define_text("exercise_detail_z76_already_in_your_", "exercise_detail_z75_alertdialog", "Already in your program")
-ui.define_text("exercise_detail_z77_is_in_where_swap", "exercise_detail_z75_alertdialog", "\| is in $where. |Swap it for …")
-ui.define_button("exercise_detail_z78_swap_all_now", "exercise_detail_z75_alertdialog", "Swap all now")
-ui.define_button("exercise_detail_z79_got_it", "exercise_detail_z75_alertdialog", "Got it")
-ui.define_button("exercise_detail_z80_swap_during_work", "exercise_detail_z75_alertdialog", "Swap during workouts")
-ui.define_button("exercise_detail_z81_cancel", "exercise_detail_z75_alertdialog", "Cancel")
+ui.define_box("exercise_detail_z17_flowrow", "exercise_detail_z14_detailsection", "H")
+ui.define_box("exercise_detail_z18_assistchip", "exercise_detail_z17_flowrow", "V")
+ui.define_text("exercise_detail_z19_m_displayname", "exercise_detail_z18_assistchip", "m.displayName()")
+ui.define_box("exercise_detail_z20_detailsection", "exercise_detail_z04_lazycolumn", "V")
+ui.define_box("exercise_detail_z21_column", "exercise_detail_z20_detailsection", "V")
+ui.define_text("exercise_detail_z22_secondary_muscle", "exercise_detail_z21_column", "Secondary muscles")
+ui.define_box("exercise_detail_z23_flowrow", "exercise_detail_z20_detailsection", "H")
+ui.define_box("exercise_detail_z24_suggestionchip", "exercise_detail_z23_flowrow", "V")
+ui.define_text("exercise_detail_z25_m_displayname", "exercise_detail_z24_suggestionchip", "m.displayName()")
+ui.define_box("exercise_detail_z26_detailsection", "exercise_detail_z04_lazycolumn", "V")
+ui.define_box("exercise_detail_z27_column", "exercise_detail_z26_detailsection", "V")
+ui.define_text("exercise_detail_z28_movement_equipme", "exercise_detail_z27_column", "Movement & equipment")
+ui.define_text("exercise_detail_z29_exercise_movemen", "exercise_detail_z26_detailsection", "${exercise.movementPattern.dis…")
+ui.define_divider_zone("exercise_detail_z30_divider", "exercise_detail_z04_lazycolumn")
+ui.define_spacer_zone("exercise_detail_z31_spacer", "exercise_detail_z04_lazycolumn")
+ui.define_box("exercise_detail_z32_detailsection", "exercise_detail_z04_lazycolumn", "V")
+ui.define_box("exercise_detail_z33_column", "exercise_detail_z32_detailsection", "V")
+ui.define_text("exercise_detail_z34_form_notes", "exercise_detail_z33_column", "Form notes")
+ui.define_text("exercise_detail_z35_exercise_instruc", "exercise_detail_z32_detailsection", "exercise.instructions")
+ui.define_box("exercise_detail_z36_detailsection", "exercise_detail_z04_lazycolumn", "V")
+ui.define_box("exercise_detail_z37_column", "exercise_detail_z36_detailsection", "V")
+ui.define_text("exercise_detail_z38_coaching_cues", "exercise_detail_z37_column", "Coaching cues")
+ui.define_text("exercise_detail_z39_exercise_cues", "exercise_detail_z36_detailsection", "exercise.cues")
+ui.define_box("exercise_detail_z40_detailsection", "exercise_detail_z04_lazycolumn", "V")
+ui.define_box("exercise_detail_z41_column", "exercise_detail_z40_detailsection", "V")
+ui.define_text("exercise_detail_z42_video_reference", "exercise_detail_z41_column", "Video reference")
+ui.define_text("exercise_detail_z43_exercise_videoli", "exercise_detail_z40_detailsection", "exercise.videoLink")
+ui.define_box("exercise_detail_z44_topappbar", "exercise_detail_z02_scaffold", "V")
+ui.define_text("exercise_detail_z45_text", "exercise_detail_z44_topappbar", "")
+ui.define_icon("exercise_detail_z46_back", "exercise_detail_z44_topappbar", "Back")
+ui.define_icon("exercise_detail_z47_toggle_favorite", "exercise_detail_z44_topappbar", "Toggle favorite")
+ui.define_icon("exercise_detail_z48_more", "exercise_detail_z44_topappbar", "More")
+ui.define_box("exercise_detail_z49_dropdownmenu", "exercise_detail_z44_topappbar", "V")
+ui.define_box("exercise_detail_z50_dropdownmenuitem", "exercise_detail_z49_dropdownmenu", "V")
+ui.define_text("exercise_detail_z51_duplicate_edit", "exercise_detail_z50_dropdownmenuitem", "Duplicate & Edit")
+ui.define_box("exercise_detail_z52_dropdownmenuitem", "exercise_detail_z49_dropdownmenu", "V")
+ui.define_text("exercise_detail_z53_allow_programmin", "exercise_detail_z52_dropdownmenuitem", "Allow programming again|Never …")
+ui.define_box("exercise_detail_z54_dropdownmenuitem", "exercise_detail_z49_dropdownmenu", "V")
+ui.define_text("exercise_detail_z55_edit", "exercise_detail_z54_dropdownmenuitem", "Edit")
+ui.define_box("exercise_detail_z56_dropdownmenuitem", "exercise_detail_z49_dropdownmenu", "V")
+ui.define_text("exercise_detail_z57_delete", "exercise_detail_z56_dropdownmenuitem", "Delete")
+ui.define_box("exercise_detail_z58_alertdialog", "content", "V")
+ui.define_text("exercise_detail_z59_delete_exercise", "exercise_detail_z58_alertdialog", "Delete exercise?")
+ui.define_text("exercise_detail_z60_this_will_perman", "exercise_detail_z58_alertdialog", "This will permanently delete \…")
+ui.define_button("exercise_detail_z61_delete", "exercise_detail_z58_alertdialog", "Delete")
+ui.define_button("exercise_detail_z62_cancel", "exercise_detail_z58_alertdialog", "Cancel")
+ui.define_box("exercise_detail_z63_alertdialog", "content", "V")
+ui.define_text("exercise_detail_z64_already_in_your_", "exercise_detail_z63_alertdialog", "Already in your program")
+ui.define_text("exercise_detail_z65_is_in_where_swap", "exercise_detail_z63_alertdialog", "\| is in $where. |Swap it for …")
+ui.define_button("exercise_detail_z66_swap_all_now", "exercise_detail_z63_alertdialog", "Swap all now")
+ui.define_button("exercise_detail_z67_got_it", "exercise_detail_z63_alertdialog", "Got it")
+ui.define_button("exercise_detail_z68_swap_during_work", "exercise_detail_z63_alertdialog", "Swap during workouts")
+ui.define_button("exercise_detail_z69_cancel", "exercise_detail_z63_alertdialog", "Cancel")
 ```
 
 ## generated tree
@@ -107,65 +95,53 @@ ui.define_button("exercise_detail_z81_cancel", "exercise_detail_z75_alertdialog"
         - Column[z14_detailsection]  <container>
           - Column[z15_column]  <container>
             - Text[Primary muscles]  <leaf>
-            - Spacer[z17_spacer]  <leaf>
-            - Text[body]  <leaf>
-          - Row[z19_flowrow]  <container>
-            - Column[z20_assistchip]  <container>
+          - Row[z17_flowrow]  <container>
+            - Column[z18_assistchip]  <container>
               - Text[m.displayName()]  <leaf>
-        - Column[z22_detailsection]  <container>
-          - Column[z23_column]  <container>
+        - Column[z20_detailsection]  <container>
+          - Column[z21_column]  <container>
             - Text[Secondary muscles]  <leaf>
-            - Spacer[z25_spacer]  <leaf>
-            - Text[body]  <leaf>
-          - Row[z27_flowrow]  <container>
-            - Column[z28_suggestionchip]  <container>
+          - Row[z23_flowrow]  <container>
+            - Column[z24_suggestionchip]  <container>
               - Text[m.displayName()]  <leaf>
-        - Column[z30_detailsection]  <container>
-          - Column[z31_column]  <container>
+        - Column[z26_detailsection]  <container>
+          - Column[z27_column]  <container>
             - Text[Movement & equipment]  <leaf>
-            - Spacer[z33_spacer]  <leaf>
-            - Text[body]  <leaf>
           - Text[${exercise.movementPattern.dis…]  <leaf>
-        - Divider[z36_divider]  <leaf>
-        - Spacer[z37_spacer]  <leaf>
-        - Column[z38_detailsection]  <container>
-          - Column[z39_column]  <container>
+        - Divider[z30_divider]  <leaf>
+        - Spacer[z31_spacer]  <leaf>
+        - Column[z32_detailsection]  <container>
+          - Column[z33_column]  <container>
             - Text[Form notes]  <leaf>
-            - Spacer[z41_spacer]  <leaf>
-            - Text[body]  <leaf>
           - Text[exercise.instructions]  <leaf>
-        - Column[z44_detailsection]  <container>
-          - Column[z45_column]  <container>
+        - Column[z36_detailsection]  <container>
+          - Column[z37_column]  <container>
             - Text[Coaching cues]  <leaf>
-            - Spacer[z47_spacer]  <leaf>
-            - Text[body]  <leaf>
           - Text[exercise.cues]  <leaf>
-        - Column[z50_detailsection]  <container>
-          - Column[z51_column]  <container>
+        - Column[z40_detailsection]  <container>
+          - Column[z41_column]  <container>
             - Text[Video reference]  <leaf>
-            - Spacer[z53_spacer]  <leaf>
-            - Text[body]  <leaf>
           - Text[exercise.videoLink]  <leaf>
-    - Column[z56_topappbar]  <container>
-      - Text[z57_text]  <leaf>
+    - Column[z44_topappbar]  <container>
+      - Text[z45_text]  <leaf>
       - Icon[Back]  <leaf>
       - Icon[Toggle favorite]  <leaf>
       - Icon[More]  <leaf>
-      - Column[z61_dropdownmenu]  <container>
-        - Column[z62_dropdownmenuitem]  <container>
+      - Column[z49_dropdownmenu]  <container>
+        - Column[z50_dropdownmenuitem]  <container>
           - Text[Duplicate & Edit]  <leaf>
-        - Column[z64_dropdownmenuitem]  <container>
+        - Column[z52_dropdownmenuitem]  <container>
           - Text[Allow programming again|Never …]  <leaf>
-        - Column[z66_dropdownmenuitem]  <container>
+        - Column[z54_dropdownmenuitem]  <container>
           - Text[Edit]  <leaf>
-        - Column[z68_dropdownmenuitem]  <container>
+        - Column[z56_dropdownmenuitem]  <container>
           - Text[Delete]  <leaf>
-  - Column[z70_alertdialog]  <container>
+  - Column[z58_alertdialog]  <container>
     - Text[Delete exercise?]  <leaf>
     - Text[This will permanently delete \…]  <leaf>
     - Button[Delete]  <leaf>
     - Button[Cancel]  <leaf>
-  - Column[z75_alertdialog]  <container>
+  - Column[z63_alertdialog]  <container>
     - Text[Already in your program]  <leaf>
     - Text[\| is in $where. |Swap it for …]  <leaf>
     - Button[Swap all now]  <leaf>
@@ -177,7 +153,7 @@ ui.define_button("exercise_detail_z81_cancel", "exercise_detail_z75_alertdialog"
 ## verify vs Compose source (ExerciseDetailScreen)
 - distinct leaf signatures matched: 21/21 = 100%
 - generated signatures NOT in Compose (fabricated): 0
-- tree validity: 82 nodes, 0 orphan parents
+- tree validity: 70 nodes, 0 orphan parents
 
 ---
 ## generated  <->  hand-built kit (exercise_detail_screen.py)
