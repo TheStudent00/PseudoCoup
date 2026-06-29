@@ -56,18 +56,21 @@ exists without a Kotlin source.</p>
 The transpiler is checked by three gates, each stricter than the last:</p>
 <pre>gate    what it proves                                        command                result
 parse   every file becomes Python with no syntax errors       build_mixingcenter.py  <b>254 / 254</b>
-load    the non-UI foundation actually loads under kotlin_rt   loadcheck.py           <b>163 / 167</b>
+load    the non-UI domain loads under the runtime              loadcheck.py           <b>165 / 165</b>
 logic   tested components compute the same answers as Kotlin   oracle.py              <b>11 / 11</b>  (160 methods)</pre>
 <p class="num" style="margin-top:10px">The <b>load</b> gate, added this pass, caught two real bugs that
 parsing alone had hidden — both because the affected code wasn't being emitted at all: a companion
 property whose value is an anonymous object dropped the lifted class
 (<code>MIGRATION_1_2 = _Obj1(1, 2)</code> with no <code>class _Obj1</code>), and Kotlin raw
 <code>"""…"""</code> strings spanning lines were emitted with a single <code>"</code>. Both fixed.</p>
-<p class="num mut" style="margin-top:8px">The 4 files the load gate still blocks are stopped by
-<b>external platform names</b> the foundation calls — a Room <code>Migration</code>, a Java
-<code>SimpleDateFormat</code>, and two Compose names (<code>Icons</code>, <code>hiltViewModel</code>) —
-not by any transpiler defect. Supplying those names is the runtime-support layer; the Compose ones
-belong with the UI, a later phase.</p>
+<p class="num mut" style="margin-top:8px">The whole non-UI domain now loads. The names the load gate
+surfaced were added to <code>kotlin_rt</code> — which already held <code>java.lang.Math</code>, the Java
+collections, and JUnit, so it's the catch-all bare-name runtime, not "Kotlin stdlib only" (a separate
+file for a handful of names would have been premature structure): <code>Date</code>/<code>Locale</code>/
+<code>SimpleDateFormat</code> (the last a real wrapper — pattern → strftime), <code>ArrayDeque</code>
+(a functional deque), <code>Any</code> (a lock object), and a documented <code>Migration</code> stub
+(no Python Room). The only non-loaders are Compose UI — the <code>ui/</code> screens plus two
+nav-orchestration files (the NavHost and the bottom bar) — which defer with the UI phase.</p>
 </div>
 
 <h2>The plan, in order</h2>
