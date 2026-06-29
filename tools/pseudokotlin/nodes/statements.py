@@ -196,7 +196,12 @@ class Statements:
 
     @kind("return_expression")
     def v_return(self, node):
+        # `return@label [value]`: the `return@` token makes the FIRST named child the label (an
+        # identifier) -- drop it. `return` from the lambda-as-def is correct for `launch`/`let` blocks
+        # AND for forEach (returning from the per-item function = skip to the next item).
         kids = self.named(node)
+        if any(c.type == "return@" for c in node.children):
+            kids = kids[1:]
         if not kids:
             return "return"
         return self._distribute(kids[0], "return ")
