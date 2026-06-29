@@ -74,7 +74,7 @@ WFL Python (canonical 1:1)                         [WFL_MixingCenter]
 
 ## Backlog (wanted, not started)
 
-- 🟡 **Breadth** — 2nd interactive drop-in (exercise_detail). General mechanisms DONE: `MutableStateFlow → State` (log_123), nav map (log_129), **SharedFlow-mediated nav** (log_130, edit-nav fires via `vm.editCurrent()`). Remaining = PER-SCREEN: adapter methods for `delete`/`onToggleExcluded` repo calls, IR capture of the `excludePrompt?.let` AlertDialog, then vendor/route + swap-under the transpiled ExerciseRepository.
+- ✅ **Breadth** — exercise_detail is a 2nd VENDORED interactive drop-in (transpiled VM + exercise enums + enum-lift + adapter; `tools/test_exercise_detail_gen.py` MATCH): renders the Back Squat (7 shared) + SharedFlow edit-nav (log_130) + reactive exclude-prompt **dialog** (set/dismiss, MutableStateFlow→State). Generator gained: lazy/id-aware VM construction + **file-aware composable resolution → 100% Compose coverage** (496/496, log_133). NOT routed yet: the overflow DropdownMenu items render inline (collapse not modeled). Other general mechanisms also landed: `return@label` transpiler fix.
 - 🔵 **Depth** — Python→Dart of the generated screen for Flutter PIXEL goldens (its runtime isn't Dart-transpilable yet).
 - 🔵 **Efficient near-true-reactivity** (reconciled redraw) — kit-only, correctness-preserving, deferred (log_122).
 - 🔵 **UI ledger geometry layer** (rendered-box diff; ground truth = original app via `WFL_PseudoCoup/tools/dualtrace`).
