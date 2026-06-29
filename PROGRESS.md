@@ -73,8 +73,9 @@ We work on this and nothing else until the foundation is solid. The transpiler n
 gate     what it proves                                       command                result
 parse    every file becomes Python, no syntax errors          build_mixingcenter.py  254 / 254
 load     the non-UI domain loads under the runtime            loadcheck.py           165 / 165
-extern   every external name the foundation USES is wrapped   externals.py           0 real gaps (66 wrapped)
-logic    tested components match Kotlin's answers             oracle.py              11 / 11  (160 methods)
+extern   every external name the foundation USES is wrapped   externals.py           0 real gaps
+logic    tested ENGINES match Kotlin's answers                oracle.py              11 / 11  (160 methods)
+data     the DATA LAYER runs the project's own DAO/txn tests  datalayer_oracle.py    2 / 2
 ```
 
 **load ≠ run — the finding that drove this pass.** `load` (165/165) only proves the modules *load*; it
@@ -95,11 +96,16 @@ module that wraps it, in the code itself.
   stubbed. Built: `runtime/room.py` (a sqlite3-backed Room — entity↔row converters, the `Room` builder) and
   `datalayer.py` (the transpiler turns `@Entity`→a table schema, `@Dao`'s `@Query`/`@Insert`/`@Update`/`@Delete`
   →real bodies, and `@Database`→a `WorkoutDatabase` that registers every entity and wires the DAO accessors).
-  Verified: the actual instrumented-test path —
-  `Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java).build().exerciseDao()` — runs
-  `getByMuscleGroup` (whole-token matching) + update + delete on sqlite3 (`datalayer_e2e.py`). Remaining is
-  smaller now: `@Transaction` methods, and wiring the oracle to the instrumented `androidTest` classes
-  themselves (they need `AndroidJUnit4`/`ApplicationProvider` stubs) so the suite runs as written.
+  Verified by the project's OWN instrumented tests, run AS WRITTEN headless (`datalayer_oracle.py`, a
+  data-layer twin of the engine oracle pointed at `androidTest`): **ExerciseDaoMuscleGroupTest** (queries,
+  converters, the raw-SQL `openHelper` whole-token boundary guard) and **GymRepositoryTransactionTest**
+  (`withTransaction` rolls back a failed write) — both green. The two other instrumented tests are blocked
+  not by the data layer but by higher-level surfaces: `BackupRepositoryRoundTripTest` exercises the backup
+  *feature* (a column-introspective JSON dump/restore engine, a Cursor API, `clearAllTables`, `runCatching`)
+  and also has a stale constructor arg in the copy; `MigrationTest` needs Room's `MigrationTestHelper`
+  (schema-version testing infrastructure). (`runCatching` and other default-import stdlib names are a known
+  gap class the `extern` checklist doesn't track — it lists explicit imports; `kotlin_rt` grows them as
+  surfaced.)
 - **Platform glue.** Activities, notifications, Firebase, WorkManager are off-device by nature — stubbed to
   resolve names, not to run. When a piece must run (e.g. notification content built from domain data), lift
   that logic into the domain layer where it's testable.

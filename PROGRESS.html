@@ -88,8 +88,9 @@ The transpiler now runs the full pipeline — parse → resolve → map → gene
 <pre>gate     what it proves                                       command                result
 parse    every file becomes Python, no syntax errors          build_mixingcenter.py  <b>254 / 254</b>
 load     the non-UI domain loads under the runtime            loadcheck.py           <b>165 / 165</b>
-extern   every external name the foundation USES is wrapped   externals.py           <b>0 real gaps</b> (66 wrapped)
-logic    tested components match Kotlin's answers             oracle.py              <b>11 / 11</b>  (160 methods)</pre>
+extern   every external name the foundation USES is wrapped   externals.py           <b>0 real gaps</b>
+logic    tested ENGINES match Kotlin's answers                oracle.py              <b>11 / 11</b>  (160 methods)
+data     the DATA LAYER runs the project's DAO/txn tests      datalayer_oracle.py    <b>2 / 2</b></pre>
 <p class="num" style="margin-top:10px"><b>load ≠ run — the finding that drove this pass.</b>
 <code>load</code> only proves the modules <i>load</i>; it misses names used inside method bodies. The new
 <code>resolve</code> phase reads every file's imports — they name exactly where each external symbol comes
@@ -109,10 +110,13 @@ strings are real SQLite SQL and Python ships <code>sqlite3</code>, so it's faith
 <code>@Entity</code> into a table schema and an <code>@Dao</code>'s <code>@Query</code> into a body that runs
 the SQL (<code>@Query</code>/<code>@Insert</code>/<code>@Update</code>/<code>@Delete</code>), and an
 <code>@Database</code> into a <code>WorkoutDatabase</code> that registers every entity and wires the DAO
-accessors — verified end-to-end through the actual instrumented-test path,
-<code>Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java).build().exerciseDao()</code> running
-query + update + delete on sqlite3 (<code>datalayer_e2e.py</code>). Remaining: <code>@Transaction</code>
-methods + running the instrumented <code>androidTest</code> classes as written.
+accessors — verified by the project's OWN instrumented tests, run as written headless
+(<code>datalayer_oracle.py</code>): <b>ExerciseDaoMuscleGroupTest</b> (queries, converters, the raw-SQL
+boundary guard) and <b>GymRepositoryTransactionTest</b> (<code>withTransaction</code> rollback) both pass.
+The two remaining instrumented tests are blocked by higher-level surfaces, not the data layer:
+<code>BackupRepositoryRoundTripTest</code> is the backup <i>feature</i> (a JSON dump/restore engine + Cursor
+API, plus a stale constructor arg in the copy); <code>MigrationTest</code> needs Room's
+<code>MigrationTestHelper</code>.
 <b>Platform glue</b> (Activities, notifications, Firebase, WorkManager) is off-device by nature — stubbed to
 resolve names, not to run; when a piece must run, lift that logic into the domain layer.</p>
 </div>
