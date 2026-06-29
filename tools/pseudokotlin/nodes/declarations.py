@@ -11,6 +11,8 @@ import re
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
+import resolve   # noqa: E402  (the resolve phase: a file's import table)
+import registry  # noqa: E402  (the wrapper registry: which runtime module provides a name)
 
 _TOP_DECLS = {"class_declaration", "object_declaration", "function_declaration",
               "property_declaration"}
@@ -40,14 +42,35 @@ class Declarations:
     @kind("source_file")
     def v_source_file(self, node):
         self._ext_patches, self._nested_aliases = [], []
+        imports = self._emit_imports(resolve.file_header(node))
         parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
         body = "\n\n\n".join(p for p in parts if p)
         # flush AFTER all decls so the referenced classes exist: nested-type aliases
         # (Inner = Outer.Inner, makes bare cross-file refs resolve) then ext patches.
         tail = self._nested_aliases + self._ext_patches
         if tail:
-            body += "\n\n\n" + "\n".join(tail)
+            body += ("\n\n\n" if body else "") + "\n".join(tail)
+        if imports:
+            body = "\n".join(imports) + ("\n\n\n" + body if body else "")
         return body
+
+    def _emit_imports(self, header):
+        """Each external name a file imports -> `from runtime.<wrapper module> import <name>`, derived
+        from the import table (resolve) and the registry. This is the import structure made REAL in the
+        output: a use of an external module maps to the module that wraps it. Only covered names are
+        emitted; an as-yet-unwrapped external (a compose name in a UI file) stays bare -- a listed
+        checklist gap, not a silent one. App imports stay in the flat namespace for now."""
+        prov = registry.provided()
+        by_module = {}
+        for used, fqn in header["imports"].items():
+            orig = fqn.rsplit(".", 1)[-1]                   # the name the wrapper module defines
+            mod = prov.get(orig)
+            if mod is None:
+                continue
+            token = orig if used == orig else f"{orig} as {used}"   # preserve `import … as …`
+            by_module.setdefault(mod, set()).add(token)
+        return [f"from runtime.{mod} import {', '.join(sorted(by_module[mod]))}"
+                for mod in sorted(by_module)]
 
     @kind("function_declaration")
     def v_function_declaration(self, node):
