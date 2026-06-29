@@ -52,3 +52,15 @@ def module_for(origin):
 def covers(name):
     """Is there a runtime wrapper for this external simple name?"""
     return name in provided()
+
+
+def namespace():
+    """The merged runtime namespace -- every public name across all wrapper modules -> its value.
+    Seeds the oracle and the load gate, so a wrapper lands wherever its origin module puts it and the
+    harnesses pick up a new origin module the moment ORIGIN_MODULE points at it."""
+    ns = {}
+    for m in _modules():
+        for n in dir(m):
+            if not n.startswith("_"):
+                ns[n] = getattr(m, n)
+    return ns
