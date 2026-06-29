@@ -24,24 +24,29 @@ wrappers, ledger, tags, structure, connectivity. Nothing in it exists without a 
 
 ## The one goal now — complete the transpiler
 
-We work on this and nothing else until the foundation is solid.
+We work on this and nothing else until the foundation is solid. The transpiler is checked by three
+gates, each stricter than the last:
 
-**254 / 254 parse-clean — the transpiler is parse-complete.** Every Kotlin file in the WFL copy
-transpiles to Python that parses. The oracle (11 engines, runtime-equivalence) stayed green throughout.
+```
+gate    what it proves                                           command                result
+parse   every file becomes Python with no syntax errors          build_mixingcenter.py  254 / 254
+load    the non-UI foundation actually loads under kotlin_rt      loadcheck.py           163 / 167
+logic   tested components compute the same answers as Kotlin      oracle.py              11 / 11  (160 methods)
+```
 
-Constructs handled this pass (each a Kotlin form KtToPy didn't cover): the `by` delegate
-(`val x by remember/collectAsState/lazy`); a trailing lambda after a named argument
-(`Box(x, contentAlignment=Y) { … }`); `when`/standalone `is Type` → `isinstance`; `if`/`when` used as
-a value (hoisted to a temp); hex literals keeping their `F`/`f` digits; `a?.b = v` → a guarded
-assignment; and an anonymous object (`object : Migration(1,2) { … }`) → a hoisted class + instance.
+The **load** gate, added this pass, caught two real bugs that parsing alone had hidden — both because
+the affected code wasn't being emitted at all: a companion-object property whose value is an anonymous
+object dropped the lifted class (`MIGRATION_1_2 = _Obj1(1, 2)` with no `class _Obj1`), and Kotlin raw
+`"""…"""` strings spanning lines were emitted with a single `"`. Both fixed.
 
-> **Next bar — runnable, not just parse-clean.** Parsing is the floor. The deeper bar is the foundation
-> RUNNING (the way the 11 oracle engines already do): supplying the runtime names the transpiled code
-> calls (e.g. `remember`, `Color`, `hiltViewModel`), and the convention guesses (the `content=` lambda
-> name) replaced by real callee signatures where the code must execute.
+The 4 files the load gate still blocks are stopped by **external platform names** the foundation calls —
+a Room `Migration`, a Java `SimpleDateFormat`, and two Compose names (`Icons`, `hiltViewModel`) — not by
+any transpiler defect. Supplying those names is the runtime-support layer; the Compose ones belong with
+the UI, a later phase.
 
-Parse-clean is not the same as runnable; runnability is a later check. The metric now is: does every
-Kotlin construct in the copy transpile. Regenerate with `python3 tools/pseudokotlin/build_mixingcenter.py`.
+Earlier construct work this stretch: the `by` delegate; a trailing lambda after a named argument;
+`when`/standalone `is Type` → `isinstance`; `if`/`when` as a value (hoisted to a temp); hex literals
+keeping `F`/`f` digits; `a?.b = v` → a guarded assignment; anonymous objects → a hoisted class + instance.
 
 ## The plan, in order
 
