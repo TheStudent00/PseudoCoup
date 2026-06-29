@@ -73,7 +73,9 @@ class _FlowOps:
 class StateFlow(_FlowOps):
     # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so a UI-FLAG flow
     # (dialog-open, search query) repaints like Compose snapshot state would. Reads stay cheap.
-    def __init__(self, v=None): self._value = v
+    # Doubles as MutableSharedFlow: `collect` registers a handler, `emit` notifies them synchronously
+    # (the pull analog of a LaunchedEffect collecting a nav event).
+    def __init__(self, v=None): self._value = v; self._collectors = []
     def _read(self): return self._value
     @property
     def value(self): return self._value
@@ -89,7 +91,9 @@ class StateFlow(_FlowOps):
     def collectAsStateWithLifecycle(self, *a): return self._value
     def collectAsState(self, *a): return self._value
     def first(self): return self._value
-    def emit(self, *a): pass
+    def collect(self, h): self._collectors.append(h)               # SharedFlow: register
+    def emit(self, *a):                                            # SharedFlow event -> notify
+        for h in list(self._collectors): h(*a)
 
 
 class Flow(_FlowOps):
