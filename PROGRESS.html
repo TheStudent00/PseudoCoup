@@ -110,9 +110,9 @@
     <h3>Track B <span class="badge b-warn">IN PROGRESS</span></h3>
     <div class="role">transpiler center — Kt→Py of the whole app · <b>the documented priority</b></div>
     <div class="bar"><i style="width:76%"></i></div>
-    <div class="num"><b>192 / 254 PARSE-clean</b> (76%) — <b>not</b> runnable</div>
-    <div class="num">runnable frontier = <b>11 oracle engines</b> only</div>
-    <div class="num mut" style="margin-top:6px">DB-domain doesn't run: <b>79%</b> unresolved imports · <b>19/20</b> repos dropped DI ctors · <code>core.flow</code> missing (log_124)</div>
+    <div class="num">WFL_MixingCenter (parse-clean 192/254) is <b>stale</b> old-transpiler output</div>
+    <div class="num">canonical <b>KtToPy</b>: GymRepository runs end-to-end · <b>14/20</b> repos LOAD</div>
+    <div class="num mut" style="margin-top:6px">only <b>2</b> real transpiler bugs left; rest = entity-namespace wiring. Jump = regen + domain runtime + 2 fixes (log_125)</div>
   </div>
   <div class="card">
     <h3>Track A <span class="badge b-good">MATURE</span></h3>
@@ -131,14 +131,13 @@
 </div>
 
 <div class="callout">
-  ⚠️ <b>Sequencing reality (confirmed by probe, log_124).</b> The breadth work is genuinely
-  <i>ahead of the foundation</i>. A generated screen binds to a transpiled VM but runs on the
-  <b>hand-built</b> domain (<code>src/domain</code>) — because the <b>transpiled</b> domain
-  (<code>WFL_MixingCenter</code>) does NOT run: it parses, but 79% of files have unresolved imports,
-  19/20 repos dropped their DI constructors, runtime modules are missing. So "192/254" is parse-clean
-  scaffolding, not a runnable backend. The real ceiling is the <b>parse-clean → runnable jump</b>
-  (restore DI, resolve imports, supply runtime, Room→DB boundary) — not more UI. Breadth is valid as
-  <i>mechanism-proof</i> but can't trace end-to-end until that floor is real.
+  ✅ <b>Sequencing reality (probed, log_124→125).</b> The breadth work IS ahead of the foundation —
+  generated screens run on the <b>hand-built</b> domain because WFL_MixingCenter doesn't run. BUT that
+  repo is <b>stale old-transpiler output</b>: the canonical <b>KtToPy</b> already restores DI and runs
+  a real repository end-to-end (<code>GymRepository</code>: construct + read + write), with <b>14/20</b>
+  repos loading. The parse-clean → runnable jump is therefore <b>small &amp; bounded</b>: regenerate the
+  domain with KtToPy + supply a runtime namespace (kotlin_rt + transpiled entities + UUID/System/Flow) +
+  fix <b>2</b> transpiler bugs. Then the screens can trace through a real floor.
 </div>
 
 <h2>Component status</h2>

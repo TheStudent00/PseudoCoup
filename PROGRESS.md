@@ -29,7 +29,7 @@ WFL Python (canonical 1:1)                         [WFL_MixingCenter]
 
 | Track | What it is | Status | The number that matters |
 |-------|------------|:------:|-------------------------|
-| **Track B** — transpiler center | Kt→Py of the whole app + verification ladder. **The documented current priority.** | 🟡 | **192/254 PARSE-clean** (non-UI 162/167; UI 30/87) — but parse-clean ≠ runnable. **Runnable frontier = 11 oracle engines.** The DB-backed domain does NOT run: **201/254 (79%) have unresolved imports**, **19/20 repos dropped their DI constructors**, runtime modules (`core.flow`) missing (log_124). |
+| **Track B** — transpiler center | Kt→Py of the whole app + verification ladder. **The documented current priority.** | 🟡 | WFL_MixingCenter (parse-clean 192/254) is STALE `literal_transpiler` output — ignore its runnability. The **canonical KtToPy** is much further: GymRepository runs end-to-end (DI + read + write); **14/20 repos LOAD** with kotlin_rt; only **2 real transpiler bugs** left; the rest = entity-namespace wiring (log_125). Remaining jump: regen-with-KtToPy + domain runtime namespace + 2 bug fixes. |
 | **Track A** — hand-built UI | ~30 screens hand-written on the kit (NOT transpiled). The mature baseline. | ✅ | ~30 screens; "65/65" = Track A's hand-built **assertion/coverage** count (NOT the 36 golden PNGs — those are the current visual baseline) |
 | **Bucket 3** — PseudoUI swap-in | Make the literal WFL Python a *runnable app*: wire screens onto the kit + reactivity. **Officially deferred until non-UI closes.** | ⏸️→🟡 | gym_list is a complete generated drop-in (this session). **This is the deferred bucket — see the sequencing note below.** |
 
