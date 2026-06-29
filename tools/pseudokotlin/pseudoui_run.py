@@ -556,10 +556,42 @@ def _reactive_ns():
         except Exception:                                # noqa: BLE001 -- no recompose host
             pass
 
-    class _StateFlow:
+    class _FlowOps:
+        # pull-model Flow operators: transform the LATEST emission, re-read on access (cold Flow)
+        def map(self, f): return _Flow(lambda: f(self._read()))
+        def mapLatest(self, f): return _Flow(lambda: f(self._read()))
+        def filter(self, p):
+            def q():
+                v = self._read()
+                return v if p(v) else None
+            return _Flow(q)
+        def flatMapLatest(self, f):
+            def q():
+                inner = f(self._read())
+                return inner._read() if hasattr(inner, "_read") else inner
+            return _Flow(q)
+        def onEach(self, f):
+            def q():
+                v = self._read(); f(v); return v
+            return _Flow(q)
+        def onStart(self, *a): return self
+        def distinctUntilChanged(self, *a): return self
+        def catch(self, *a): return self
+        def flowOn(self, *a): return self
+        def debounce(self, *a): return self
+        def sample(self, *a): return self
+        def take(self, *a): return self
+        def drop(self, *a): return self
+        def collect(self, f):
+            v = self._read()
+            if v is not None: f(v)
+        def collectLatest(self, f): self.collect(f)
+
+    class _StateFlow(_FlowOps):
         # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so UI-FLAG
         # flows (dialog-open, search query) repaint like Compose snapshot state. Reads stay plain.
         def __init__(self, v=None): self._value = v
+        def _read(self): return self._value
         @property
         def value(self): return self._value
         @value.setter
@@ -567,6 +599,7 @@ def _reactive_ns():
             changed = self._value != v
             self._value = v
             if changed: _notify_recompose()
+        def update(self, f): self.value = f(self._value)
         def stateIn(self, *a): return self
         def asStateFlow(self): return self
         def asSharedFlow(self): return self
@@ -575,18 +608,19 @@ def _reactive_ns():
         def first(self): return self._value
         def emit(self, *a): pass
 
-    class _Flow:
+    class _Flow(_FlowOps):
         # `v` may be a value OR a thunk (re-query function). A Kotlin Flow re-emits on every db
         # change; the pull analog is to re-read on each access. So `.value` calls the thunk fresh,
         # and stateIn returns the SAME lazy flow (not a frozen snapshot).
         def __init__(self, v): self._v = v
-        def _val(self): return self._v() if callable(self._v) else self._v
+        def _read(self): return self._v() if callable(self._v) else self._v
+        def _val(self): return self._read()
         def stateIn(self, *a): return self
-        def collectAsStateWithLifecycle(self, *a): return self._val()
-        def collectAsState(self, *a): return self._val()
-        def first(self): return self._val()
+        def collectAsStateWithLifecycle(self, *a): return self._read()
+        def collectAsState(self, *a): return self._read()
+        def first(self): return self._read()
         @property
-        def value(self): return self._val()
+        def value(self): return self._read()
 
     class _Scope:
         def launch(self, f):
@@ -611,10 +645,14 @@ def _reactive_ns():
         def __getitem__(self, k): return _Permissive()
         def __call__(self, *a, **k): return _Permissive()
 
+    def flowOf(*xs): return _Flow(lambda: xs[-1] if xs else None)
+    def emptyFlow(): return _Flow(lambda: None)
+
     ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
     ns.update({"viewModelScope": _Scope(), "SharingStarted": _Started,
                "MutableStateFlow": _StateFlow, "MutableSharedFlow": _StateFlow,
                "KtList": rt.KtList, "_Flow": _Flow, "combine": combine,
+               "flowOf": flowOf, "emptyFlow": emptyFlow,
                "Screen": _Permissive(), "checkNotNull": (lambda x, *a: x),
                "_Permissive": _Permissive})
     return ns
