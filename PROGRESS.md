@@ -26,14 +26,22 @@ wrappers, ledger, tags, structure, connectivity. Nothing in it exists without a 
 
 We work on this and nothing else until the foundation is solid.
 
-**196 / 254** Kotlin files transpile to parse-clean Python (212 written, 196 parse). The other **42**
-are transpiler errors — almost all the same gap:
+**196 / 254** parse-clean (242 of 254 now produce Python). We clear the transpiler one Kotlin
+construct at a time. Done and next:
 
-- **`delegated property outside a class body`** — the Compose `val x by …` delegate written at the top
-  of a `@Composable` function (not inside a class). KtToPy only handles it inside a class today. This
-  one gap blocks **~28 UI screens**. **First target:** handle the `by` delegate at function/top level.
-- A few others: an `object_literal` (`WorkoutDatabase`), a `type_test` (`DebugPanelViewModel`).
-- **16** files transpile but don't parse (emitted-but-invalid) — separate, smaller.
+- **DONE — the `by` delegate.** `val/var x by remember/collectAsState/lazy` at the top of a
+  `@Composable` (not in a class) now transpiles: `x = D`, with reads/writes of `x` going through
+  `x.value`. This cleared the largest error class (transpiler errors 42 → 12).
+- **NEXT (dominant gap now) — trailing lambda after a keyword argument.** `Box(x, contentAlignment=Y)
+  { content }` emits `Box(x, contentAlignment=Y, lambda)`, which is invalid Python (a positional
+  argument can't follow a keyword one). **43 occurrences, all in UI files**; clearing it should move
+  ~28 screens to parse-clean. *This fix has an open choice — see the note below.*
+- **12 transpiler errors remain** — `no handler`: an `object_literal` (`WorkoutDatabase`), a
+  `type_test` (`DebugPanelViewModel`).
+
+> Open choice on the trailing-lambda fix: Kotlin's trailing lambda fills the callee's LAST parameter,
+> whose name the transpiler doesn't know (no signatures). Faithful options: pass it as a keyword arg
+> with a convention (e.g. `content=`), or carry callee signatures. Owner's call.
 
 Parse-clean is not the same as runnable; runnability is a later check. The metric now is: does every
 Kotlin construct in the copy transpile. Regenerate with `python3 tools/pseudokotlin/build_mixingcenter.py`.
