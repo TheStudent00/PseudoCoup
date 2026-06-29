@@ -13,7 +13,6 @@ import glob
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import registry              # noqa: E402
-import runtime.room as room  # noqa: E402
 
 ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter")
 
@@ -43,8 +42,10 @@ def main():
     ExerciseEntity, ExerciseDao = ns["ExerciseEntity"], ns["ExerciseDao"]
     MuscleGroup, MovementPattern, EquipmentType = ns["MuscleGroup"], ns["MovementPattern"], ns["EquipmentType"]
 
-    db = room.Database().register(ExerciseEntity)       # the schema line set ExerciseEntity._room
-    dao = ExerciseDao(db)
+    # the real instrumented-test path: Room.inMemoryDatabaseBuilder(...).build().exerciseDao()
+    Room, WorkoutDatabase = ns["Room"], ns["WorkoutDatabase"]
+    db = Room.inMemoryDatabaseBuilder(None, WorkoutDatabase).build()
+    dao = db.exerciseDao()
     mp = next(getattr(MovementPattern, n) for n in dir(MovementPattern) if n.isupper())
     eq = next(getattr(EquipmentType, n) for n in dir(EquipmentType) if n.isupper())
     CHEST, BACK = MuscleGroup.CHEST, MuscleGroup.UPPER_BACK
