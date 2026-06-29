@@ -279,12 +279,13 @@ def _btn(call, subst):
 
 # ── composable bodies (keep the body node for statement walking) ───────────────
 _BODIES = None
+_BODIES_ALL = None                                       # {name -> {file -> (params, body)}} (overloads)
 
 
 def _comp_bodies():
-    global _BODIES
+    global _BODIES, _BODIES_ALL
     if _BODIES is None:
-        _BODIES = {}
+        _BODIES, _BODIES_ALL = {}, {}
         for dp, _, fs in os.walk(UL.UIROOT):
             for f in fs:
                 if not f.endswith(".kt"):
@@ -312,9 +313,21 @@ def _comp_bodies():
                                             params.append(pn)
                             body = next((k for k in n.children if k.type == "function_body"), None)
                             if nm and body is not None:
-                                _BODIES[nm] = (params, body)
+                                _BODIES[nm] = (params, body)       # global (last-wins) default
+                                _BODIES_ALL.setdefault(nm, {})[os.path.join(dp, f)] = (params, body)
                     stack.extend(n.children)
     return _BODIES
+
+
+def _comp_bodies_for(screen_path):
+    """name -> (params, body), preferring the definition in `screen_path`'s OWN file when a composable
+    is overloaded across files (e.g. DetailSection's `content: @Composable` vs `body: String`)."""
+    _comp_bodies()
+    out = dict(_BODIES)
+    for nm, byfile in _BODIES_ALL.items():
+        if screen_path in byfile:
+            out[nm] = byfile[screen_path]
+    return out
 
 
 # Representation map: the kit backend draws certain Compose icons as text glyphs (its top_bar/fab/
@@ -347,7 +360,7 @@ def _represent(nodes):
 def build_ir(compose_path):
     comps = UL.composables(compose_path)
     cname, _ = G._entry(comps)
-    defs = _comp_bodies()
+    defs = _comp_bodies_for(compose_path)               # same-file preference for overloaded composables
     params, body = defs[cname]
     out = []
     for s in _stmts(body):
