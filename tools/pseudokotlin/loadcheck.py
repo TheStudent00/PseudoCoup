@@ -16,6 +16,12 @@ import runtime.kotlin_rt as rt
 
 ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter")
 
+# Compose/Hilt/Nav names. A non-UI-path file blocked by one of these is UI-orchestration that
+# just lives outside ui/ (e.g. navigation/AppNavigation) -> it defers WITH the UI, not a real gap.
+UI_NAMES = {"Icons", "hiltViewModel", "remember", "Modifier", "Composable", "Scaffold",
+            "MaterialTheme", "NavHost", "rememberNavController", "collectAsStateWithLifecycle",
+            "collectAsState", "LaunchedEffect", "Text", "Column", "Row", "Box"}
+
 
 def main():
     files = [f for f in glob.glob(ROOT + "/**/*.py", recursive=True)
@@ -37,20 +43,25 @@ def main():
         if not progressed:
             break
 
-    print(f"non-UI foundation files : {len(core)}")
-    print(f"  load clean (kotlin_rt) : {len(loaded)}")
-    print(f"  blocked                : {len(pending)}")
-    print(f"(UI files, deferred)     : {len(ui)}")
+    def blocker(msg):
+        return msg.split("'")[1] if "NameError" in msg and "'" in msg else None
 
-    missing = collections.Counter()
-    for msg in errs.values():
-        if "NameError" in msg and "'" in msg:
-            missing[msg.split("'")[1]] += 1
+    deferred = {f: m for f, m in errs.items() if blocker(m) in UI_NAMES}   # UI-orchestration
+    gaps = {f: m for f, m in errs.items() if f not in deferred}            # real blockers
+    domain = len(core) - len(deferred)
+
+    print(f"non-UI domain files          : {domain}")
+    print(f"  load clean                 : {len(loaded)} / {domain}")
+    print(f"  real gaps                  : {len(gaps)}")
+    print(f"UI-layer outside ui/ (deferred): {len(deferred)}   {[os.path.relpath(f, ROOT) for f in deferred]}")
+    print(f"ui/ files (deferred)         : {len(ui)}")
+
+    missing = collections.Counter(blocker(m) for m in gaps.values() if blocker(m))
     if missing:
-        print("\nblocking names -> need a platform shim:")
+        print("\nreal gaps -> need a stand-in / fix:")
         for name, n in missing.most_common(20):
             print(f"  {n:3d}  {name}")
-    defects = {f: m for f, m in errs.items() if "NameError" not in m}
+    defects = {f: m for f, m in gaps.items() if "NameError" not in m}
     if defects:
         print("\nnon-NameError blockers (transpiler/logic defects to fix):")
         for f, msg in defects.items():
