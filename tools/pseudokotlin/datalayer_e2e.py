@@ -64,8 +64,18 @@ def main():
     assert hits == ["bench", "incline", "pulldown"], hits     # 'row' correctly excluded
     one = dao.getById("incline").first()                      # Flow<ExerciseEntity?> round-trip
     assert [m.name for m in one.primaryMuscleGroups] == ["CHEST", "UPPER_BACK"]
-    print(f"data-layer e2e: OK -- the REAL transpiled ExerciseDao.getByMuscleGroup('CHEST') ran on "
-          f"sqlite3 and returned {hits}; enum_list round-tripped through the converter.")
+
+    # @Update: give 'bench' a BACK secondary -> it now matches a BACK query
+    bench = dao.getById("bench").first()
+    bench.secondaryMuscleGroups = [BACK]
+    dao.update(bench)
+    assert "bench" in [e.id for e in dao.getByMuscleGroup("UPPER_BACK").first()]
+    # @Delete: remove it -> gone
+    dao.delete(bench)
+    assert dao.getById("bench").first() is None
+
+    print(f"data-layer e2e: OK -- the REAL transpiled ExerciseDao ran getByMuscleGroup('CHEST') -> {hits} "
+          f"on sqlite3; enum_list round-tripped; @Update + @Delete verified.")
 
 
 if __name__ == "__main__":

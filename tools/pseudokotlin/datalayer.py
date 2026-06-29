@@ -126,10 +126,15 @@ def dao_body(method_node):
         else:
             helper = "_one"
         return f"return self.{helper}({sql!r}, {pdict})"
+    arg = params[0] if params else "entity"
     if "@Insert" in text:
-        return f"return self._insert({params[0] if params else 'entity'})"
-    if "@Update" in text or "@Delete" in text or "@Transaction" in text:
-        return "pass  # write/transaction op: needs generated SQL (next data-layer step)"
+        return f"return self._insert({arg})"
+    if "@Update" in text:
+        return f"return self._update({arg})"
+    if "@Delete" in text:
+        return f"return self._delete({arg})"
+    if "@Transaction" in text:
+        return "pass  # @Transaction default method (next data-layer step)"
     return "pass"
 
 
