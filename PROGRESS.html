@@ -107,9 +107,12 @@ foundation files carry <code>from runtime.&lt;wrapper&gt; import &lt;name&gt;</c
 strings are real SQLite SQL and Python ships <code>sqlite3</code>, so it's faithfully implementable. Built
 <code>runtime/room.py</code> (sqlite3-backed, with the entity↔row converters) and the transpiler now turns an
 <code>@Entity</code> into a table schema and an <code>@Dao</code>'s <code>@Query</code> into a body that runs
-the SQL — verified end-to-end: the real transpiled <code>ExerciseDao.getByMuscleGroup</code> runs on sqlite3
-(<code>datalayer_e2e.py</code>). Remaining: <code>@Update</code>/<code>@Delete</code> writes + the
-<code>@Database</code> wiring for the full instrumented suite.
+the SQL (<code>@Query</code>/<code>@Insert</code>/<code>@Update</code>/<code>@Delete</code>), and an
+<code>@Database</code> into a <code>WorkoutDatabase</code> that registers every entity and wires the DAO
+accessors — verified end-to-end through the actual instrumented-test path,
+<code>Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java).build().exerciseDao()</code> running
+query + update + delete on sqlite3 (<code>datalayer_e2e.py</code>). Remaining: <code>@Transaction</code>
+methods + running the instrumented <code>androidTest</code> classes as written.
 <b>Platform glue</b> (Activities, notifications, Firebase, WorkManager) is off-device by nature — stubbed to
 resolve names, not to run; when a piece must run, lift that logic into the domain layer.</p>
 </div>
