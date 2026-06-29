@@ -14,11 +14,14 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import runtime.kotlin_rt as kotlin_rt      # noqa: E402
 import runtime.coroutines as coroutines    # noqa: E402
+import runtime.java_rt as java_rt          # noqa: E402
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
+# (provided() indexes by NAME across all of these, so a java name already in kotlin_rt, e.g. Date,
+# stays found there; java_rt adds the rest.)
 ORIGIN_MODULE = {
     "kotlin": kotlin_rt,
-    "java": kotlin_rt,
+    "java": java_rt,                       # java.time chain, UUID, TimeUnit, File, ... (+ Date in kotlin_rt)
     "javax": kotlin_rt,
     "androidx_room": kotlin_rt,            # the Migration stub lives here for now
     "kotlinx_coroutines": coroutines,      # synchronous Flow/StateFlow reactive stand-in

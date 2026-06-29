@@ -75,7 +75,7 @@ def main():
         agg = by_origin[origin]
         agg[0] += 1
         agg[1] += 1 if r["covered"] else 0
-        if r["live"] and not r["covered"]:                   # referenced in non-UI output, unwrapped
+        if r["live"] and not r["covered"] and not r["ui_only"]:   # imported by a non-UI file, live, unwrapped
             agg[2] += 1
 
     print(f"{'origin':22s} {'import':>7} {'wrapped':>8} {'live gap':>9}")
@@ -87,7 +87,8 @@ def main():
             tot[i] += (d, c, rg)[i]
     print(f"  {'TOTAL':20s} {tot[0]:7d} {tot[1]:8d} {tot[2]:9d}")
 
-    real = sorted({(o, n) for (o, n), r in names.items() if r["live"] and not r["covered"]})
+    real = sorted({(o, n) for (o, n), r in names.items()
+                   if r["live"] and not r["covered"] and not r["ui_only"]})
     print(f"\nREAL non-UI foundation gaps -- external names used in the foundation's Python, unwrapped: "
           f"{len(real)}")
     cur = None
