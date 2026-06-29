@@ -60,9 +60,20 @@ class Database:
     """The sqlite3-backed database. register(EntityClass) each entity (it carries cls._room), then DAOs
     run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes)."""
     def __init__(self):
-        self._conn = sqlite3.connect(":memory:")
+        self._conn = sqlite3.connect(":memory:", isolation_level=None)   # autocommit; BEGIN/ROLLBACK explicit
         self._conn.row_factory = sqlite3.Row
         self._entities = {}                 # table name -> Entity
+
+    def withTransaction(self, block):
+        """Room's db.withTransaction { } -> run block in a transaction; roll back on any exception."""
+        self._conn.execute("BEGIN")
+        try:
+            result = block()
+            self._conn.execute("COMMIT")
+            return result
+        except BaseException:               # noqa: BLE001 -- rollback then re-raise
+            self._conn.execute("ROLLBACK")
+            raise
 
     def register(self, cls):
         ent = cls._room                     # entity_schema sets `Cls._room = Entity(...)`
