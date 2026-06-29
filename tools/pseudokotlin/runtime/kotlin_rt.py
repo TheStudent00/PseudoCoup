@@ -735,6 +735,18 @@ CharSequence = str
 Any = object                            # kotlin.Any -> Python object; `Any()` is a bare lock/sentinel
 
 
+class _KClass:                          # X::class -> kclass(X); .java/.kotlin are X, .simpleName its name
+    def __init__(self, cls):
+        self.java = cls
+        self.kotlin = cls
+        self.simpleName = getattr(cls, "__name__", None)
+        self.qualifiedName = getattr(cls, "__name__", None)
+
+
+def kclass(cls):
+    return _KClass(cls)
+
+
 def arrayOf(*xs):
     return KtList(xs)
 

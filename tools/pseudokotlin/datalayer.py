@@ -153,6 +153,28 @@ def dao_class(dao_node, class_name):
     return "\n".join(lines)
 
 
+def database_patches(class_node, name):
+    """@Database -> module-level wiring patched onto the rendered DB class: an __init__ that creates a
+    room.Database and registers every listed entity, and a body for each abstract DAO accessor."""
+    text = class_node.text.decode()
+    m = re.search(r"entities\s*=\s*\[(.*?)\]", text, re.DOTALL)
+    ents = re.findall(r"(\w+)::class", m.group(1)) if m else []
+    body = _find(class_node, "class_body")
+    accessors = []
+    for fn in (body.named_children if body is not None else []):
+        if fn.type != "function_declaration":
+            continue
+        nm = next((k.text.decode() for k in fn.children if k.type == "identifier"), None)
+        rt = re.search(r"\)\s*:\s*(\w+)", fn.text.decode())
+        if nm and rt and rt.group(1).endswith("Dao"):
+            accessors.append((nm, rt.group(1)))
+    init = [f"def _{name}_init(self):", "    self._db = Database()"]
+    init += [f"    self._db.register({e})" for e in ents]
+    patches = ["\n".join(init), f"{name}.__init__ = _{name}_init"]
+    patches += [f"{name}.{nm} = lambda self: {dao}(self._db)" for nm, dao in accessors]
+    return patches
+
+
 # ---- test: generate ExerciseEntity's schema and check the inferred column kinds ----------------- #
 if __name__ == "__main__":
     import os

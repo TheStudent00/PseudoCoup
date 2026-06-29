@@ -311,6 +311,9 @@ class Declarations:
         if "@Entity" in mods:                       # an entity -> its data class + a room table registration
             self._runtime_imports.add("from runtime.room import Col, Entity")
             self._ext_patches.append(datalayer.entity_schema(node, name, datalayer.enums()))
+        if "@Database" in mods:                     # the DB -> register entities + wire DAO accessors
+            self._runtime_imports.add("from runtime.room import Database")
+            self._ext_patches.extend(datalayer.database_patches(node, name))
         return cls
 
     @kind("object_declaration")
