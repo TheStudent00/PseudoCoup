@@ -86,19 +86,33 @@ Kobweb = a Kotlin web framework on top of Compose HTML (Compose-for-Web), Next.j
 live reload. You write Compose-style Kotlin; Kotlin/JS compiles it and Compose HTML renders it to
 the browser DOM.
 
-Is it "a complete translation of the app into HTML/JS, easier to transpile"? Honestly, no — for two
-reasons:
-- It is NOT a free translation of WFL. WFL is Jetpack Compose (Android) — a DIFFERENT composable set
-  (Material3 / Android layout) than Compose HTML (Div/Span/CSS). The viewmodels/domain (Kotlin/JS
-  could share), but the UI would have to be RE-AUTHORED in Compose HTML. That's a port, not a
-  transpile.
-- It runs COUNTER to this project's premise. PROJECT_MAP's thesis is to LEAVE Kotlin via a
-  language-agnostic intermediate (PseudoCoup Python -> Dart/Haxe/...): "write once, run in all of
-  spacetime." Kobweb is the opposite bet: STAY in Kotlin/JVM-toolchain and extend it to web. It
-  gives you ONE more target (web) at the cost of staying married to Kotlin.
+Is it "a complete translation of the app into HTML/JS, easier to transpile"? Two honest halves
+(correcting an earlier too-dismissive take of mine, which leaned on difficulty rather than the real
+reason):
 
-Where it IS worth a look: as a REFERENCE. Compose HTML solves exactly the declarative-Compose ->
-retained-DOM bridge that PseudoUI's kit grapples with (the DOM is a retained, mutate-in-place tree —
-the same shape as our zones). How Compose HTML reconciles its declarative tree onto the DOM is
-directly instructive for the reconciliation upgrade above. So: not a transpilation path, but a useful
-study for the kit's fine-grained-redraw design. The target decision is yours.
+DIFFICULTY — for a WEB target it is plausibly MUCH EASIER than our path, not harder. Jetpack Compose
+-> Compose HTML is a SAME-paradigm port (both are Compose: same @Composable, same state model, same
+recomposition) — mostly remapping the component vocabulary (Column/Row/Material3 -> Div/CSS/Silk) —
+versus our cross-paradigm Kotlin -> Python-imperative-kit. And Kotlin/JS compiles the viewmodels/
+domain directly. If the goal is DESIGN-fidelity (theme/config) not API-fidelity, that port is far less
+work for web. So the difficulty objection is weak; I had it wrong.
+
+THE REAL REASON it doesn't fit — it BYPASSES THE LEDGER. The project's spine is traceability: every
+transpiled object tagged/traced to Kotlin, no drift (the thing whose absence "could cause project
+failure again"). A Kobweb port is an UNTRACED hand-port to Compose HTML — nothing guarantees the
+Compose-HTML maps faithfully back to the WFL Kotlin. So Kobweb does NOT "complete" the ledger; it
+SIDESTEPS it. The thesis is not "get WFL on a screen" — it is "get WFL onto targets WITH a verified
+trace." Kobweb gives the former without the latter; it is close to the exact thing the ledger exists
+to prevent. So whether it's worth it reduces to: would you accept an UNTRACED port for a web-only
+target? Legitimate question, the user's call — but it is not free.
+
+On ledger COMPLETENESS specifically: the ledger already does tree + connectivity (Kotlin<->Python
+structure + 1-degree connections). Its gap is the GEOMETRY layer (rendered boxes — policy/intent yes,
+pixels no). Kobweb would NOT close that for the real targets; and the rendered ground-truth ALREADY
+exists in-repo: tools/dualtrace/capture.py dumps the ORIGINAL Android app's accessibility tree via
+uiautomator. So the geometry ground-truth is the real WFL app, not Kobweb. Kobweb would be a NEW
+untraced target needing its OWN ledger entry — adding to the surface, not closing it.
+
+Where it IS worth a look: as a REFERENCE for the declarative-Compose -> retained-DOM reconciliation
+(the fine-grained-redraw upgrade above) — the DOM is a retained mutate-in-place tree, the same shape
+as our zones. Target decisions are the user's.
