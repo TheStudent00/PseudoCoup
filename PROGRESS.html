@@ -54,20 +54,19 @@ exists without a Kotlin source.</p>
 <div class="panel goal">
 <p class="num" style="margin:0 0 10px">We work on this and nothing else until the foundation is solid.
 We clear the transpiler one Kotlin construct at a time.</p>
-<p class="num"><b class="big">231 / 254</b> parse-clean (<b>242</b> of 254 produce Python).</p>
-<ul>
-<li><b>DONE — the <code>by</code> delegate.</b> <code>val/var x by remember/collectAsState/lazy</code>
-at the top of a <code>@Composable</code> now transpiles: <code>x = D</code>, with reads/writes of
-<code>x</code> through <code>x.value</code>.</li>
-<li><b>DONE — trailing lambda after a named argument.</b> <code>Box(x, contentAlignment=Y) { content }</code>
-now emits <code>Box(x, contentAlignment=Y, content=lambda)</code>. <code>content=</code> is a convention
-(right for most Compose; a wrong one fails loudly, gets the real name via signatures later). Moved ~35
-files to parse-clean (196 → 231).</li>
-<li><b>REMAINING — 23 of 254:</b> 12 transpiler errors (<code>no handler</code>: an
-<code>object_literal</code>, a <code>type_test</code>) + 11 emitted-invalid (9 plain syntax, 1 hex).</li>
-</ul>
-<p class="num mut" style="margin-top:10px">Parse-clean is not the same as runnable; runnability is a
-later check.</p>
+<p class="num"><b class="big">254 / 254 parse-clean</b> — the transpiler is parse-complete.</p>
+<p class="num">Every Kotlin file in the WFL copy transpiles to Python that parses. The oracle (11
+engines, runtime-equivalence) stayed green throughout.</p>
+<p class="num" style="margin-top:8px">Constructs handled this pass: the <code>by</code> delegate; a
+trailing lambda after a named argument; <code>when</code>/standalone <code>is Type</code> →
+<code>isinstance</code>; <code>if</code>/<code>when</code> used as a value (hoisted to a temp); hex
+literals keeping <code>F</code>/<code>f</code> digits; <code>a?.b = v</code> → a guarded assignment;
+and an anonymous object (<code>object : Migration(1,2) { … }</code>) → a hoisted class + instance.</p>
+<p class="num mut" style="margin-top:10px"><b>Next bar — runnable, not just parse-clean.</b> Parsing is
+the floor. The deeper bar is the foundation RUNNING (as the 11 oracle engines already do): supplying
+the runtime names the code calls (<code>remember</code>, <code>Color</code>, <code>hiltViewModel</code>)
+and replacing the convention guesses (the <code>content=</code> lambda name) with real callee
+signatures where the code must execute.</p>
 <p class="num mut" style="margin-top:6px">Regenerate any time with
 <code>python3 tools/pseudokotlin/build_mixingcenter.py</code>.</p>
 </div>

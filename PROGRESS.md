@@ -26,18 +26,19 @@ wrappers, ledger, tags, structure, connectivity. Nothing in it exists without a 
 
 We work on this and nothing else until the foundation is solid.
 
-**231 / 254** parse-clean (242 of 254 produce Python). We clear the transpiler one Kotlin construct
-at a time.
+**254 / 254 parse-clean — the transpiler is parse-complete.** Every Kotlin file in the WFL copy
+transpiles to Python that parses. The oracle (11 engines, runtime-equivalence) stayed green throughout.
 
-- **DONE — the `by` delegate.** `val/var x by remember/collectAsState/lazy` at the top of a
-  `@Composable` now transpiles: `x = D`, with reads/writes of `x` going through `x.value`.
-- **DONE — trailing lambda after a named argument.** `Box(x, contentAlignment=Y) { content }` now
-  emits `Box(x, contentAlignment=Y, content=lambda)`. `content=` is a convention (correct for most
-  Compose slots; a wrong one fails loudly, never silently, and gets the real name when callee
-  signatures land). Moved ~35 files to parse-clean (196 → 231).
-- **REMAINING — 23 of 254:** 12 transpiler errors (`no handler`: an `object_literal` in
-  `WorkoutDatabase`, a `type_test` in `DebugPanelViewModel`) + 11 emitted-invalid (9 plain syntax,
-  1 hex literal).
+Constructs handled this pass (each a Kotlin form KtToPy didn't cover): the `by` delegate
+(`val x by remember/collectAsState/lazy`); a trailing lambda after a named argument
+(`Box(x, contentAlignment=Y) { … }`); `when`/standalone `is Type` → `isinstance`; `if`/`when` used as
+a value (hoisted to a temp); hex literals keeping their `F`/`f` digits; `a?.b = v` → a guarded
+assignment; and an anonymous object (`object : Migration(1,2) { … }`) → a hoisted class + instance.
+
+> **Next bar — runnable, not just parse-clean.** Parsing is the floor. The deeper bar is the foundation
+> RUNNING (the way the 11 oracle engines already do): supplying the runtime names the transpiled code
+> calls (e.g. `remember`, `Color`, `hiltViewModel`), and the convention guesses (the `content=` lambda
+> name) replaced by real callee signatures where the code must execute.
 
 Parse-clean is not the same as runnable; runnability is a later check. The metric now is: does every
 Kotlin construct in the copy transpile. Regenerate with `python3 tools/pseudokotlin/build_mixingcenter.py`.
