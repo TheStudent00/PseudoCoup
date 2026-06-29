@@ -216,7 +216,14 @@ class Statements:
         kids = self.named(node)
         op = next((c.type for c in node.children
                    if c.type in ("=", "+=", "-=", "*=", "/=", "%=")), "=")
-        return f"{self.visit(kids[0])} {op} {self.visit(kids[-1])}"
+        tgt = kids[0]
+        # `a?.b = v` -> guarded assignment (Kotlin no-ops when a is null). The safe-call would
+        # otherwise render as a ternary on the left, which can't be assigned to.
+        if tgt.type == "navigation_expression" and any(c.type == "?." for c in tgt.children):
+            nk = self.named(tgt)
+            recv, attr = self.visit(nk[0]), self._safe(self.text(nk[-1]))
+            return f"if {recv} is not None:\n{_block([f'{recv}.{attr} {op} {self.visit(kids[-1])}'])}"
+        return f"{self.visit(tgt)} {op} {self.visit(kids[-1])}"
 
     @kind("return_expression")
     def v_return(self, node):
