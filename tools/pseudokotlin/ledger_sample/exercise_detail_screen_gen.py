@@ -21,17 +21,30 @@ class _Track:                             # records every define_*'s zone id -> 
 class ExerciseDetailScreenGen:
     def __init__(self, db):
         self.db = db
-        self.vm = build_transpiled_vm('exercise_detail', db)
+        self.vm = None
+        self._vm_sel = None
         self.owned_ids = []
 
     def screen_id(self):
         return 'exercise_detail'
 
+    def _nav_back(self, _=None):
+        self.router.navigate('exercises')
+    def _nav_edit(self, exerciseId=None):
+        if exerciseId is not None:
+            self.router.selected_id = exerciseId
+        self.router.navigate('exercise_create')
 
     def build(self, ui, content_zone_id, router):
         self.owned_ids = []
         ui = _Track(ui, self.owned_ids)
         self.router = router
+        _sel = getattr(router, 'selected_id', None)
+        if self.vm is None or self._vm_sel != _sel:
+            self.vm = build_transpiled_vm('exercise_detail', self.db, _sel)
+            self._vm_sel = _sel
+            self.vm.navigateBack.collect(self._nav_back)    # LaunchedEffect collect -> nav callback
+            self.vm.navigateToEdit.collect(self._nav_edit)    # LaunchedEffect collect -> nav callback
         viewModel = self.vm
         content = content_zone_id
         exercise = _ev(lambda: viewModel.exercise.collectAsStateWithLifecycle())
@@ -133,7 +146,7 @@ class ExerciseDetailScreenGen:
         ui.define_box(_id64, _id2, "V")
         ui.define_text("exercise_detail_z65", _id64, _ev(lambda: ((ex.name if ex is not None else None) if (ex.name if ex is not None else None) is not None else "")))
         ui.define_text("exercise_detail_z66", _id64, '←')
-        def _h67(evt): onNavigateBack()
+        def _h67(evt): self._nav_back()
         ui.on_click("exercise_detail_z66", _h67)
         ui.define_icon("exercise_detail_z68", _id64, 'Toggle favorite')
         def _h69(evt): self.vm.toggleFavorite()
