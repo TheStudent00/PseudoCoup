@@ -10,6 +10,7 @@ SQL. Until then, the self-test at the bottom hand-builds the ExerciseDao muscle-
 engine runs the real query logic (whole-token matching, so ABS does not match ABS_OBLIQUES).
 """
 import sqlite3
+import re as _re
 
 import sys
 import os
@@ -55,34 +56,41 @@ class Entity:
 
 
 class Database:
-    """The sqlite3-backed database. register() each entity, then DAOs run query/insert/update/delete."""
+    """The sqlite3-backed database. register(EntityClass) each entity (it carries cls._room), then DAOs
+    run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes)."""
     def __init__(self):
         self._conn = sqlite3.connect(":memory:")
         self._conn.row_factory = sqlite3.Row
-        self._entities = {}
+        self._entities = {}                 # table name -> Entity
 
-    def register(self, entity):
-        self._entities[entity.table] = entity
+    def register(self, cls):
+        ent = cls._room                     # entity_schema sets `Cls._room = Entity(...)`
+        self._entities[ent.table] = ent
         cols = ", ".join(
             f"{c.name} {c.sql_type()}" + (" PRIMARY KEY" if c.pk else "")
-            for c in entity.columns)
-        self._conn.execute(f"CREATE TABLE IF NOT EXISTS {entity.table} ({cols})")
+            for c in ent.columns)
+        self._conn.execute(f"CREATE TABLE IF NOT EXISTS {ent.table} ({cols})")
         return self
 
     def close(self):
         self._conn.close()
 
-    def query(self, table, sql, params=None, single=False):
-        """Run a @Query -> entity objects (or one, or None). Returns a plain list; the DAO wraps it."""
-        ent = self._entities[table]
+    def query(self, sql, params=None, single=False):
+        """Run a @Query. If its FROM table is a known entity, map rows -> entity objects (one/None when
+        single); otherwise (a scalar/aggregate query) return raw row tuples."""
         rows = self._conn.execute(sql, params or {}).fetchall()
-        out = [ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows]
+        m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
+        ent = self._entities.get(m.group(1)) if m else None
+        if ent is None:
+            out = [tuple(r) for r in rows]
+        else:
+            out = [ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows]
         if single:
             return out[0] if out else None
         return out
 
-    def insert(self, table, obj, replace=True):
-        ent = self._entities[table]
+    def insert(self, obj, replace=True):
+        ent = obj.__class__._room
         names = ", ".join(c.name for c in ent.columns)
         holes = ", ".join(f":{c.name}" for c in ent.columns)
         verb = "INSERT OR REPLACE" if replace else "INSERT OR IGNORE"
@@ -97,16 +105,23 @@ class Database:
 
 
 class Dao:
-    """Base for a generated DAO: holds the database + its entity's table name."""
-    def __init__(self, db, table):
+    """Base for a generated DAO -- holds the database; query helpers wrap results the way Room's return
+    types do (Flow<List> / Flow<one> / suspend one)."""
+    def __init__(self, db):
         self._db = db
-        self._table = table
 
-    def _flow(self, sql, params=None):
-        return Flow(self._db.query(self._table, sql, params))
+    def _flow(self, sql, params=None):          # Flow<List<X>> -- emits the whole list as ONE value
+        return Flow([self._db.query(sql, params)])
 
-    def _one(self, sql, params=None):
-        return self._db.query(self._table, sql, params, single=True)
+    def _flowOne(self, sql, params=None):       # Flow<X?> -- emits the single entity (or None) as one value
+        return Flow([self._db.query(sql, params, single=True)])
+
+    def _one(self, sql, params=None):           # suspend X?
+        return self._db.query(sql, params, single=True)
+
+    def _insert(self, obj, replace=True):       # @Insert one or a list
+        for e in (obj if isinstance(obj, list) else [obj]):
+            self._db.insert(e, replace)
 
 
 # ---- self-test: run the real ExerciseDao muscle-group query against sqlite3 --------------------- #
@@ -133,12 +148,13 @@ if __name__ == "__main__":
     COLS = [Col("id", pk=True), Col("name"),
             Col("primaryMuscleGroups", "enum_list", MuscleGroup),
             Col("secondaryMuscleGroups", "enum_list", MuscleGroup)]
-    db = Database().register(Entity("exercises", COLS, ExerciseEntity))
+    ExerciseEntity._room = Entity("exercises", COLS, lambda kw: ExerciseEntity(kw))
+    db = Database().register(ExerciseEntity)
 
     def ex(id, primary, secondary=()):
         e = ExerciseEntity({"id": id, "name": id,
                             "primaryMuscleGroups": list(primary), "secondaryMuscleGroups": list(secondary)})
-        db.insert("exercises", e)
+        db.insert(e)
         return e
 
     ex("only", [CHEST])
@@ -151,12 +167,12 @@ if __name__ == "__main__":
            "WHERE (',' || primaryMuscleGroups || ',') LIKE '%,' || :mg || ',%' "
            "   OR (',' || secondaryMuscleGroups || ',') LIKE '%,' || :mg || ',%' "
            "ORDER BY name ASC")
-    chest = [e.id for e in db.query("exercises", SQL, {"mg": "CHEST"})]
+    chest = [e.id for e in db.query(SQL, {"mg": "CHEST"})]
     assert chest == ["first", "last", "only", "secondary"], chest
-    abs_hits = [e.id for e in db.query("exercises", SQL, {"mg": "ABS"})]
+    abs_hits = [e.id for e in db.query(SQL, {"mg": "ABS"})]
     assert abs_hits == [], abs_hits                 # token boundary: ABS != ABS_OBLIQUES
 
     # round-trip an enum_list through the converter
-    back = db.query("exercises", "SELECT * FROM exercises WHERE id = :id", {"id": "first"}, single=True)
+    back = db.query("SELECT * FROM exercises WHERE id = :id", {"id": "first"}, single=True)
     assert [m.name for m in back.primaryMuscleGroups] == ["CHEST", "SHOULDERS"]
     print("room self-test: OK (sqlite3 runs the real @Query; whole-token matching holds)")

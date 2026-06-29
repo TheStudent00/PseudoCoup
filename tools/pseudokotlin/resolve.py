@@ -110,6 +110,22 @@ def top_level_names(root):
     return [n for n in (_decl_name(c) for c in root.children if c.type in kinds) if n]
 
 
+def app_enums(kt_root):
+    """Names of every enum class across the app -- so an entity field typed by one (MovementPattern,
+    List<MuscleGroup>) maps to an enum / enum-list column, stored as the enum name(s) the way Room does."""
+    enums = set()
+    for path in glob.glob(os.path.join(kt_root, "**", "*.kt"), recursive=True):
+        if os.sep + "build" + os.sep in path:
+            continue
+        root = parse(open(path, "rb").read()).root_node
+        for c in root.children:
+            if c.type == "class_declaration" and any(k.type == "enum_class_body" for k in c.children):
+                nm = _decl_name(c)
+                if nm:
+                    enums.add(nm)
+    return enums
+
+
 def app_symbols(kt_root):
     """{declared name -> relative module path that declares it} across every .kt under kt_root.
     The module path mirrors the file tree (data/db/WorkoutDatabase.kt -> data/db/WorkoutDatabase)."""
