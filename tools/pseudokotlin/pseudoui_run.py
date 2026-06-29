@@ -1061,6 +1061,17 @@ NAV_HANDLERS = {
             "            self.router.navigate('gym_editor')",
         ],
     },
+    "exercise_detail": {
+        "subs": {"onNavigateBack": "self._nav_back", "onNavigateToEdit": "self._nav_edit"},
+        "methods": [
+            "    def _nav_back(self):",
+            "        self.router.navigate('exercises')",
+            "    def _nav_edit(self, exerciseId=None):",
+            "        if exerciseId is not None:",
+            "            self.router.selected_id = exerciseId",
+            "        self.router.navigate('exercise_create')",
+        ],
+    },
 }
 
 
