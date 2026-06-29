@@ -72,11 +72,24 @@ class Statements:
                 out += ["else:", self._branch(body, lead)]
             else:
                 conds = named[:-1]
-                cs = [(f"{subj} == {self.visit(c)}" if subj else self.visit(c)) for c in conds]
+                cs = [self._when_cond(c, subj) for c in conds]
                 out += [f"{'if' if first else 'elif'} {' or '.join(cs)}:",
                         self._branch(body, lead)]
                 first = False
         return "\n".join(out)
+
+    def _when_cond(self, c, subj):
+        # a `when (subj)` branch condition. `is Type`/`!is Type` -> isinstance(subj, Type); a plain
+        # value `v` -> `subj == v` (or just `v` for a subject-less boolean `when`).
+        if c.type == "type_test":
+            neg = any(k.type == "!is" for k in c.children)
+            tn = next((k for k in c.named_children if k.type == "user_type"), None)
+            typ = self.text(tn).split("<")[0].strip().rsplit(".", 1)[-1] if tn is not None else "object"
+            typ = {"String": "str", "Int": "int", "Long": "int", "Double": "float", "Float": "float",
+                   "Boolean": "bool", "Char": "str"}.get(typ, self._safe(typ))
+            chk = f"isinstance({subj}, {typ})"
+            return f"not {chk}" if neg else chk
+        return f"{subj} == {self.visit(c)}" if subj else self.visit(c)
 
     def _distribute(self, node, lead):
         """Render `node` in value position with `lead` ('return ' / 'x = ') pushed
