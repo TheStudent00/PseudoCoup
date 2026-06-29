@@ -25,6 +25,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
     def __init__(self):
         self._members = set()    # current class's member names -> self.x resolution
         self._scopes = []        # stack of local-name sets (params/locals shadow members)
+        self._loop_vars = []     # stack of for-loop variable names -> bind per-iteration in captured lambdas
         self._delegated = set()  # local `val/var x by D` names -> read/write through `x.value`
         self._hoist = []         # pending helper defs (multi-statement lambdas), flushed
         self._lam = 0            #   before the statement that produced them
