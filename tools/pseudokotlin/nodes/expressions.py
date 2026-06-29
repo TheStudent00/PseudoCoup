@@ -614,9 +614,20 @@ class Expressions:
                 segs.append(self.text(c).replace("{", "{{").replace("}", "}}"))
         body = "".join(segs)
         if not interp:
-            return '"' + body.replace("\\", "\\\\").replace('"', '\\"') + '"'
+            esc = body.replace("\\", "\\\\")
+            if "\n" in esc:                              # Kotlin raw `"""…"""` spanning lines
+                return '"""' + self._triple_safe(esc) + '"""'
+            return '"' + esc.replace('"', '\\"') + '"'
+        if "\n" in body:                                 # interpolated raw string spanning lines
+            return 'f"""' + self._triple_safe(body) + '"""'
         if '"' not in body:
             return 'f"' + body + '"'
         if "'" not in body:
             return "f'" + body + "'"
         return 'f"""' + body + '"""'
+
+    @staticmethod
+    def _triple_safe(s):
+        # make a body safe inside a Python `"""…"""`: neutralize an embedded `"""` and a trailing `"`.
+        s = s.replace('"""', '\\"\\"\\"')
+        return s[:-1] + '\\"' if s.endswith('"') else s
