@@ -61,7 +61,14 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         if inc is not None:
             return [inc]
         before = len(self._hoist)
-        s = self.visit(node)
+        # statement-position if/when render straight to a Python statement (no value temp); value
+        # position goes through v_if/v_when, which hoist when needed.
+        if node.type == "if_expression":
+            s = self._if(node, "")
+        elif node.type == "when_expression":
+            s = self._when(node, "")
+        else:
+            s = self.visit(node)
         out = self._hoist[before:]
         del self._hoist[before:]
         if s:
