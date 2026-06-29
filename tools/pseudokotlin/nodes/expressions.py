@@ -567,6 +567,21 @@ class Expressions:
                 parts.append(self.visit(kids[-1]))
         return ", ".join(parts)
 
+    @kind("is_expression")
+    def v_is(self, node):
+        # `x is Type` / `x !is Type` -> isinstance(x, Type) / not isinstance(x, Type)
+        left = self.visit(self.named(node)[0])
+        tn = next((k for k in node.named_children if k.type == "user_type"), None)
+        chk = f"isinstance({left}, {self._py_type_name(tn)})"
+        return f"(not {chk})" if any(c.type == "!is" for c in node.children) else chk
+
+    def _py_type_name(self, tn):
+        """Python type name for a Kotlin user_type node (generics + qualifier stripped, primitives
+        mapped) -- for isinstance() checks. e.g. `List<Foo>` -> `list`(no), `WeeklyRow.Rest` -> `Rest`."""
+        typ = self.text(tn).split("<")[0].strip().rsplit(".", 1)[-1] if tn is not None else "object"
+        return {"String": "str", "Int": "int", "Long": "int", "Double": "float", "Float": "float",
+                "Boolean": "bool", "Char": "str"}.get(typ, self._safe(typ))
+
     def _has_named_arg(self, args_node):
         """True if any explicit argument is passed BY NAME (`name = value`)."""
         if not args_node:
