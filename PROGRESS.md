@@ -1,93 +1,74 @@
-# WFL → PseudoCoup — Progress Dashboard
+# WFL → Python — project dashboard
 
-Living status tracker. Complements `PROJECT_MAP.md` (which says **where** things live); this says
-**what's done** and **what's next**. Update every working session.
+What the project is, the one goal now, and where it stands. (Browser version: `PROGRESS.html`.)
 
-**Last updated:** 2026-06-28 (PseudoUI generator + Kt→Py transpiler fixes thread; status reconciled
-against log_96's track framing).
+Updated 2026-06-29, after regenerating the foundation with the advanced transpiler.
 
-**Legend:** ✅ done/verified · 🟡 in progress · 🔵 backlog (wanted, not started) · ⏸️ deferred by plan ·
-⬜ not started · ❓ unknown · ⛔ blocked
-
----
-
-## The pipeline at a glance
+## What the project is
 
 ```
-WFL (Kotlin, SOURCE OF TRUTH)
-   │  (A) Kt → Py transpiler  (1:1, "map·wrap·fail", everything traces to Kotlin)
-   ▼
-WFL Python (canonical 1:1)                         [WFL_MixingCenter]
-   │  + the kit (imperative zone API) + screens (PseudoUI) + reactivity (State/recompose)
-   ├─ (B1) Py → Dart  [PseudoDart] · kit = PseudoFlutter  ▶  WFL_PseudoCoup (Kivy + Flutter app)
-   └─ (B2) Py → Haxe  [PyHaxe]     · kit = PyHaxeUI        ▶  WFL_PyHaxe
+WFL  (the original Kotlin app)              upstream ~/Programming/WFL — untouched source of truth
+  │
+  │   copied, then edited to "meet the transpiler in the middle"
+  ▼
+WFL_MixingCenter/WFL/  (the Kotlin copy)    edits kept honest by WFL's own tests
+  │
+  │   KtToPy  — the advanced transpiler  (lives in PseudoCoup/tools/pseudokotlin)
+  ▼
+WFL_MixingCenter/*.py  (THE FOUNDATION)     the 1:1 Python the transpiler produces
 ```
 
----
+The **foundation** is the 1:1 Python KtToPy produces from the Kotlin copy. It is the thing everything
+else is built on. It is meant to carry the framework the transpiler system provides — the 1:1s,
+wrappers, ledger, tags, structure, connectivity. Nothing in it exists without a Kotlin source.
 
-## The three tracks (the project's own framing, from log_96)
+## The one goal now — complete the transpiler
 
-| Track | What it is | Status | The number that matters |
-|-------|------------|:------:|-------------------------|
-| **Track B** — transpiler center | Kt→Py of the whole app + verification ladder. **The documented current priority.** | 🟡 | WFL_MixingCenter (parse-clean 192/254) is STALE `literal_transpiler` output. Measured via the canonical **KtToPy**: repositories **20/20 parse**, **19/20 construct (DI)**, **16/20 run real methods** (log_126→128; was 14/20 before the Flow-operator shim) — vs literal_transpiler's ~1/20. 2 transpiler bugs FIXED + reactive shim now flow-operator-complete (oracle 11/11). gym_list's vertical runs on the **transpiled GymRepository** end-to-end (log_127 swap-under). Runnability ≠ correctness (oracle's separate ladder). |
-| **Track A** — hand-built UI | ~30 screens hand-written on the kit (NOT transpiled). The mature baseline. | ✅ | ~30 screens; "65/65" = Track A's hand-built **assertion/coverage** count (NOT the 36 golden PNGs — those are the current visual baseline) |
-| **Bucket 3** — PseudoUI swap-in | Make the literal WFL Python a *runnable app*: wire screens onto the kit + reactivity. **Officially deferred until non-UI closes.** | ⏸️→🟡 | gym_list is a complete generated drop-in (this session). **This is the deferred bucket — see the sequencing note below.** |
+We work on this and nothing else until the foundation is solid.
 
-> ⚠️ **Sequencing reality (confirmed by probe, log_124):** the breadth work is genuinely *ahead of the
-> foundation*. A generated screen binds to a transpiled VM but runs on the **hand-built** domain
-> (`src/domain`) — because the **transpiled** domain (`WFL_MixingCenter`) does NOT run: it parses but
-> 79% of files have unresolved imports, 19/20 repos dropped their DI constructors, and runtime modules
-> are missing. So "192/254" is parse-clean scaffolding, not a runnable backend. The real ceiling is the
-> **parse-clean → runnable jump** (restore DI, resolve imports, supply runtime, Room→DB boundary) — not
-> more UI. UI breadth is valid as *mechanism-proof* but cannot trace end-to-end until that floor is real.
+**196 / 254** Kotlin files transpile to parse-clean Python (212 written, 196 parse). The other **42**
+are transpiler errors — almost all the same gap:
 
----
+- **`delegated property outside a class body`** — the Compose `val x by …` delegate written at the top
+  of a `@Composable` function (not inside a class). KtToPy only handles it inside a class today. This
+  one gap blocks **~28 UI screens**. **First target:** handle the `by` delegate at function/top level.
+- A few others: an `object_literal` (`WorkoutDatabase`), a `type_test` (`DebugPanelViewModel`).
+- **16** files transpile but don't parse (emitted-but-invalid) — separate, smaller.
 
-## Component status
+Parse-clean is not the same as runnable; runnability is a later check. The metric now is: does every
+Kotlin construct in the copy transpile. Regenerate with `python3 tools/pseudokotlin/build_mixingcenter.py`.
 
-| Component | Status | Where it stands | Proof / how to check |
-|-----------|:------:|-----------------|----------------------|
-| **Kt→Py transpiler** | 🟡 | `tools/pseudokotlin` (**KtToPy** = canonical/active; oracle uses it; all recent work). `tools/transpiler/literal_transpiler.py` = the original **donor** KtToPy was ported from (superseded, not retired; may still drive the 254-file batch seed — one residual ambiguity). 4 real bugs fixed this session. | `oracle.py --all` → ALL GREEN 11/11 engines |
-| — verification ladder | 🟡 | compile-clean → oracle (runtime equiv, 11 engines) → fuzz (5000 cases, 0 div) → ledger (structural + UI). UI ledger **geometry layer** NOT built. | `oracle.py`, `fuzz.py`, `ledger.py`, `ui_ledger.py` |
-| **The kit** (PseudoFlutter) | ✅ | Imperative zone API; Kivy (`kit.py`) + Flutter (`kit.dart`) backends; both retained-mode. | app smoke 30/30 |
-| **Reactivity** (State/recompose) | ✅ (coarse) | Works; false-reactive = redraw-whole-screen per event. Correct, not efficient. | log_121; `reactive.py` |
-| **Py→Dart** (PseudoDart) → Flutter | ✅ | `WFL_PseudoCoup/tools/transpile.py` → `app_flutter/lib`; **36 golden PNGs** (31 sweep + execution variants + demo). | `flutter test` from `app_flutter/` |
-| **Py→Haxe** (PyHaxe) → WFL_PyHaxe | 🟡 (old) | **WFL_PyHaxe is older/partial — no viewmodel layer**, 580 `.hx`, last touched 2026-06-19; dormant for the main app port. PyHaxe transpiler more active but aimed at other reference targets. | `WFL_PyHaxe/DevComms/SESSION_STATUS.md` |
+## The plan, in order
 
----
+1. **Complete the transpiler** → the foundation (`WFL_MixingCenter`) is solid. ← we are here
+2. **Evaluate set-aside parts.** Bring a part (e.g. a UI screen) into the foundation only after rigorous
+   validation that it keeps structure/connectivity. If a part is invalid or mangled, don't fix it —
+   **paint-by-numbers** a fresh one (or mechanize it when the part-type allows).
+3. **Upgrade the UI to PseudoUI discipline.** A salvaged part that is already valid Python, passes the
+   ledger validation, and carries the discipline gets used — extra discipline is not a reason to ignore it.
 
-## PseudoUI generator — detail (this session = Bucket 3, logs 104–122)
+## Set aside (not failed — parked, picked up later only if it validates)
 
-| Layer | Status | Note |
-|-------|:------:|------|
-| Structure (Compose → kit `define_*`) | ✅ | 99% leaf coverage, 0 fabricated/orphan across 24 screens (log_105) |
-| Control-flow IR + bind to TRANSPILED viewmodel | ✅ | `--1to1`/`--auto`; per-screen binding is mechanical Kt→Py (logs 106–108) |
-| Generality (2nd/3rd screens) | 🟡 | paths 3/3, exercise_detail 4/5, exercise_picker renders 185 (logs 109–115) |
-| Int→enum lift + emit runnable + representation map | ✅ | complete match on gym_list/paths (logs 110–113) |
-| Vendored, routed by AppRouter, handlers, re-render fix | ✅ | logs 117–120; smoke 30/30 |
-| **Net: gym_list = complete interactive drop-in** | ✅ | `WFL_PseudoCoup/tools/test_gym_list_gen.py` — 10/10 render + 4 handlers + re-render |
+- `WFL_PseudoCoup` — an earlier hand-built effort (the pre-rigor "trusted baseline" idea that got
+  cratered). Its hand-built code is untrusted until validated against the foundation.
+- The PseudoUI generator + swap-in work done in `WFL_PseudoCoup` in prior conversations. The generator
+  *tool* may be reused later for "paint-by-numbers a screen fresh," but only aimed at the foundation,
+  not at matching `WFL_PseudoCoup`.
+- The transpiler fixes made along the way (e.g. `expr ?: continue`) are **not** set aside — they live in
+  `tools/pseudokotlin` and improve KtToPy directly.
 
-**Per-screen cost for the NEXT generated screen:** a DAO adapter + a nav map (~10–20 lines) +
-`MutableStateFlow → State` for UI-flag screens. Everything else (IR/emit/transpiler) is screen-agnostic.
+## Glossary (your terms, anchored)
 
----
-
-## Backlog (wanted, not started)
-
-- ✅ **Breadth** — exercise_detail is a 2nd VENDORED interactive drop-in (transpiled VM + exercise enums + enum-lift + adapter; `tools/test_exercise_detail_gen.py` MATCH): renders the Back Squat (7 shared) + SharedFlow edit-nav (log_130) + reactive exclude-prompt **dialog** (set/dismiss, MutableStateFlow→State). Generator gained: lazy/id-aware VM construction + **file-aware composable resolution → 100% Compose coverage** (496/496, log_133). NOT routed yet: the overflow DropdownMenu items render inline (collapse not modeled). Other general mechanisms also landed: `return@label` transpiler fix.
-- 🔵 **Depth** — Python→Dart of the generated screen for Flutter PIXEL goldens (its runtime isn't Dart-transpilable yet).
-- 🔵 **Efficient near-true-reactivity** (reconciled redraw) — kit-only, correctness-preserving, deferred (log_122).
-- 🔵 **UI ledger geometry layer** (rendered-box diff; ground truth = original app via `WFL_PseudoCoup/tools/dualtrace`).
-- 🔵 **Close Track B** — the `.dp`/`.sp` unit-literal blocker + the 62 failing files (the documented critical path).
-
----
-
-## Resolved this update (were "open questions")
-
-1. ✅ Canonical transpiler = **KtToPy** (`tools/pseudokotlin`); `literal_transpiler.py` is its donor.
-2. ✅ Compile-clean = **192/254** (non-UI 162/167); no fresher run since 2026-06-26/27.
-3. ✅ Haxe = **older/partial, dormant** (no VM layer, last 2026-06-19).
-4. ✅ "65/65" = Track A assertion count, **not** the 36 golden PNGs.
-5. ✅ "Python→PseudoCoup discipline" is **not a named stage** — it's **Bucket 3** (PseudoUI swap-in), officially deferred until non-UI closes.
-
-**Still genuinely open:** does the 254-file batch seeder (`transpile_app.py`) still call `literal_transpiler`, or has it been repointed to KtToPy? (Minor; check if it matters.)
+- **foundation** — the 1:1 Python KtToPy produces from the Kotlin copy, `WFL_MixingCenter/*.py`.
+  e.g. `data/repository/GymRepository.py`, transpiled from the matching `.kt`.
+- **meet the transpiler in the middle** — editing the Kotlin copy (`WFL_MixingCenter/WFL/`) so the
+  transpiler can handle it, verified by WFL's own tests. e.g. the `SampleProgramData` change.
+- **complete the transpiler** — KtToPy handles every Kotlin construct in the copy, so all 254 files
+  transpile and the gaps (like the `by`-delegate error) are gone.
+- **set aside** — parked, out of scope now, picked up later only if it validates. Not discarded.
+- **paint-by-numbers** — build a fresh part by hand following the foundation's structure, when a
+  set-aside part is too mangled to validate.
+- **ledger / structure / connectivity** — the accounting that proves each Python object traces to its
+  Kotlin source and is wired the same way; used to validate a swap-in.
+- **PseudoUI discipline** — the constrained Python style the UI should follow; applied later, after the
+  foundation is solid.
