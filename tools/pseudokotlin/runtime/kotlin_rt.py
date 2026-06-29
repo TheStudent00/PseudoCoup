@@ -732,6 +732,7 @@ def listOfNotNull(*xs):
 # Kotlin type names used as values (String(chars), Boolean("true"), …) -> Python types
 String = str
 CharSequence = str
+Any = object                            # kotlin.Any -> Python object; `Any()` is a bare lock/sentinel
 
 
 def arrayOf(*xs):
@@ -796,12 +797,75 @@ def ArrayList(src=()):
     return KtList(src)
 
 
+class KtArrayDeque(KtList):             # kotlin.collections.ArrayDeque / java Deque (ring-buffer use)
+    def addLast(self, x):
+        self.append(x)
+
+    def addFirst(self, x):
+        self.insert(0, x)
+
+    def pollFirst(self):               # Java Deque: head, or null when empty
+        return self.pop(0) if self else None
+
+    def pollLast(self):
+        return self.pop() if self else None
+
+
+def ArrayDeque(arg=()):                 # ArrayDeque()/ArrayDeque(capacity:Int) -> empty; (coll) -> filled
+    return KtArrayDeque() if isinstance(arg, int) else KtArrayDeque(arg)
+
+
 def HashMap(src=None):
     return KtMap(src or {})
 
 
 def LinkedHashMap(src=None):
     return KtMap(src or {})
+
+
+# ---- java.util / java.text date stand-ins (bare-name, like java.lang.Math above) ------------ #
+from datetime import datetime as _datetime
+
+
+class Date:                             # java.util.Date -- Date() is now; Date(ms) is epoch-millis
+    def __init__(self, millis=None):
+        self._dt = _datetime.now() if millis is None else _datetime.fromtimestamp(millis / 1000)
+
+
+class Locale:                           # java.util.Locale -- only passed through to a formatter here
+    US = "en_US"
+
+    @staticmethod
+    def getDefault():
+        return Locale.US
+
+
+_JAVA_DATE_TOKENS = (("yyyy", "%Y"), ("MM", "%m"), ("dd", "%d"),
+                     ("HH", "%H"), ("mm", "%M"), ("ss", "%S"), ("SSS", "%f"))
+
+
+class SimpleDateFormat:                 # java.text.SimpleDateFormat -- translate pattern -> strftime
+    def __init__(self, pattern, locale=None):
+        p = pattern
+        for java_tok, py_tok in _JAVA_DATE_TOKENS:
+            p = p.replace(java_tok, py_tok)
+        self._pattern, self._millis = p, "%f" in p
+
+    def format(self, date):
+        d = date._dt if isinstance(date, Date) else date
+        out = d.strftime(self._pattern)
+        return out[:-3] if self._millis else out      # %f is 6-digit micros; SSS wants 3 (millis)
+
+
+# ---- Android-framework stand-ins. NOTE: NOT Kotlin/Java stdlib -- the leading edge of the
+#      Room/Compose/Hilt set the UI phase will need. When that set grows, splitting the runtime
+#      by origin (and likely renaming this file) is the structural call -- deferred until then. - #
+class Migration:                        # androidx.room.migration.Migration -- STUB (no Python Room)
+    def __init__(self, startVersion, endVersion):
+        self.startVersion, self.endVersion = startVersion, endVersion
+
+    def migrate(self, db):              # overridden per anonymous migration; runs only vs a real DB
+        pass
 
 
 # ---- Kotlin comparators (compareBy { … }.thenBy { … }; sortedWith) ----------- #
