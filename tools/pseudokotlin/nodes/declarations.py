@@ -44,6 +44,7 @@ class Declarations:
     def v_source_file(self, node):
         self._ext_patches, self._nested_aliases = [], []
         self._runtime_imports = set()   # `from runtime.room import …` etc. added while visiting decls
+        self._num_types = set()         # Int32/Int64/Float32 used by wrapped literals -> one import
         ext_imports = self._emit_imports(resolve.file_header(node))
         parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
         body = "\n\n\n".join(p for p in parts if p)
@@ -52,7 +53,8 @@ class Declarations:
         tail = self._nested_aliases + self._ext_patches
         if tail:
             body += ("\n\n\n" if body else "") + "\n".join(tail)
-        imports = sorted(self._runtime_imports) + ext_imports
+        num = [f"from runtime.numbers import {', '.join(sorted(self._num_types))}"] if self._num_types else []
+        imports = num + sorted(self._runtime_imports) + ext_imports
         if imports:
             body = "\n".join(imports) + ("\n\n\n" + body if body else "")
         return body

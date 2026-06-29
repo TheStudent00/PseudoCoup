@@ -18,6 +18,7 @@ import runtime.java_rt as java_rt          # noqa: E402
 import runtime.json_rt as json_rt          # noqa: E402
 import runtime.android_rt as android_rt    # noqa: E402
 import runtime.room as room                # noqa: E402  (the sqlite3 data-layer engine: Dao/Entity/Col)
+import runtime.numbers as numbers          # noqa: E402  (fixed-width numeric wrappers, emitted at literals)
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
 # (provided() indexes by NAME across all of these, so a name already in kotlin_rt -- e.g. java Date or
@@ -40,7 +41,7 @@ ORIGIN_MODULE = {
 
 def _modules():
     seen, mods = set(), []
-    for m in ORIGIN_MODULE.values():
+    for m in [numbers, *ORIGIN_MODULE.values()]:    # numbers isn't an import origin -- always available
         if m.__name__ not in seen:
             seen.add(m.__name__)
             mods.append(m)
