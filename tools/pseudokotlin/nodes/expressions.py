@@ -12,6 +12,10 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
 
+# The wrap dial: emit Kotlin Int/Long/Float literals as fixed-width wrappers (fidelity-first). Flip to
+# False to bare-emit for speed (the wrappers exist either way -- this only changes what `generate` emits).
+_WRAP_NUMERICS = True
+
 _BINOP = {"&&": "and", "||": "or", "===": "is", "!==": "is not"}
 _OP_TOKENS = {"+", "-", "*", "/", "%", "==", "!=", ">", "<", ">=", "<=",
               "&&", "||", "===", "!==", "&", "|", "^", "<<", ">>"}
@@ -116,10 +120,25 @@ class Expressions:
 
     @kind("number_literal", "float_literal")
     def v_number(self, node):
-        # strip Kotlin's numeric-type suffixes. For a hex literal, F/f are DIGITS (not the float
-        # suffix), so a color like 0xFF38256E must keep them -- only L/u/U can trail hex.
-        t = self.text(node).replace("_", "")
-        return (t.rstrip("LuU") if t[:2].lower() == "0x" else t.rstrip("LFfuU")) or "0"
+        # the bare numeric value: strip Kotlin's type suffixes. For a hex literal F/f are DIGITS (not the
+        # float suffix), so 0xFF38256E keeps them -- only L/u/U can trail hex.
+        raw = self.text(node).replace("_", "")
+        low = raw.lower()
+        is_hex = low.startswith("0x")
+        val = (raw.rstrip("LluU") if is_hex else raw.rstrip("LlFfuU")) or "0"
+        # WRAP by Kotlin type (fidelity-first): Int->Int32 (overflow), Long->Int64, Float->Float32 (32-bit
+        # rounding). Double stays bare float (faithful); unsigned has no wrapper yet so it stays bare too.
+        # The wrappers' dunders propagate the type through expressions, so wrapping the literal leaves is
+        # enough for most arithmetic. Flip _WRAP_NUMERICS to bare-emit for speed.
+        if not _WRAP_NUMERICS or "u" in (low[2:] if is_hex else low):
+            return val
+        if low.endswith("f") and not is_hex:
+            self._num_types.add("Float32"); return f"Float32({val})"
+        if node.type == "float_literal":
+            return val
+        if low.endswith("l"):
+            self._num_types.add("Int64"); return f"Int64({val})"
+        self._num_types.add("Int32"); return f"Int32({val})"
 
     @kind("character_literal")
     def v_char(self, node):
