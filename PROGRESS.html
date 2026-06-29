@@ -54,23 +54,19 @@ exists without a Kotlin source.</p>
 <div class="panel goal">
 <p class="num" style="margin:0 0 10px">We work on this and nothing else until the foundation is solid.
 We clear the transpiler one Kotlin construct at a time.</p>
-<p class="num"><b class="big">196 / 254</b> parse-clean (<b>242</b> of 254 now produce Python).</p>
+<p class="num"><b class="big">231 / 254</b> parse-clean (<b>242</b> of 254 produce Python).</p>
 <ul>
 <li><b>DONE — the <code>by</code> delegate.</b> <code>val/var x by remember/collectAsState/lazy</code>
 at the top of a <code>@Composable</code> now transpiles: <code>x = D</code>, with reads/writes of
-<code>x</code> going through <code>x.value</code>. Cleared the largest error class (transpiler errors
-<b>42 → 12</b>).</li>
-<li><b>NEXT (dominant gap now) — trailing lambda after a keyword argument.</b>
-<code>Box(x, contentAlignment=Y) { content }</code> emits <code>Box(x, contentAlignment=Y, lambda)</code>,
-invalid Python. <b>43 occurrences, all UI files</b>; clearing it should move ~28 screens to parse-clean.</li>
-<li><b>12 transpiler errors remain</b> — <code>no handler</code>: an <code>object_literal</code>, a
-<code>type_test</code>.</li>
+<code>x</code> through <code>x.value</code>.</li>
+<li><b>DONE — trailing lambda after a named argument.</b> <code>Box(x, contentAlignment=Y) { content }</code>
+now emits <code>Box(x, contentAlignment=Y, content=lambda)</code>. <code>content=</code> is a convention
+(right for most Compose; a wrong one fails loudly, gets the real name via signatures later). Moved ~35
+files to parse-clean (196 → 231).</li>
+<li><b>REMAINING — 23 of 254:</b> 12 transpiler errors (<code>no handler</code>: an
+<code>object_literal</code>, a <code>type_test</code>) + 11 emitted-invalid (9 plain syntax, 1 hex).</li>
 </ul>
-<p class="num mut" style="margin-top:10px"><b>Open choice on the trailing-lambda fix:</b> Kotlin's
-trailing lambda fills the callee's LAST parameter, whose name the transpiler doesn't know (no
-signatures). Pass it as a keyword arg with a convention (e.g. <code>content=</code>), or carry callee
-signatures. Owner's call.</p>
-<p class="num mut" style="margin-top:6px">Parse-clean is not the same as runnable; runnability is a
+<p class="num mut" style="margin-top:10px">Parse-clean is not the same as runnable; runnability is a
 later check.</p>
 <p class="num mut" style="margin-top:6px">Regenerate any time with
 <code>python3 tools/pseudokotlin/build_mixingcenter.py</code>.</p>
