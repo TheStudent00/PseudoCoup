@@ -97,6 +97,25 @@ class Database:
         vals = {c.name: c.to_db(getattr(obj, c.name)) for c in ent.columns}
         self._conn.execute(f"{verb} INTO {ent.table} ({names}) VALUES ({holes})", vals)
 
+    def update(self, obj):
+        """@Update -> UPDATE every non-pk column WHERE pk = the object's pk (built from its schema)."""
+        ent = obj.__class__._room
+        pk = next((c for c in ent.columns if c.pk), None)
+        if pk is None:
+            return
+        sets = ", ".join(f"{c.name} = :{c.name}" for c in ent.columns if not c.pk)
+        vals = {c.name: c.to_db(getattr(obj, c.name)) for c in ent.columns}
+        self._conn.execute(f"UPDATE {ent.table} SET {sets} WHERE {pk.name} = :{pk.name}", vals)
+
+    def delete(self, obj):
+        """@Delete -> DELETE the row WHERE pk = the object's pk."""
+        ent = obj.__class__._room
+        pk = next((c for c in ent.columns if c.pk), None)
+        if pk is None:
+            return
+        self._conn.execute(f"DELETE FROM {ent.table} WHERE {pk.name} = :_pk",
+                           {"_pk": pk.to_db(getattr(obj, pk.name))})
+
     def execute(self, sql, params=None):
         """A raw @Query that isn't a row->entity SELECT (UPDATE/DELETE, or a scalar)."""
         cur = self._conn.execute(sql, params or {})
@@ -122,6 +141,14 @@ class Dao:
     def _insert(self, obj, replace=True):       # @Insert one or a list
         for e in (obj if isinstance(obj, list) else [obj]):
             self._db.insert(e, replace)
+
+    def _update(self, obj):                     # @Update one or a list
+        for e in (obj if isinstance(obj, list) else [obj]):
+            self._db.update(e)
+
+    def _delete(self, obj):                     # @Delete one or a list
+        for e in (obj if isinstance(obj, list) else [obj]):
+            self._db.delete(e)
 
 
 # ---- self-test: run the real ExerciseDao muscle-group query against sqlite3 --------------------- #
