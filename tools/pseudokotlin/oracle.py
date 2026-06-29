@@ -28,7 +28,7 @@ sys.path.insert(0, HERE)
 from transpiler import KtToPy            # noqa: E402
 from dispatch import Untranspilable      # noqa: E402
 from parse import parse                  # noqa: E402
-import runtime.kotlin_rt as rt           # noqa: E402
+import registry                          # noqa: E402  (the merged runtime namespace, by origin)
 
 _TP_CACHE = {}      # path -> transpiled Python (or None if it does not transpile)
 _INDEX = {}         # top-level Kotlin declaration name -> defining .kt path
@@ -158,7 +158,7 @@ def _exec_multipass(sources, ns):
 def run_python(engine_py, test_py, dep_pys=()):
     """exec deps + engine + test in a shim-seeded namespace; run each test method.
     -> dict method -> ('pass'|'fail'|'error', detail)."""
-    ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+    ns = dict(registry.namespace())
     try:
         _exec_multipass(dep_pys, ns)
         exec(compile(engine_py, "<engine>", "exec"), ns)

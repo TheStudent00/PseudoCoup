@@ -12,7 +12,7 @@ import os, sys, glob, collections
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
-import runtime.kotlin_rt as rt
+import registry
 
 ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter")
 
@@ -29,7 +29,7 @@ def main():
     ui = [f for f in files if "/ui/" in f]
     core = [f for f in files if "/ui/" not in f]                 # the non-UI foundation
 
-    ns = {k: getattr(rt, k) for k in dir(rt) if not k.startswith("_")}
+    ns = dict(registry.namespace())
     pending = {f: open(f).read() for f in core}
     loaded, errs = [], {}
     while pending:
