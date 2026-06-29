@@ -549,14 +549,30 @@ def _reactive_ns():
     every screen -- this is the seam that does NOT grow per screen."""
     import runtime.kotlin_rt as rt
 
+    def _notify_recompose():                             # MutableStateFlow write -> request a repaint
+        try:                                             # (no-op in the pure sandbox; live under --app)
+            from reactive import invalidate as _inv
+            _inv()
+        except Exception:                                # noqa: BLE001 -- no recompose host
+            pass
+
     class _StateFlow:
-        def __init__(self, v=None): self.value = v
+        # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so UI-FLAG
+        # flows (dialog-open, search query) repaint like Compose snapshot state. Reads stay plain.
+        def __init__(self, v=None): self._value = v
+        @property
+        def value(self): return self._value
+        @value.setter
+        def value(self, v):
+            changed = self._value != v
+            self._value = v
+            if changed: _notify_recompose()
         def stateIn(self, *a): return self
         def asStateFlow(self): return self
         def asSharedFlow(self): return self
-        def collectAsStateWithLifecycle(self, *a): return self.value   # Compose `by` delegate -> value
-        def collectAsState(self, *a): return self.value
-        def first(self): return self.value
+        def collectAsStateWithLifecycle(self, *a): return self._value  # Compose `by` delegate -> value
+        def collectAsState(self, *a): return self._value
+        def first(self): return self._value
         def emit(self, *a): pass
 
     class _Flow:
