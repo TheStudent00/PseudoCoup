@@ -58,6 +58,12 @@ This replaces runtime whack-a-mole with a checklist — the 367 external names t
 each routed to a wrapper by its origin package. **The construct handlers and the oracle keep working; they
 bolt onto the `map` stage.** What was missing sits between `parse` and `map`, and building it is the work.
 
+> **Related (PseudoCoup):** this import-inferred external→wrapper mapping is the *inference-side* counterpart
+> to PseudoCoup's *explicit* `@<lang>_extern` tag — `@haxe_extern` (and a `dart_extern` stub) in
+> `discipline.py`, which marks a non-portable binding that needs a wrapper. For the multi-target vision they
+> converge: an explicit `@<target>_extern` tag could drive this same per-language wrapper registry, so an
+> external is declared once and resolved per target. (PseudoCoup-side; not WFL→Python work right now.)
+
 ## The one goal now — complete the transpiler
 
 We work on this and nothing else until the foundation is solid. The transpiler now runs the full pipeline
