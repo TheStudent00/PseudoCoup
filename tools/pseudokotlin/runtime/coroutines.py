@@ -235,6 +235,12 @@ def asStateFlow(f):
     return f.asStateFlow() if hasattr(f, "asStateFlow") else f
 
 
+def first(f, p=None):           # kotlinx.coroutines.flow.first, the free-function form of f.first()
+    if hasattr(f, "first"):
+        return f.first(p)
+    return next(x for x in f if p is None or p(x))
+
+
 class SharingStarted:
     @staticmethod
     def WhileSubscribed(*a, **k):
