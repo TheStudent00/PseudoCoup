@@ -149,7 +149,9 @@ def _exec_multipass(sources, ns):
                 still.append(src)
                 last = e
         if not progressed:
-            raise last or NameError("unresolvable dependency")
+            break               # remaining deps can't resolve (e.g. a UI file referencing a name
+            # absent in this engine namespace, like hiltViewModel) -> drop them; if an engine truly
+            # needs one, its own test fails honestly downstream rather than crashing the whole run.
         pending = still
 
 

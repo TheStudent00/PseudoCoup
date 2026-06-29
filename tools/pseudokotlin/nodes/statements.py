@@ -20,6 +20,14 @@ class Statements:
     # ---- if / when (shape + value-distribution) -------------------------- #
     @kind("if_expression")
     def v_if(self, node):
+        # value position. simple branches -> a ternary. a statement-shaped branch can't be a ternary
+        # arm, so hoist `if c: _t = …; else: _t = …` above and use the temp. (Statement-position ifs
+        # are rendered straight by stmt_lines, so they never reach here.)
+        if self._if_is_block(node):
+            self._lam += 1
+            tmp = f"_if{self._lam}"
+            self._hoist.append(self._if(node, f"{tmp} = "))
+            return tmp
         return self._if(node, "")
 
     def _if(self, node, lead):
@@ -55,7 +63,13 @@ class Statements:
 
     @kind("when_expression")
     def v_when(self, node):
-        return self._when(node, "")
+        # value position: a `when` always lowers to an if/elif chain (a statement), so it can't be an
+        # inline expression -- hoist `if …: _t = …` above and use the temp. (Statement-position whens
+        # are rendered straight by stmt_lines.)
+        self._lam += 1
+        tmp = f"_when{self._lam}"
+        self._hoist.append(self._when(node, f"{tmp} = "))
+        return tmp
 
     def _when(self, node, lead):
         subj_node = next((c for c in node.named_children if c.type == "when_subject"), None)
