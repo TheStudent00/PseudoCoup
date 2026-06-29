@@ -26,14 +26,33 @@ PseudoCoup's synchronous pull model, so a transpiled-from-Kotlin viewmodel runs 
 from generated.kotlin_rt import *          # noqa: F401,F403 -- emptyList/KtList/etc. for transpiled code
 
 
+def _notify_recompose():
+    """A MutableStateFlow write is the Kotlin analog of a PseudoCoup State.set() -- it must request a
+    repaint. Lazy + guarded so this shim stays importable without the app's reactive module."""
+    try:
+        from reactive import invalidate as _inv
+        _inv()
+    except Exception:                                  # noqa: BLE001 -- no recompose host (sandbox)
+        pass
+
+
 class StateFlow:
-    def __init__(self, v=None): self.value = v
+    # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so a UI-FLAG flow
+    # (dialog-open, search query) repaints like Compose snapshot state would. Reads stay cheap.
+    def __init__(self, v=None): self._value = v
+    @property
+    def value(self): return self._value
+    @value.setter
+    def value(self, v):
+        changed = self._value != v
+        self._value = v
+        if changed: _notify_recompose()
     def stateIn(self, *a): return self
     def asStateFlow(self): return self
     def asSharedFlow(self): return self
-    def collectAsStateWithLifecycle(self, *a): return self.value
-    def collectAsState(self, *a): return self.value
-    def first(self): return self.value
+    def collectAsStateWithLifecycle(self, *a): return self._value
+    def collectAsState(self, *a): return self._value
+    def first(self): return self._value
     def emit(self, *a): pass
 
 
@@ -99,15 +118,38 @@ open(os.path.join(GEN, "gym_list_kt.py"), "w").write(
     '"""Transpiled (KtToPy) GymType + GymProfileEntity/GymWithEquipment + GymListViewModel."""\n'
     + hdr + "\n\n".join(parts) + "\n")
 
-# 4. the Room-DAO -> InMemoryDb adapter (the framework boundary) + int->enum lift + make_vm
-open(os.path.join(GEN, "gym_list_backend.py"), "w").write('''"""gym_list backend: the Room-DAO -> InMemoryDb adapter (framework boundary) + the int->enum
-lift, presenting the transpiled Kotlin shapes to the transpiled GymListViewModel."""
+# 3b. the TRANSPILED GymRepository -- the real Kotlin repository LOGIC (setActive's deactivate+
+#     activate, deleteGym's getById+delete, getAllWithEquipment delegation). DAOs bridged in (4).
+repo_hdr = ('"""Transpiled (KtToPy) GymRepository -- the real Kotlin repository LOGIC running in the\n'
+            'app (setActive deactivate+activate, deleteGym getById+delete). Vendored; regenerate via\n'
+            'tools/pseudokotlin/vendor_gym_list.py. The DAOs are bridged to the app store in\n'
+            'gym_list_backend.py."""\n'
+            "import time as _time\n"
+            "import uuid as _uuid\n"
+            "from generated.gym_list_kt import GymProfileEntity, GymWithEquipment, GymType  # noqa: F401\n\n\n"
+            "class System:\n"
+            "    @staticmethod\n"
+            "    def currentTimeMillis(): return int(_time.time() * 1000)\n\n\n"
+            "class _Uuid:\n"
+            "    def toString(self): return str(_uuid.uuid4())\n\n\n"
+            "class UUID:\n"
+            "    @staticmethod\n"
+            "    def randomUUID(): return _Uuid()\n\n\n")
+repo_src = KtToPy().transpile(open(O.find_one(O.MAIN, "GymRepository.kt"), "rb").read())
+open(os.path.join(GEN, "gym_repository_kt.py"), "w").write(repo_hdr + repo_src + "\n")
+
+# 4. Room-DAO -> InMemoryDb BRIDGES (the framework boundary, ported once) + int->enum lift. The
+#    repository LOGIC above runs transpiled-from-Kotlin; only the DAO CRUD is bridged here.
+open(os.path.join(GEN, "gym_list_backend.py"), "w").write('''"""gym_list backend: GymProfileDao/GymEquipmentDao -> InMemoryDb BRIDGES (framework boundary,
+ported once) + int->enum lift. These feed the TRANSPILED GymRepository, which feeds the transpiled
+GymListViewModel -- so the repository logic traces to Kotlin; only DAO CRUD is hand-bridged."""
 from generated import kotlin_rt as rt
 from generated.reactive_shim import Flow
 from generated.gym_list_kt import (GymListViewModel, GymProfileEntity, GymWithEquipment, GymType)
-from domain.gym_service import GymService
+from generated.gym_repository_kt import GymRepository
+from data.repository.gym_profile_repository import GymProfileRepository
 from data.repository.gym_equipment_repository import GymEquipmentRepository
-from reactive import invalidate                  # action -> repaint (Kotlin Flow re-emit analog)
+from reactive import invalidate                  # db mutation -> repaint (Kotlin Flow re-emit analog)
 
 
 def _lift(g):
@@ -115,30 +157,64 @@ def _lift(g):
     return GymProfileEntity(g.id, g.name, g.isActive, gt, g.createdAt, g.updatedAt)
 
 
-class _GymRepo:
-    """getAllWithEquipment / getActive over the kit's InMemoryDb, in the Kotlin shapes."""
-    def __init__(self, db): self.db = db
+class _ProfileDao:
+    """GymProfileDao -> InMemoryDb: camelCase Kotlin names, Flow-wrapped reads (lazy re-query),
+    rows lifted to the transpiled Kotlin entity shape. Mutations request a repaint."""
+    def __init__(self, db):
+        self._p = GymProfileRepository(db)
+        self._e = GymEquipmentRepository(db)
+
+    def getAll(self):
+        return Flow(lambda: rt.KtList(_lift(g) for g in self._p.get_all()))
 
     def getAllWithEquipment(self):
-        def q():                                  # thunk: re-queried on every read (Flow re-emits)
-            eq = GymEquipmentRepository(self.db)
-            return rt.KtList(GymWithEquipment(_lift(g), rt.KtList(eq.get_by_gym(g.id)))
-                             for g in GymService(self.db).get_all())
+        def q():                                  # thunk: re-queried each read (Flow re-emits)
+            return rt.KtList(GymWithEquipment(_lift(g), rt.KtList(self._e.get_by_gym(g.id)))
+                             for g in self._p.get_all())
+        return Flow(q)
+
+    def getById(self, id):
+        def q():
+            g = self._p.get_by_id(id)
+            return _lift(g) if g is not None else None
         return Flow(q)
 
     def getActive(self):
         def q():
-            act = [g for g in GymService(self.db).get_all() if g.isActive]
-            return _lift(act[0]) if act else None
+            a = self._p.get_active()
+            return _lift(a) if a is not None else None
         return Flow(q)
 
-    def setActive(self, gid): GymService(self.db).set_active(gid); invalidate()
+    def insert(self, gym): self._p.insert(gym); invalidate()
+    def update(self, gym): self._p.update(gym); invalidate()
+    def delete(self, gym): self._p.delete(gym); invalidate()
+    def deactivateAll(self, now): self._p.deactivate_all(now); invalidate()
+    def activate(self, gymId, now): self._p.activate(gymId, now); invalidate()
 
-    def deleteGym(self, gid): GymService(self.db).delete_gym(gid); invalidate()
+
+class _EquipmentDao:
+    """GymEquipmentDao -> InMemoryDb."""
+    def __init__(self, db): self._e = GymEquipmentRepository(db)
+
+    def getByGym(self, gymId):
+        return Flow(lambda: rt.KtList(self._e.get_by_gym(gymId)))
+
+    def getAvailableByGym(self, gymId):
+        return Flow(lambda: rt.KtList(self._e.get_available_by_gym(gymId)))
+
+    def insert(self, e): self._e.insert(e); invalidate()
+    def insertAll(self, es): self._e.insert_all(es); invalidate()
+    def delete(self, e): self._e.delete(e); invalidate()
+    def deleteAllForGym(self, gymId): self._e.delete_all_for_gym(gymId); invalidate()
+
+
+class _Database:
+    def withTransaction(self, block): return block()   # InMemoryDb is synchronous -- run inline
 
 
 def make_vm(db):
-    return GymListViewModel(_GymRepo(db))
+    repo = GymRepository(_Database(), _ProfileDao(db), _EquipmentDao(db))
+    return GymListViewModel(repo)
 ''')
 
 # 5. the generated screen, wired to the vendored backend
@@ -152,5 +228,6 @@ open(os.path.join(APP, "ui", "gym_list_screen_gen.py"), "w").write(src)
 
 print("vendored:")
 for f in ("generated/kotlin_rt.py", "generated/reactive_shim.py", "generated/gym_list_kt.py",
-          "generated/gym_list_backend.py", "ui/gym_list_screen_gen.py"):
+          "generated/gym_repository_kt.py", "generated/gym_list_backend.py",
+          "ui/gym_list_screen_gen.py"):
     print(f"  {f}  ({os.path.getsize(os.path.join(APP, f))} bytes)")
