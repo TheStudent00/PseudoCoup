@@ -110,9 +110,9 @@
     <h3>Track B <span class="badge b-warn">IN PROGRESS</span></h3>
     <div class="role">transpiler center — Kt→Py of the whole app · <b>the documented priority</b></div>
     <div class="bar"><i style="width:76%"></i></div>
-    <div class="num"><b>192 / 254</b> compile-clean (76%)</div>
-    <div class="num">non-UI <b>162/167 = 97%</b> · UI 30/87</div>
-    <div class="num mut" style="margin-top:6px">62 fails dominated by Compose <code>N.dp</code>/<code>N.sp</code> unit literals</div>
+    <div class="num"><b>192 / 254 PARSE-clean</b> (76%) — <b>not</b> runnable</div>
+    <div class="num">runnable frontier = <b>11 oracle engines</b> only</div>
+    <div class="num mut" style="margin-top:6px">DB-domain doesn't run: <b>79%</b> unresolved imports · <b>19/20</b> repos dropped DI ctors · <code>core.flow</code> missing (log_124)</div>
   </div>
   <div class="card">
     <h3>Track A <span class="badge b-good">MATURE</span></h3>
@@ -131,12 +131,14 @@
 </div>
 
 <div class="callout">
-  ⚠️ <b>Sequencing note (a real decision).</b> log_96's plan is <i>finish non-UI Kt→Py (Track B)
-  → then UI swap-in (Bucket 3)</i>. The whole recent thread (the PseudoUI generator, logs 104–122)
-  is <b>Bucket 3</b> — i.e. <i>ahead of</i> the documented gate. Not wrong (it de-risks the UI
-  vertical end-to-end), but it is deferred-bucket work while Track B sits at 192/254.
-  <b>Current direction:</b> breadth — a 2nd interactive drop-in. The alternative is pivoting back
-  to close Track B (the <code>.dp</code>/<code>.sp</code> blocker + 62 files).
+  ⚠️ <b>Sequencing reality (confirmed by probe, log_124).</b> The breadth work is genuinely
+  <i>ahead of the foundation</i>. A generated screen binds to a transpiled VM but runs on the
+  <b>hand-built</b> domain (<code>src/domain</code>) — because the <b>transpiled</b> domain
+  (<code>WFL_MixingCenter</code>) does NOT run: it parses, but 79% of files have unresolved imports,
+  19/20 repos dropped their DI constructors, runtime modules are missing. So "192/254" is parse-clean
+  scaffolding, not a runnable backend. The real ceiling is the <b>parse-clean → runnable jump</b>
+  (restore DI, resolve imports, supply runtime, Room→DB boundary) — not more UI. Breadth is valid as
+  <i>mechanism-proof</i> but can't trace end-to-end until that floor is real.
 </div>
 
 <h2>Component status</h2>

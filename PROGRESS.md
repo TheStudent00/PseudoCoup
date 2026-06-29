@@ -29,16 +29,17 @@ WFL Python (canonical 1:1)                         [WFL_MixingCenter]
 
 | Track | What it is | Status | The number that matters |
 |-------|------------|:------:|-------------------------|
-| **Track B** — transpiler center | Kt→Py of the whole app + verification ladder. **The documented current priority.** | 🟡 | **192/254 compile-clean** (non-UI **162/167 = 97%**; UI **30/87**). 62 fails dominated by Compose `N.dp`/`N.sp` unit literals. (PROJECT_MAP 2026-06-26 / log_96 2026-06-27 — no fresher run) |
+| **Track B** — transpiler center | Kt→Py of the whole app + verification ladder. **The documented current priority.** | 🟡 | **192/254 PARSE-clean** (non-UI 162/167; UI 30/87) — but parse-clean ≠ runnable. **Runnable frontier = 11 oracle engines.** The DB-backed domain does NOT run: **201/254 (79%) have unresolved imports**, **19/20 repos dropped their DI constructors**, runtime modules (`core.flow`) missing (log_124). |
 | **Track A** — hand-built UI | ~30 screens hand-written on the kit (NOT transpiled). The mature baseline. | ✅ | ~30 screens; "65/65" = Track A's hand-built **assertion/coverage** count (NOT the 36 golden PNGs — those are the current visual baseline) |
 | **Bucket 3** — PseudoUI swap-in | Make the literal WFL Python a *runnable app*: wire screens onto the kit + reactivity. **Officially deferred until non-UI closes.** | ⏸️→🟡 | gym_list is a complete generated drop-in (this session). **This is the deferred bucket — see the sequencing note below.** |
 
-> ⚠️ **Sequencing note (worth a decision):** log_96's plan is *finish non-UI Kt→Py (Track B) → then
-> UI swap-in (Bucket 3)*. This whole session has been **Bucket 3** (the PseudoUI generator), i.e.
-> *ahead of* the documented gate. That's not wrong — it proves the UI vertical end-to-end and de-risks
-> the hardest part — but if you're tracking against the plan, we've been doing deferred-bucket work
-> while Track B sits at 192/254. **Your call:** keep proving UI breadth, or pivot back to closing
-> Track B (the `.dp`/`.sp` blocker + the 62 failing files).
+> ⚠️ **Sequencing reality (confirmed by probe, log_124):** the breadth work is genuinely *ahead of the
+> foundation*. A generated screen binds to a transpiled VM but runs on the **hand-built** domain
+> (`src/domain`) — because the **transpiled** domain (`WFL_MixingCenter`) does NOT run: it parses but
+> 79% of files have unresolved imports, 19/20 repos dropped their DI constructors, and runtime modules
+> are missing. So "192/254" is parse-clean scaffolding, not a runnable backend. The real ceiling is the
+> **parse-clean → runnable jump** (restore DI, resolve imports, supply runtime, Room→DB boundary) — not
+> more UI. UI breadth is valid as *mechanism-proof* but cannot trace end-to-end until that floor is real.
 
 ---
 
