@@ -101,6 +101,44 @@ def assertNotNull(*args):
     assert args[-1] is not None, "expected non-None"
 
 
+def assertThrows(*args):
+    # assertThrows([msg,] expectedClass, executable) -> run it, assert it raises expectedClass; return it
+    expected, executable = args[-2], args[-1]
+    try:
+        executable()
+    except BaseException as e:                       # noqa: BLE001
+        if isinstance(e, expected):
+            return e
+        raise AssertionError(f"expected {getattr(expected, '__name__', expected)}, "
+                             f"got {type(e).__name__}: {e}")
+    raise AssertionError(f"expected {getattr(expected, '__name__', expected)} to be thrown")
+
+
+# ---- Kotlin / java.lang exceptions thrown by bare name (`throw IllegalStateException(msg)`) ---- #
+class IllegalStateException(RuntimeError):
+    pass
+
+
+class IllegalArgumentException(ValueError):
+    pass
+
+
+class NoSuchElementException(Exception):
+    pass
+
+
+class IndexOutOfBoundsException(IndexError):
+    pass
+
+
+class UnsupportedOperationException(Exception):
+    pass
+
+
+class ConcurrentModificationException(Exception):
+    pass
+
+
 # ---- Kotlin collection runtime -- KtList/KtMap carry the Kotlin stdlib methods so
 #      `xs.sortedBy { … }.map { … }` dispatches uniformly. List-returning methods
 #      return KtList (chains stay typed); map-returning methods return KtMap. Lambdas
@@ -945,6 +983,26 @@ class Math:                             # java.lang.Math (used as `Math.round(x)
     sin = staticmethod(math.sin)
     cos = staticmethod(math.cos)
     tan = staticmethod(math.tan)
+
+
+class System:                          # java.lang.System (currentTimeMillis / nanoTime by bare name)
+    @staticmethod
+    def currentTimeMillis():
+        import time
+        return int(time.time() * 1000)
+
+    @staticmethod
+    def nanoTime():
+        import time
+        return int(time.perf_counter() * 1e9)
+
+    @staticmethod
+    def lineSeparator():
+        return "\n"
+
+    @staticmethod
+    def getProperty(*a):
+        return a[1] if len(a) > 1 else None
 
 
 def roundToInt(x):
