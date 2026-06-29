@@ -13,7 +13,10 @@ import os
 import re
 import sys
 import glob
+import builtins
 import collections
+
+BUILTINS = set(dir(builtins))   # kotlin.math.abs etc. resolve to a Python builtin -> already covered
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from parse import parse  # noqa: E402
@@ -66,7 +69,8 @@ def main():
     names = {}
     for origin, name, fqn, ui in rows:
         rec = names.setdefault((origin, name),
-                               {"covered": name in prov, "live": name in live, "ui_only": True})
+                               {"covered": name in prov or name in BUILTINS,
+                                "live": name in live, "ui_only": True})
         if not ui:
             rec["ui_only"] = False
 
