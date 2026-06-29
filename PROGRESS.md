@@ -73,7 +73,7 @@ WFL Python (canonical 1:1)                         [WFL_MixingCenter]
 
 ## Backlog (wanted, not started)
 
-- 🔵 **Breadth** — a 2nd full interactive drop-in (paths/exercise_detail), handling `MutableStateFlow → State`.
+- 🟡 **Breadth** — 2nd interactive drop-in (exercise_detail). `MutableStateFlow → State` seam DONE & verified (log_123); remaining: nav map + menu/dialog handlers + interaction test + vendor/route.
 - 🔵 **Depth** — Python→Dart of the generated screen for Flutter PIXEL goldens (its runtime isn't Dart-transpilable yet).
 - 🔵 **Efficient near-true-reactivity** (reconciled redraw) — kit-only, correctness-preserving, deferred (log_122).
 - 🔵 **UI ledger geometry layer** (rendered-box diff; ground truth = original app via `WFL_PseudoCoup/tools/dualtrace`).
