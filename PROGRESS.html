@@ -31,7 +31,7 @@
 
 <h1>WFL → Python — project dashboard</h1>
 <p class="sub">What the project is, the one goal now, and where it stands. Reload to refresh.</p>
-<p class="sub mut">Updated 2026-06-29, after regenerating the foundation with the advanced transpiler.</p>
+<p class="sub mut">Updated 2026-06-29, after building the resolve phase + wrapper registry and emitting real imports.</p>
 
 <h2>What the project is</h2>
 <div class="panel">
@@ -84,24 +84,29 @@ keep working; they bolt onto <code>map</code>. What was missing sits between <co
 <h2>The one goal now — complete the transpiler</h2>
 <div class="panel goal">
 <p class="num" style="margin:0 0 10px">We work on this and nothing else until the foundation is solid.
-The transpiler is checked by three gates, each stricter than the last:</p>
-<pre>gate    what it proves                                        command                result
-parse   every file becomes Python with no syntax errors       build_mixingcenter.py  <b>254 / 254</b>
-load    the non-UI domain loads under the runtime              loadcheck.py           <b>165 / 165</b>
-logic   tested components compute the same answers as Kotlin   oracle.py              <b>11 / 11</b>  (160 methods)</pre>
-<p class="num" style="margin-top:10px">The <b>load</b> gate, added this pass, caught two real bugs that
-parsing alone had hidden — both because the affected code wasn't being emitted at all: a companion
-property whose value is an anonymous object dropped the lifted class
-(<code>MIGRATION_1_2 = _Obj1(1, 2)</code> with no <code>class _Obj1</code>), and Kotlin raw
-<code>"""…"""</code> strings spanning lines were emitted with a single <code>"</code>. Both fixed.</p>
-<p class="num mut" style="margin-top:8px">The whole non-UI domain now loads. The names the load gate
-surfaced were added to <code>kotlin_rt</code> — which already held <code>java.lang.Math</code>, the Java
-collections, and JUnit, so it's the catch-all bare-name runtime, not "Kotlin stdlib only" (a separate
-file for a handful of names would have been premature structure): <code>Date</code>/<code>Locale</code>/
-<code>SimpleDateFormat</code> (the last a real wrapper — pattern → strftime), <code>ArrayDeque</code>
-(a functional deque), <code>Any</code> (a lock object), and a documented <code>Migration</code> stub
-(no Python Room). The only non-loaders are Compose UI — the <code>ui/</code> screens plus two
-nav-orchestration files (the NavHost and the bottom bar) — which defer with the UI phase.</p>
+The transpiler now runs the full pipeline — parse → resolve → map → generate(+imports) — checked by four gates:</p>
+<pre>gate     what it proves                                       command                result
+parse    every file becomes Python, no syntax errors          build_mixingcenter.py  <b>254 / 254</b>
+load     the non-UI domain loads under the runtime            loadcheck.py           <b>165 / 165</b>
+extern   every external name the foundation USES is wrapped   externals.py           <b>0 real gaps</b> (66 wrapped)
+logic    tested components match Kotlin's answers             oracle.py              <b>11 / 11</b>  (160 methods)</pre>
+<p class="num" style="margin-top:10px"><b>load ≠ run — the finding that drove this pass.</b>
+<code>load</code> only proves the modules <i>load</i>; it misses names used inside method bodies. The new
+<code>resolve</code> phase reads every file's imports — they name exactly where each external symbol comes
+from — and <code>externals.py</code> cross-checks them against the registry: a deterministic checklist that
+replaces the run-and-watch-it-fail hunt. It found <b>65 real external names</b> <code>load</code> never
+surfaced (coroutines <code>Flow</code>/<code>StateFlow</code>/<code>combine</code>, java
+<code>Instant</code>/<code>UUID</code>/<code>File</code>, android <code>Context</code>/<code>Log</code>).
+All now covered — real wrappers where Python has an equivalent (a synchronous <code>coroutines</code>
+Flow/StateFlow, <code>java_rt</code>, <code>json_rt</code>), honest stubs where it doesn't
+(<code>android_rt</code>). 0 real non-UI gaps. And <code>generate</code> now emits the imports: <b>106
+foundation files carry <code>from runtime.&lt;wrapper&gt; import &lt;name&gt;</code></b>.</p>
+<p class="num mut" style="margin-top:8px"><b>Two deeper truths the checklist exposed</b> — now the mapped
+remaining work. <b>The data layer:</b> the reactive flows are fed by Room DAOs whose query bodies Room
+<i>generates at compile time</i> — not in the source to transpile — so a DAO-backed flow has the shape but
+no data until the data layer is implemented (the pure-logic engines don't touch this and run today).
+<b>Platform glue</b> (Activities, notifications, Firebase, WorkManager) is off-device by nature — stubbed to
+resolve names, not to run; when a piece must run, lift that logic into the domain layer.</p>
 </div>
 
 <h2>The plan, in order</h2>

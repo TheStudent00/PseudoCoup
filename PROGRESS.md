@@ -2,7 +2,7 @@
 
 What the project is, the one goal now, and where it stands. (Browser version: `PROGRESS.html`.)
 
-Updated 2026-06-29, after regenerating the foundation with the advanced transpiler.
+Updated 2026-06-29, after building the resolve phase + wrapper registry and emitting real imports.
 
 ## What the project is
 
@@ -60,33 +60,36 @@ bolt onto the `map` stage.** What was missing sits between `parse` and `map`, an
 
 ## The one goal now — complete the transpiler
 
-We work on this and nothing else until the foundation is solid. The transpiler is checked by three
-gates, each stricter than the last:
+We work on this and nothing else until the foundation is solid. The transpiler now runs the full pipeline
+— parse → resolve → map → generate(+imports) — checked by four gates:
 
 ```
-gate    what it proves                                           command                result
-parse   every file becomes Python with no syntax errors          build_mixingcenter.py  254 / 254
-load    the non-UI domain loads under the runtime                 loadcheck.py           165 / 165
-logic   tested components compute the same answers as Kotlin      oracle.py              11 / 11  (160 methods)
+gate     what it proves                                       command                result
+parse    every file becomes Python, no syntax errors          build_mixingcenter.py  254 / 254
+load     the non-UI domain loads under the runtime            loadcheck.py           165 / 165
+extern   every external name the foundation USES is wrapped   externals.py           0 real gaps (66 wrapped)
+logic    tested components match Kotlin's answers             oracle.py              11 / 11  (160 methods)
 ```
 
-The **load** gate, added this pass, caught two real bugs that parsing alone had hidden — both because
-the affected code wasn't being emitted at all: a companion-object property whose value is an anonymous
-object dropped the lifted class (`MIGRATION_1_2 = _Obj1(1, 2)` with no `class _Obj1`), and Kotlin raw
-`"""…"""` strings spanning lines were emitted with a single `"`. Both fixed.
+**load ≠ run — the finding that drove this pass.** `load` (165/165) only proves the modules *load*; it
+misses names used inside method bodies. The new `resolve` phase reads every file's imports — they name
+exactly where each external symbol comes from — and `externals.py` cross-checks them against the registry:
+a deterministic checklist that replaces the old run-and-watch-it-fail hunt. It found **65 real external
+names** `load` never surfaced (coroutines `Flow`/`StateFlow`/`combine`, java `Instant`/`UUID`/`File`,
+android `Context`/`Log`, …). All are now covered — real wrappers where Python has an equivalent (a
+synchronous `coroutines` Flow/StateFlow, `java_rt` time/UUID, `json_rt`), honest stubs where it doesn't
+(`android_rt`, off-device platform glue). 0 real non-UI gaps. And `generate` now emits the imports: **106
+foundation files carry `from runtime.<wrapper> import <name>`** — a use of an external module maps to the
+module that wraps it, in the code itself.
 
-The whole non-UI domain now loads. The names the load gate surfaced were added to `kotlin_rt` (which
-already held `java.lang.Math`, the Java collections, and JUnit — so it's the catch-all bare-name runtime,
-not "Kotlin stdlib only"; a separate file for a handful of names would have been premature structure):
-`Date`/`Locale`/`SimpleDateFormat` (the last a real wrapper — pattern → strftime), `ArrayDeque` (a
-functional deque), `Any` (a lock object), and a documented `Migration` stub (no Python Room). The only
-non-loaders are Compose UI — the `ui/` screens plus two nav-orchestration files (the NavHost and the
-bottom bar) — which defer with the UI phase. Splitting the runtime by origin (and renaming `kotlin_rt`)
-is deferred until that phase makes it earn its keep.
-
-Earlier construct work this stretch: the `by` delegate; a trailing lambda after a named argument;
-`when`/standalone `is Type` → `isinstance`; `if`/`when` as a value (hoisted to a temp); hex literals
-keeping `F`/`f` digits; `a?.b = v` → a guarded assignment; anonymous objects → a hoisted class + instance.
+**Two deeper truths the checklist exposed — now the mapped-out remaining work:**
+- **The data layer.** The reactive flows are fed by Room DAOs whose query bodies Room *generates at compile
+  time* — not in the Kotlin source to transpile. A DAO-backed flow has the right shape but carries no data
+  until the data layer is implemented (a fake DB running the `@Query` SQL, or hand-written DAOs). The
+  pure-logic engines (the 11 oracle-verified) don't touch this and run today.
+- **Platform glue.** Activities, notifications, Firebase, WorkManager are off-device by nature — stubbed to
+  resolve names, not to run. When a piece must run (e.g. notification content built from domain data), lift
+  that logic into the domain layer where it's testable.
 
 ## The plan, in order
 
