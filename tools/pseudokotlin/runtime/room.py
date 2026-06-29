@@ -151,6 +151,47 @@ class Dao:
             self._db.delete(e)
 
 
+class _Builder:
+    """Room's database builder. The chained options are inert; build() constructs the @Database class
+    (whose generated __init__ creates a Database and registers every entity)."""
+    def __init__(self, klass):
+        self._klass = klass
+
+    def build(self):
+        return self._klass()
+
+    def addMigrations(self, *a):
+        return self
+
+    def fallbackToDestructiveMigration(self, *a):
+        return self
+
+    def fallbackToDestructiveMigrationOnDowngrade(self, *a):
+        return self
+
+    def addTypeConverter(self, *a):
+        return self
+
+    def addCallback(self, *a):
+        return self
+
+    def setQueryExecutor(self, *a):
+        return self
+
+    def allowMainThreadQueries(self):
+        return self
+
+
+class Room:
+    @staticmethod
+    def inMemoryDatabaseBuilder(context, klass, *a):
+        return _Builder(klass.java if hasattr(klass, "java") else klass)
+
+    @staticmethod
+    def databaseBuilder(context, klass, name=None, *a):
+        return _Builder(klass.java if hasattr(klass, "java") else klass)
+
+
 # ---- self-test: run the real ExerciseDao muscle-group query against sqlite3 --------------------- #
 if __name__ == "__main__":
     class MuscleGroup:                       # a stand-in enum (the foundation's transpiled enums look like this)

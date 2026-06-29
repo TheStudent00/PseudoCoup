@@ -237,6 +237,8 @@ class Expressions:
         kids = self.named(node)
         recv = kids[0]
         sel = self.text(kids[-1]) if len(kids) > 1 else ""
+        if sel == "class" and any(c.type == "::" for c in node.children):
+            return f"kclass({self.visit(recv)})"        # Foo::class -> kclass(Foo) (.java/.kotlin -> Foo)
         safe_call = any(c.type == "?." for c in node.children)
         # grammar quirk: a leading `!`/`-`/`+` down the receiver chain parses as (!w).sel but
         # MEANS !(w.sel) -- the prefix binds looser than the dot. Strip + re-wrap at each level
