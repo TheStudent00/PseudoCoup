@@ -36,10 +36,45 @@ def _notify_recompose():
         pass
 
 
-class StateFlow:
+class _FlowOps:
+    """Pull-model Flow operators: each transforms the LATEST emission and is re-read on access (a
+    cold Flow). Approximate (no backpressure/timing) but enough to run flow-chaining VMs. `_read()`
+    yields the current value; subclasses define it."""
+    def map(self, f): return Flow(lambda: f(self._read()))
+    def mapLatest(self, f): return Flow(lambda: f(self._read()))
+    def filter(self, p):
+        def q():
+            v = self._read()
+            return v if p(v) else None
+        return Flow(q)
+    def flatMapLatest(self, f):
+        def q():
+            inner = f(self._read())
+            return inner._read() if hasattr(inner, "_read") else inner
+        return Flow(q)
+    def onEach(self, f):
+        def q():
+            v = self._read(); f(v); return v
+        return Flow(q)
+    def onStart(self, *a): return self
+    def distinctUntilChanged(self, *a): return self
+    def catch(self, *a): return self
+    def flowOn(self, *a): return self
+    def debounce(self, *a): return self
+    def sample(self, *a): return self
+    def take(self, *a): return self
+    def drop(self, *a): return self
+    def collect(self, f):
+        v = self._read()
+        if v is not None: f(v)
+    def collectLatest(self, f): self.collect(f)
+
+
+class StateFlow(_FlowOps):
     # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so a UI-FLAG flow
     # (dialog-open, search query) repaints like Compose snapshot state would. Reads stay cheap.
     def __init__(self, v=None): self._value = v
+    def _read(self): return self._value
     @property
     def value(self): return self._value
     @value.setter
@@ -47,6 +82,7 @@ class StateFlow:
         changed = self._value != v
         self._value = v
         if changed: _notify_recompose()
+    def update(self, f): self.value = f(self._value)   # MutableStateFlow.update { it.copy(...) }
     def stateIn(self, *a): return self
     def asStateFlow(self): return self
     def asSharedFlow(self): return self
@@ -56,19 +92,24 @@ class StateFlow:
     def emit(self, *a): pass
 
 
-class Flow:
+class Flow(_FlowOps):
     # `v` may be a value OR a thunk. A Kotlin Flow re-emits on every db change; the pull analog is
     # to re-read on each access -- so `.value` calls the thunk fresh and stateIn returns the SAME
     # lazy flow (not a frozen snapshot). Without this the screen shows stale data after a mutation.
     def __init__(self, v): self._v = v
-    def _val(self): return self._v() if callable(self._v) else self._v
+    def _read(self): return self._v() if callable(self._v) else self._v
+    def _val(self): return self._read()                # back-compat alias
     def stateIn(self, *a): return self
-    def collectAsStateWithLifecycle(self, *a): return self._val()
-    def collectAsState(self, *a): return self._val()
-    def first(self): return self._val()
+    def collectAsStateWithLifecycle(self, *a): return self._read()
+    def collectAsState(self, *a): return self._read()
+    def first(self): return self._read()
 
     @property
-    def value(self): return self._val()
+    def value(self): return self._read()
+
+
+def flowOf(*xs): return Flow(lambda: xs[-1] if xs else None)   # latest emission
+def emptyFlow(): return Flow(lambda: None)
 
 
 class _Scope:
