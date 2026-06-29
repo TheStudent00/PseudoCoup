@@ -115,7 +115,10 @@ class Expressions:
 
     @kind("number_literal", "float_literal")
     def v_number(self, node):
-        return self.text(node).replace("_", "").rstrip("LFfuU") or "0"
+        # strip Kotlin's numeric-type suffixes. For a hex literal, F/f are DIGITS (not the float
+        # suffix), so a color like 0xFF38256E must keep them -- only L/u/U can trail hex.
+        t = self.text(node).replace("_", "")
+        return (t.rstrip("LuU") if t[:2].lower() == "0x" else t.rstrip("LFfuU")) or "0"
 
     @kind("character_literal")
     def v_char(self, node):
