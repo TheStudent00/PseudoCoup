@@ -17,6 +17,7 @@ import runtime.coroutines as coroutines    # noqa: E402
 import runtime.java_rt as java_rt          # noqa: E402
 import runtime.json_rt as json_rt          # noqa: E402
 import runtime.android_rt as android_rt    # noqa: E402
+import runtime.room as room                # noqa: E402  (the sqlite3 data-layer engine: Dao/Entity/Col)
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
 # (provided() indexes by NAME across all of these, so a name already in kotlin_rt -- e.g. java Date or
@@ -30,7 +31,8 @@ ORIGIN_MODULE = {
     "android": android_rt,                 # Android-framework STUBS (no Python Android)
     "androidx": android_rt,
     "androidx_work": android_rt,
-    "androidx_room": android_rt,           # the Room builder stub (Migration stays in kotlin_rt)
+    "androidx_room": room,                 # @Dao/@Entity -> the sqlite3 engine (Room builder stub in
+                                           #   android_rt, Migration in kotlin_rt -- both still in scope)
     "dagger_hilt": android_rt,             # EntryPointAccessors stub
     "google": android_rt,                  # Firebase / Play / Wearable stubs
 }

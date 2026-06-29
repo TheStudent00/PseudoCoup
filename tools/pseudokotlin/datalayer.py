@@ -6,10 +6,26 @@ column kinds inferred from field types (String->text, Boolean->bool, an enum typ
 enum_list, the same shape Room's @TypeConverter produces). dao_body(...) (next) turns a @Query method into
 a body that runs its SQL.
 """
+import os
 import re
 
 _SCALAR = {"String": "text", "CharSequence": "text", "Int": "int", "Long": "long",
            "Boolean": "bool", "Double": "real", "Float": "real"}
+
+# The global enum set is computed once, lazily, from the WFL copy (entities are only seen when
+# transpiling it). Cached so the transpiler can call enums() per-@Entity without rescanning.
+_KT_ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife")
+_ENUMS = None
+
+
+def enums():
+    global _ENUMS
+    if _ENUMS is None:
+        import sys
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import resolve
+        _ENUMS = resolve.app_enums(_KT_ROOT)
+    return _ENUMS
 
 
 def _find(node, kind):
@@ -113,7 +129,7 @@ def dao_body(method_node):
     if "@Insert" in text:
         return f"return self._insert({params[0] if params else 'entity'})"
     if "@Update" in text or "@Delete" in text or "@Transaction" in text:
-        return "pass  # TODO @Update/@Delete/@Transaction need generated SQL"
+        return "pass  # write/transaction op: needs generated SQL (next data-layer step)"
     return "pass"
 
 
@@ -127,6 +143,8 @@ def dao_class(dao_node, class_name):
         sig = ", ".join(["self"] + _method_params(m))
         lines.append(f"    def {name}({sig}):")
         lines += [f"        {bl}" for bl in dao_body(m).split("\n")]
+    if len(lines) == 1:                             # an interface with no methods -> a valid empty class
+        lines.append("    pass")
     return "\n".join(lines)
 
 

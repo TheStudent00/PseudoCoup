@@ -13,6 +13,7 @@ from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
 import resolve   # noqa: E402  (the resolve phase: a file's import table)
 import registry  # noqa: E402  (the wrapper registry: which runtime module provides a name)
+import datalayer  # noqa: E402  (the Room map stage: @Entity schema + @Dao bodies)
 
 _TOP_DECLS = {"class_declaration", "object_declaration", "function_declaration",
               "property_declaration"}
@@ -42,7 +43,8 @@ class Declarations:
     @kind("source_file")
     def v_source_file(self, node):
         self._ext_patches, self._nested_aliases = [], []
-        imports = self._emit_imports(resolve.file_header(node))
+        self._runtime_imports = set()   # `from runtime.room import …` etc. added while visiting decls
+        ext_imports = self._emit_imports(resolve.file_header(node))
         parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
         body = "\n\n\n".join(p for p in parts if p)
         # flush AFTER all decls so the referenced classes exist: nested-type aliases
@@ -50,6 +52,7 @@ class Declarations:
         tail = self._nested_aliases + self._ext_patches
         if tail:
             body += ("\n\n\n" if body else "") + "\n".join(tail)
+        imports = sorted(self._runtime_imports) + ext_imports
         if imports:
             body = "\n".join(imports) + ("\n\n\n" + body if body else "")
         return body
@@ -63,6 +66,8 @@ class Declarations:
         prov = registry.provided()
         by_module = {}
         for used, fqn in header["imports"].items():
+            if resolve.origin(fqn) == "androidx_room":      # @Dao/@Entity/@Query are handled by the
+                continue                                    #   data-layer map stage (it adds room imports)
             orig = fqn.rsplit(".", 1)[-1]                   # the name the wrapper module defines
             mod = prov.get(orig)
             if mod is None:
@@ -297,7 +302,16 @@ class Declarations:
 
     @kind("class_declaration")
     def v_class_declaration(self, node):
-        return self._render_class(node, self._name_of(node) or "UnknownClass")
+        name = self._name_of(node) or "UnknownClass"
+        mods = next((c.text.decode() for c in node.children if c.type == "modifiers"), "")
+        if "@Dao" in mods:                          # a DAO interface -> a class of generated query bodies
+            self._runtime_imports.add("from runtime.room import Dao")
+            return datalayer.dao_class(node, name)
+        cls = self._render_class(node, name)
+        if "@Entity" in mods:                       # an entity -> its data class + a room table registration
+            self._runtime_imports.add("from runtime.room import Col, Entity")
+            self._ext_patches.append(datalayer.entity_schema(node, name, datalayer.enums()))
+        return cls
 
     @kind("object_declaration")
     def v_object_declaration(self, node):
