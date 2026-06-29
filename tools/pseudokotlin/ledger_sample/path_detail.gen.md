@@ -3,7 +3,7 @@
 Mechanically generated from the Compose @Composable tree: each node mapped to a kit
 define_* call with a content-anchored, referenceable zone id. NOT hand-written.
 
-## generated define_* sequence  (38 calls)
+## generated define_* sequence  (34 calls)
 ```python
 ui.define_box("path_detail_z00_scaffold", "content", "V")
 ui.define_box("path_detail_z01_column", "path_detail_z00_scaffold", "V")
@@ -19,30 +19,26 @@ ui.define_box("path_detail_z10_detailsection", "path_detail_z03_lazycolumn", "V"
 ui.define_box("path_detail_z11_column", "path_detail_z10_detailsection", "V")
 ui.define_text("path_detail_z12_the_evidence", "path_detail_z11_column", "The evidence")
 ui.define_spacer_zone("path_detail_z13_spacer", "path_detail_z11_column")
-ui.define_text("path_detail_z14_body", "path_detail_z11_column", "body")
-ui.define_text("path_detail_z15_definition_evide", "path_detail_z10_detailsection", "definition.evidenceSummary")
-ui.define_box("path_detail_z16_detailsection", "path_detail_z03_lazycolumn", "V")
-ui.define_box("path_detail_z17_column", "path_detail_z16_detailsection", "V")
-ui.define_text("path_detail_z18_why_it_works", "path_detail_z17_column", "Why it works")
-ui.define_spacer_zone("path_detail_z19_spacer", "path_detail_z17_column")
-ui.define_text("path_detail_z20_body", "path_detail_z17_column", "body")
-ui.define_text("path_detail_z21_definition_educa", "path_detail_z16_detailsection", "definition.educationalCopy")
-ui.define_box("path_detail_z22_detailsection", "path_detail_z03_lazycolumn", "V")
-ui.define_box("path_detail_z23_column", "path_detail_z22_detailsection", "V")
-ui.define_text("path_detail_z24_modality", "path_detail_z23_column", "Modality")
-ui.define_spacer_zone("path_detail_z25_spacer", "path_detail_z23_column")
-ui.define_text("path_detail_z26_body", "path_detail_z23_column", "body")
-ui.define_text("path_detail_z27_definition_modal", "path_detail_z22_detailsection", "definition.modalityNotes")
-ui.define_box("path_detail_z28_detailsection", "path_detail_z03_lazycolumn", "V")
-ui.define_box("path_detail_z29_column", "path_detail_z28_detailsection", "V")
-ui.define_text("path_detail_z30_research", "path_detail_z29_column", "Research")
-ui.define_spacer_zone("path_detail_z31_spacer", "path_detail_z29_column")
-ui.define_text("path_detail_z32_body", "path_detail_z29_column", "body")
-ui.define_box("path_detail_z33_column", "path_detail_z28_detailsection", "V")
-ui.define_text("path_detail_z34_citation", "path_detail_z33_column", "citation")
-ui.define_box("path_detail_z35_topappbar", "path_detail_z00_scaffold", "V")
-ui.define_text("path_detail_z36_text", "path_detail_z35_topappbar", "")
-ui.define_icon("path_detail_z37_back", "path_detail_z35_topappbar", "Back")
+ui.define_text("path_detail_z14_definition_evide", "path_detail_z10_detailsection", "definition.evidenceSummary")
+ui.define_box("path_detail_z15_detailsection", "path_detail_z03_lazycolumn", "V")
+ui.define_box("path_detail_z16_column", "path_detail_z15_detailsection", "V")
+ui.define_text("path_detail_z17_why_it_works", "path_detail_z16_column", "Why it works")
+ui.define_spacer_zone("path_detail_z18_spacer", "path_detail_z16_column")
+ui.define_text("path_detail_z19_definition_educa", "path_detail_z15_detailsection", "definition.educationalCopy")
+ui.define_box("path_detail_z20_detailsection", "path_detail_z03_lazycolumn", "V")
+ui.define_box("path_detail_z21_column", "path_detail_z20_detailsection", "V")
+ui.define_text("path_detail_z22_modality", "path_detail_z21_column", "Modality")
+ui.define_spacer_zone("path_detail_z23_spacer", "path_detail_z21_column")
+ui.define_text("path_detail_z24_definition_modal", "path_detail_z20_detailsection", "definition.modalityNotes")
+ui.define_box("path_detail_z25_detailsection", "path_detail_z03_lazycolumn", "V")
+ui.define_box("path_detail_z26_column", "path_detail_z25_detailsection", "V")
+ui.define_text("path_detail_z27_research", "path_detail_z26_column", "Research")
+ui.define_spacer_zone("path_detail_z28_spacer", "path_detail_z26_column")
+ui.define_box("path_detail_z29_column", "path_detail_z25_detailsection", "V")
+ui.define_text("path_detail_z30_citation", "path_detail_z29_column", "citation")
+ui.define_box("path_detail_z31_topappbar", "path_detail_z00_scaffold", "V")
+ui.define_text("path_detail_z32_text", "path_detail_z31_topappbar", "")
+ui.define_icon("path_detail_z33_back", "path_detail_z31_topappbar", "Back")
 ```
 
 ## generated tree
@@ -60,36 +56,32 @@ ui.define_icon("path_detail_z37_back", "path_detail_z35_topappbar", "Back")
         - Column[z11_column]  <container>
           - Text[The evidence]  <leaf>
           - Spacer[z13_spacer]  <leaf>
-          - Text[body]  <leaf>
         - Text[definition.evidenceSummary]  <leaf>
-      - Column[z16_detailsection]  <container>
-        - Column[z17_column]  <container>
+      - Column[z15_detailsection]  <container>
+        - Column[z16_column]  <container>
           - Text[Why it works]  <leaf>
-          - Spacer[z19_spacer]  <leaf>
-          - Text[body]  <leaf>
+          - Spacer[z18_spacer]  <leaf>
         - Text[definition.educationalCopy]  <leaf>
-      - Column[z22_detailsection]  <container>
-        - Column[z23_column]  <container>
+      - Column[z20_detailsection]  <container>
+        - Column[z21_column]  <container>
           - Text[Modality]  <leaf>
-          - Spacer[z25_spacer]  <leaf>
-          - Text[body]  <leaf>
+          - Spacer[z23_spacer]  <leaf>
         - Text[definition.modalityNotes]  <leaf>
-      - Column[z28_detailsection]  <container>
-        - Column[z29_column]  <container>
+      - Column[z25_detailsection]  <container>
+        - Column[z26_column]  <container>
           - Text[Research]  <leaf>
-          - Spacer[z31_spacer]  <leaf>
-          - Text[body]  <leaf>
-        - Column[z33_column]  <container>
+          - Spacer[z28_spacer]  <leaf>
+        - Column[z29_column]  <container>
           - Text[citation]  <leaf>
-    - Column[z35_topappbar]  <container>
-      - Text[z36_text]  <leaf>
+    - Column[z31_topappbar]  <container>
+      - Text[z32_text]  <leaf>
       - Icon[Back]  <leaf>
 
 ---
 ## verify vs Compose source (PathDetailScreen)
 - distinct leaf signatures matched: 7/7 = 100%
 - generated signatures NOT in Compose (fabricated): 0
-- tree validity: 38 nodes, 0 orphan parents
+- tree validity: 34 nodes, 0 orphan parents
 
 ---
 ## generated  <->  hand-built kit (path_detail_screen.py)

@@ -296,15 +296,16 @@ def _count(call):
 
 
 _DEFS = None
+_DEFS_ALL = None                                         # {name -> {file -> (params, roots)}} (overloads)
 _TREES = []                                              # keep parsed trees alive (nodes ref them)
 
 
 def _comp_defs():
     """{composable name -> (param_names, root_widget_calls)} across the whole ui/ tree, so a
     call like LabeledField(label="…") can be inlined to its definition's widgets."""
-    global _DEFS
+    global _DEFS, _DEFS_ALL
     if _DEFS is None:
-        _DEFS = {}
+        _DEFS, _DEFS_ALL = {}, {}
         for dp, _, fs in os.walk(UIROOT):
             for f in fs:
                 if not f.endswith(".kt"):
@@ -344,9 +345,23 @@ def _comp_defs():
                                             w(c)
                                 w(body)
                             if nm:
-                                _DEFS[nm] = (params, roots)
+                                _DEFS[nm] = (params, roots)         # global (last-wins) default
+                                _DEFS_ALL.setdefault(nm, {})[os.path.join(dp, f)] = (params, roots)
                     stack.extend(n.children)
     return _DEFS
+
+
+def _comp_defs_for(screen_path):
+    """name -> (params, roots), preferring the definition in `screen_path`'s OWN file when a
+    composable name is defined in several files (e.g. `DetailSection` overloaded across screens --
+    a `content: @Composable` slot version vs a `body: String` version). Avoids a global last-wins
+    map silently picking the wrong overload."""
+    _comp_defs()                                          # ensure collected
+    out = dict(_DEFS)                                     # global (last-wins) default
+    for nm, byfile in _DEFS_ALL.items():
+        if screen_path in byfile:
+            out[nm] = byfile[screen_path]                 # the screen's own file wins
+    return out
 
 
 def _bind(call, params, subst):

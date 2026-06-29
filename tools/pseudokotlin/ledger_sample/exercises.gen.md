@@ -16,9 +16,9 @@ ui.define_text("exercises_z07_search_exercises", "exercises_z06_searchbar", "Sea
 ui.define_box("exercises_z08_box", "exercises_z02_lazycolumn", "V")
 ui.define_text("exercises_z09_no_exercises_fou", "exercises_z08_box", "No exercises found.")
 ui.define_box("exercises_z10_sectionheader", "exercises_z02_lazycolumn", "V")
-ui.define_box("exercises_z11_column", "exercises_z10_sectionheader", "V")
-ui.define_divider_zone("exercises_z12_divider", "exercises_z11_column")
-ui.define_text("exercises_z13_category_display", "exercises_z11_column", "category.displayName")
+ui.define_box("exercises_z11_row", "exercises_z10_sectionheader", "H")
+ui.define_text("exercises_z12_label_count", "exercises_z11_row", "$label · $count")
+ui.define_icon("exercises_z13_collapse_expand", "exercises_z11_row", "Collapse|Expand")
 ui.define_box("exercises_z14_exerciselistitem", "exercises_z02_lazycolumn", "V")
 ui.define_box("exercises_z15_row", "exercises_z14_exerciselistitem", "H")
 ui.define_box("exercises_z16_column", "exercises_z15_row", "V")
@@ -26,9 +26,9 @@ ui.define_text("exercises_z17_exercise_name", "exercises_z16_column", "exercise.
 ui.define_text("exercises_z18_muscles_exercise", "exercises_z16_column", "$muscles · ${exercise.equipmen…")
 ui.define_icon("exercises_z19_remove_from_favo", "exercises_z15_row", "Remove from favorites|Add to f…")
 ui.define_box("exercises_z20_sectionheader", "exercises_z02_lazycolumn", "V")
-ui.define_box("exercises_z21_column", "exercises_z20_sectionheader", "V")
-ui.define_divider_zone("exercises_z22_divider", "exercises_z21_column")
-ui.define_text("exercises_z23_category_display", "exercises_z21_column", "category.displayName")
+ui.define_box("exercises_z21_row", "exercises_z20_sectionheader", "H")
+ui.define_text("exercises_z22_label_count", "exercises_z21_row", "$label · $count")
+ui.define_icon("exercises_z23_collapse_expand", "exercises_z21_row", "Collapse|Expand")
 ui.define_box("exercises_z24_exerciselistitem", "exercises_z02_lazycolumn", "V")
 ui.define_box("exercises_z25_row", "exercises_z24_exerciselistitem", "H")
 ui.define_box("exercises_z26_column", "exercises_z25_row", "V")
@@ -52,9 +52,9 @@ ui.define_icon("exercises_z32_new_exercise", "exercises_z30_topappbar", "New exe
         - Column[box]  <container>
           - Text[No exercises found.]  <leaf>
         - Column[sectionheader]  <container>
-          - Column[column]  <container>
-            - Divider[divider]  <leaf>
-            - Text[category.displayName]  <leaf>
+          - Row[row]  <container>
+            - Text[$label · $count]  <leaf>
+            - Icon[Collapse|Expand]  <leaf>
         - Column[exerciselistitem]  <container>
           - Row[row]  <container>
             - Column[column]  <container>
@@ -62,9 +62,9 @@ ui.define_icon("exercises_z32_new_exercise", "exercises_z30_topappbar", "New exe
               - Text[$muscles · ${exercise.equipmen…]  <leaf>
             - Icon[Remove from favorites|Add to f…]  <leaf>
         - Column[sectionheader]  <container>
-          - Column[column]  <container>
-            - Divider[divider]  <leaf>
-            - Text[category.displayName]  <leaf>
+          - Row[row]  <container>
+            - Text[$label · $count]  <leaf>
+            - Icon[Collapse|Expand]  <leaf>
         - Column[exerciselistitem]  <container>
           - Row[row]  <container>
             - Column[column]  <container>
