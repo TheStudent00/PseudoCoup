@@ -15,7 +15,8 @@ import re as _re
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from runtime.coroutines import Flow  # noqa: E402  -- DAO query methods return a Flow
+from runtime.coroutines import Flow      # noqa: E402  -- DAO query methods return a Flow
+from runtime.kotlin_rt import KtList      # noqa: E402  -- query results carry Kotlin collection methods
 
 
 class Col:
@@ -82,9 +83,9 @@ class Database:
         m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
         ent = self._entities.get(m.group(1)) if m else None
         if ent is None:
-            out = [tuple(r) for r in rows]
+            out = KtList(tuple(r) for r in rows)
         else:
-            out = [ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows]
+            out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
         if single:
             return out[0] if out else None
         return out
@@ -122,6 +123,11 @@ class Database:
         self._conn.commit()
         return cur
 
+    @property
+    def openHelper(self):
+        """Room's `db.openHelper.writableDatabase.execSQL(...)` raw-SQL escape hatch."""
+        return _OpenHelper(self._conn)
+
 
 class Dao:
     """Base for a generated DAO -- holds the database; query helpers wrap results the way Room's return
@@ -149,6 +155,25 @@ class Dao:
     def _delete(self, obj):                     # @Delete one or a list
         for e in (obj if isinstance(obj, list) else [obj]):
             self._db.delete(e)
+
+
+class _SupportSQLiteDatabase:
+    """androidx.sqlite SupportSQLiteDatabase -- the raw SQL surface under db.openHelper."""
+    def __init__(self, conn):
+        self._conn = conn
+
+    def execSQL(self, sql, *bind_args):
+        self._conn.execute(sql, bind_args[0] if bind_args else [])
+        self._conn.commit()
+
+    def query(self, sql, *a):
+        return self._conn.execute(sql).fetchall()
+
+
+class _OpenHelper:
+    def __init__(self, conn):
+        self.writableDatabase = _SupportSQLiteDatabase(conn)
+        self.readableDatabase = self.writableDatabase
 
 
 class _Builder:
