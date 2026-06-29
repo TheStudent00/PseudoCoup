@@ -794,14 +794,24 @@ def _exercise_detail_adapter(ns, db):
     Flow, Perm = ns["_Flow"], ns["_Permissive"]
     repo = ExerciseRepository(db)
 
+    def _ex():                                           # thunk: re-lift on each read (Flow re-emit)
+        return _lift(repo.get_by_id("eSquat"), "ExerciseEntity")
+
     class _Repo:
-        def getById(self, eid):                          # lift enum fields (movement/equipment/muscle)
-            return Flow(_lift(repo.get_by_id("eSquat"), "ExerciseEntity"))
+        def getById(self, eid): return Flow(_ex)         # lift enum fields (movement/equipment/muscle)
+        def delete(self, ex): repo.delete(ex)            # the mutating menu actions
+        def setExcluded(self, ex, v): pass               # (sandbox render proof -- no persistence)
+        def toggleFavorite(self, ex): pass
+        def duplicate(self, ex): return "dup-1"
+        def bestSubstitute(self, eid): return None
+
+    class _Prog:                                         # countExerciseOccurrences>0 -> excludePrompt
+        def countExerciseOccurrences(self, eid): return 1
 
     class _SSH:
         def __getitem__(self, k): return "eSquat"
-    # ctor: (savedStateHandle, repository: ExerciseRepository, programRepository [unused in render])
-    return (_SSH(), _Repo(), Perm())
+    # ctor: (savedStateHandle, repository: ExerciseRepository, programRepository)
+    return (_SSH(), _Repo(), _Prog())
 
 
 def _exercise_picker_adapter(ns, db):
