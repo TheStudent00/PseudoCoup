@@ -30,7 +30,7 @@ gates, each stricter than the last:
 ```
 gate    what it proves                                           command                result
 parse   every file becomes Python with no syntax errors          build_mixingcenter.py  254 / 254
-load    the non-UI foundation actually loads under kotlin_rt      loadcheck.py           163 / 167
+load    the non-UI domain loads under the runtime                 loadcheck.py           165 / 165
 logic   tested components compute the same answers as Kotlin      oracle.py              11 / 11  (160 methods)
 ```
 
@@ -39,10 +39,14 @@ the affected code wasn't being emitted at all: a companion-object property whose
 object dropped the lifted class (`MIGRATION_1_2 = _Obj1(1, 2)` with no `class _Obj1`), and Kotlin raw
 `"""…"""` strings spanning lines were emitted with a single `"`. Both fixed.
 
-The 4 files the load gate still blocks are stopped by **external platform names** the foundation calls —
-a Room `Migration`, a Java `SimpleDateFormat`, and two Compose names (`Icons`, `hiltViewModel`) — not by
-any transpiler defect. Supplying those names is the runtime-support layer; the Compose ones belong with
-the UI, a later phase.
+The whole non-UI domain now loads. The names the load gate surfaced were added to `kotlin_rt` (which
+already held `java.lang.Math`, the Java collections, and JUnit — so it's the catch-all bare-name runtime,
+not "Kotlin stdlib only"; a separate file for a handful of names would have been premature structure):
+`Date`/`Locale`/`SimpleDateFormat` (the last a real wrapper — pattern → strftime), `ArrayDeque` (a
+functional deque), `Any` (a lock object), and a documented `Migration` stub (no Python Room). The only
+non-loaders are Compose UI — the `ui/` screens plus two nav-orchestration files (the NavHost and the
+bottom bar) — which defer with the UI phase. Splitting the runtime by origin (and renaming `kotlin_rt`)
+is deferred until that phase makes it earn its keep.
 
 Earlier construct work this stretch: the `by` delegate; a trailing lambda after a named argument;
 `when`/standalone `is Type` → `isinstance`; `if`/`when` as a value (hoisted to a temp); hex literals
