@@ -590,7 +590,9 @@ def _reactive_ns():
     class _StateFlow(_FlowOps):
         # MutableStateFlow -> State: writing `.value` invalidates the recompose frame, so UI-FLAG
         # flows (dialog-open, search query) repaint like Compose snapshot state. Reads stay plain.
-        def __init__(self, v=None): self._value = v
+        # Doubles as MutableSharedFlow: `collect` registers a handler, `emit` notifies them
+        # synchronously -- the pull analog of a LaunchedEffect collecting a nav event.
+        def __init__(self, v=None): self._value = v; self._collectors = []
         def _read(self): return self._value
         @property
         def value(self): return self._value
@@ -606,7 +608,9 @@ def _reactive_ns():
         def collectAsStateWithLifecycle(self, *a): return self._value  # Compose `by` delegate -> value
         def collectAsState(self, *a): return self._value
         def first(self): return self._value
-        def emit(self, *a): pass
+        def collect(self, h): self._collectors.append(h)               # SharedFlow: register
+        def emit(self, *a):                                            # SharedFlow event -> notify
+            for h in list(self._collectors): h(*a)
 
     class _Flow(_FlowOps):
         # `v` may be a value OR a thunk (re-query function). A Kotlin Flow re-emits on every db
@@ -652,7 +656,7 @@ def _reactive_ns():
     ns.update({"viewModelScope": _Scope(), "SharingStarted": _Started,
                "MutableStateFlow": _StateFlow, "MutableSharedFlow": _StateFlow,
                "KtList": rt.KtList, "_Flow": _Flow, "combine": combine,
-               "flowOf": flowOf, "emptyFlow": emptyFlow,
+               "flowOf": flowOf, "emptyFlow": emptyFlow, "Unit": None,
                "Screen": _Permissive(), "checkNotNull": (lambda x, *a: x),
                "_Permissive": _Permissive})
     return ns
@@ -1063,10 +1067,12 @@ NAV_HANDLERS = {
     },
     "exercise_detail": {
         "subs": {"onNavigateBack": "self._nav_back", "onNavigateToEdit": "self._nav_edit"},
+        # VM nav SharedFlows -> screen nav callbacks (the LaunchedEffect-collect, declared not parsed)
+        "nav_flows": {"navigateBack": "self._nav_back", "navigateToEdit": "self._nav_edit"},
         "methods": [
-            "    def _nav_back(self):",
+            "    def _nav_back(self, _=None):",                 # arg: the emitted Unit (ignored)
             "        self.router.navigate('exercises')",
-            "    def _nav_edit(self, exerciseId=None):",
+            "    def _nav_edit(self, exerciseId=None):",        # arg: the emitted exercise id
             "        if exerciseId is not None:",
             "            self.router.selected_id = exerciseId",
             "        self.router.navigate('exercise_create')",
@@ -1241,6 +1247,8 @@ def emit_app_screen(ir, key, class_name):
         "        ui = _Track(ui, self.owned_ids)",
         "        self.router = router",
         "        viewModel = self.vm",
+        ] + [f"        self.vm.{flow}.collect({cb})    # LaunchedEffect collect -> nav callback"
+             for flow, cb in NAV_HANDLERS.get(key, {}).get("nav_flows", {}).items()] + [
         "        content = content_zone_id"]
     out += ["    " + l for l in body]                    # re-indent body into the method
     return "\n".join(out) + "\n"
