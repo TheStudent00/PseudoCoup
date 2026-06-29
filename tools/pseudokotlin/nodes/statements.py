@@ -84,10 +84,7 @@ class Statements:
         if c.type == "type_test":
             neg = any(k.type == "!is" for k in c.children)
             tn = next((k for k in c.named_children if k.type == "user_type"), None)
-            typ = self.text(tn).split("<")[0].strip().rsplit(".", 1)[-1] if tn is not None else "object"
-            typ = {"String": "str", "Int": "int", "Long": "int", "Double": "float", "Float": "float",
-                   "Boolean": "bool", "Char": "str"}.get(typ, self._safe(typ))
-            chk = f"isinstance({subj}, {typ})"
+            chk = f"isinstance({subj}, {self._py_type_name(tn)})"
             return f"not {chk}" if neg else chk
         return f"{subj} == {self.visit(c)}" if subj else self.visit(c)
 
