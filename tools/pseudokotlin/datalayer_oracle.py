@@ -17,6 +17,7 @@ ANDROIDTEST = os.path.join(O.CORPUS, "app", "src", "androidTest")
 
 TESTS = [
     "ExerciseDaoMuscleGroupTest",
+    "GymRepositoryTransactionTest",
 ]
 
 
