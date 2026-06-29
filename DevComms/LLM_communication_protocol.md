@@ -220,3 +220,21 @@ Before sending, run through:
 - Did I produce columns that don't align?
 - Did I anticipate objections that weren't raised?
 - Am I answering the question that was actually asked?
+- Does this lean on context I haven't given — a name, file, or model I'm meeting for the first time? (See section 9.)
+
+---
+
+## 9. Assume I'm missing context
+
+Before sending, ask yourself: **why might this message be hard to understand?**
+
+The usual answer: it leans on a model I don't have. You cover a lot of ground, fast. Earlier context scrolls off, and a quick explanation builds its own private picture — files, terms, and decisions that feel obvious to you because you just produced them, but that I'm meeting for the first time. Don't assume I'm holding all of it, all the time.
+
+So:
+
+- **Give the model before the conclusion that rests on it.** Say what a thing *is* before you say where it goes or what to do with it. If the logic is "A, so B," I have to be able to see why A is true before I reach the "so."
+- **Introduce a name before you use it.** A file or term dropped into a sentence as if it already exists is a dead end — I have nothing to attach it to.
+
+A concrete failure to learn from: one sentence named a new file `platform_rt.py` and argued for putting things in it, before establishing that the transpiled code even calls outside names that need hand-written stand-ins. The conclusion sat on three facts I'd never been told.
+
+This is a normal part of how we work, not friction. You asking "why do you think this might be hard to understand?" is a fair question — and I should be asking it of myself before you have to.
