@@ -24,10 +24,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | objective | est. | trend (Jun 20→29) | what's left |
 |---|---|---|---|
 | Transpiler (Kt→Py engine) | **93%** | `▁▃▅▅▆██` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
-| Externs (runtime wrappers) | **88%** | `▁▂▃▃▄▇█` | every external name now BINDS via autostub — non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/… at the kit). |
+| Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external name now BINDS via autostub — non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/… at the kit). |
 | Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
 | WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
-| UI (PseudoUI screens) | **40%** | `▁▂▂▃▃▄█` | all 87 ui/ files now LOAD inert via autostub (was 0). Left: wire the stubs to the kit so they render — the Compose reactive bridge. |
+| UI (PseudoUI screens) | **58%** | `▁▁▂▂▃▃█` | transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) — real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState→re-render), and a pixel kit (Flutter/Kivy). |
 
 ## On-deck — next sub-tasks (top = next)
 
@@ -45,6 +45,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-06-30` UI RENDERS: runtime/compose.py (headless Compose) — a @Composable emits a UI tree. The transpiled ReportForm renders to Scaffold/Column/Text/SegmentedButton/Button with real text and live BugSeverity-driven options. Rung 3 for the UI via the transpiler path; all gates green.
 - `2026-06-30` Auto-stub floor: one front door binds EVERY external name (real wrapper → builtin → inert stub) → ALL 254 foundation files load, 87/87 UI (was 0), zero NameErrors. UI is no longer a transpiler problem — only kit-wiring remains.
 - `2026-06-29` Data 3/4 → 4/4 (instrumented suite COMPLETE): MigrationTest green — a MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 → v40), and validates the result.
 - `2026-06-29` Data 2/4 → 3/4: BackupRepositoryRoundTripTest runs green (export → clearAllTables → import over a sqlite3 Cursor + org.json). Surfaced + fixed 3 transpiler bugs: braceless-loop bodies were dropped (74 files), nested-lambda hoist scope, companion-member access.
