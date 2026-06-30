@@ -304,6 +304,16 @@ class Expressions:
             return x[1:]
         return x
 
+    def _fqn_simple(self, node):
+        """If `node` is a fully-qualified PACKAGE reference used inline (`com.sara.…ScienceInfoDialog`,
+        `androidx.compose.material3.TopAppBar`), the simple name it collapses to -- which lives in the flat
+        namespace (app) or is served by autostub (external). None for an ordinary object-member access."""
+        full = self.text(node)
+        if (re.fullmatch(r"[\w.]+", full)
+                and re.match(r"^(com|androidx|kotlinx|kotlin|java|javax|org|dagger|google)\.", full)):
+            return self._strip_pkg(full)
+        return None
+
     @kind("navigation_expression")
     def v_navigation(self, node):
         kids = self.named(node)
@@ -311,6 +321,9 @@ class Expressions:
         sel = self.text(kids[-1]) if len(kids) > 1 else ""
         if sel == "class" and any(c.type == "::" for c in node.children):
             return f"kclass({self.visit(recv)})"        # Foo::class -> kclass(Foo) (.java/.kotlin -> Foo)
+        fqn = self._fqn_simple(node)                     # com.sara.…Foo / androidx.…Bar -> the simple name
+        if fqn is not None:
+            return fqn
         safe_call = any(c.type == "?." for c in node.children)
         # grammar quirk: a leading `!`/`-`/`+` down the receiver chain parses as (!w).sel but
         # MEANS !(w.sel) -- the prefix binds looser than the dot. Strip + re-wrap at each level
@@ -357,6 +370,12 @@ class Expressions:
             lam = self._lambda_str(trailing)
             return f"{in_fn}({self._join_trailing(in_args, lam, in_args_node)})"
         if callee.type == "navigation_expression":
+            fqn = self._fqn_simple(callee)               # com.sara.…ScienceInfoDialog(args) -> the simple call
+            if fqn is not None:
+                args = self._render_args(own_args)
+                if trailing is not None:
+                    args = self._join_trailing(args, self._lambda_str(trailing), own_args)
+                return f"{fqn}({args})"
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
             safe = any(c.type == "?." for c in callee.children)
