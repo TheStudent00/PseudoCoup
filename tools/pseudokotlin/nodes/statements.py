@@ -162,12 +162,26 @@ class Statements:
         return _block(lines)
 
     # ---- loops ----------------------------------------------------------- #
+    def _loop_body(self, node):
+        """A while/for body: the `block`, or (braceless `while (c) stmt`) the single statement after the
+        header's `)`. _suite renders either. Without this a braceless body silently becomes `pass`."""
+        blk = next((c for c in node.children if c.type == "block"), None)
+        if blk is not None:
+            return blk
+        seen_close = False
+        for c in node.children:
+            if c.type == ")":
+                seen_close = True
+            elif seen_close and c.is_named:
+                return c
+        return None
+
     @kind("for_statement")
     def v_for(self, node):
         var = next((c for c in node.children if c.type in
                     ("variable_declaration", "identifier")), None)
         var_txt = self.text(var) if var is not None else "item"
-        body = next((c for c in node.children if c.type == "block"), None)
+        body = self._loop_body(node)
         it = self._loop_iterable(node, exclude=var)
         # track the loop var(s) so a lambda created in the body captures them PER ITERATION (Kotlin
         # semantics), not by late-bound reference (the Python default).
@@ -179,14 +193,22 @@ class Statements:
     @kind("while_statement")
     def v_while(self, node):
         cond = self._condition(node)
-        body = next((c for c in node.children if c.type == "block"), None)
-        return f"while {cond}:\n{self._suite(body)}"
+        return f"while {cond}:\n{self._suite(self._loop_body(node))}"
 
     @kind("do_while_statement")
     def v_do_while(self, node):
         cond = self._condition(node)
-        body = next((c for c in node.children if c.type == "block"), None)
-        lines = [self.visit(c) for c in self.named(body)] if body else []
+        blk = next((c for c in node.children if c.type == "block"), None)
+        if blk is not None:
+            body_nodes = self.named(blk)
+        else:                               # braceless `do stmt while (c)` -> the named children before `while`
+            body_nodes = []
+            for c in node.children:
+                if c.type == "while":
+                    break
+                if c.is_named:
+                    body_nodes.append(c)
+        lines = self.render_statements(body_nodes)
         lines.append(f"if not ({cond}):")
         lines.append("    break")
         return "while True:\n" + _block(lines)

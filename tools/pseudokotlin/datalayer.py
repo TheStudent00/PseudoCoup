@@ -168,12 +168,15 @@ def database_patches(class_node, name):
         rt = re.search(r"\)\s*:\s*(\w+)", fn.text.decode())
         if nm and rt and rt.group(1).endswith("Dao"):
             accessors.append((nm, rt.group(1)))
-    init = [f"def _{name}_init(self):", "    self._db = Database()"]
+    vm = re.search(r"version\s*=\s*(\d+)", text)        # @Database(version = N) -> db.version
+    version = vm.group(1) if vm else "1"
+    init = [f"def _{name}_init(self):", f"    self._db = Database({version})"]
     init += [f"    self._db.register({e})" for e in ents]
     patches = ["\n".join(init), f"{name}.__init__ = _{name}_init"]
     patches += [f"{name}.{nm} = lambda self: {dao}(self._db)" for nm, dao in accessors]
     patches += [f"{name}.openHelper = property(lambda self: self._db.openHelper)",
                 f"{name}.close = lambda self: self._db.close()",
+                f"{name}.clearAllTables = lambda self: self._db.clearAllTables()",
                 f"{name}.withTransaction = lambda self, block: self._db.withTransaction(block)"]
     return patches
 
