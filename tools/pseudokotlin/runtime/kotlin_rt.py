@@ -866,6 +866,9 @@ def intArrayOf(*xs):
     return KtList(xs)
 
 
+Unit = type("Unit", (), {})     # kotlin.Unit -- the void singleton/type (a default import, used bare)
+
+
 def repeat(n, action):
     for i in range(n):
         action(i)
