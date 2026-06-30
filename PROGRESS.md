@@ -5,7 +5,7 @@ sparkline is a real regression, not a stale doc. (Browser version with trend cha
 
 As of 2026-06-29.
 
-## Gates + momentum
+## Gates + momentum (measured)
 
 | metric | now | trend | gate |
 |---|---|---|---|
@@ -15,6 +15,18 @@ As of 2026-06-29.
 | Data — instrumented DB tests green | **2/4** | `▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄` |  |
+
+## Major objectives — estimated completion (chronological)
+
+Estimates (judgment, anchored to the measured gates above), traced across the project's milestones.
+
+| objective | est. | trend (Jun 20→29) | what's left |
+|---|---|---|---|
+| Transpiler (Kt→Py engine) | **90%** | `▁▃▅▅▆█` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas. Left: edge idioms surfaced by the UI phase. |
+| Externs (runtime wrappers) | **72%** | `▁▂▃▄▅█` | non-UI externals 100% wrapped (0 real gaps) via resolve + registry. Left: the UI external surface (compose / hilt / nav). |
+| Data layer (Room / sqlite3) | **70%** | `▁▁▁▁▂█` | runs end-to-end — @Entity/@Dao/@Database, full CRUD + transactions; 2/4 instrumented green. Left: backup feature, migration. |
+| WFL domain functionality | **68%** | `▁▃▅▅▆█` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
+| UI (PseudoUI screens) | **18%** | `▁▃▄▆▇█` | generator tooling + structural work exist but are set-aside / unvalidated into the foundation. The plan's step 2–3. |
 
 ## On-deck — next sub-tasks (top = next)
 
