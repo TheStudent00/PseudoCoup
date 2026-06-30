@@ -12,7 +12,6 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from dispatch import kind, Untranspilable  # noqa: E402
 from util import block as _block  # noqa: E402
 import resolve   # noqa: E402  (the resolve phase: a file's import table)
-import registry  # noqa: E402  (the wrapper registry: which runtime module provides a name)
 import datalayer  # noqa: E402  (the Room map stage: @Entity schema + @Dao bodies)
 from nodes.expressions import _WRAP_NUMERICS  # noqa: E402  (the wrap dial, shared with v_number)
 
@@ -49,11 +48,16 @@ _TYPE_FIELDS = {}
 class Declarations:
     @kind("source_file")
     def v_source_file(self, node):
-        self._ext_patches, self._nested_aliases = [], []
+        self._ext_patches, self._nested_aliases, self._nested_alias_names = [], [], set()
         self._runtime_imports = set()   # `from runtime.room import …` etc. added while visiting decls
         self._num_types = set()         # Int32/Int64/Float32 used by wrapped literals -> one import
         ext_imports = self._emit_imports(resolve.file_header(node))
-        parts = [self.visit(c) for c in self.named(node) if c.type in _TOP_DECLS]
+        # top-level `const val`s are compile-time literals with no forward deps -> emit them FIRST, so a
+        # class that uses one as a default arg (evaluated at def time in Python) sees it already bound.
+        decls = [c for c in self.named(node) if c.type in _TOP_DECLS]
+        is_const = lambda c: c.type == "property_declaration" and self._is_const(c)   # noqa: E731
+        parts = [self.visit(c) for c in
+                 [d for d in decls if is_const(d)] + [d for d in decls if not is_const(d)]]
         body = "\n\n\n".join(p for p in parts if p)
         # flush AFTER all decls so the referenced classes exist: nested-type aliases
         # (Inner = Outer.Inner, makes bare cross-file refs resolve) then ext patches.
@@ -67,24 +71,21 @@ class Declarations:
         return body
 
     def _emit_imports(self, header):
-        """Each external name a file imports -> `from runtime.<wrapper module> import <name>`, derived
-        from the import table (resolve) and the registry. This is the import structure made REAL in the
-        output: a use of an external module maps to the module that wraps it. Only covered names are
-        emitted; an as-yet-unwrapped external (a compose name in a UI file) stays bare -- a listed
-        checklist gap, not a silent one. App imports stay in the flat namespace for now."""
-        prov = registry.provided()
-        by_module = {}
+        """Every EXTERNAL name a file imports -> `from runtime.autostub import <name>`. autostub is the one
+        front door: it returns the real wrapper when a runtime module provides it, and an inert Stub
+        otherwise -- so the name ALWAYS binds. A transpiled file therefore always LOADS (no NameError); an
+        un-wrapped external (a compose widget) is inert, not a silent gap (it's recorded in the stub
+        inventory). App imports stay in the flat namespace; androidx.room is handled by the data-layer map
+        stage (it adds its own room imports)."""
+        names = set()
         for used, fqn in header["imports"].items():
-            if resolve.origin(fqn) == "androidx_room":      # @Dao/@Entity/@Query are handled by the
-                continue                                    #   data-layer map stage (it adds room imports)
-            orig = fqn.rsplit(".", 1)[-1]                   # the name the wrapper module defines
-            mod = prov.get(orig)
-            if mod is None:
+            if resolve.origin(fqn) in ("app", "androidx_room"):
                 continue
-            token = orig if used == orig else f"{orig} as {used}"   # preserve `import … as …`
-            by_module.setdefault(mod, set()).add(token)
-        return [f"from runtime.{mod} import {', '.join(sorted(by_module[mod]))}"
-                for mod in sorted(by_module)]
+            orig = fqn.rsplit(".", 1)[-1]                   # the bare name (real wrapper or stub provides it)
+            names.add(orig if used == orig else f"{orig} as {used}")   # preserve `import … as …`
+        if not names:
+            return []
+        return [f"from runtime.autostub import {', '.join(sorted(names))}"]
 
     @kind("function_declaration")
     def v_function_declaration(self, node):
@@ -95,11 +96,20 @@ class Declarations:
         recv = self._ext_receiver(node)
         fn = self._function(node, with_self=in_class or recv is not None)
         if recv is not None and not in_class:   # top-level extension: dispatch on the
-            base = recv.split("<")[0].strip()   # receiver -> patch it onto that class so
+            base = self._strip_pkg(recv.split("<")[0].strip())   # receiver -> patch it onto that class so
             if base and base not in _BUILTIN_RECVRS:    # `recv.name(...)` resolves (Kotlin
                 nm = self._safe(self._name_of(node) or "unknown_func")  # ext semantics).
                 self._ext_patches.append(f"{base}.{nm} = {nm}")   # flushed at module end
         return fn
+
+    def _strip_pkg(self, name):
+        """Drop a qualified type's leading package segments (the lowercase ones), so an extension receiver
+        written fully-qualified (`com.sara.…MovementPattern`, `kotlin.String`) patches onto the simple name
+        that lives in the flat namespace. A nested type (`Outer.Inner`) is kept intact (no lowercase head)."""
+        parts = name.split(".")
+        while len(parts) > 1 and parts[0][:1].islower():
+            parts.pop(0)
+        return ".".join(parts)
 
     def _ext_receiver(self, node):
         # extension fn `fun <user_type>.name(...)`: receiver is the user_type before the
@@ -335,13 +345,14 @@ class Declarations:
                 return self.visit(c)
         return None
 
-    @staticmethod
-    def _default_call_time(default, pnames):
-        # A default is NOT def-time-safe (the `def` runs during class-body exec) when it
-        # references self or another parameter -- Kotlin evaluates defaults per-call.
+    def _default_call_time(self, default, pnames):
+        # A default is NOT def-time-safe (the `def` runs during class-body exec) when it references self,
+        # another parameter, or a nested class that is module-aliased only at the file's end (a forward
+        # ref) -- Kotlin evaluates defaults per call, so these late-bind via a sentinel + a body guard.
         if "self." in default:
             return True
-        return bool(set(re.findall(r"[A-Za-z_]\w*", default)) & pnames)
+        refs = set(re.findall(r"[A-Za-z_]\w*", default))
+        return bool(refs & pnames) or bool(refs & self._nested_alias_names)
 
     @kind("class_declaration")
     def v_class_declaration(self, node):
@@ -435,7 +446,7 @@ class Declarations:
                 elif c.type == "function_declaration":
                     recv = self._ext_receiver(c)
                     if recv is not None:        # member extension fn -> top-level def +
-                        base = recv.split("<")[0].strip()      # patch onto the receiver
+                        base = self._strip_pkg(recv.split("<")[0].strip())   # patch onto the receiver
                         fname = self._safe(self._name_of(c) or "fn")
                         self._ext_patches.append(self._function(c, with_self=True))
                         if base and base not in _BUILTIN_RECVRS:
@@ -455,6 +466,10 @@ class Declarations:
                     raise Untranspilable(c, "class member needs the OOP-model pass")
                 # else: enum_entry / modifiers / trivia -> consumed, not emitted
 
+        for n in nested:                    # nested classes are module-aliased at file end -> referencing
+            nm = self._name_of(n)           # one in a default arg is a forward ref (late-bind it)
+            if nm:
+                self._nested_alias_names.add(nm)
         self._scopes.append(set(ctor_params))
         sig, guards, seen_default = ["self"], [], False
         safe_names = {self._safe(p) for p in ctor_params}
