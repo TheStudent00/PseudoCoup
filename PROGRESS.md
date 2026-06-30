@@ -12,7 +12,7 @@ As of 2026-06-29.
 | Parse — all .kt transpile + compile | **278/278** | `▄` | 🟢 |
 | Load — non-UI domain imports clean | **165/165** | `▄` | 🟢 |
 | Logic — engine methods match Kotlin | **160/160** | `▄` | 🟢 |
-| Data — instrumented DB tests green | **2/4** | `▄` | 🟢 |
+| Data — instrumented DB tests green | **3/4** | `▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄` |  |
 
@@ -22,31 +22,31 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 | objective | est. | trend (Jun 20→29) | what's left |
 |---|---|---|---|
-| Transpiler (Kt→Py engine) | **90%** | `▁▃▅▅▆█` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas. Left: edge idioms surfaced by the UI phase. |
-| Externs (runtime wrappers) | **72%** | `▁▂▃▄▅█` | non-UI externals 100% wrapped (0 real gaps) via resolve + registry. Left: the UI external surface (compose / hilt / nav). |
-| Data layer (Room / sqlite3) | **70%** | `▁▁▁▁▂█` | runs end-to-end — @Entity/@Dao/@Database, full CRUD + transactions; 2/4 instrumented green. Left: backup feature, migration. |
-| WFL domain functionality | **68%** | `▁▃▅▅▆█` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
+| Transpiler (Kt→Py engine) | **92%** | `▁▃▅▅▆█` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
+| Externs (runtime wrappers) | **74%** | `▁▂▃▄▅█` | non-UI externals 100% wrapped (0 real gaps) via resolve + registry. Left: the UI external surface (compose / hilt / nav). |
+| Data layer (Room / sqlite3) | **80%** | `▁▁▁▁▂█` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions + the backup round-trip (Cursor/JSON over sqlite3); 3/4 instrumented green. Left: migration. |
+| WFL domain functionality | **72%** | `▁▃▅▅▆█` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
 | UI (PseudoUI screens) | **18%** | `▁▃▄▆▇█` | generator tooling + structural work exist but are set-aside / unvalidated into the foundation. The plan's step 2–3. |
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[runtime]** Backup feature surface  ← next
-  - json_rt (JSONArray, JSONObject.NULL, optJSONArray/optJSONObject, toString(indent), keys-chain), an Android Cursor (FIELD_TYPE_*, getType/use/columnNames/getColumnIndex/moveTo*/isNull/getLong/Int/Double/String) over sqlite3, Result + runCatching, a BuildConfig stub, and clearAllTables + .version + begin/set/endTransaction on the raw SupportSQLiteDatabase. apply now emits correctly, so this is the last code-level blocker.
-1. **[data]** Stale test arg
-  - add `programSetDao = db.programSetDao()` to BackupRepositoryRoundTripTest; the copy's (and upstream's) instrumented test omits it but the real 9-param constructor requires it. Then re-run datalayer_oracle → data 2/4 → 3/4.
-1. **[data]** MigrationTest
-  - wire Room's MigrationTestHelper (schema-version test infrastructure). data 3/4 → 4/4.
+1. **[data]** MigrationTest  ← next
+  - wire Room's MigrationTestHelper (schema-version test infrastructure: open the DB at an old version, run the migrations, assert the new schema). Moves data 3/4 → 4/4 (the last instrumented test).
 1. **[numeric]** Unsigned wrappers (UInt/ULong) + `ushr`
   - the one numeric class still bare; closes the last fidelity gap in runtime/numbers.py.
+1. **[extern]** Default-import stdlib names (e.g. `runCatching`)
+  - a known gap class the extern checklist doesn't track (it lists explicit imports only); grow kotlin_rt as they surface. (Several landed with backup: runCatching, synchronized, Result.)
 1. **[ui]** Bring one screen into the foundation
   - validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. The plan's step 2.
 1. **[multi-target]** `@<target>_extern` tag drives the per-language wrapper registry
   - declare an external once, resolve it per target (PseudoCoup-side).
-1. Receiver-lambda scope functions (`apply`/`with`/`run`): a body's bare member calls/assignments now bind to the receiver (`obj.apply { put(x) }` → `_r.put(x)`), with enclosing members / consts / top-level fns left alone. 5 foundation files corrected; the `apply` blocker for backup is gone.
-1. bare `$name` string interpolation (was leaking literal `$name` into SQL/log strings — 47 foundation files corrected).
+1. Backup feature (data 2/4 → 3/4): BackupRepositoryRoundTripTest runs green — full export → clearAllTables → import round-trip over a sqlite3 Cursor + org.json, plus newer-schema rejection. Runtime: Cursor / Result / runCatching / JSON NULL+optJSON / BuildConfig / clearAllTables / version / transactions.
+1. 3 transpiler bugs the backup test surfaced (each a general fix): braceless-loop bodies were dropped to `pass` (74 files corrected), nested-lambda hoist lost the outer param, companion members weren't reachable from methods.
+1. Receiver-lambda scope functions (`apply`/`with`/`run`); bare `$name` string interpolation.
 
 ## Milestones — what landed, when
 
+- `2026-06-29` Data 2/4 → 3/4: BackupRepositoryRoundTripTest runs green (export → clearAllTables → import over a sqlite3 Cursor + org.json). Surfaced + fixed 3 transpiler bugs: braceless-loop bodies were dropped (74 files), nested-lambda hoist scope, companion-member access.
 - `2026-06-29` Transpiler: receiver-lambda scope functions (apply/with/run) — a body's bare member calls/assignments bind to the receiver; the apply blocker for the backup test is gone.
 - `2026-06-29` Transpiler: bare `$name` string interpolation (47 foundation files had literal `$name` in SQL/log strings — now interpolated).
 - `2026-06-29` Measured dashboard (track.py): gates re-run on demand, trend charts + on-deck queue.
