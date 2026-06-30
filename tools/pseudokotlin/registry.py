@@ -19,11 +19,13 @@ import runtime.json_rt as json_rt          # noqa: E402
 import runtime.android_rt as android_rt    # noqa: E402
 import runtime.room as room                # noqa: E402  (the sqlite3 data-layer engine: Dao/Entity/Col)
 import runtime.numbers as numbers          # noqa: E402  (fixed-width numeric wrappers, emitted at literals)
+import runtime.compose as compose          # noqa: E402  (headless Compose: a @Composable emits a UI tree)
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
 # (provided() indexes by NAME across all of these, so a name already in kotlin_rt -- e.g. java Date or
 # room Migration -- stays found there; the per-origin modules add the rest.)
 ORIGIN_MODULE = {
+    "compose": compose,                    # androidx.compose.* -> headless Compose (Column/Text/… emit a tree)
     "kotlin": kotlin_rt,
     "java": java_rt,                       # java.time chain, UUID, TimeUnit, File, ... (+ Date in kotlin_rt)
     "javax": kotlin_rt,
