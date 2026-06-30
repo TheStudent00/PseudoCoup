@@ -1,0 +1,75 @@
+{
+  "generated": "2026-06-29",
+  "samples": [
+    {
+      "date": "2026-06-29",
+      "parse": [
+        278,
+        278
+      ],
+      "load": [
+        165,
+        165
+      ],
+      "logic": [
+        160,
+        160
+      ],
+      "data": [
+        2,
+        4
+      ],
+      "extern": 0,
+      "unrouted": 0,
+      "gates": {
+        "parse": true,
+        "load": true,
+        "extern": true,
+        "logic": true,
+        "data": true
+      }
+    }
+  ],
+  "milestones": [
+    {
+      "date": "2026-06-20",
+      "text": "Project start \u2014 KtToPy transpiler scaffold (parse \u2192 map handlers)."
+    },
+    {
+      "date": "2026-06-25",
+      "text": "Connectivity-checked reuse workflow is real and tooled (DevComms log_48)."
+    },
+    {
+      "date": "2026-06-26",
+      "text": "Whole WFL app transpiles \u2192 WFL_MixingCenter (transpile_app.py); PROJECT_MAP corrected."
+    },
+    {
+      "date": "2026-06-27",
+      "text": "UI sizing/positioning extractor (ui_ledger.py) + samples."
+    },
+    {
+      "date": "2026-06-28",
+      "text": "SharedFlow-nav done; exercise_detail remainder scoped per-screen."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "resolve phase + wrapper registry \u2192 real imports emitted (load \u2260 run closed; 0 non-UI gaps)."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Data layer RUNS end-to-end \u2014 sqlite3-backed Room; the project's own DAO/txn instrumented tests pass headless."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Numeric fidelity (1/2): fixed-width wrappers emitted at literals (Int32/Int64/Float32)."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Numeric fidelity (2/2): declared-type coercion at param/constructor/val boundaries (literal-free chains carry width)."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Measured dashboard (track.py): gates re-run on demand, trend charts + on-deck queue."
+    }
+  ]
+}
