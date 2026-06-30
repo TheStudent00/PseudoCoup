@@ -27,24 +27,27 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external name now BINDS via autostub — non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/… at the kit). |
 | Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
 | WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
-| UI (PseudoUI screens) | **58%** | `▁▁▂▂▃▃█` | transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) — real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState→re-render), and a pixel kit (Flutter/Kivy). |
+| UI (PseudoUI screens) | **62%** | `▁▁▂▂▂▃█` | transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) — real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState→re-render), and a pixel kit (Flutter/Kivy). |
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[ui]** Make one screen RENDER  ← next
-  - wire the autostub stubs to the PseudoUI kit (Compose `Column`/`Text`/`Button` → kit primitives) + the reactive bridge (`collectAsState`/`remember` → kit re-render). Bring up a single screen on the kit, validate against the ledger, then scale. This is rungs 3–4 for the UI.
-1. **[transpiler]** AST-kind-aware stub generation (your refinement)
-  - tag each external name from the AST as {module / class / function / attribute} and shape the stub to match (instead of one permissive Stub for all). Better structural fidelity + cleaner refine-to-real. The permissive floor stays as the fallback.
+1. **[ui]** Clear the render long-tail  ← next
+  - the ~12 non-rendering screens are mostly receiver-lambda builders (`buildString`/`buildList` — extend the apply/with/run support) + a few harness artifacts (Stub passed for a param the screen does arithmetic on — real calls pass real args). Push render OK toward 29/29.
+1. **[ui]** Reactive bridge + styling
+  - `collectAsState`/`remember` → real state that drives re-render (today they stub, so state-branching bodies render thin); thread `Modifier`/colors through the tree. This is rungs 3→4 for the UI.
+1. **[ui]** Point the tree at a pixel kit
+  - the headless tree is neutral; render it on the PseudoUI Flutter/Kivy kit for actual pixels + goldens. (Architecture call.)
+1. **[transpiler]** AST-kind-aware stubs (your refinement)
+  - tag each external name by kind from the AST; shape the stub to match. Permissive floor stays the fallback.
 1. **[domain]** Broaden runnable coverage
-  - point the oracle at more repositories / use-cases / unit tests. Running real code is what surfaced every recent bug (braceless loops, nested-lambda, forward-ref defaults). High yield, low risk.
-1. **[multi-target]** `@<target>_extern` tag drives the per-language wrapper registry
-  - declare an external once, resolve it per target (PseudoCoup-side).
-1. Auto-stub floor (your design): one front door (`runtime/autostub.py`) binds EVERY external name — real wrapper → Python builtin → inert Stub. ALL 254 files load (87/87 UI, was 0), zero NameErrors. Real wrappers + stubs are one system; the stub inventory is the visible "inert" list; non-UI platform/DI glue blessed as real no-ops so extern stays honestly 0.
-1. Stragglers en route: LocalDate.EPOCH, R resources, fully-qualified extension receivers (`_strip_pkg`), top-level const hoist + nested-class-default late-binding (forward-ref defaults), abs→builtin.
-1. Before that: the full instrumented data-layer suite (4/4: backup + migration) and the receiver-lambda / `$name` transpiler fixes.
+  - point the oracle at more repositories / use-cases. Running real code keeps surfacing real bugs.
+1. Headless Compose (`runtime/compose.py`): a `@Composable` emits a UI tree; registered so autostub serves Column/Text/Button real and stubs styling. Transpiled ReportForm → full form (intro, fields, 3 live BugSeverity buttons, Send). 17/29 screens render.
+1. Auto-stub floor: one front door binds every external (real → builtin → inert stub); ALL 254 files load (87/87 UI, was 0). Platform/DI glue blessed real so extern stays 0. UI-load is now a measured gate.
+1. Transpiler fixes the render surfaced: Unit, inline fully-qualified-ref collapse, qualified extension receivers, const-hoist + nested-class-default late-binding.
 
 ## Milestones — what landed, when
 
+- `2026-06-30` 17/29 transpiled screens render via headless Compose (Unit + inline fully-qualified-ref collapse). LogCardioScreen = 82 nodes. Remaining are receiver-lambda builders + harness stub-arg artifacts; all gates green.
 - `2026-06-30` UI RENDERS: runtime/compose.py (headless Compose) — a @Composable emits a UI tree. The transpiled ReportForm renders to Scaffold/Column/Text/SegmentedButton/Button with real text and live BugSeverity-driven options. Rung 3 for the UI via the transpiler path; all gates green.
 - `2026-06-30` Auto-stub floor: one front door binds EVERY external name (real wrapper → builtin → inert stub) → ALL 254 foundation files load, 87/87 UI (was 0), zero NameErrors. UI is no longer a transpiler problem — only kit-wiring remains.
 - `2026-06-29` Data 3/4 → 4/4 (instrumented suite COMPLETE): MigrationTest green — a MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 → v40), and validates the result.
