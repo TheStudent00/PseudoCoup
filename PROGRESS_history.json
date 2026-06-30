@@ -130,7 +130,7 @@
         },
         {
           "date": "2026-06-30",
-          "pct": 88
+          "pct": 90
         }
       ]
     },
@@ -207,7 +207,7 @@
     {
       "key": "ui",
       "label": "UI (PseudoUI screens)",
-      "note": "all 87 ui/ files now LOAD inert via autostub (was 0). Left: wire the stubs to the kit so they render \u2014 the Compose reactive bridge.",
+      "note": "transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) \u2014 real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState\u2192re-render), and a pixel kit (Flutter/Kivy).",
       "series": [
         {
           "date": "2026-06-20",
@@ -235,7 +235,7 @@
         },
         {
           "date": "2026-06-30",
-          "pct": 40
+          "pct": 58
         }
       ]
     }
@@ -300,6 +300,10 @@
     {
       "date": "2026-06-30",
       "text": "Auto-stub floor: one front door binds EVERY external name (real wrapper \u2192 builtin \u2192 inert stub) \u2192 ALL 254 foundation files load, 87/87 UI (was 0), zero NameErrors. UI is no longer a transpiler problem \u2014 only kit-wiring remains."
+    },
+    {
+      "date": "2026-06-30",
+      "text": "UI RENDERS: runtime/compose.py (headless Compose) \u2014 a @Composable emits a UI tree. The transpiled ReportForm renders to Scaffold/Column/Text/SegmentedButton/Button with real text and live BugSeverity-driven options. Rung 3 for the UI via the transpiler path; all gates green."
     }
   ]
 }
