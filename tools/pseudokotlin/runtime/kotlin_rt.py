@@ -876,6 +876,21 @@ def synchronized(lock, block=None):
     return block() if block is not None else (lock() if callable(lock) else lock)
 
 
+def trimIndent(s):
+    # Kotlin String.trimIndent(): drop the common minimal indent + the leading/trailing blank lines.
+    import textwrap
+    return textwrap.dedent(s).strip("\n")
+
+
+def trimMargin(s, marker="|"):
+    # Kotlin String.trimMargin(): each line keeps only what follows its first margin marker.
+    out = []
+    for line in s.split("\n"):
+        i = line.find(marker)
+        out.append(line[i + len(marker):] if i >= 0 else line)
+    return "\n".join(out).strip("\n")
+
+
 def setOf(*xs):
     return KtSet(xs)
 
