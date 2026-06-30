@@ -965,6 +965,59 @@ def LinkedHashMap(src=None):
     return KtMap(src or {})
 
 
+class StringBuilder:                    # kotlin.text.StringBuilder / java.lang.StringBuilder. Each mutator
+    """A mutable text buffer. Every append returns the builder, so chains (`sb.append(a).append(b)`) and the
+    buildString receiver pattern both work; toString() yields the accumulated text."""
+    def __init__(self, src=""):
+        self._parts = [] if src in ("", None) else [str(src)]
+
+    def append(self, x=""):
+        self._parts.append("" if x is None else str(x))
+        return self
+
+    def appendLine(self, x=""):
+        self._parts.append(("" if x is None else str(x)) + "\n")
+        return self
+
+    def insert(self, i, x):
+        self._parts.insert(i, "" if x is None else str(x))
+        return self
+
+    def toString(self):
+        return "".join(self._parts)
+
+    def isEmpty(self):
+        return not any(self._parts)
+
+    def isNotEmpty(self):
+        return any(self._parts)
+
+    @property
+    def length(self):
+        return len(self.toString())
+
+    def __len__(self):
+        return self.length
+
+    def __str__(self):
+        return self.toString()
+
+
+StringBuffer = StringBuilder            # java.lang.StringBuffer -- same surface here
+
+
+def buildString(block):                 # kotlin.text.buildString -- usually inlined by the transpiler's
+    sb = StringBuilder()                # builder scope, but kept real so a first-class reference still runs
+    block(sb)
+    return sb.toString()
+
+
+def buildList(block):                   # kotlin.collections.buildList
+    lst = KtList()
+    block(lst)
+    return lst
+
+
 # ---- java.util / java.text date stand-ins (bare-name, like java.lang.Math above) ------------ #
 from datetime import datetime as _datetime
 
