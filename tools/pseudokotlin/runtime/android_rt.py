@@ -67,6 +67,15 @@ class Cursor(_Stub):
 
 R = _Stub()     # com.sara.workoutforlife.R -- Gradle-generated resources (R.string.x / R.drawable.y / …)
 
+# Dagger/Hilt DI markers + a couple Wearable platform names. DI is hand-wired in the constructed objects
+# (there is no runtime DI container), so these are INTENTIONAL no-ops -- defined here as real, inert names
+# (annotations are dropped; `SingletonComponent::class` etc. survive as values) so they don't auto-stub.
+for _n in ("Inject", "Provides", "Provider", "Module", "Binds", "Singleton", "InstallIn", "HiltAndroidApp",
+           "SingletonComponent", "EntryPoint", "EntryPointAccessors", "MessageEvent", "WearableListenerService",
+           "ComponentActivity", "ApplicationContext", "AndroidEntryPoint", "CoroutineWorker",
+           "WorkerParameters", "SupportSQLiteDatabase"):
+    globals()[_n] = type(_n, (_Stub,), {})
+
 
 class BuildConfig:
     # Gradle-generated at build time (no Kotlin source) -- a stand-in so version strings resolve.

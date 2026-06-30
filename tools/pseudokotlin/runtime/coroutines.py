@@ -203,6 +203,20 @@ class MutableSharedFlow(Flow):
         return self
 
 
+def launch(block=None, *a, **k):        # free `launch { }` -> run the block inline (synchronous model)
+    return block() if callable(block) else None
+
+
+def flatMapLatest(flow=None, transform=None):   # free form of Flow.flatMapLatest (usually used as a method)
+    if flow is None or transform is None:
+        return Flow()
+    return flow.flatMapLatest(transform) if hasattr(flow, "flatMapLatest") else Flow()
+
+
+class ExperimentalCoroutinesApi:        # opt-in annotation marker (dropped at its use sites)
+    pass
+
+
 def flowOf(*xs):
     return Flow(xs)
 

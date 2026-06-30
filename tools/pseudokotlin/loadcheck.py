@@ -8,19 +8,13 @@ transpiler/logic defect to fix. UI files are excluded -- they need the Compose r
 
   python3 loadcheck.py            # summary + blocking names
 """
-import os, sys, glob, collections
+import os, sys, glob
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import registry
 
 ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter")
-
-# Compose/Hilt/Nav names. A non-UI-path file blocked by one of these is UI-orchestration that
-# just lives outside ui/ (e.g. navigation/AppNavigation) -> it defers WITH the UI, not a real gap.
-UI_NAMES = {"Icons", "hiltViewModel", "remember", "Modifier", "Composable", "Scaffold",
-            "MaterialTheme", "NavHost", "rememberNavController", "collectAsStateWithLifecycle",
-            "collectAsState", "LaunchedEffect", "Text", "Column", "Row", "Box"}
 
 
 def main():
@@ -30,42 +24,28 @@ def main():
     core = [f for f in files if "/ui/" not in f]                 # the non-UI foundation
 
     ns = dict(registry.namespace())
-    pending = {f: open(f).read() for f in core}
-    loaded, errs = [], {}
+    pending = {f: open(f).read() for f in files}                 # exec ALL (autostub binds every external)
+    loaded, errs = set(), {}
     while pending:
         progressed, errs = False, {}
         for f, src in list(pending.items()):
             try:
                 exec(compile(src, f, "exec"), ns)
-                loaded.append(f); del pending[f]; progressed = True
+                loaded.add(f); del pending[f]; progressed = True
             except Exception as e:                               # noqa: BLE001
                 errs[f] = f"{type(e).__name__}: {e}"
         if not progressed:
             break
 
-    def blocker(msg):
-        return msg.split("'")[1] if "NameError" in msg and "'" in msg else None
+    core_ok = sum(1 for f in core if f in loaded)
+    ui_ok = sum(1 for f in ui if f in loaded)
+    gaps = {f: errs.get(f, "?") for f in pending}                # whatever never loaded
 
-    deferred = {f: m for f, m in errs.items() if blocker(m) in UI_NAMES}   # UI-orchestration
-    gaps = {f: m for f, m in errs.items() if f not in deferred}            # real blockers
-    domain = len(core) - len(deferred)
-
-    print(f"non-UI domain files          : {domain}")
-    print(f"  load clean                 : {len(loaded)} / {domain}")
+    print(f"non-UI domain load           : {core_ok} / {len(core)}")
+    print(f"ui/ load (inert via autostub): {ui_ok} / {len(ui)}")
     print(f"  real gaps                  : {len(gaps)}")
-    print(f"UI-layer outside ui/ (deferred): {len(deferred)}   {[os.path.relpath(f, ROOT) for f in deferred]}")
-    print(f"ui/ files (deferred)         : {len(ui)}")
-
-    missing = collections.Counter(blocker(m) for m in gaps.values() if blocker(m))
-    if missing:
-        print("\nreal gaps -> need a stand-in / fix:")
-        for name, n in missing.most_common(20):
-            print(f"  {n:3d}  {name}")
-    defects = {f: m for f, m in gaps.items() if "NameError" not in m}
-    if defects:
-        print("\nnon-NameError blockers (transpiler/logic defects to fix):")
-        for f, msg in defects.items():
-            print(f"  {os.path.relpath(f, ROOT)}: {msg[:90]}")
+    for f, msg in list(gaps.items())[:20]:
+        print(f"    {os.path.relpath(f, ROOT)}: {msg[:80]}")
 
 
 if __name__ == "__main__":
