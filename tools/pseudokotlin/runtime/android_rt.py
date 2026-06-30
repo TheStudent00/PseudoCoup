@@ -119,6 +119,12 @@ class ApplicationProvider:          # androidx.test -- getApplicationContext() i
         return _Stub()
 
 
+class InstrumentationRegistry:      # androidx.test -- only passed through to MigrationTestHelper here
+    @staticmethod
+    def getInstrumentation():
+        return _Stub()
+
+
 class ContextCompat:
     @staticmethod
     def getSystemService(*a, **k):

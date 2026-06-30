@@ -11,12 +11,20 @@ engine runs the real query logic (whole-token matching, so ABS does not match AB
 """
 import sqlite3
 import re as _re
+import json as _json
 
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 from runtime.coroutines import Flow      # noqa: E402  -- DAO query methods return a Flow
 from runtime.kotlin_rt import KtList      # noqa: E402  -- query results carry Kotlin collection methods
+
+# Room's exported schema JSON (one file per version), used by MigrationTestHelper to recreate an old
+# schema and validate the result after replaying migrations.
+_SCHEMA_DIR = os.path.normpath(os.path.join(
+    os.path.dirname(__file__), "..", "..", "..", "..", "WFL_MixingCenter", "WFL", "app", "schemas",
+    "com.sara.workoutforlife.data.db.WorkoutDatabase"))
+_NAMED_DBS = {}                 # name -> sqlite3 conn, shared between MigrationTestHelper and the builder
 
 
 class Col:
@@ -59,10 +67,14 @@ class Entity:
 class Database:
     """The sqlite3-backed database. register(EntityClass) each entity (it carries cls._room), then DAOs
     run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes)."""
-    def __init__(self, version=1):
-        self._conn = sqlite3.connect(":memory:", isolation_level=None)   # autocommit; BEGIN/ROLLBACK explicit
-        self._conn.row_factory = sqlite3.Row
-        self._conn.execute(f"PRAGMA user_version = {int(version)}")      # @Database(version=N) -> db.version
+    def __init__(self, version=1, conn=None):
+        self._version = int(version)
+        if conn is not None:                # bind to an existing conn (MigrationTestHelper's named DB)
+            self._conn = conn
+        else:
+            self._conn = sqlite3.connect(":memory:", isolation_level=None)   # autocommit; BEGIN/ROLLBACK explicit
+            self._conn.row_factory = sqlite3.Row
+            self._conn.execute(f"PRAGMA user_version = {int(version)}")      # @Database(version=N) -> db.version
         self._entities = {}                 # table name -> Entity
 
     def withTransaction(self, block):
@@ -295,6 +307,9 @@ class _SupportSQLiteDatabase:
         if self._depth == 0:
             self._conn.execute("COMMIT" if self._marks == self._began else "ROLLBACK")
 
+    def close(self):
+        pass                                # the conn is owned by the Database / named-DB registry
+
 
 class _OpenHelper:
     def __init__(self, conn):
@@ -304,14 +319,27 @@ class _OpenHelper:
 
 class _Builder:
     """Room's database builder. The chained options are inert; build() constructs the @Database class
-    (whose generated __init__ creates a Database and registers every entity)."""
-    def __init__(self, klass):
+    (whose generated __init__ creates a Database and registers every entity). For a NAMED database that
+    MigrationTestHelper already created, build() instead binds to that connection, replays the registered
+    migrations up to the @Database version, and validates the schema (the migration-test path)."""
+    def __init__(self, klass, name=None):
         self._klass = klass
+        self._name = name
+        self._migrations = []
 
     def build(self):
-        return self._klass()
+        inst = self._klass()
+        if self._name is not None and self._name in _NAMED_DBS:
+            target = inst._db._version                  # the @Database(version=N) target
+            conn = _NAMED_DBS[self._name]
+            inst._db = Database(version=target, conn=conn)   # rebind onto the named (old-schema) conn
+            _run_migrations(conn, self._migrations, target)
+            _validate_schema(conn, target)
+        return inst
 
-    def addMigrations(self, *a):
+    def addMigrations(self, *migrations):
+        for m in migrations:                            # accept varargs OR a spread array
+            self._migrations.extend(m if isinstance(m, (list, tuple)) else [m])
         return self
 
     def fallbackToDestructiveMigration(self, *a):
@@ -340,7 +368,74 @@ class Room:
 
     @staticmethod
     def databaseBuilder(context, klass, name=None, *a):
-        return _Builder(klass.java if hasattr(klass, "java") else klass)
+        return _Builder(klass.java if hasattr(klass, "java") else klass, name)
+
+
+# ---- migration testing: recreate an old schema, replay migrations, validate the result -------------- #
+def _load_schema(version):
+    with open(os.path.join(_SCHEMA_DIR, f"{int(version)}.json")) as f:
+        return _json.load(f)["database"]
+
+
+def _run_migrations(conn, migrations, target):
+    """Replay registered migrations from the conn's current user_version up to `target`, in order. A gap
+    (no migration starting at the current version) is exactly the failure the test exists to catch."""
+    support = _SupportSQLiteDatabase(conn)
+    by_start = {}
+    for m in migrations:
+        by_start.setdefault(int(m.startVersion), m)
+    cur = conn.execute("PRAGMA user_version").fetchone()[0]
+    while cur < target:
+        m = by_start.get(cur)
+        if m is None:
+            raise RuntimeError(f"Missing migration starting at version {cur}")
+        m.migrate(support)
+        cur = int(m.endVersion)
+        conn.execute(f"PRAGMA user_version = {cur}")
+
+
+def _validate_schema(conn, version):
+    """Room validates the migrated schema against the @Database entities. Faithful stand-in: every table
+    in the target schema JSON must exist with all its expected columns -- a missing/broken migration shows
+    up as a missing table or column."""
+    for ent in _load_schema(version)["entities"]:
+        table = ent["tableName"]
+        expected = {f["columnName"] for f in ent["fields"]}
+        actual = {r[1] for r in conn.execute(f"PRAGMA table_info(`{table}`)").fetchall()}
+        if not actual:
+            raise RuntimeError(f"Schema validation failed: table `{table}` missing after migration")
+        missing = expected - actual
+        if missing:
+            raise RuntimeError(f"Schema validation failed: `{table}` missing columns {sorted(missing)}")
+
+
+class MigrationTestHelper:
+    """androidx.room.testing.MigrationTestHelper -- createDatabase(name, v) builds the v-schema (from the
+    exported schema JSON) on a fresh connection kept in _NAMED_DBS, which the builder later reopens."""
+    def __init__(self, instrumentation=None, klass=None, *a, **k):
+        self._klass = klass
+
+    def createDatabase(self, name, version):
+        conn = sqlite3.connect(":memory:", isolation_level=None)
+        conn.row_factory = sqlite3.Row
+        schema = _load_schema(version)
+        for ent in schema["entities"]:
+            conn.execute(ent["createSql"].replace("${TABLE_NAME}", ent["tableName"]))
+        for q in schema.get("setupQueries", []):
+            conn.execute(q)
+        conn.execute(f"PRAGMA user_version = {int(version)}")
+        _NAMED_DBS[str(name)] = conn
+        return _SupportSQLiteDatabase(conn)
+
+    def runMigrationsAndValidate(self, name, version, validateDroppedTables=True, *migrations):
+        conn = _NAMED_DBS[str(name)]
+        migs = [x for m in migrations for x in (m if isinstance(m, (list, tuple)) else [m])]
+        _run_migrations(conn, migs, int(version))
+        _validate_schema(conn, int(version))
+        return _SupportSQLiteDatabase(conn)
+
+    def closeWhenFinished(self, *a):
+        pass
 
 
 # ---- self-test: run the real ExerciseDao muscle-group query against sqlite3 --------------------- #

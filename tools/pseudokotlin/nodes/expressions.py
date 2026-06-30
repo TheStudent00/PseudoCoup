@@ -52,6 +52,8 @@ _STDLIB_METHODS = {
     "trim":          lambda r, a: f"{r}.strip()",
     "trimStart":     lambda r, a: f"{r}.lstrip()",
     "trimEnd":       lambda r, a: f"{r}.rstrip()",
+    "trimIndent":    lambda r, a: f"trimIndent({r})",
+    "trimMargin":    lambda r, a: f"trimMargin({r}, {a[0]})" if a else f"trimMargin({r})",
     "startsWith":    lambda r, a: f"{r}.startswith({a[0]})",
     "endsWith":      lambda r, a: f"{r}.endswith({a[0]})",
     "contains":      lambda r, a: f"({a[0]} in {r})",     # str/collection membership
