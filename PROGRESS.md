@@ -24,7 +24,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | objective | est. | trend (Jun 20→29) | what's left |
 |---|---|---|---|
 | Transpiler (Kt→Py engine) | **93%** | `▁▃▅▅▆██` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
-| Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external name now BINDS via autostub — non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/… at the kit). |
+| Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external BINDS via autostub (gate = 0 gaps). Real: non-UI + Compose structure. Stub: UI styling / Hilt / Nav. surface.py now AST-classifies all 345 externals by kind (obj/func/class/value, real vs stub) — the spec for what to make real. |
 | Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
 | WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
 | UI (PseudoUI screens) | **62%** | `▁▁▂▂▂▃█` | transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) — real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState→re-render), and a pixel kit (Flutter/Kivy). |
@@ -47,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-06-30` AST-kind-aware wrapping: surface.py classifies all 345 externals by kind (obj/func/class/value) from how the AST uses them — the type-specific wrapper map + kit spec. autostub shapes Kotlin objects as singletons; the base stub is now arithmetic/comparison-robust. Gates green.
 - `2026-06-30` 17/29 transpiled screens render via headless Compose (Unit + inline fully-qualified-ref collapse). LogCardioScreen = 82 nodes. Remaining are receiver-lambda builders + harness stub-arg artifacts; all gates green.
 - `2026-06-30` UI RENDERS: runtime/compose.py (headless Compose) — a @Composable emits a UI tree. The transpiled ReportForm renders to Scaffold/Column/Text/SegmentedButton/Button with real text and live BugSeverity-driven options. Rung 3 for the UI via the transpiler path; all gates green.
 - `2026-06-30` Auto-stub floor: one front door binds EVERY external name (real wrapper → builtin → inert stub) → ALL 254 foundation files load, 87/87 UI (was 0), zero NameErrors. UI is no longer a transpiler problem — only kit-wiring remains.
