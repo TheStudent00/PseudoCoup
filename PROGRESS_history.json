@@ -30,6 +30,73 @@
       }
     }
   ],
+  "objectives": [
+    {
+      "key": "transpiler",
+      "label": "Transpiler (Kt→Py engine)",
+      "note": "grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas. Left: edge idioms surfaced by the UI phase.",
+      "series": [
+        { "date": "2026-06-20", "pct": 25 },
+        { "date": "2026-06-25", "pct": 45 },
+        { "date": "2026-06-26", "pct": 62 },
+        { "date": "2026-06-27", "pct": 66 },
+        { "date": "2026-06-28", "pct": 72 },
+        { "date": "2026-06-29", "pct": 90 }
+      ]
+    },
+    {
+      "key": "externs",
+      "label": "Externs (runtime wrappers)",
+      "note": "non-UI externals 100% wrapped (0 real gaps) via resolve + registry. Left: the UI external surface (compose / hilt / nav).",
+      "series": [
+        { "date": "2026-06-20", "pct": 10 },
+        { "date": "2026-06-25", "pct": 20 },
+        { "date": "2026-06-26", "pct": 30 },
+        { "date": "2026-06-27", "pct": 35 },
+        { "date": "2026-06-28", "pct": 42 },
+        { "date": "2026-06-29", "pct": 72 }
+      ]
+    },
+    {
+      "key": "data",
+      "label": "Data layer (Room / sqlite3)",
+      "note": "runs end-to-end — @Entity/@Dao/@Database, full CRUD + transactions; 2/4 instrumented green. Left: backup feature, migration.",
+      "series": [
+        { "date": "2026-06-20", "pct": 0 },
+        { "date": "2026-06-25", "pct": 3 },
+        { "date": "2026-06-26", "pct": 5 },
+        { "date": "2026-06-27", "pct": 5 },
+        { "date": "2026-06-28", "pct": 8 },
+        { "date": "2026-06-29", "pct": 70 }
+      ]
+    },
+    {
+      "key": "domain",
+      "label": "WFL domain functionality",
+      "note": "11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.).",
+      "series": [
+        { "date": "2026-06-20", "pct": 15 },
+        { "date": "2026-06-25", "pct": 30 },
+        { "date": "2026-06-26", "pct": 45 },
+        { "date": "2026-06-27", "pct": 48 },
+        { "date": "2026-06-28", "pct": 52 },
+        { "date": "2026-06-29", "pct": 68 }
+      ]
+    },
+    {
+      "key": "ui",
+      "label": "UI (PseudoUI screens)",
+      "note": "generator tooling + structural work exist but are set-aside / unvalidated into the foundation. The plan's step 2–3.",
+      "series": [
+        { "date": "2026-06-20", "pct": 5 },
+        { "date": "2026-06-25", "pct": 8 },
+        { "date": "2026-06-26", "pct": 10 },
+        { "date": "2026-06-27", "pct": 14 },
+        { "date": "2026-06-28", "pct": 17 },
+        { "date": "2026-06-29", "pct": 18 }
+      ]
+    }
+  ],
   "milestones": [
     {
       "date": "2026-06-20",
