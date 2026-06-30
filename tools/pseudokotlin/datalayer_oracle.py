@@ -19,6 +19,7 @@ TESTS = [
     "ExerciseDaoMuscleGroupTest",
     "GymRepositoryTransactionTest",
     "BackupRepositoryRoundTripTest",
+    "MigrationTest",
 ]
 
 
