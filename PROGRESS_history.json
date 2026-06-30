@@ -102,7 +102,7 @@
     {
       "key": "externs",
       "label": "Externs (runtime wrappers)",
-      "note": "every external name now BINDS via autostub \u2014 non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/\u2026 at the kit).",
+      "note": "every external BINDS via autostub (gate = 0 gaps). Real: non-UI + Compose structure. Stub: UI styling / Hilt / Nav. surface.py now AST-classifies all 345 externals by kind (obj/func/class/value, real vs stub) \u2014 the spec for what to make real.",
       "series": [
         {
           "date": "2026-06-20",
@@ -308,6 +308,10 @@
     {
       "date": "2026-06-30",
       "text": "17/29 transpiled screens render via headless Compose (Unit + inline fully-qualified-ref collapse). LogCardioScreen = 82 nodes. Remaining are receiver-lambda builders + harness stub-arg artifacts; all gates green."
+    },
+    {
+      "date": "2026-06-30",
+      "text": "AST-kind-aware wrapping: surface.py classifies all 345 externals by kind (obj/func/class/value) from how the AST uses them \u2014 the type-specific wrapper map + kit spec. autostub shapes Kotlin objects as singletons; the base stub is now arithmetic/comparison-robust. Gates green."
     }
   ]
 }
