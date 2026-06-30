@@ -185,6 +185,54 @@ def _chart_svg(key, label, goal, kind, samples):
             f'style="display:block">{"".join(body)}</svg>')
 
 
+# ---- render: major objectives (estimated completion, chronological) ------------------------------- #
+OBJ_COLORS = ["#5fd08a", "#7fb4ff", "#e0b15f", "#c98bdb", "#e88a9a", "#69d6c4"]
+
+
+def _objectives_chart_svg(objectives):
+    """One overlaid chart: each objective's ESTIMATED % climbing over the shared milestone dates."""
+    W, H, padl, padr, padt, padb = 720, 200, 30, 12, 10, 24
+    dates = sorted({p["date"] for o in objectives for p in o["series"]})
+    iw, ih = W - padl - padr, H - padt - padb
+    xi = {d: i for i, d in enumerate(dates)}
+
+    def xy(d, pct):
+        x = padl + (iw if len(dates) == 1 else iw * xi[d] / (len(dates) - 1))
+        return x, padt + ih - ih * pct / 100
+
+    body = []
+    for g in (0, 25, 50, 75, 100):                       # faint % gridlines + labels
+        y = padt + ih - ih * g / 100
+        body.append(f'<line x1="{padl}" y1="{y:.1f}" x2="{padl+iw}" y2="{y:.1f}" stroke="#222a45"/>')
+        body.append(f'<text x="{padl-6}" y="{y+3:.1f}" text-anchor="end" fill="#6b76a0" '
+                    f'font-size="10">{g}</text>')
+    for d in (dates[0], dates[-1]):                      # date labels at the ends
+        x, _ = xy(d, 0)
+        body.append(f'<text x="{x:.1f}" y="{H-7}" text-anchor="{"start" if d == dates[0] else "end"}" '
+                    f'fill="#6b76a0" font-size="10">{d[5:]}</text>')
+    for idx, o in enumerate(objectives):                 # one climbing line per objective
+        color = OBJ_COLORS[idx % len(OBJ_COLORS)]
+        pts = [xy(p["date"], p["pct"]) for p in o["series"]]
+        poly = " ".join(f"{x:.1f},{y:.1f}" for x, y in pts)
+        body.append(f'<polyline fill="none" stroke="{color}" stroke-width="2.5" points="{poly}"/>')
+        body.append(f'<circle cx="{pts[-1][0]:.1f}" cy="{pts[-1][1]:.1f}" r="3" fill="{color}"/>')
+    return (f'<svg width="100%" viewBox="0 0 {W} {H}" preserveAspectRatio="xMidYMid meet" '
+            f'style="display:block">{"".join(body)}</svg>')
+
+
+def _obj_rows_html(objectives):
+    rows = []
+    for idx, o in enumerate(objectives):
+        color = OBJ_COLORS[idx % len(OBJ_COLORS)]
+        cur = o["series"][-1]["pct"]
+        rows.append(
+            f'<div class="orow"><span class="osw" style="background:{color}"></span>'
+            f'<span class="olab">{o["label"]}</span><span class="opct">{cur}%</span>'
+            f'<span class="obar"><span class="ofill" style="width:{cur}%;background:{color}"></span></span>'
+            f'<div class="onote">{o.get("note", "")}</div></div>')
+    return "".join(rows)
+
+
 def render_html(hist, ondeck):
     samples = hist["samples"]
     last = samples[-1]
@@ -204,8 +252,12 @@ def render_html(hist, ondeck):
         d = f'<div class="det">{detail}</div>' if detail else ""
         deck.append(f"<li>{tag}{task}{nx}{d}</li>")
     deck_html = "<ol>" + "".join(deck) + "</ol>" if deck else "<p class='mut'>(empty)</p>"
+    objectives = hist.get("objectives", [])
+    obj_chart = _objectives_chart_svg(objectives) if objectives else ""
+    obj_rows = _obj_rows_html(objectives) if objectives else ""
     return _HTML.format(date=hist.get("generated", last["date"]), chips="".join(chips),
-                        charts=charts, milestones=miles, ondeck=deck_html)
+                        charts=charts, milestones=miles, ondeck=deck_html,
+                        obj_chart=obj_chart, obj_rows=obj_rows)
 
 
 # ---- render: Markdown (ascii sparklines, git-diff friendly) --------------------------------------- #
@@ -226,10 +278,14 @@ def render_md(hist, ondeck):
         nx = "  ← next" if i == 0 else ""
         det = f"\n  - {detail}" if detail else ""
         deck.append(f"1. {tag}{task}{nx}{det}")
+    obj = ["| objective | est. | trend (Jun 20→29) | what's left |", "|---|---|---|---|"]
+    for o in hist.get("objectives", []):
+        series = [p["pct"] for p in o["series"]]
+        obj.append(f"| {o['label']} | **{series[-1]}%** | `{_spark(series)}` | {o.get('note', '')} |")
     miles = "\n".join(f"- `{m['date']}` {m['text']}" for m in reversed(hist.get("milestones", [])))
     return _MD.format(date=hist.get("generated", last["date"]),
-                      table="\n".join(rows), ondeck="\n".join(deck) or "_(empty)_",
-                      milestones=miles)
+                      table="\n".join(rows), objectives="\n".join(obj) if len(obj) > 2 else "_(none)_",
+                      ondeck="\n".join(deck) or "_(empty)_", milestones=miles)
 
 
 def main():
@@ -278,6 +334,14 @@ _HTML = """<!DOCTYPE html>
   .det{{color:#9aa6c4;font-size:13px;margin-top:2px}}
   .tl{{list-style:none;padding-left:0}} .tl li{{margin:4px 0}}
   .date{{display:inline-block;min-width:84px;color:#7f93c4;font-family:ui-monospace,monospace;font-size:12px}}
+  .objchart{{margin:4px 0 14px}}
+  .orow{{display:grid;grid-template-columns:13px 210px 46px 1fr;gap:9px;align-items:center;margin:10px 0 2px}}
+  .osw{{width:11px;height:11px;border-radius:3px}}
+  .olab{{font-weight:600;color:#dbe3f7}}
+  .opct{{font-weight:700;color:#fff;text-align:right;font-variant-numeric:tabular-nums}}
+  .obar{{height:7px;background:#222a45;border-radius:4px;overflow:hidden}}
+  .ofill{{display:block;height:100%}}
+  .onote{{grid-column:2 / -1;color:#9aa6c4;font-size:12.5px;margin:1px 0 5px}}
 </style></head><body>
 
 <h1>WFL → Python — progress</h1>
@@ -288,7 +352,16 @@ dipping line is a real regression — the board can't claim done while a gate di
 <h2>Gates — pass / fail right now</h2>
 <div class="chips">{chips}</div>
 
-<h2>Momentum — each metric over time</h2>
+<h2>Major objectives — estimated completion (chronological)</h2>
+<div class="panel">
+<p class="sub mut" style="margin:0 0 6px">A higher-level rollup. These are <b>estimates</b> (judgment,
+anchored to the measured gates below), traced across the project's milestones — each line is one objective
+climbing over time.</p>
+<div class="objchart">{obj_chart}</div>
+{obj_rows}
+</div>
+
+<h2>Momentum — each measured metric over time</h2>
 <div class="grid">{charts}</div>
 
 <h2>On-deck — next sub-tasks (top = next)</h2>
@@ -315,9 +388,15 @@ sparkline is a real regression, not a stale doc. (Browser version with trend cha
 
 As of {date}.
 
-## Gates + momentum
+## Gates + momentum (measured)
 
 {table}
+
+## Major objectives — estimated completion (chronological)
+
+Estimates (judgment, anchored to the measured gates above), traced across the project's milestones.
+
+{objectives}
 
 ## On-deck — next sub-tasks (top = next)
 
