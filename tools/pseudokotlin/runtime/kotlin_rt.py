@@ -139,6 +139,75 @@ class ConcurrentModificationException(Exception):
     pass
 
 
+# ---- kotlin.Result / runCatching -- a block's outcome captured as success(value) | failure(exc) ---- #
+class Result:
+    def __init__(self, value=None, exception=None):
+        self._value, self._exc = value, exception
+
+    @property
+    def isSuccess(self):
+        return self._exc is None
+
+    @property
+    def isFailure(self):
+        return self._exc is not None
+
+    def getOrNull(self):
+        return self._value if self._exc is None else None
+
+    def exceptionOrNull(self):
+        return self._exc
+
+    def getOrThrow(self):
+        if self._exc is not None:
+            raise self._exc
+        return self._value
+
+    def getOrDefault(self, default):
+        return self._value if self._exc is None else default
+
+    def getOrElse(self, onFailure):
+        return self._value if self._exc is None else onFailure(self._exc)
+
+    def onSuccess(self, action):
+        if self._exc is None:
+            action(self._value)
+        return self
+
+    def onFailure(self, action):
+        if self._exc is not None:
+            action(self._exc)
+        return self
+
+    def map(self, transform):
+        return Result(transform(self._value)) if self._exc is None else self
+
+    def fold(self, onSuccess, onFailure):
+        return onSuccess(self._value) if self._exc is None else onFailure(self._exc)
+
+
+def runCatching(block, *rest):
+    # top-level `runCatching { }` -> block is the lambda; `x.runCatching { }` -> (x, lambda) where the
+    # lambda takes x. Either way, run it and capture success/failure (Kotlin catches Throwable).
+    fn = rest[0] if rest else block
+    arg = (block,) if rest else ()
+    try:
+        return Result(fn(*arg))
+    except Exception as e:                      # noqa: BLE001 -- mirror Kotlin runCatching
+        return Result(exception=_as_throwable(e))
+
+
+def _as_throwable(e):
+    """Give a caught Python exception Kotlin's Throwable.message (so `it.message` in an onFailure / catch
+    works). Set on the instance, never overwriting a real `message` property on a wrapper exception."""
+    if not hasattr(e, "message"):
+        try:
+            e.message = str(e)
+        except (AttributeError, TypeError):
+            pass
+    return e
+
+
 # ---- Kotlin collection runtime -- KtList/KtMap carry the Kotlin stdlib methods so
 #      `xs.sortedBy { … }.map { … }` dispatches uniformly. List-returning methods
 #      return KtList (chains stay typed); map-returning methods return KtMap. Lambdas
@@ -800,6 +869,11 @@ def intArrayOf(*xs):
 def repeat(n, action):
     for i in range(n):
         action(i)
+
+
+def synchronized(lock, block=None):
+    # synchronized(lock) { … } -> run the block (single-threaded Python needs no real monitor)
+    return block() if block is not None else (lock() if callable(lock) else lock)
 
 
 def setOf(*xs):

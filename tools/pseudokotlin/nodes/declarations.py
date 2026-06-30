@@ -496,6 +496,13 @@ class Declarations:
         lines = []
         if ctor_params or props or inits:
             lines.append(f"def __init__({', '.join(sig)}):\n{_block(init_body)}")
+        # a companion's members are in scope (unqualified) inside this class's methods -> resolve a bare
+        # `USER_TABLES` to `ClassName.USER_TABLES`. Set BEFORE rendering methods; instance members win, so
+        # drop any name that is also an instance member (Kotlin precedence).
+        comp_members = self._companion_members(comps) - self._members
+        prev_sm, prev_sc = self._static_members, self._static_class
+        if comp_members:
+            self._static_members, self._static_class = comp_members, name
         groups = {}                          # group by name -> Kotlin method overloading
         for m in methods:
             groups.setdefault(self._name_of(m), []).append(m)
@@ -513,6 +520,7 @@ class Declarations:
         lines += [self.visit(n) for n in nested]
         for comp in comps:                                 # companion -> static members
             lines += self._render_companion(comp, name)
+        self._static_members, self._static_class = prev_sm, prev_sc
         _TYPE_FIELDS[name] = set(self._members)             # for extension-receiver lookup
         self._members = prev
 
@@ -605,6 +613,19 @@ class Declarations:
         self._scopes.pop()
         guard = [f'if not hasattr(self, "_{name}"):', _block(compute), f"return {cache}"]
         return f"@property\ndef {name}(self):\n{_block(guard)}"
+
+    def _companion_members(self, comps):
+        """Names a companion object declares (vals + functions) -> referenced unqualified from the enclosing
+        class's methods, so a bare `USER_TABLES` / `helper()` resolves to ClassName.<name>."""
+        out = set()
+        for comp in comps:
+            cbody = next((c for c in comp.named_children if c.type == "class_body"), comp)
+            for c in cbody.named_children:
+                nm = (self._name_of(c, deep=True) if c.type == "property_declaration"
+                      else self._name_of(c) if c.type == "function_declaration" else None)
+                if nm:
+                    out.add(nm)
+        return out
 
     def _render_companion(self, comp, cls_name):
         cbody = next((c for c in comp.named_children if c.type == "class_body"), comp)

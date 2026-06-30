@@ -538,9 +538,14 @@ class Expressions:
         self._scopes.append(scope)
         try:
             if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
-                expr = self.visit(body[0])                       # pure expr body, no unpacking
-                return f"(lambda {ps}{self._captured_loops(expr, scope)}: {expr})"
-            # multi-statement / destructuring / statement-bodied -> hoist a named def; the
+                before = len(self._hoist)
+                expr = self.visit(body[0])                       # may itself hoist a nested def
+                if len(self._hoist) == before:                   # nothing escaped -> a true one-liner
+                    return f"(lambda {ps}{self._captured_loops(expr, scope)}: {expr})"
+                del self._hoist[before:]                          # a nested def referenced THIS lambda's
+                # params (e.g. `let { x -> ys.forEach { x… } }`) -> it would lose them if lifted out; fall
+                # to the def form below so the nested def is emitted INSIDE this lambda, seeing its params.
+            # multi-statement / destructuring / statement-bodied / hoist-producing -> a named def; the
             # suite renderer flushes it before the using statement.
             self._lam += 1
             name = f"_lam{self._lam}"
