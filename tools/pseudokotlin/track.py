@@ -37,12 +37,13 @@ MD = os.path.join(ROOT, "PROGRESS.md")
 METRICS = [
     ("parse",    "Parse — all .kt transpile + compile",  "up",   "ratio"),
     ("load",     "Load — non-UI domain imports clean",   "up",   "ratio"),
+    ("ui",       "UI — files load (inert via autostub)", "up",   "ratio"),
     ("logic",    "Logic — engine methods match Kotlin",  "up",   "ratio"),
     ("data",     "Data — instrumented DB tests green",   "up",   "ratio"),
     ("extern",   "External gaps — used but unwrapped",   "down", "count"),
     ("unrouted", "Grammar kinds unrouted — the worklist","down", "count"),
 ]
-GATES = ["parse", "load", "extern", "logic", "data"]
+GATES = ["parse", "load", "ui", "extern", "logic", "data"]
 # the instrumented suite the data gate draws from. 2 run green; 2 are blocked ABOVE the data layer
 # (BackupRepositoryRoundTripTest, MigrationTest) — see PROGRESS_ondeck.md. Bump when one starts running.
 TOTAL_INSTRUMENTED = 4
@@ -65,7 +66,9 @@ def _grab(pattern, text, what):
 
 def measure():
     parse = _grab(r"ALL:\s*(\d+)/(\d+)\s*compile-clean", _run("measure.py"), "parse count")
-    load = _grab(r"load clean\s*:\s*(\d+)\s*/\s*(\d+)", _run("loadcheck.py"), "load count")
+    lc = _run("loadcheck.py")
+    load = _grab(r"non-UI domain load\s*:\s*(\d+)\s*/\s*(\d+)", lc, "non-UI load count")
+    uild = _grab(r"ui/ load[^:]*:\s*(\d+)\s*/\s*(\d+)", lc, "UI load count")
     extern = _grab(r"unwrapped:\s*(\d+)", _run("externals.py"), "external gaps")
     cover = _grab(r"UNROUTED\s*\((\d+)\)", _run("coverage.py"), "unrouted count")
 
@@ -83,13 +86,14 @@ def measure():
 
     pn, pd = int(parse.group(1)), int(parse.group(2))
     ln, ld = int(load.group(1)), int(load.group(2))
+    uin, uid = int(uild.group(1)), int(uild.group(2))
     ex = int(extern.group(1))
     un = int(cover.group(1))
     return {
         "date": datetime.date.today().isoformat(),
-        "parse": [pn, pd], "load": [ln, ld], "logic": [logic_n, logic_d],
+        "parse": [pn, pd], "load": [ln, ld], "ui": [uin, uid], "logic": [logic_n, logic_d],
         "data": [data_green, TOTAL_INSTRUMENTED], "extern": ex, "unrouted": un,
-        "gates": {"parse": pn == pd, "load": ln == ld, "extern": ex == 0,
+        "gates": {"parse": pn == pd, "load": ln == ld, "ui": uin == uid, "extern": ex == 0,
                   "logic": logic_gate, "data": data_gate},
     }
 
@@ -150,7 +154,9 @@ def read_ondeck():
 # ---- render: HTML (SVG charts) --------------------------------------------------------------------- #
 def _chart_svg(key, label, goal, kind, samples):
     W, H, padx, padtop, padbot = 250, 96, 8, 22, 16
-    pts = [(s["date"], _val(s, key)) for s in samples]
+    pts = [(s["date"], _val(s, key)) for s in samples if _val(s, key) is not None]  # a metric may be
+    if not pts:                                                                     # newer than some samples
+        pts = [(samples[-1]["date"], 0)]
     vals = [v for _, v in pts]
     ceil = _ceiling(samples[-1], key, kind)
     top = max([*(vals or [0]), ceil or 0, 1])
@@ -266,7 +272,7 @@ def render_md(hist, ondeck):
     last = samples[-1]
     rows = ["| metric | now | trend | gate |", "|---|---|---|---|"]
     for k, lbl, goal, kind in METRICS:
-        series = [_val(s, k) for s in samples]
+        series = [v for v in (_val(s, k) for s in samples) if v is not None] or [0]
         gate = ""
         if k in last["gates"]:
             gate = "🟢" if last["gates"][k] else "🔴"
