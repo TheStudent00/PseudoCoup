@@ -77,6 +77,29 @@ class Stub(metaclass=_StubMeta):
     def __exit__(self, *a):
         return False
 
+    # numeric / value usage: arithmetic stays a stub (chains don't crash), conversions give a neutral
+    # value, ordered comparisons are False -- so `dp(8) + dp(16)`, `int(x)`, `x < y` render instead of
+    # raising. (A kind-aware NUMERIC stub refines this further; this is the safe floor for every stub.)
+    def _id(self, *a):
+        return self
+
+    __add__ = __radd__ = __sub__ = __rsub__ = __mul__ = __rmul__ = _id
+    __truediv__ = __rtruediv__ = __floordiv__ = __mod__ = __neg__ = __pos__ = __abs__ = _id
+
+    def __int__(self):
+        return 0
+
+    def __float__(self):
+        return 0.0
+
+    def __index__(self):
+        return 0
+
+    def __lt__(self, _o):
+        return False
+
+    __gt__ = __le__ = __ge__ = __lt__
+
     def __repr__(self):
         return f"<stub {type(self).__name__}>"
 
@@ -89,6 +112,17 @@ def stub(name):
     return s
 
 
+_OBJS = {}      # name -> the one singleton instance manufactured for an 'obj'-kind name
+
+
+def _kind(name):
+    try:
+        import surface                      # AST-classified kind (obj/func/class/value); needs the foundation
+        return surface.kinds().get(name)
+    except Exception:                       # noqa: BLE001 -- no foundation in scope -> permissive default
+        return None
+
+
 def __getattr__(name):                      # PEP 562: `from runtime.autostub import X`
     if name.startswith("__") and name.endswith("__"):
         raise AttributeError(name)          # leave dunders (e.g. __path__) to Python's normal machinery
@@ -98,17 +132,25 @@ def __getattr__(name):                      # PEP 562: `from runtime.autostub im
     bi = getattr(_builtins, name, None)     # a Kotlin stdlib name that IS a Python builtin (abs/min/max…)
     if bi is not None:
         return bi
-    return stub(name)                       # no equivalent -> inert (recorded in STUBBED)
+    # no equivalent -> an inert stub, SHAPED by its AST kind: a Kotlin object/namespace becomes ONE singleton
+    # instance (not a class); a class/function/value stays the permissive Stub class (callable, base-able).
+    if _kind(name) == "obj":
+        if name not in _OBJS:
+            _OBJS[name] = stub(name)()
+        return _OBJS[name]
+    return stub(name)
 
 
 if __name__ == "__main__":
     import runtime.autostub as A                       # use ONE module instance (not __main__'s copy)
     assert A.KtList.__name__ == "KtList", A.KtList      # a real wrapper -> the real class
-    b = A.Button("Save", onClick=lambda: None)         # no wrapper -> an inert stub; swallows args
+    W = A.SomeUnwrappedWidget                           # no wrapper -> an inert stub
+    b = W("Save", onClick=lambda: None)                # swallows args
     assert b.copy().foo().bar is not None              # any call/attr chain stays inert, never crashes
-    assert "Button" in A.STUBBED and "KtList" not in A.STUBBED
+    assert b + 1 is b and int(b) == 0 and (b < 5) is False    # robust: arithmetic/convert/compare, no crash
+    assert "SomeUnwrappedWidget" in A.STUBBED and "KtList" not in A.STUBBED
 
-    class Screen(A.Button):                            # usable as a base class
+    class Screen(W):                                   # usable as a base class
         pass
-    assert isinstance(Screen(), A.Button)              # and as an isinstance target
+    assert isinstance(Screen(), W)                     # and as an isinstance target
     print("autostub self-test: OK")
