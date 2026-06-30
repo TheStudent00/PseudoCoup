@@ -91,6 +91,14 @@ _SCOPE_FNS = {
     "also":       lambda r, f, s: f"({f}({r}), {r})[1]",      # run for effect, return recv
 }
 
+# Kotlin builder functions: `buildString { append… }` / `buildList { add… }`. The lambda's implicit
+# receiver is a fresh builder the function makes; bare `append`/`add` bind to it (receiver scope), and the
+# call yields the BUILT value. name -> (constructor expr, value the whole thing yields given the temp).
+_BUILDERS = {
+    "buildString": ("StringBuilder()", lambda r: f"{r}.toString()"),
+    "buildList":   ("KtList()",        lambda r: r),
+}
+
 
 class Expressions:
     # ---- atoms ----------------------------------------------------------- #
@@ -138,6 +146,23 @@ class Expressions:
         if name in self._top_level or name in self._GLOBALS:        # a top-level / runtime global
             return None
         return self._implicit_recv[-1]
+
+    def _builder_scope(self, ctor, lam, finish):
+        """buildString { append(x) } / buildList { add(x) }: the builder is the receiver. Make a fresh one,
+        run the body with it pushed as the implicit receiver (so bare `append`/`add` bind to it), then yield
+        the built value (`sb.toString()` for a string; the list itself). Hoisted, so it works in expression
+        position. Same receiver-binding as apply/with/run -- here the receiver is CREATED, not an existing
+        object."""
+        self._lam += 1
+        r = f"_recv{self._lam}"
+        body = [c for c in self.named(lam) if c.type != "lambda_parameters"]
+        self._implicit_recv.append(r)
+        try:
+            lines = self.render_statements(body)
+        finally:
+            self._implicit_recv.pop()
+        self._hoist.append("\n".join([f"{r} = {ctor}"] + lines))
+        return finish(r)
 
     def _receiver_scope(self, recv_str, lam, returns_recv):
         """x.apply { } / x.run { } / with(x) { }: bind x to a temp, run the body with that temp pushed as the
@@ -351,6 +376,12 @@ class Expressions:
         own_args = next((c for c in node.children if c.type == "value_arguments"), None)
         trailing = next((c for c in node.named_children
                          if c.type in ("annotated_lambda", "lambda_literal")), None)
+        # buildString { append… } / buildList { add… }: the builder is the receiver -- make one, bind the
+        # body's bare members to it, yield the built value. (Bare callee, trailing lambda, no value args.)
+        if (callee.type in ("identifier", "simple_identifier") and trailing is not None
+                and own_args is None and self.text(callee) in _BUILDERS):
+            ctor, finish = _BUILDERS[self.text(callee)]
+            return self._builder_scope(ctor, self._lambda_node(trailing), finish)
         # `f(args) { lambda }` parses as (f(args))(lambda) -- the trailing lambda is an
         # EXTRA argument to the inner call, not a second call. Merge it in.
         if trailing is not None and callee.type == "call_expression" and own_args is None:
