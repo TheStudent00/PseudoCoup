@@ -235,7 +235,7 @@
         },
         {
           "date": "2026-06-30",
-          "pct": 58
+          "pct": 62
         }
       ]
     }
@@ -304,6 +304,10 @@
     {
       "date": "2026-06-30",
       "text": "UI RENDERS: runtime/compose.py (headless Compose) \u2014 a @Composable emits a UI tree. The transpiled ReportForm renders to Scaffold/Column/Text/SegmentedButton/Button with real text and live BugSeverity-driven options. Rung 3 for the UI via the transpiler path; all gates green."
+    },
+    {
+      "date": "2026-06-30",
+      "text": "17/29 transpiled screens render via headless Compose (Unit + inline fully-qualified-ref collapse). LogCardioScreen = 82 nodes. Remaining are receiver-lambda builders + harness stub-arg artifacts; all gates green."
     }
   ]
 }
