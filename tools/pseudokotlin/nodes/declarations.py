@@ -14,6 +14,13 @@ from util import block as _block  # noqa: E402
 import resolve   # noqa: E402  (the resolve phase: a file's import table)
 import registry  # noqa: E402  (the wrapper registry: which runtime module provides a name)
 import datalayer  # noqa: E402  (the Room map stage: @Entity schema + @Dao bodies)
+from nodes.expressions import _WRAP_NUMERICS  # noqa: E402  (the wrap dial, shared with v_number)
+
+# Kotlin DECLARED scalar numeric type -> its fixed-width wrapper. This is the declared-type counterpart of
+# the suffix-driven literal wrapping in v_number: coercing a typed param/var at its boundary makes a chain
+# that never touches a literal (e.g. a value straight off a DAO) still carry Kotlin's width semantics.
+# Double stays bare float (faithful); Short/Byte/unsigned have no wrapper yet, so they're left bare.
+_NUM_WRAPPER = {"Int": "Int32", "Long": "Int64", "Float": "Float32"}
 
 _TOP_DECLS = {"class_declaration", "object_declaration", "function_declaration",
               "property_declaration"}
@@ -105,8 +112,8 @@ class Declarations:
     def _function(self, node, with_self, decorator="", name=None):
         name = name or self._safe(self._name_of(node) or "unknown_func")
         pnode = next((c for c in node.children if c.type == "function_value_parameters"), None)
-        names, parts, guards = self._collect_params(pnode) if pnode is not None \
-            else ([], [], [])
+        names, parts, guards, coercions = self._collect_params(pnode) if pnode is not None \
+            else ([], [], [], [])
         params = (["self"] if with_self else []) + parts
         body_node = next((c for c in node.children
                           if c.type in ("function_body", "block")), None)
@@ -124,7 +131,7 @@ class Declarations:
         self._scopes.append(own)
         _saved_deleg = self._delegated                  # `by` delegates are function-local; inherit
         self._delegated = set(self._delegated)          # enclosing ones (closures), drop local on exit
-        body = self._render_function_body(body_node, prefix=nonlocals + guards)
+        body = self._render_function_body(body_node, prefix=nonlocals + guards + coercions)
         self._delegated = _saved_deleg
         self._scopes.pop()
         self._members = prev_m
@@ -200,20 +207,54 @@ class Declarations:
                     out.append(self.text(ut).split("(")[0].strip())
         return out
 
+    def _num_wrapper_of(self, owner):
+        """(wrapper_name, nullable) when `owner` (a parameter / class_parameter / variable_declaration)
+        declares a scalar Int/Long/Float -> Int32/Int64/Float32; else None. Respects the wrap dial. A
+        vararg / generic / collection / Double type is not a scalar wrappable number, so it's left bare."""
+        if not _WRAP_NUMERICS or owner is None:
+            return None
+        mods = next((c for c in owner.children if c.type == "modifiers"), None)
+        if mods is not None and "vararg" in self.text(mods).split():
+            return None                              # `vararg xs: Int` -> xs is a tuple, not a number
+        nullable = False
+        ut = next((c for c in owner.children if c.type == "user_type"), None)
+        if ut is None:                               # `Int?` parses as nullable_type wrapping user_type
+            nt = next((c for c in owner.children if c.type == "nullable_type"), None)
+            if nt is not None:
+                ut = next((c for c in nt.children if c.type == "user_type"), None)
+                nullable = True
+        if ut is None:
+            return None
+        typ = self.text(ut).split("<")[0].strip()
+        w = _NUM_WRAPPER.get(typ)
+        return (w, nullable) if w is not None else None
+
+    def _add_num_coercion(self, owner, safe_name, out):
+        """Append a body-prefix line coercing a declared-numeric PARAM to its wrapper (`n = Int32(n)`), so
+        a literal-free chain off it still carries Kotlin's width semantics. A nullable param is guarded."""
+        w = self._num_wrapper_of(owner)
+        if w is None:
+            return
+        wname, nullable = w
+        self._num_types.add(wname)
+        out.append(f"if {safe_name} is not None: {safe_name} = {wname}({safe_name})"
+                   if nullable else f"{safe_name} = {wname}({safe_name})")
+
     def _collect_params(self, pnode):
         # A Kotlin default value is a SIBLING of its `parameter` (after a `=` token),
         # not a child. Walk all children, pairing each default to the prior parameter.
         # Defaults render in the enclosing scope (not the param scope). A default that
         # references `self.` is NOT def-time-safe in Python (the `def` runs during
         # class-body exec) -> emit a None sentinel + a body guard instead. Returns
-        # (bare names for scope, signature parts, body-prefix guard lines).
-        names, sig, pending = [], [], False
+        # (bare names for scope, signature parts, body-prefix guards, numeric coercions).
+        names, sig, pending, coerce = [], [], False, []
         for c in pnode.children:
             if c.type == "parameter":
                 pid = self._name_of(c)
                 if pid:
                     names.append(pid)
                     sig.append([self._safe(pid), None])
+                    self._add_num_coercion(c, self._safe(pid), coerce)
                 pending = False
             elif c.type == "=":
                 pending = True
@@ -237,7 +278,7 @@ class Declarations:
             else:
                 parts.append(f"{p}={d}")
                 seen_default = True
-        return names, parts, guards
+        return names, parts, guards, coerce
 
     def _nonlocals(self, body_node, own_locals):
         # names assigned in `body_node` that live in an ENCLOSING function scope (not
@@ -356,7 +397,7 @@ class Declarations:
     def _render_class(self, node, name):
         body_node = next((c for c in node.children
                           if c.type in ("class_body", "enum_class_body")), None)
-        ctor_params, ctor_defaults = [], {}
+        ctor_params, ctor_defaults, ctor_nodes = [], {}, {}
         pc = next((c for c in node.children if c.type == "primary_constructor"), None)
         if pc is not None:
             cps = next((c for c in pc.named_children if c.type == "class_parameters"), None)
@@ -366,6 +407,7 @@ class Declarations:
                     nm = self._name_of(pn)
                     if nm:
                         ctor_params.append(nm)
+                        ctor_nodes[nm] = pn             # kept for declared-numeric coercion below
                         dflt = self._ctor_default(pn)   # `val x: T = expr` -> __init__ default
                         if dflt is not None:
                             ctor_defaults[nm] = dflt
@@ -428,7 +470,17 @@ class Declarations:
             else:
                 sig.append(f"{sp}={d}")
                 seen_default = True
-        init_body = guards + [f"self.{self._safe(p)} = {self._safe(p)}" for p in ctor_params]
+        init_body = list(guards)
+        for p in ctor_params:                              # coerce a declared-numeric field to its
+            sp = self._safe(p)                             # wrapper at construction, so every later
+            w = self._num_wrapper_of(ctor_nodes.get(p))    # `self.x` read carries the width semantics
+            if w is None:
+                init_body.append(f"self.{sp} = {sp}")
+            else:
+                wname, nullable = w
+                self._num_types.add(wname)
+                init_body.append(f"self.{sp} = ({wname}({sp}) if {sp} is not None else None)"
+                                 if nullable else f"self.{sp} = {wname}({sp})")
         for p in props:                                    # flush hoists (e.g. a multi-statement
             before = len(self._hoist)                      # `combine(…){ … }` lambda -> def _lamN)
             line = self._render_property(p, as_self=True)  # before the assignment that uses them
@@ -656,4 +708,12 @@ class Declarations:
                 break
         if val_node is None:
             return f"{target} = None"
+        w = self._num_wrapper_of(decl) if mvd is None else None    # typed single-var -> wrap the RHS so a
+        if w is not None and not w[1] and not self._renders_stmt(val_node):   # literal-free init carries
+            wname = w[0]                                           # the width (nullable/block forms below)
+            inner = self.visit(val_node)                          # may push hoists; the caller flushes
+            self._num_types.add(wname)
+            if inner.startswith(wname + "("):                     # value is already this wrapper (a same-
+                return f"{target} = {inner}"                      # type literal) -> don't double-wrap
+            return f"{target} = {wname}({inner})"
         return self._distribute(val_node, f"{target} = ")
