@@ -229,6 +229,10 @@ class Statements:
             nk = self.named(tgt)
             recv, attr = self.visit(nk[0]), self._safe(self.text(nk[-1]))
             return f"if {recv} is not None:\n{_block([f'{recv}.{attr} {op} {self.visit(kids[-1])}'])}"
+        if tgt.type in ("identifier", "simple_identifier"):     # `apply { description = … }` -> recv.prop
+            r = self._implicit_member(self.text(tgt))
+            if r is not None:
+                return f"{r}.{self._safe(self.text(tgt))} {op} {self.visit(kids[-1])}"
         return f"{self.visit(tgt)} {op} {self.visit(kids[-1])}"
 
     @kind("return_expression")

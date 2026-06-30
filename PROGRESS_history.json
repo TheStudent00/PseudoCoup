@@ -74,6 +74,10 @@
     {
       "date": "2026-06-29",
       "text": "Transpiler: bare `$name` string interpolation (47 foundation files had literal `$name` in SQL/log strings — now interpolated)."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Transpiler: receiver-lambda scope functions (apply/with/run) — a body's bare member calls/assignments bind to the receiver; the apply blocker for the backup test is gone."
     }
   ]
 }
