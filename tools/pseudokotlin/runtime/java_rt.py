@@ -103,6 +103,9 @@ class LocalDate:
         return self._d.isoformat()
 
 
+LocalDate.EPOCH = LocalDate(_date(1970, 1, 1))      # java.time.LocalDate.EPOCH
+
+
 class LocalDateTime:
     def __init__(self, dt):
         self._dt = dt

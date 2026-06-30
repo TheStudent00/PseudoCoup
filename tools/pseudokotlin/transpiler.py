@@ -48,6 +48,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._static_class = None     # the enclosing class name for those
         self._ext_patches = []        # `Recv.fn = fn` lines, flushed at module end
         self._nested_aliases = []     # `Inner = Outer.Inner` lines, flushed at module end
+        self._nested_alias_names = set()  # the names those aliases bind -> a default that refs one is forward
         self._enum_types = set()      # enum class names -> their members/extensions see name/ordinal
         self._implicit_recv = []      # stack of apply/run/with receiver temps -> bare member calls bind here
         self._top_level = set()       # this file's top-level decl names -> never an implicit-receiver member

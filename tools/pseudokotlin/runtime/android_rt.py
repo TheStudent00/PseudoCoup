@@ -65,6 +65,9 @@ class Cursor(_Stub):
     FIELD_TYPE_BLOB = 4
 
 
+R = _Stub()     # com.sara.workoutforlife.R -- Gradle-generated resources (R.string.x / R.drawable.y / …)
+
+
 class BuildConfig:
     # Gradle-generated at build time (no Kotlin source) -- a stand-in so version strings resolve.
     DEBUG = False
