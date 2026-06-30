@@ -20,6 +20,20 @@ _STMT_KINDS = {"assignment", "property_declaration", "for_statement",
                "while_statement", "do_while_statement", "return_expression",
                "throw_expression"}
 
+# Names that must never be qualified onto an apply/run/with receiver (they are globals, not receiver
+# members): Python builtins + every runtime-provided wrapper name (listOf, JSONObject, require, …).
+# Cached once -- registry.provided() walks the wrapper modules.
+_GLOBAL_NAMES = None
+
+
+def _global_names():
+    global _GLOBAL_NAMES
+    if _GLOBAL_NAMES is None:
+        import builtins
+        import registry
+        _GLOBAL_NAMES = set(dir(builtins)) | set(registry.provided())
+    return _GLOBAL_NAMES
+
 
 class KtToPy(Expressions, Statements, Declarations, Visitor):
     def __init__(self):
@@ -35,11 +49,25 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._ext_patches = []        # `Recv.fn = fn` lines, flushed at module end
         self._nested_aliases = []     # `Inner = Outer.Inner` lines, flushed at module end
         self._enum_types = set()      # enum class names -> their members/extensions see name/ordinal
+        self._implicit_recv = []      # stack of apply/run/with receiver temps -> bare member calls bind here
+        self._top_level = set()       # this file's top-level decl names -> never an implicit-receiver member
+        self._GLOBALS = _global_names()
 
     def transpile(self, source: bytes) -> str:
         tree = parse(source)
         self._scan_enums(tree.root_node)     # order-independent: an extension may precede its enum
+        self._scan_top_level(tree.root_node)
         return self.visit(tree.root_node)
+
+    def _scan_top_level(self, root):
+        # top-level fun/val/class/object names -> excluded from implicit-receiver qualification (a bare
+        # `helper()` inside an apply on another object is the top-level helper, not a receiver method).
+        for c in root.named_children:
+            if c.type in ("function_declaration", "property_declaration",
+                          "class_declaration", "object_declaration"):
+                nm = self._name_of(c, deep=(c.type == "property_declaration"))
+                if nm:
+                    self._top_level.add(nm)
 
     def _scan_enums(self, node):
         if node.type == "class_declaration" and any(
