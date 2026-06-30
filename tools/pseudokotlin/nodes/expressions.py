@@ -101,6 +101,11 @@ class Expressions:
                  "continue": "continue", "break": "break"}
         if t in const:
             return const[t]
+        return self._resolve_ident(t)
+
+    def _resolve_ident(self, t):
+        """A bare identifier -> its Python form: delegate `x.value`, companion `ClassName.x`, instance
+        `self.x`, or plain. Shared by v_identifier and bare `$name` string interpolation."""
         if t in self._delegated:                            # `val/var x by D` -> read/write via x.value
             return f"{self._safe(t)}.value"
         shadowed = any(t in s for s in self._scopes)
@@ -637,16 +642,33 @@ class Expressions:
         return f"{args_str}, {lam}" if args_str else lam
 
     def _string_to_fstring(self, node):
-        segs, interp = [], False
-        for c in node.children:
-            if c.type in ('"', '"""', "'"):
-                continue
-            if c.type == "interpolation":
+        kids = [c for c in node.children if c.type not in ('"', '"""', "'")]
+        segs, interp, i = [], False, 0
+        while i < len(kids):
+            c = kids[i]
+            if c.type == "interpolation":                        # `${expr}`
                 interp = True
                 inner = next((k for k in c.named_children), None)
                 segs.append("{" + (self.visit(inner) if inner else "") + "}")
+            elif (c.type == "string_content" and self.text(c) == "$"
+                  and i + 1 < len(kids) and kids[i + 1].type == "string_content"
+                  and re.match(r"[A-Za-z_]", self.text(kids[i + 1]))):
+                # Kotlin bare `$name` interpolation: this grammar splits it into a `$` token then the
+                # content whose LEADING identifier is the variable; the rest of that content is literal
+                # (`"$foo.bar"` is `${foo}` + ".bar"). Resolve the name the same way an identifier would.
+                nxt = self.text(kids[i + 1])
+                name = re.match(r"[A-Za-z_]\w*", nxt).group(0)
+                interp = True
+                resolved = "self" if name == "this" else self._resolve_ident(name)
+                segs.append("{" + resolved + "}")
+                rest = nxt[len(name):]
+                if rest:
+                    segs.append(rest.replace("{", "{{").replace("}", "}}"))
+                i += 2
+                continue
             else:
                 segs.append(self.text(c).replace("{", "{{").replace("}", "}}"))
+            i += 1
         body = "".join(segs)
         if not interp:
             esc = body.replace("\\", "\\\\")

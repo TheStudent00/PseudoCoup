@@ -18,21 +18,24 @@ As of 2026-06-29.
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[data]** BackupRepositoryRoundTripTest  ← next
-  - build the backup feature surface (column-introspective JSON dump/restore engine + a Cursor API), and fix the stale constructor arg in the Kotlin copy. Moves the data metric 2/4 → 3/4.
+1. **[transpiler]** Receiver-lambda scope functions  ← next
+  - `obj.apply { put(x) }` / `with(o){…}` / `run{…}` currently emit a bare `put(x)` with the receiver lost (NameError at runtime). The blocker for backup, and broadly useful (apply is everywhere). Needs care: identifier resolution change, wide blast radius — verify all gates.
+1. **[runtime]** Backup feature surface
+  - once apply works: json_rt (JSONArray, JSONObject.NULL, optJSONArray/optJSONObject, toString(indent), keys-chain), an Android Cursor (FIELD_TYPE_*, getType/use/columnNames/getColumnIndex/moveTo*/isNull/getLong/Int/Double/String) over sqlite3, Result + runCatching, a BuildConfig stub, and clearAllTables + .version + begin/set/endTransaction on the raw SupportSQLiteDatabase.
+1. **[data]** Stale test arg
+  - add `programSetDao = db.programSetDao()` to BackupRepositoryRoundTripTest; the copy's (and upstream's) instrumented test omits it but the real 9-param constructor requires it. Then re-run datalayer_oracle → data 2/4 → 3/4.
 1. **[data]** MigrationTest
-  - wire Room's MigrationTestHelper (schema-version test infrastructure). Moves data 3/4 → 4/4.
+  - wire Room's MigrationTestHelper (schema-version test infrastructure). data 3/4 → 4/4.
 1. **[numeric]** Unsigned wrappers (UInt/ULong) + `ushr`
   - the one numeric class still bare; closes the last fidelity gap in runtime/numbers.py.
-1. **[extern]** Default-import stdlib names (e.g. `runCatching`)
-  - a known gap class the extern checklist doesn't track (it lists explicit imports only); grow kotlin_rt as they surface.
 1. **[ui]** Bring one screen into the foundation
-  - validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. This is the plan's step 2.
+  - validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. The plan's step 2.
 1. **[multi-target]** `@<target>_extern` tag drives the per-language wrapper registry
-  - declare an external once, resolve it per target (PseudoCoup-side; the inference/explicit convergence noted in the architecture).
+  - declare an external once, resolve it per target (PseudoCoup-side).
 
 ## Milestones — what landed, when
 
+- `2026-06-29` Transpiler: bare `$name` string interpolation (47 foundation files had literal `$name` in SQL/log strings — now interpolated).
 - `2026-06-29` Measured dashboard (track.py): gates re-run on demand, trend charts + on-deck queue.
 - `2026-06-29` Numeric fidelity (2/2): declared-type coercion at param/constructor/val boundaries (literal-free chains carry width).
 - `2026-06-29` Numeric fidelity (1/2): fixed-width wrappers emitted at literals (Int32/Int64/Float32).

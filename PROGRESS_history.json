@@ -70,6 +70,10 @@
     {
       "date": "2026-06-29",
       "text": "Measured dashboard (track.py): gates re-run on demand, trend charts + on-deck queue."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Transpiler: bare `$name` string interpolation (47 foundation files had literal `$name` in SQL/log strings — now interpolated)."
     }
   ]
 }
