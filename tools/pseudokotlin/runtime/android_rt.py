@@ -31,6 +31,10 @@ class Log:
 
     e = i = w = v = wtf = d
 
+    @staticmethod
+    def getStackTraceString(*a):
+        return ""
+
 
 # ---- android.* framework -------------------------------------------------------------------------- #
 class Context(_Stub):
@@ -52,7 +56,22 @@ class Bundle(_Stub):
 
 
 class Cursor(_Stub):
-    pass
+    # android.database.Cursor field-type tags -- the real engine cursor (runtime/room.py) returns these
+    # from getType(i) so a generic dump can branch on the stored SQLite type.
+    FIELD_TYPE_NULL = 0
+    FIELD_TYPE_INTEGER = 1
+    FIELD_TYPE_FLOAT = 2
+    FIELD_TYPE_STRING = 3
+    FIELD_TYPE_BLOB = 4
+
+
+class BuildConfig:
+    # Gradle-generated at build time (no Kotlin source) -- a stand-in so version strings resolve.
+    DEBUG = False
+    APPLICATION_ID = "com.sara.workoutforlife"
+    BUILD_TYPE = "release"
+    VERSION_CODE = 1
+    VERSION_NAME = "1.0"
 
 
 class Intent(_Stub):

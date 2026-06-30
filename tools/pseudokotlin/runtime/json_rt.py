@@ -4,8 +4,34 @@ foundation uses these to serialise bug-report / diagnostics payloads, which Pyth
 """
 import json as _json
 
+import os as _os
+import sys as _sys
+_sys.path.insert(0, _os.path.dirname(_os.path.dirname(_os.path.abspath(__file__))))
+from runtime.kotlin_rt import KtList   # noqa: E402  -- keys() returns a KtList so .filter/.toList chain
+
+
+class _Null:
+    """org.json's JSONObject.NULL sentinel: a stand-in for JSON null that equals Python None (so a parsed
+    null and an explicit NULL both compare equal), serialises as null, and is falsy."""
+    def __eq__(self, other):
+        return other is None or isinstance(other, _Null)
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self):
+        return 0
+
+    def __bool__(self):
+        return False
+
+    def __repr__(self):
+        return "null"
+
 
 class JSONObject:
+    NULL = _Null()
+
     def __init__(self, source=None):
         if isinstance(source, str):
             self._d = _json.loads(source)
@@ -34,19 +60,29 @@ class JSONObject:
         return bool(self._d[key])
 
     def optString(self, key, default=""):
-        return str(self._d.get(key, default))
+        v = self._d.get(key, default)
+        return default if v is None else str(v)
 
     def optInt(self, key, default=0):
-        return int(self._d.get(key, default))
+        v = self._d.get(key, default)
+        return default if v is None else int(v)
+
+    def optJSONArray(self, key):
+        v = self._d.get(key)
+        return JSONArray(v) if isinstance(v, list) else None
+
+    def optJSONObject(self, key):
+        v = self._d.get(key)
+        return JSONObject(v) if isinstance(v, dict) else None
 
     def has(self, key):
         return key in self._d
 
     def keys(self):
-        return iter(self._d.keys())
+        return KtList(self._d.keys())          # KtList so `keys().filter { … }.toList()` chains
 
-    def toString(self, *a):
-        return _json.dumps(self._d)
+    def toString(self, indent=None):
+        return _json.dumps(self._d, indent=indent) if indent else _json.dumps(self._d)
 
     def __str__(self):
         return _json.dumps(self._d)
@@ -89,6 +125,8 @@ def _unwrap(v):
         return v._d
     if isinstance(v, JSONArray):
         return v._a
+    if isinstance(v, _Null):                   # JSONObject.NULL -> a real JSON null
+        return None
     return v
 
 

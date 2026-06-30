@@ -59,9 +59,10 @@ class Entity:
 class Database:
     """The sqlite3-backed database. register(EntityClass) each entity (it carries cls._room), then DAOs
     run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes)."""
-    def __init__(self):
+    def __init__(self, version=1):
         self._conn = sqlite3.connect(":memory:", isolation_level=None)   # autocommit; BEGIN/ROLLBACK explicit
         self._conn.row_factory = sqlite3.Row
+        self._conn.execute(f"PRAGMA user_version = {int(version)}")      # @Database(version=N) -> db.version
         self._entities = {}                 # table name -> Entity
 
     def withTransaction(self, block):
@@ -86,6 +87,11 @@ class Database:
 
     def close(self):
         self._conn.close()
+
+    def clearAllTables(self):
+        """Room's RoomDatabase.clearAllTables() -- wipe every registered table (the reinstall/reset path)."""
+        for table in self._entities:
+            self._conn.execute(f"DELETE FROM {table}")
 
     def query(self, sql, params=None, single=False):
         """Run a @Query. If its FROM table is a known entity, map rows -> entity objects (one/None when
@@ -168,17 +174,126 @@ class Dao:
             self._db.delete(e)
 
 
+class _Cursor:
+    """android.database.Cursor over a fetched result set: a row pointer + typed column access + .use { }.
+    getType(i) returns android.database.Cursor.FIELD_TYPE_* (NULL 0 / INTEGER 1 / FLOAT 2 / STRING 3)."""
+    def __init__(self, rows, columns):
+        self._rows, self._cols, self._i = rows, columns, -1
+
+    @property
+    def columnNames(self):
+        return KtList(self._cols)
+
+    def getColumnCount(self):
+        return len(self._cols)
+
+    def getColumnName(self, i):
+        return self._cols[i]
+
+    def getColumnIndex(self, name):
+        return self._cols.index(name) if name in self._cols else -1
+
+    def getCount(self):
+        return len(self._rows)
+
+    def moveToFirst(self):
+        self._i = 0
+        return bool(self._rows)
+
+    def moveToNext(self):
+        self._i += 1
+        return self._i < len(self._rows)
+
+    def _cell(self, i):
+        return self._rows[self._i][i]
+
+    def isNull(self, i):
+        return self._cell(i) is None
+
+    def getType(self, i):
+        v = self._cell(i)
+        if v is None:
+            return 0
+        if isinstance(v, (bool, int)):
+            return 1
+        if isinstance(v, float):
+            return 2
+        if isinstance(v, (bytes, bytearray)):
+            return 4
+        return 3
+
+    def getString(self, i):
+        v = self._cell(i)
+        return None if v is None else str(v)
+
+    def getInt(self, i):
+        v = self._cell(i)
+        return 0 if v is None else int(v)
+
+    def getLong(self, i):
+        v = self._cell(i)
+        return 0 if v is None else int(v)
+
+    def getDouble(self, i):
+        v = self._cell(i)
+        return 0.0 if v is None else float(v)
+
+    def use(self, block):                       # Kotlin Closeable.use { } -- run then close
+        try:
+            return block(self)
+        finally:
+            self.close()
+
+    def close(self):
+        pass
+
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        self.close()
+        return False
+
+
 class _SupportSQLiteDatabase:
-    """androidx.sqlite SupportSQLiteDatabase -- the raw SQL surface under db.openHelper."""
+    """androidx.sqlite SupportSQLiteDatabase -- the raw-SQL surface under db.openHelper: execSQL (with bind
+    args), query -> a Cursor, the schema .version, and the begin/setSuccessful/end transaction protocol."""
     def __init__(self, conn):
         self._conn = conn
+        self._depth = 0          # nested-transaction ref count; commit only when the outermost closes
+        self._began = 0          #   and every frame called setTransactionSuccessful (marks == begins)
+        self._marks = 0
 
     def execSQL(self, sql, *bind_args):
+        # No commit here: autocommit (isolation_level=None) commits a bare statement itself, and one inside
+        # beginTransaction()/endTransaction() must NOT commit early.
         self._conn.execute(sql, bind_args[0] if bind_args else [])
-        self._conn.commit()
 
     def query(self, sql, *a):
-        return self._conn.execute(sql).fetchall()
+        cur = self._conn.execute(sql, a[0] if a else [])
+        cols = [d[0] for d in cur.description] if cur.description else []
+        return _Cursor(cur.fetchall(), cols)
+
+    @property
+    def version(self):
+        return self._conn.execute("PRAGMA user_version").fetchone()[0]
+
+    def beginTransaction(self):
+        if self._depth == 0:
+            self._conn.execute("BEGIN")
+            self._began = self._marks = 0
+        self._depth += 1
+        self._began += 1
+
+    def setTransactionSuccessful(self):
+        self._marks += 1
+
+    def endTransaction(self):
+        if self._depth == 0:
+            return
+        self._depth -= 1
+        if self._depth == 0:
+            self._conn.execute("COMMIT" if self._marks == self._began else "ROLLBACK")
 
 
 class _OpenHelper:
