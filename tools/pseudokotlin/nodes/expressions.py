@@ -117,7 +117,52 @@ class Expressions:
 
     @kind("this_expression")
     def v_this(self, node):
+        # bare `this` inside apply/run/with is the scope receiver; `this@Class` (labeled) is the enclosing
+        # object; a plain `this` elsewhere is self.
+        if "@" not in self.text(node) and self._implicit_recv:
+            return self._implicit_recv[-1]
         return "self"
+
+    def _implicit_member(self, name):
+        """The active apply/run/with receiver temp if a bare `name` (in call or assignment position) should
+        bind to it -- i.e. it resolves nowhere else. Receiver methods/props are lowerCamel, so an uppercase
+        name (a constructor / object / CONSTANT) is never treated as a receiver member."""
+        if not self._implicit_recv or not name[:1].islower():
+            return None
+        if any(name in s for s in self._scopes):                    # a local / lambda param
+            return None
+        if name in self._members or name in self._static_members:   # the ENCLOSING object's member
+            return None
+        if name in self._top_level or name in self._GLOBALS:        # a top-level / runtime global
+            return None
+        return self._implicit_recv[-1]
+
+    def _receiver_scope(self, recv_str, lam, returns_recv):
+        """x.apply { } / x.run { } / with(x) { }: bind x to a temp, run the body with that temp pushed as the
+        implicit receiver (so the body's bare member calls/assignments bind to it), then yield x (apply) or
+        the body's last value (run/with). Hoisted, so it works in expression position; an inline body means a
+        `return` inside stays a real non-local return."""
+        self._lam += 1
+        r = f"_recv{self._lam}"
+        body = [c for c in self.named(lam) if c.type != "lambda_parameters"]
+        self._implicit_recv.append(r)
+        try:
+            if returns_recv or not body:
+                lines = self.render_statements(body)
+                value = r
+            else:
+                *head, last = body
+                lines = self.render_statements(head)
+                before = len(self._hoist)
+                last_line = self._distribute(last, f"{r}_v = ")
+                lines += self._hoist[before:]
+                del self._hoist[before:]
+                lines.append(last_line)
+                value = f"{r}_v"
+        finally:
+            self._implicit_recv.pop()
+        self._hoist.append("\n".join([f"{r} = {recv_str}"] + lines))
+        return value
 
     @kind("super_expression")
     def v_super(self, node):
@@ -294,10 +339,19 @@ class Expressions:
         # `f(args) { lambda }` parses as (f(args))(lambda) -- the trailing lambda is an
         # EXTRA argument to the inner call, not a second call. Merge it in.
         if trailing is not None and callee.type == "call_expression" and own_args is None:
+            inner = self.named(callee)[0]
             in_args_node = next((c for c in callee.children
                                  if c.type == "value_arguments"), None)
+            # with(x) { … } parses as (with(x))(lambda) -> a receiver scope on x: the body's bare member
+            # calls/assignments bind to x.
+            if (inner.type in ("identifier", "simple_identifier") and self.text(inner) == "with"
+                    and in_args_node is not None and not any("with" in s for s in self._scopes)):
+                va = next((c for c in in_args_node.named_children if c.type == "value_argument"), None)
+                if va is not None and va.named_children:
+                    return self._receiver_scope(self.visit(va.named_children[-1]),
+                                                self._lambda_node(trailing), returns_recv=False)
             in_args = self._render_args(in_args_node)
-            in_fn = self.visit(self.named(callee)[0])
+            in_fn = self.visit(inner)
             lam = self._lambda_str(trailing)
             return f"{in_fn}({self._join_trailing(in_args, lam, in_args_node)})"
         if callee.type == "navigation_expression":
@@ -314,6 +368,9 @@ class Expressions:
                 return f"(not {x})" if pre == "!" else (f"{pre}{x}" if pre else x)
 
             recv = self._strip_prefix(self.visit(nk[0]), pre)
+            if sel in ("apply", "run") and trailing is not None and not safe:   # receiver scope (this=recv)
+                return _wrap(self._receiver_scope(recv, self._lambda_node(trailing),
+                                                  returns_recv=(sel == "apply")))
             if sel in ("ifEmpty", "ifBlank") and trailing is not None:
                 g = self._empty_guard(recv, sel, self._lambda_node(trailing))
                 if g is not None:                            # `s.ifEmpty { continue }` -> guard
@@ -337,6 +394,10 @@ class Expressions:
             call = f"{recv}.{self._safe(sel)}({args})"
             return _wrap(f"({call} if {recv} is not None else None)" if safe else call)
         fn = self.visit(callee)
+        if callee.type in ("identifier", "simple_identifier"):   # bare call inside apply/run/with that is
+            r = self._implicit_member(self.text(callee))         # a receiver method -> recv.method(...)
+            if r is not None:
+                fn = f"{r}.{self._safe(self.text(callee))}"
         args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`
             lam = self._lambda_str(trailing)

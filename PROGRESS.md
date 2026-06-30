@@ -18,10 +18,8 @@ As of 2026-06-29.
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[transpiler]** Receiver-lambda scope functions  ← next
-  - `obj.apply { put(x) }` / `with(o){…}` / `run{…}` currently emit a bare `put(x)` with the receiver lost (NameError at runtime). The blocker for backup, and broadly useful (apply is everywhere). Needs care: identifier resolution change, wide blast radius — verify all gates.
-1. **[runtime]** Backup feature surface
-  - once apply works: json_rt (JSONArray, JSONObject.NULL, optJSONArray/optJSONObject, toString(indent), keys-chain), an Android Cursor (FIELD_TYPE_*, getType/use/columnNames/getColumnIndex/moveTo*/isNull/getLong/Int/Double/String) over sqlite3, Result + runCatching, a BuildConfig stub, and clearAllTables + .version + begin/set/endTransaction on the raw SupportSQLiteDatabase.
+1. **[runtime]** Backup feature surface  ← next
+  - json_rt (JSONArray, JSONObject.NULL, optJSONArray/optJSONObject, toString(indent), keys-chain), an Android Cursor (FIELD_TYPE_*, getType/use/columnNames/getColumnIndex/moveTo*/isNull/getLong/Int/Double/String) over sqlite3, Result + runCatching, a BuildConfig stub, and clearAllTables + .version + begin/set/endTransaction on the raw SupportSQLiteDatabase. apply now emits correctly, so this is the last code-level blocker.
 1. **[data]** Stale test arg
   - add `programSetDao = db.programSetDao()` to BackupRepositoryRoundTripTest; the copy's (and upstream's) instrumented test omits it but the real 9-param constructor requires it. Then re-run datalayer_oracle → data 2/4 → 3/4.
 1. **[data]** MigrationTest
@@ -32,9 +30,12 @@ As of 2026-06-29.
   - validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. The plan's step 2.
 1. **[multi-target]** `@<target>_extern` tag drives the per-language wrapper registry
   - declare an external once, resolve it per target (PseudoCoup-side).
+1. Receiver-lambda scope functions (`apply`/`with`/`run`): a body's bare member calls/assignments now bind to the receiver (`obj.apply { put(x) }` → `_r.put(x)`), with enclosing members / consts / top-level fns left alone. 5 foundation files corrected; the `apply` blocker for backup is gone.
+1. bare `$name` string interpolation (was leaking literal `$name` into SQL/log strings — 47 foundation files corrected).
 
 ## Milestones — what landed, when
 
+- `2026-06-29` Transpiler: receiver-lambda scope functions (apply/with/run) — a body's bare member calls/assignments bind to the receiver; the apply blocker for the backup test is gone.
 - `2026-06-29` Transpiler: bare `$name` string interpolation (47 foundation files had literal `$name` in SQL/log strings — now interpolated).
 - `2026-06-29` Measured dashboard (track.py): gates re-run on demand, trend charts + on-deck queue.
 - `2026-06-29` Numeric fidelity (2/2): declared-type coercion at param/constructor/val boundaries (literal-free chains carry width).
