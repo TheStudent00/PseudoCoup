@@ -96,6 +96,10 @@
         {
           "date": "2026-06-30",
           "pct": 93
+        },
+        {
+          "date": "2026-06-30",
+          "pct": 94
         }
       ]
     },
@@ -207,7 +211,7 @@
     {
       "key": "ui",
       "label": "UI (PseudoUI screens)",
-      "note": "transpiled Kotlin screens now RENDER a structural UI tree (headless Compose, runtime/compose.py) \u2014 real text + enum-driven widgets. Left: styling (Modifier/colors), reactive state (collectAsState\u2192re-render), and a pixel kit (Flutter/Kivy).",
+      "note": "transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 20/29 render. Left: reactive state (remember/collectAsState -> real .value, today None drives the 6 strip/toIntOrNull misses), 2 platform-stub attrs (ActivityResultContracts), and a pixel kit (Flutter/Kivy).",
       "series": [
         {
           "date": "2026-06-20",
@@ -236,6 +240,10 @@
         {
           "date": "2026-06-30",
           "pct": 62
+        },
+        {
+          "date": "2026-06-30",
+          "pct": 66
         }
       ]
     }
@@ -312,6 +320,10 @@
     {
       "date": "2026-06-30",
       "text": "AST-kind-aware wrapping: surface.py classifies all 345 externals by kind (obj/func/class/value) from how the AST uses them \u2014 the type-specific wrapper map + kit spec. autostub shapes Kotlin objects as singletons; the base stub is now arithmetic/comparison-robust. Gates green."
+    },
+    {
+      "date": "2026-06-30",
+      "text": "Transpiler: buildString/buildList builder scope (the builder is the lambda receiver -> bare append/add bind to a fresh StringBuilder/KtList; real StringBuilder in kotlin_rt) + when-as-value always binds (vacuous else, fixing the free-variable closure crashes). Render 17/29 -> 20/29; all gates green."
     }
   ]
 }
