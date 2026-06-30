@@ -78,19 +78,26 @@ class Statements:
         if subj_node is not None:
             inner = self.named(subj_node)
             subj = self.visit(inner[-1]) if inner else None
-        out, first = [], True
+        out, first, has_else = [], True, False
         for e in [c for c in node.named_children if c.type == "when_entry"]:
             named = self.named(e)
             body = named[-1]
             is_else = any(c.type == "else" for c in e.children) or len(named) == 1
             if is_else:
                 out += ["else:", self._branch(body, lead)]
+                has_else = True
             else:
                 conds = named[:-1]
                 cs = [self._when_cond(c, subj) for c in conds]
                 out += [f"{'if' if first else 'elif'} {' or '.join(cs)}:",
                         self._branch(body, lead)]
                 first = False
+        # a `when` USED AS A VALUE (lead = `x = ` / `return `) is exhaustive in Kotlin (the compiler checks
+        # it), so it always binds. Lowered to if/elif it would NOT bind if no arm matches at runtime -> a
+        # later closure over `x` then hits `cannot access free variable`. Emit a vacuous else so it always
+        # binds (the arm is dead in correct code, exactly as the omitted Kotlin `else` is).
+        if lead and not has_else:
+            out += ["else:", _block([f"{lead}None"])]
         return "\n".join(out)
 
     def _when_cond(self, c, subj):
