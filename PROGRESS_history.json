@@ -16,7 +16,7 @@
         160
       ],
       "data": [
-        3,
+        4,
         4
       ],
       "extern": 0,
@@ -96,7 +96,7 @@
     {
       "key": "data",
       "label": "Data layer (Room / sqlite3)",
-      "note": "runs end-to-end \u2014 @Entity/@Dao/@Database, CRUD + transactions + the backup round-trip (Cursor/JSON over sqlite3); 3/4 instrumented green. Left: migration.",
+      "note": "runs end-to-end \u2014 @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it.",
       "series": [
         {
           "date": "2026-06-20",
@@ -120,7 +120,7 @@
         },
         {
           "date": "2026-06-29",
-          "pct": 80
+          "pct": 90
         }
       ]
     },
@@ -239,6 +239,10 @@
     {
       "date": "2026-06-29",
       "text": "Data 2/4 \u2192 3/4: BackupRepositoryRoundTripTest runs green (export \u2192 clearAllTables \u2192 import over a sqlite3 Cursor + org.json). Surfaced + fixed 3 transpiler bugs: braceless-loop bodies were dropped (74 files), nested-lambda hoist scope, companion-member access."
+    },
+    {
+      "date": "2026-06-29",
+      "text": "Data 3/4 \u2192 4/4 (instrumented suite COMPLETE): MigrationTest green \u2014 a MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 \u2192 v40), and validates the result."
     }
   ]
 }
