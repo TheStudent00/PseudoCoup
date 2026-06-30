@@ -3,18 +3,19 @@
 Measured by re-running the gates (`tools/pseudokotlin/track.py`) — never hand-typed. A 🔴 gate or a falling
 sparkline is a real regression, not a stale doc. (Browser version with trend charts: `PROGRESS.html`.)
 
-As of 2026-06-29.
+As of 2026-06-30.
 
 ## Gates + momentum (measured)
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **278/278** | `▄` | 🟢 |
-| Load — non-UI domain imports clean | **165/165** | `▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/160** | `▄` | 🟢 |
-| Data — instrumented DB tests green | **4/4** | `▄` | 🟢 |
-| External gaps — used but unwrapped | **0** ↓better | `▄` | 🟢 |
-| Grammar kinds unrouted — the worklist | **0** ↓better | `▄` |  |
+| Parse — all .kt transpile + compile | **278/278** | `▄▄` | 🟢 |
+| Load — non-UI domain imports clean | **167/167** | `▁█` | 🟢 |
+| UI — files load (inert via autostub) | **87/87** | `▄` | 🟢 |
+| Logic — engine methods match Kotlin | **160/160** | `▄▄` | 🟢 |
+| Data — instrumented DB tests green | **4/4** | `▄▄` | 🟢 |
+| External gaps — used but unwrapped | **0** ↓better | `▄▄` | 🟢 |
+| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -22,29 +23,29 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 | objective | est. | trend (Jun 20→29) | what's left |
 |---|---|---|---|
-| Transpiler (Kt→Py engine) | **92%** | `▁▃▅▅▆█` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
-| Externs (runtime wrappers) | **74%** | `▁▂▃▄▅█` | non-UI externals 100% wrapped (0 real gaps) via resolve + registry. Left: the UI external surface (compose / hilt / nav). |
-| Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂█` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
-| WFL domain functionality | **72%** | `▁▃▅▅▆█` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
-| UI (PseudoUI screens) | **18%** | `▁▃▄▆▇█` | generator tooling + structural work exist but are set-aside / unvalidated into the foundation. The plan's step 2–3. |
+| Transpiler (Kt→Py engine) | **93%** | `▁▃▅▅▆██` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
+| Externs (runtime wrappers) | **88%** | `▁▂▃▃▄▇█` | every external name now BINDS via autostub — non-UI real wrappers, UI inert stubs. Left: make the UI stubs real (point Button/Text/… at the kit). |
+| Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
+| WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
+| UI (PseudoUI screens) | **40%** | `▁▂▂▃▃▄█` | all 87 ui/ files now LOAD inert via autostub (was 0). Left: wire the stubs to the kit so they render — the Compose reactive bridge. |
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[domain]** Broaden runnable coverage  ← next
-  - point the oracle at more of the foundation (more repositories / use-cases / unit tests). Running real code is what surfaced the braceless-loop, nested-lambda, and companion-member bugs; more of it will find more. High yield, low risk.
-1. **[ui]** Bring one screen into the foundation
-  - the plan's step 2: validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. Confirm the approach first (user's architecture call).
-1. **[extern]** Default-import stdlib names
-  - grow kotlin_rt as they surface (several landed with backup/migration: runCatching, synchronized, trimIndent, trimMargin). Low priority, demand-driven.
+1. **[ui]** Make one screen RENDER  ← next
+  - wire the autostub stubs to the PseudoUI kit (Compose `Column`/`Text`/`Button` → kit primitives) + the reactive bridge (`collectAsState`/`remember` → kit re-render). Bring up a single screen on the kit, validate against the ledger, then scale. This is rungs 3–4 for the UI.
+1. **[transpiler]** AST-kind-aware stub generation (your refinement)
+  - tag each external name from the AST as {module / class / function / attribute} and shape the stub to match (instead of one permissive Stub for all). Better structural fidelity + cleaner refine-to-real. The permissive floor stays as the fallback.
+1. **[domain]** Broaden runnable coverage
+  - point the oracle at more repositories / use-cases / unit tests. Running real code is what surfaced every recent bug (braceless loops, nested-lambda, forward-ref defaults). High yield, low risk.
 1. **[multi-target]** `@<target>_extern` tag drives the per-language wrapper registry
   - declare an external once, resolve it per target (PseudoCoup-side).
-1. **[numeric]** Unsigned wrappers (UInt/ULong) + `ushr`
-  - DEFERRED: unused anywhere in the foundation today (0 references). Do it only if a UI/new file needs it.
-1. Data layer COMPLETE (4/4 instrumented): MigrationTest green — MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 → v40), validates the result. Plus the backup round-trip (3/4) before it.
-1. 4 general transpiler bugs surfaced by running that real code: braceless-loop bodies dropped (74 files), nested-lambda hoist scope, companion-member access, bare `$name` interpolation. Plus receiver-lambda scope functions (apply/with/run).
+1. Auto-stub floor (your design): one front door (`runtime/autostub.py`) binds EVERY external name — real wrapper → Python builtin → inert Stub. ALL 254 files load (87/87 UI, was 0), zero NameErrors. Real wrappers + stubs are one system; the stub inventory is the visible "inert" list; non-UI platform/DI glue blessed as real no-ops so extern stays honestly 0.
+1. Stragglers en route: LocalDate.EPOCH, R resources, fully-qualified extension receivers (`_strip_pkg`), top-level const hoist + nested-class-default late-binding (forward-ref defaults), abs→builtin.
+1. Before that: the full instrumented data-layer suite (4/4: backup + migration) and the receiver-lambda / `$name` transpiler fixes.
 
 ## Milestones — what landed, when
 
+- `2026-06-30` Auto-stub floor: one front door binds EVERY external name (real wrapper → builtin → inert stub) → ALL 254 foundation files load, 87/87 UI (was 0), zero NameErrors. UI is no longer a transpiler problem — only kit-wiring remains.
 - `2026-06-29` Data 3/4 → 4/4 (instrumented suite COMPLETE): MigrationTest green — a MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 → v40), and validates the result.
 - `2026-06-29` Data 2/4 → 3/4: BackupRepositoryRoundTripTest runs green (export → clearAllTables → import over a sqlite3 Cursor + org.json). Surfaced + fixed 3 transpiler bugs: braceless-loop bodies were dropped (74 files), nested-lambda hoist scope, companion-member access.
 - `2026-06-29` Transpiler: receiver-lambda scope functions (apply/with/run) — a body's bare member calls/assignments bind to the receiver; the apply blocker for the backup test is gone.

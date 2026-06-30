@@ -3,16 +3,16 @@
 Edit this list freely; `track.py render` folds it into PROGRESS.html / .md. Format: `- [area] task — why/where`.
 Top of the list is what's next.
 
-The instrumented data-layer suite is COMPLETE (4/4). The "complete the transpiler / foundation solid" goal
-is largely met: all five gates green, grammar fully routed, data layer runs end-to-end. The next phase is
-the UI (the plan's step 2) — an architecture call worth confirming before diving in.
+The whole foundation now LOADS — all 254 files (87/87 UI, 167/167 non-UI), every gate green. UI was never a
+transpiler problem; it just needed the wrapper floor. The remaining UI work is making the inert stubs DO
+something (render), which is kit-wiring, not transpiler work.
 
-- [domain] Broaden runnable coverage — point the oracle at more of the foundation (more repositories / use-cases / unit tests). Running real code is what surfaced the braceless-loop, nested-lambda, and companion-member bugs; more of it will find more. High yield, low risk.
-- [ui] Bring one screen into the foundation — the plan's step 2: validate it keeps structure/connectivity against the ledger; paint-by-numbers a fresh one if the salvaged part is mangled. Confirm the approach first (user's architecture call).
-- [extern] Default-import stdlib names — grow kotlin_rt as they surface (several landed with backup/migration: runCatching, synchronized, trimIndent, trimMargin). Low priority, demand-driven.
+- [ui] Make one screen RENDER — wire the autostub stubs to the PseudoUI kit (Compose `Column`/`Text`/`Button` → kit primitives) + the reactive bridge (`collectAsState`/`remember` → kit re-render). Bring up a single screen on the kit, validate against the ledger, then scale. This is rungs 3–4 for the UI.
+- [transpiler] AST-kind-aware stub generation (your refinement) — tag each external name from the AST as {module / class / function / attribute} and shape the stub to match (instead of one permissive Stub for all). Better structural fidelity + cleaner refine-to-real. The permissive floor stays as the fallback.
+- [domain] Broaden runnable coverage — point the oracle at more repositories / use-cases / unit tests. Running real code is what surfaced every recent bug (braceless loops, nested-lambda, forward-ref defaults). High yield, low risk.
 - [multi-target] `@<target>_extern` tag drives the per-language wrapper registry — declare an external once, resolve it per target (PseudoCoup-side).
-- [numeric] Unsigned wrappers (UInt/ULong) + `ushr` — DEFERRED: unused anywhere in the foundation today (0 references). Do it only if a UI/new file needs it.
 
 Recently shipped:
-- Data layer COMPLETE (4/4 instrumented): MigrationTest green — MigrationTestHelper over sqlite3 recreates each old schema from Room's exported JSON, replays all 39 migrations (v1/v17/v24/v30 → v40), validates the result. Plus the backup round-trip (3/4) before it.
-- 4 general transpiler bugs surfaced by running that real code: braceless-loop bodies dropped (74 files), nested-lambda hoist scope, companion-member access, bare `$name` interpolation. Plus receiver-lambda scope functions (apply/with/run).
+- Auto-stub floor (your design): one front door (`runtime/autostub.py`) binds EVERY external name — real wrapper → Python builtin → inert Stub. ALL 254 files load (87/87 UI, was 0), zero NameErrors. Real wrappers + stubs are one system; the stub inventory is the visible "inert" list; non-UI platform/DI glue blessed as real no-ops so extern stays honestly 0.
+- Stragglers en route: LocalDate.EPOCH, R resources, fully-qualified extension receivers (`_strip_pkg`), top-level const hoist + nested-class-default late-binding (forward-ref defaults), abs→builtin.
+- Before that: the full instrumented data-layer suite (4/4: backup + migration) and the receiver-lambda / `$name` transpiler fixes.
