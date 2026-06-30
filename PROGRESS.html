@@ -19,8 +19,10 @@
     margin:0;white-space:pre;overflow-x:auto}
   ol{margin:6px 0 0;padding-left:22px} ol li{margin:8px 0}
   ul{margin:6px 0 0;padding-left:20px} ul li{margin:5px 0}
+  ul ul{margin:3px 0 7px}
+  .lead{margin:0 0 10px} .lead.tight{margin:0 0 4px}
+  .k{color:#cfe0ff;font-weight:600}
   .num{font-size:13px;color:#cdd7f5}
-  b.big{font-size:17px;color:#fff}
   .gloss dt{font-weight:600;color:#cfe0ff;margin-top:12px}
   .gloss dd{margin:2px 0 0 16px;color:#c3ccdf}
   .gloss .ex{color:#9aa6c4;font-size:13px;margin-top:2px}
@@ -31,7 +33,8 @@
 
 <h1>WFL → Python — project dashboard</h1>
 <p class="sub">What the project is, the one goal now, and where it stands. Reload to refresh.</p>
-<p class="sub mut">Updated 2026-06-29, after building the resolve phase + wrapper registry and emitting real imports.</p>
+<p class="sub mut">Updated 2026-06-29 — numeric-fidelity wrappers now emit at literals <i>and</i> declared-type
+boundaries; all five gates green. Narrative detail lives in <code>DevComms/</code> logs.</p>
 
 <h2>What the project is</h2>
 <div class="panel">
@@ -44,17 +47,19 @@ WFL_MixingCenter/WFL/  (the Kotlin copy)    edits kept honest by WFL's own tests
   │   KtToPy  — the advanced transpiler  (lives in PseudoCoup/tools/pseudokotlin)
   ▼
 WFL_MixingCenter/*.py  (THE FOUNDATION)     the 1:1 Python the transpiler produces</pre>
-<p class="num" style="margin:14px 0 0">The <b>foundation</b> is the 1:1 Python KtToPy produces from the
-Kotlin copy. It is the thing everything else is built on. It is meant to carry the framework the
-transpiler system provides — the 1:1s, wrappers, ledger, tags, structure, connectivity. Nothing in it
-exists without a Kotlin source.</p>
+<ul class="num" style="margin-top:14px">
+  <li><span class="k">foundation</span> = the 1:1 Python KtToPy produces from the Kotlin copy
+    (<code>WFL_MixingCenter/*.py</code>). Everything else is built on it.</li>
+  <li>It carries the transpiler's framework: the 1:1s, wrappers, ledger, tags, structure, connectivity.</li>
+  <li>Nothing in it exists without a Kotlin source.</li>
+</ul>
 </div>
 
 <h2>How the transpiler is built (the architecture)</h2>
 <div class="panel">
-<p class="num" style="margin:0 0 8px">A transpiler is a compiler whose output is source code. The spine
-is a pipeline where each stage hands the next a <i>richer</i> version of the program, under one rule:
-<b>resolve before you translate</b> — never emit a name until you know what it refers to.</p>
+<p class="num lead">A transpiler is a compiler whose output is source code. The spine is a pipeline; each
+stage hands the next a <i>richer</i> version of the program, under one rule: <span class="k">resolve before
+you translate</span> — never emit a name until you know what it refers to.</p>
 <pre>Kotlin source
    │  1. parse                       tree-sitter — done
    ▼
@@ -68,57 +73,80 @@ Python model          java.text.SimpleDateFormat  →  runtime/java_text.py : Si
    │  4. generate     emit imports + code
    ▼
 Python source   +   runtime library (wrappers organized by origin)</pre>
-<p class="num" style="margin-top:10px"><b>resolve</b> is the phase that was missing.
-<code>import java.text.SimpleDateFormat</code> binds the bare name <code>SimpleDateFormat</code>, in that
-file, to the external symbol <code>java.text.SimpleDateFormat</code>; Kotlin's default imports are the
-same, implicit. After it, every name is classified and the full external set is a printable fact.
-<b>registry</b> maps a fully-qualified name to the Python wrapper that stands in for it — a missing one is
-a build-time gap you list, not a <code>NameError</code> at runtime. <b>map/wrap/fail</b> becomes precise:
-map an app construct, wrap a resolved external to its registry wrapper, fail loudly on one with no wrapper.</p>
-<p class="num mut" style="margin-top:8px">This replaces runtime whack-a-mole with a checklist — the 367
-external names the imports already declare, each routed by origin. The construct handlers and the oracle
-keep working; they bolt onto <code>map</code>. What was missing sits between <code>parse</code> and
-<code>map</code>, and building it is the work.</p>
+<ul class="num" style="margin-top:10px">
+  <li><span class="k">resolve</span> — the phase that was missing. An import binds a bare name, in that
+    file, to its external symbol (<code>import java.text.SimpleDateFormat</code> → the name
+    <code>SimpleDateFormat</code> means <code>java.text.SimpleDateFormat</code>). After it, every name is
+    classified and the full external set is a printable fact, not a runtime surprise.</li>
+  <li><span class="k">registry</span> — maps a fully-qualified name → the Python wrapper standing in for it.
+    A missing wrapper is a build-time gap you list, never a <code>NameError</code> at runtime.</li>
+  <li><span class="k">map / wrap / fail</span> — map an app construct · wrap a resolved external to its
+    registry wrapper · fail loudly on a resolved external with no wrapper.</li>
+  <li><span class="mut">Net:</span> runtime whack-a-mole becomes a checklist — the 367 external names the
+    imports declare, each routed by origin. The construct handlers and the oracle bolt onto <code>map</code>.</li>
+</ul>
 </div>
 
 <h2>The one goal now — complete the transpiler</h2>
 <div class="panel goal">
-<p class="num" style="margin:0 0 10px">We work on this and nothing else until the foundation is solid.
-The transpiler now runs the full pipeline — parse → resolve → map → generate(+imports) — checked by four gates:</p>
+<p class="num lead">Work this and nothing else until the foundation is solid. The transpiler runs the full
+pipeline — parse → resolve → map → generate(+imports) — checked by five gates:</p>
 <pre>gate     what it proves                                       command                result
 parse    every file becomes Python, no syntax errors          build_mixingcenter.py  <b>254 / 254</b>
 load     the non-UI domain loads under the runtime            loadcheck.py           <b>165 / 165</b>
 extern   every external name the foundation USES is wrapped   externals.py           <b>0 real gaps</b>
 logic    tested ENGINES match Kotlin's answers                oracle.py              <b>11 / 11</b>  (160 methods)
 data     the DATA LAYER runs the project's DAO/txn tests      datalayer_oracle.py    <b>2 / 2</b></pre>
-<p class="num" style="margin-top:10px"><b>load ≠ run — the finding that drove this pass.</b>
-<code>load</code> only proves the modules <i>load</i>; it misses names used inside method bodies. The new
-<code>resolve</code> phase reads every file's imports — they name exactly where each external symbol comes
-from — and <code>externals.py</code> cross-checks them against the registry: a deterministic checklist that
-replaces the run-and-watch-it-fail hunt. It found <b>65 real external names</b> <code>load</code> never
-surfaced (coroutines <code>Flow</code>/<code>StateFlow</code>/<code>combine</code>, java
-<code>Instant</code>/<code>UUID</code>/<code>File</code>, android <code>Context</code>/<code>Log</code>).
-All now covered — real wrappers where Python has an equivalent (a synchronous <code>coroutines</code>
-Flow/StateFlow, <code>java_rt</code>, <code>json_rt</code>), honest stubs where it doesn't
-(<code>android_rt</code>). 0 real non-UI gaps. And <code>generate</code> now emits the imports: <b>106
-foundation files carry <code>from runtime.&lt;wrapper&gt; import &lt;name&gt;</code></b>.</p>
-<p class="num mut" style="margin-top:8px"><b>Two deeper truths the checklist exposed.</b>
-<b>The data layer — now RUNS:</b> the reactive flows are fed by Room DAOs whose query bodies Room
-<i>generates at compile time</i> — not in the source. That looked like a wall, but Room's <code>@Query</code>
-strings are real SQLite SQL and Python ships <code>sqlite3</code>, so it's faithfully implementable. Built
-<code>runtime/room.py</code> (sqlite3-backed, with the entity↔row converters) and the transpiler now turns an
-<code>@Entity</code> into a table schema and an <code>@Dao</code>'s <code>@Query</code> into a body that runs
-the SQL (<code>@Query</code>/<code>@Insert</code>/<code>@Update</code>/<code>@Delete</code>), and an
-<code>@Database</code> into a <code>WorkoutDatabase</code> that registers every entity and wires the DAO
-accessors — verified by the project's OWN instrumented tests, run as written headless
-(<code>datalayer_oracle.py</code>): <b>ExerciseDaoMuscleGroupTest</b> (queries, converters, the raw-SQL
-boundary guard) and <b>GymRepositoryTransactionTest</b> (<code>withTransaction</code> rollback) both pass.
-The two remaining instrumented tests are blocked by higher-level surfaces, not the data layer:
-<code>BackupRepositoryRoundTripTest</code> is the backup <i>feature</i> (a JSON dump/restore engine + Cursor
-API, plus a stale constructor arg in the copy); <code>MigrationTest</code> needs Room's
-<code>MigrationTestHelper</code>.
-<b>Platform glue</b> (Activities, notifications, Firebase, WorkManager) is off-device by nature — stubbed to
-resolve names, not to run; when a piece must run, lift that logic into the domain layer.</p>
+
+<p class="num lead tight" style="margin-top:16px"><span class="k">load ≠ run</span> — the finding that drove
+the resolve pass:</p>
+<ul class="num">
+  <li><code>load</code> (165/165) proves the modules <i>load</i> — it misses names used inside method bodies.</li>
+  <li><code>resolve</code> + <code>externals.py</code> cross-check imports against the registry: a
+    deterministic checklist. It found <b>65 names</b> <code>load</code> never surfaced — coroutines
+    <code>Flow</code>/<code>StateFlow</code>/<code>combine</code>, java <code>Instant</code>/<code>UUID</code>/<code>File</code>,
+    android <code>Context</code>/<code>Log</code>.</li>
+  <li>All covered: real wrappers where Python has an equal (a synchronous <code>coroutines</code> Flow/StateFlow,
+    <code>java_rt</code>, <code>json_rt</code>), honest stubs where it doesn't (<code>android_rt</code>).
+    <b>0 real non-UI gaps.</b></li>
+  <li><code>generate</code> emits them: <b>106 files carry <code>from runtime.&lt;wrapper&gt; import &lt;name&gt;</code></b>.</li>
+</ul>
+
+<p class="num lead tight" style="margin-top:14px"><span class="k">numeric fidelity</span> — wrap the
+semantics Python's built-ins silently drop (<code>runtime/numbers.py</code>):</p>
+<ul class="num">
+  <li>Kotlin <code>Int</code>/<code>Long</code>/<code>Float</code> → fixed-width wrappers
+    (<code>Int32</code>/<code>Int64</code>/<code>Float32</code>): two's-complement overflow, 32-bit float
+    rounding, truncating integer <code>/</code>, and <code>Int &lt; Long &lt; Float &lt; Double</code> promotion.</li>
+  <li>Emitted at <b>both</b> ends: at literals (by suffix) <b>and</b> at declared-type boundaries (params,
+    constructor fields, typed <code>val</code>s) — so a chain that never touches a literal (e.g. a value
+    straight off a DAO) still carries the width.</li>
+  <li><code>Double</code> stays bare <code>float</code> (faithful). Wrappers subclass <code>int</code>/<code>float</code>,
+    so <code>isinstance</code>, indexing, and <code>str</code>/format come for free; only arithmetic is overridden.</li>
+  <li>Fidelity-first, behind a dial: wrap by default, bare-emit/unwrap later where a context proves it safe.</li>
+</ul>
+
+<p class="num lead tight" style="margin-top:14px"><span class="k">Two deeper truths the checklist exposed:</span></p>
+<ul class="num">
+  <li><span class="k">The data layer RUNS</span> — not stubbed.
+    <ul>
+      <li>Room generates a <code>@Dao</code>'s query bodies <i>at compile time</i> — they aren't in the source.
+        That looked like a wall.</li>
+      <li>But <code>@Query</code> strings are real SQLite SQL and Python ships <code>sqlite3</code> → faithfully
+        implementable. Built <code>runtime/room.py</code> (sqlite3-backed, entity↔row converters) +
+        <code>datalayer.py</code> (<code>@Entity</code>→table schema, <code>@Dao</code>→real query bodies,
+        <code>@Database</code>→a <code>WorkoutDatabase</code> that registers entities and wires DAO accessors).</li>
+      <li>Verified by the project's OWN instrumented tests, run as written headless: <b>ExerciseDaoMuscleGroupTest</b>
+        (queries, converters, raw-SQL boundary) and <b>GymRepositoryTransactionTest</b> (<code>withTransaction</code>
+        rollback) — both green.</li>
+      <li>The 2 remaining instrumented tests are blocked <i>above</i> the data layer:
+        <code>BackupRepositoryRoundTripTest</code> (the backup feature + a stale ctor arg in the copy),
+        <code>MigrationTest</code> (needs Room's <code>MigrationTestHelper</code>).</li>
+    </ul>
+  </li>
+  <li><span class="k">Platform glue is off-device</span> — Activities, notifications, Firebase, WorkManager
+    are stubbed to resolve names, not to run. When a piece must run, lift that logic into the domain layer.</li>
+</ul>
 </div>
 
 <h2>The plan, in order</h2>
@@ -127,12 +155,13 @@ resolve names, not to run; when a piece must run, lift that logic into the domai
 <li><b>Complete the transpiler</b> → the foundation (<code>WFL_MixingCenter</code>) is solid. <span class="mut">← we are here</span>
 <ul>
 <li><b>1a.</b> Construct translation (the <code>map</code> stage) — <b>done</b>: 254/254 parse, 165/165 non-UI load, oracle 11/11.</li>
-<li><b>1b.</b> Build the <code>resolve</code> phase — import table + scopes + a project symbol table, so every name is classified before translation.</li>
-<li><b>1c.</b> Wrapper registry keyed by fully-qualified name + the build-time external-reference checklist (replaces the runtime load-gate hunt).</li>
-<li><b>1d.</b> Emit imports in the generated Python — externals from their origin wrapper, app classes from their module path. Files become real modules.</li>
+<li><b>1b.</b> The <code>resolve</code> phase — import table + scopes + a project symbol table — <b>done</b>.</li>
+<li><b>1c.</b> Wrapper registry + the build-time external checklist (replaces the runtime load-gate hunt) — <b>done</b>.</li>
+<li><b>1d.</b> Emit imports in the generated Python (externals from their origin wrapper, app classes from their path) — <b>done</b>.</li>
+<li><b>1e.</b> Numeric fidelity — fixed-width wrappers at literals + declared types — <b>done</b>.</li>
 </ul></li>
-<li><b>Evaluate set-aside parts.</b> Bring a part (e.g. a UI screen) into the foundation only after
-rigorous validation that it keeps structure/connectivity. If a part is invalid or mangled, don't fix it —
+<li><b>Evaluate set-aside parts.</b> Bring a part (e.g. a UI screen) into the foundation only after rigorous
+validation that it keeps structure/connectivity. If a part is invalid or mangled, don't fix it —
 <b>paint-by-numbers</b> a fresh one (or mechanize it when the part-type allows).</li>
 <li><b>Upgrade the UI to PseudoUI discipline.</b> A salvaged part that is already valid Python, passes the
 ledger validation, and carries the discipline gets used — extra discipline is not a reason to ignore it.</li>
@@ -142,11 +171,10 @@ ledger validation, and carries the discipline gets used — extra discipline is 
 <h2>Set aside (not failed — parked, picked up later only if it validates)</h2>
 <div class="panel">
 <ul>
-<li><code>WFL_PseudoCoup</code> — an earlier hand-built effort (the per-rigor "trusted baseline" idea that
-got cratered). Its hand-built code is untrusted until validated against the foundation.</li>
+<li><code>WFL_PseudoCoup</code> — an earlier hand-built effort (the pre-rigor "trusted baseline" idea that got
+cratered). Its hand-built code is untrusted until validated against the foundation.</li>
 <li>The PseudoUI generator + swap-in work done in <code>WFL_PseudoCoup</code> in prior conversations. The
-generator <i>tool</i> may be reused later for "paint-by-numbers a screen fresh," but only aimed at the
-foundation, not at matching <code>WFL_PseudoCoup</code>.</li>
+generator <i>tool</i> may be reused for "paint-by-numbers a screen fresh," but only aimed at the foundation.</li>
 <li>The transpiler fixes made along the way (e.g. <code>expr ?: continue</code>) are <b>not</b> set aside —
 they live in <code>tools/pseudokotlin</code> and improve KtToPy directly.</li>
 </ul>
@@ -158,8 +186,10 @@ they live in <code>tools/pseudokotlin</code> and improve KtToPy directly.</li>
 <dt>foundation</dt><dd>the 1:1 Python KtToPy produces from the Kotlin copy — <code>WFL_MixingCenter/*.py</code>.
 <div class="ex">e.g. <code>data/repository/GymRepository.py</code>, transpiled from the matching <code>.kt</code>.</div></dd>
 <dt>meet the transpiler in the middle</dt><dd>editing the Kotlin copy (<code>WFL_MixingCenter/WFL/</code>) so the
-transpiler can handle it, verified by WFL's own tests.<div class="ex">e.g. the <code>SampleProgramData</code> change committed to WFL_MixingCenter.</div></dd>
+transpiler can handle it, verified by WFL's own tests.<div class="ex">e.g. the <code>SampleProgramData</code> change.</div></dd>
 <dt>complete the transpiler</dt><dd>KtToPy handles every Kotlin construct in the copy, so all 254 files transpile and the gaps (like the <code>by</code>-delegate error) are gone.</dd>
+<dt>fixed-width wrapper</dt><dd>a Python <code>int</code>/<code>float</code> subclass that re-applies a Kotlin numeric
+semantic Python drops.<div class="ex">e.g. <code>Int32</code> in <code>runtime/numbers.py</code> — overflow wraps two's-complement.</div></dd>
 <dt>set aside</dt><dd>parked, out of scope now, picked up later only if it validates. Not discarded.<div class="ex">e.g. the WFL_PseudoCoup screens.</div></dd>
 <dt>paint-by-numbers</dt><dd>build a fresh part by hand following the foundation's structure, when a set-aside part is too mangled to validate.</dd>
 <dt>ledger / structure / connectivity</dt><dd>the accounting that proves each Python object traces to its Kotlin source and is wired the same way — used to validate a swap-in.</dd>
