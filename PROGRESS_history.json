@@ -211,7 +211,7 @@
     {
       "key": "ui",
       "label": "UI (PseudoUI screens)",
-      "note": "transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 20/29 render. Left: reactive state (remember/collectAsState -> real .value, today None drives the 6 strip/toIntOrNull misses), 2 platform-stub attrs (ActivityResultContracts), and a pixel kit (Flutter/Kivy).",
+      "note": "transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 28/29 render (only HistoryScreen thin). Render is STRUCTURAL under stub inputs -- the tree builds; behavioural fidelity needs the reactive bridge (real remember/collectAsState) + real wrappers. Left: that bridge, styling, a pixel kit.",
       "series": [
         {
           "date": "2026-06-20",
@@ -244,6 +244,10 @@
         {
           "date": "2026-06-30",
           "pct": 66
+        },
+        {
+          "date": "2026-06-30",
+          "pct": 74
         }
       ]
     }
@@ -324,6 +328,10 @@
     {
       "date": "2026-06-30",
       "text": "Transpiler: buildString/buildList builder scope (the builder is the lambda receiver -> bare append/add bind to a fresh StringBuilder/KtList; real StringBuilder in kotlin_rt) + when-as-value always binds (vacuous else, fixing the free-variable closure crashes). Render 17/29 -> 20/29; all gates green."
+    },
+    {
+      "date": "2026-06-30",
+      "text": "Render 20/29 -> 28/29: render harness skips on* event handlers (they fire on user action, not at render), and android_rt platform stand-ins are class-level permissive (metaclass, no hand-listing). Only HistoryScreen (thin) remains. NOTE: render is structural under stub inputs, not behavioural."
     }
   ]
 }
