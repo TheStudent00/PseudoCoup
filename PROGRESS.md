@@ -27,7 +27,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external BINDS via autostub (gate = 0 gaps). Real: non-UI + Compose structure. Stub: UI styling / Hilt / Nav. surface.py now AST-classifies all 345 externals by kind (obj/func/class/value, real vs stub) — the spec for what to make real. |
 | Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
 | WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
-| UI (PseudoUI screens) | **66%** | `▁▁▂▂▂▂██` | transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 20/29 render. Left: reactive state (remember/collectAsState -> real .value, today None drives the 6 strip/toIntOrNull misses), 2 platform-stub attrs (ActivityResultContracts), and a pixel kit (Flutter/Kivy). |
+| UI (PseudoUI screens) | **74%** | `▁▁▂▂▂▂▇▇█` | transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 28/29 render (only HistoryScreen thin). Render is STRUCTURAL under stub inputs -- the tree builds; behavioural fidelity needs the reactive bridge (real remember/collectAsState) + real wrappers. Left: that bridge, styling, a pixel kit. |
 
 ## On-deck — next sub-tasks (top = next)
 
@@ -47,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-06-30` Render 20/29 -> 28/29: render harness skips on* event handlers (they fire on user action, not at render), and android_rt platform stand-ins are class-level permissive (metaclass, no hand-listing). Only HistoryScreen (thin) remains. NOTE: render is structural under stub inputs, not behavioural.
 - `2026-06-30` Transpiler: buildString/buildList builder scope (the builder is the lambda receiver -> bare append/add bind to a fresh StringBuilder/KtList; real StringBuilder in kotlin_rt) + when-as-value always binds (vacuous else, fixing the free-variable closure crashes). Render 17/29 -> 20/29; all gates green.
 - `2026-06-30` AST-kind-aware wrapping: surface.py classifies all 345 externals by kind (obj/func/class/value) from how the AST uses them — the type-specific wrapper map + kit spec. autostub shapes Kotlin objects as singletons; the base stub is now arithmetic/comparison-robust. Gates green.
 - `2026-06-30` 17/29 transpiled screens render via headless Compose (Unit + inline fully-qualified-ref collapse). LogCardioScreen = 82 nodes. Remaining are receiver-lambda builders + harness stub-arg artifacts; all gates green.
