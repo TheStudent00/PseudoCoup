@@ -11,8 +11,18 @@ the right move is to lift that logic out of the platform glue into the domain la
 """
 
 
-class _Stub:
-    """A permissive stub: any attribute is another stub, any call returns a stub, truthy-but-inert."""
+class _StubMeta(type):
+    """Class-level permissiveness: reading an undefined class attribute yields a stub, so a platform object
+    (ActivityResultContracts.CreateDocument) doesn't need every nested contract/constant listed by hand."""
+    def __getattr__(cls, name):
+        if name.startswith("__"):
+            raise AttributeError(name)          # leave dunders to Python's normal machinery
+        return _Stub()
+
+
+class _Stub(metaclass=_StubMeta):
+    """A permissive stub: any attribute is another stub (on the instance AND the class), any call returns a
+    stub, truthy-but-inert."""
     def __init__(self, *a, **k):
         pass
 
@@ -121,7 +131,7 @@ class PendingIntent:
 
 
 # ---- androidx.* framework + activity-compose entry points --------------------------------------- #
-class ActivityResultContracts:
+class ActivityResultContracts(_Stub):   # any contract (RequestPermission/CreateDocument/OpenDocument/…) -> stub
     RequestPermission = _Stub
 
 

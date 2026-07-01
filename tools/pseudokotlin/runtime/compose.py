@@ -63,7 +63,9 @@ def _composable(kind):
                 elif node.text is None and isinstance(a, str):
                     node.text = a
             for k, v in kwargs.items():          # `content=`, `topBar=`, `title=`, `label=`, `icon=`, …
-                if callable(v):
+                if k.startswith("on"):           # an EVENT handler (onClick/onValueChange/onDone) fires on
+                    continue                     # user action, not at render -- calling it here runs app
+                if callable(v):                  # logic mid-build (e.g. writes None into a state stub).
                     _call(v)
                 elif k == "text" and isinstance(v, str):
                     node.text = v
