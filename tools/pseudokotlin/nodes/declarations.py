@@ -68,7 +68,9 @@ class Declarations:
         imports = num + sorted(self._runtime_imports) + ext_imports
         if imports:
             body = "\n".join(imports) + ("\n\n\n" + body if body else "")
-        return body
+        # `from __future__ import annotations` MUST lead the file: it makes every type hint a stored string
+        # (never evaluated at runtime), so hints can't cause a NameError yet DI can still read the real types.
+        return "from __future__ import annotations\n" + ("\n" + body if body else "")
 
     def _emit_imports(self, header):
         """Every EXTERNAL name a file imports -> `from runtime.autostub import <name>`. autostub is the one
@@ -263,7 +265,7 @@ class Declarations:
                 pid = self._name_of(c)
                 if pid:
                     names.append(pid)
-                    sig.append([self._safe(pid), None])
+                    sig.append([self._safe(pid), None, self._param_type(c)])   # keep the declared TYPE
                     self._add_num_coercion(c, self._safe(pid), coerce)
                 pending = False
             elif c.type == "=":
@@ -273,22 +275,36 @@ class Declarations:
                     sig[-1][1] = self.visit(c)
                 pending = False
         parts, guards = [], []
-        pnames = {p for p, _ in sig}
+        pnames = {p for p, _, _ in sig}
         seen_default = False
-        for p, d in sig:
+        for p, d, t in sig:
+            ann = f": {t}" if t else ""               # emit the Kotlin type as a Python hint (kept, not dropped)
             if d is None:
                 # Kotlin allows a required param AFTER a defaulted one (caller names it);
                 # Python forbids it -> force =None to keep the signature valid (valid calls
                 # always pass it, so no behavioral divergence).
-                parts.append(f"{p}=None" if seen_default else p)
+                parts.append(f"{p}{ann}=None" if seen_default else f"{p}{ann}")
             elif self._default_call_time(d, pnames):  # references self/another param ->
-                parts.append(f"{p}=None")             # not def-time-safe; sentinel + guard
+                parts.append(f"{p}{ann}=None")        # not def-time-safe; sentinel + guard
                 guards.append(f"if {p} is None: {p} = {d}")
                 seen_default = True
             else:
-                parts.append(f"{p}={d}")
+                parts.append(f"{p}{ann}={d}")
                 seen_default = True
         return names, parts, guards, coerce
+
+    def _param_type(self, param_node):
+        """The declared type of a `parameter`, cleaned to a Python-safe hint: base class name, package and
+        generics/nullable stripped. Only a plain (optionally dotted) identifier is kept -- function/complex
+        types are left un-annotated. Emitted as a hint so DI can build by TYPE instead of guessing by name."""
+        ut = next((c for c in param_node.children if c.type == "user_type"), None)
+        if ut is None:
+            nt = next((c for c in param_node.children if c.type == "nullable_type"), None)
+            ut = next((c for c in nt.children if c.type == "user_type"), None) if nt is not None else None
+        if ut is None:
+            return None
+        t = self._strip_pkg(self.text(ut).split("<")[0].strip().rstrip("?"))
+        return t if t and all(part.isidentifier() for part in t.split(".")) else None
 
     def _nonlocals(self, body_node, own_locals):
         # names assigned in `body_node` that live in an ENCLOSING function scope (not
@@ -408,7 +424,7 @@ class Declarations:
     def _render_class(self, node, name):
         body_node = next((c for c in node.children
                           if c.type in ("class_body", "enum_class_body")), None)
-        ctor_params, ctor_defaults, ctor_nodes = [], {}, {}
+        ctor_params, ctor_defaults, ctor_nodes, ctor_types = [], {}, {}, {}
         pc = next((c for c in node.children if c.type == "primary_constructor"), None)
         if pc is not None:
             cps = next((c for c in pc.named_children if c.type == "class_parameters"), None)
@@ -419,6 +435,7 @@ class Declarations:
                     if nm:
                         ctor_params.append(nm)
                         ctor_nodes[nm] = pn             # kept for declared-numeric coercion below
+                        ctor_types[nm] = self._param_type(pn)   # keep the declared TYPE (for DI-by-type)
                         dflt = self._ctor_default(pn)   # `val x: T = expr` -> __init__ default
                         if dflt is not None:
                             ctor_defaults[nm] = dflt
@@ -476,14 +493,16 @@ class Declarations:
         for p in ctor_params:
             sp = self._safe(p)
             d = ctor_defaults.get(p)
+            t = ctor_types.get(p)
+            ann = f": {t}" if t else ""                      # keep the declared type as a hint (DI-by-type)
             if d is None:
-                sig.append(f"{sp}=None" if seen_default else sp)   # required-after-default
+                sig.append(f"{sp}{ann}=None" if seen_default else f"{sp}{ann}")   # required-after-default
             elif self._default_call_time(d, safe_names):    # sentinel for self/param refs
-                sig.append(f"{sp}=None")
+                sig.append(f"{sp}{ann}=None")
                 guards.append(f"if {sp} is None: {sp} = {d}")
                 seen_default = True
             else:
-                sig.append(f"{sp}={d}")
+                sig.append(f"{sp}{ann}={d}")
                 seen_default = True
         init_body = list(guards)
         for p in ctor_params:                              # coerce a declared-numeric field to its
