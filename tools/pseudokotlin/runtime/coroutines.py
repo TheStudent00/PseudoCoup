@@ -156,6 +156,13 @@ class StateFlow(Flow):
     def asStateFlow(self):
         return self
 
+    def collectAsState(self, *a, **k):
+        # Compose: read .value in a composition. This State-view IS the flow (its .value is current); a
+        # MutableStateFlow write invalidates recompose, so the screen repaints. Returns self.
+        return self
+
+    collectAsStateWithLifecycle = collectAsState
+
 
 class MutableStateFlow(StateFlow):
     @property
@@ -166,6 +173,11 @@ class MutableStateFlow(StateFlow):
     def value(self, v):
         self._value = v
         self._values = [v]
+        try:
+            import runtime.reactive as _reactive     # a VM state write -> one recompose (bridge to the kit)
+            _reactive.recompose.invalidate()
+        except Exception:                            # noqa: BLE001 -- no kit/scheduler in scope -> just hold
+            pass
 
     def update(self, fn):
         self.value = fn(self._value)
