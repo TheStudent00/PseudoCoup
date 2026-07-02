@@ -48,6 +48,15 @@ _STDLIB_METHODS = {
     "toLongOrNull":   lambda r, a: f"toLongOrNull({r})",    # None on bad grammar/overflow) -- a real
     "toDoubleOrNull": lambda r, a: f"toDoubleOrNull({r})",  # str has no such method to dispatch to
     "toFloatOrNull":  lambda r, a: f"toFloatOrNull({r})",
+    # kotlin substring/remove family -> runtime helpers (a real str has no such methods)
+    "substringAfter":      lambda r, a: f"substringAfter({r}, {', '.join(a)})",
+    "substringBefore":     lambda r, a: f"substringBefore({r}, {', '.join(a)})",
+    "substringAfterLast":  lambda r, a: f"substringAfterLast({r}, {', '.join(a)})",
+    "substringBeforeLast": lambda r, a: f"substringBeforeLast({r}, {', '.join(a)})",
+    "removeSurrounding":   lambda r, a: f"removeSurrounding({r}, {', '.join(a)})",
+    "removePrefix":        lambda r, a: f"removePrefix({r}, {', '.join(a)})",
+    "removeSuffix":        lambda r, a: f"removeSuffix({r}, {', '.join(a)})",
+    "orEmpty":             lambda r, a: f"orEmpty({r})",     # a nullable-receiver extension: works ON null
     "toString":      lambda r, a: f"str({r})",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
     # ---- Kotlin String methods (names differ from Python's str) ---- #
@@ -806,9 +815,12 @@ class Expressions:
                 segs.append(self.text(c).replace("{", "{{").replace("}", "}}"))
             i += 1
         body = "".join(segs)
+        raw = any(c.type == '"""' for c in node.children)        # kotlin RAW string: backslash is literal
         if not interp:
             body = body.replace("{{", "{").replace("}}", "}")   # a PLAIN string keeps literal braces --
-            esc = body.replace("\\", "\\\\")                     # doubling is only f-string escaping
+            esc = (body.replace("\\", "\\\\") if raw            # doubling is only f-string escaping.
+                   else body.replace("\\$", "$"))               # regular: kotlin escapes (\n \t \") ARE
+                                                                 # python escapes; \$ is a literal $
             if "\n" in esc:                              # Kotlin raw `"""…"""` spanning lines
                 return '"""' + self._triple_safe(esc) + '"""'
             return '"' + esc.replace('"', '\\"') + '"'

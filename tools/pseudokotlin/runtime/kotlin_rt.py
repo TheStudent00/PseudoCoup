@@ -973,6 +973,46 @@ def toFloatOrNull(s):
     return toDoubleOrNull(s)
 
 
+def orEmpty(x):                          # kotlin `String?.orEmpty()` -- an extension ON null itself
+    return x if x is not None else ""    # (list receivers would fail loudly downstream; none sighted)
+
+
+# kotlin String.substring*/remove* family (no Python str equivalents; rewritten at call sites)
+def substringAfter(s, d, miss=None):
+    i = str(s).find(d)
+    return str(s)[i + len(d):] if i >= 0 else (miss if miss is not None else str(s))
+
+
+def substringBefore(s, d, miss=None):
+    i = str(s).find(d)
+    return str(s)[:i] if i >= 0 else (miss if miss is not None else str(s))
+
+
+def substringAfterLast(s, d, miss=None):
+    i = str(s).rfind(d)
+    return str(s)[i + len(d):] if i >= 0 else (miss if miss is not None else str(s))
+
+
+def substringBeforeLast(s, d, miss=None):
+    i = str(s).rfind(d)
+    return str(s)[:i] if i >= 0 else (miss if miss is not None else str(s))
+
+
+def removeSurrounding(s, pre, suf=None):
+    s, suf = str(s), (pre if suf is None else suf)
+    if s.startswith(pre) and s.endswith(suf) and len(s) >= len(pre) + len(suf):
+        return s[len(pre):len(s) - len(suf)]
+    return s
+
+
+def removePrefix(s, p):
+    return str(s)[len(p):] if str(s).startswith(p) else str(s)
+
+
+def removeSuffix(s, p):
+    return str(s)[:len(str(s)) - len(p)] if str(s).endswith(p) and p else str(s)
+
+
 def is_instance(x, t):
     """kotlin `is T`. T is usually a class -> isinstance. But a kotlin `object` (a singleton) is rebound to
     its one INSTANCE in the module -- `is Success` then means 'is that singleton (or its type)'."""
