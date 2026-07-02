@@ -8,6 +8,9 @@ a body that runs its SQL.
 """
 import os
 import re
+import glob
+
+KT = os.path.expanduser("~/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife")
 
 _SCALAR = {"String": "text", "CharSequence": "text", "Int": "int", "Long": "long",
            "Boolean": "bool", "Double": "real", "Float": "real"}
@@ -97,6 +100,39 @@ def entity_schema(class_node, class_name, enums):
     return f"{class_name}._room = Entity({table!r}, [{cols}], lambda kw: {class_name}(**kw))"
 
 
+# ---- @Relation POJOs (Room's cross-table stitching) --------------------------------------------- #
+_RELATION_POJOS = None
+
+
+def _relation_pojos():
+    """{POJO name -> relation spec} for every `data class` with an @Embedded field + an @Relation field.
+    This is the metadata Room needs and the base transpile drops -- scanned back from the entity Kotlin."""
+    global _RELATION_POJOS
+    if _RELATION_POJOS is None:
+        _RELATION_POJOS = {}
+        for f in glob.glob(os.path.join(KT, "data", "**", "*.kt"), recursive=True):
+            src = open(f).read()
+            for m in re.finditer(r"data class (\w+)\(", src):     # capture the ctor with BALANCED parens
+                name, i, depth = m.group(1), m.end() - 1, 0
+                j = i
+                while j < len(src):
+                    depth += (src[j] == "(") - (src[j] == ")")
+                    if depth == 0:
+                        break
+                    j += 1
+                body = src[i + 1:j]
+                if "@Relation" not in body or "@Embedded" not in body:
+                    continue
+                emb = re.search(r"@Embedded[^\n]*\bval\s+(\w+):\s*(\w+)", body)
+                rel = re.search(r'@Relation\(\s*parentColumn\s*=\s*"(\w+)"\s*,\s*entityColumn\s*=\s*"(\w+)"'
+                                r'[^)]*\)\s*val\s+(\w+):\s*(List<)?(\w+)', body, re.DOTALL)
+                if emb and rel:
+                    _RELATION_POJOS[name] = {
+                        "emb_field": emb.group(1), "parent": rel.group(1), "entity": rel.group(2),
+                        "rel_field": rel.group(3), "is_list": bool(rel.group(4)), "rel_type": rel.group(5)}
+    return _RELATION_POJOS
+
+
 # ---- @Dao methods -> bodies that run against the engine ----------------------------------------- #
 def _method_params(method_node):
     vp = _find(method_node, "function_value_parameters") or _find(method_node, "value_parameters")
@@ -119,6 +155,12 @@ def dao_body(method_node):
         sql = " ".join((qm.group(1) or qm.group(2)).split())
         ret = re.search(r"\)\s*:\s*([A-Za-z][\w<>?., ]*)", text)
         ret = ret.group(1) if ret else ""
+        pojo = next((t for t in reversed(re.findall(r"[A-Za-z_]\w*", ret))
+                     if t in _relation_pojos()), None)
+        if pojo:                                 # return type is a @Relation POJO -> stitch, don't return bare rows
+            r = _relation_pojos()[pojo]
+            return (f"return self._relation({sql!r}, {pdict}, {pojo}, {r['emb_field']!r}, {r['rel_field']!r}, "
+                    f"{r['rel_type']}, {r['parent']!r}, {r['entity']!r}, {r['is_list']}, {'List' in ret})")
         if "Flow" in ret and "List" in ret:
             helper = "_flow"
         elif "Flow" in ret:
