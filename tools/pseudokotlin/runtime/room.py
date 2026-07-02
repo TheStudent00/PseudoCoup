@@ -117,7 +117,19 @@ class Database:
         if ent is not None and star:
             out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
         elif pojo is not None:
-            out = KtList(pojo(**{k: row[k] for k in row.keys()}) for row in rows)
+            # Room cursor semantics: SQL NULL read into a primitive number column -> 0 (aggregates like
+            # SUM/AVG are NULL on an empty table). The pojo's preserved type hints say which fields those are.
+            import inspect as _inspect
+            try:
+                anns = {p.name: (p.annotation if isinstance(p.annotation, str) else "")
+                        for p in list(_inspect.signature(pojo.__init__).parameters.values())[1:]}
+            except (ValueError, TypeError):
+                anns = {}
+            zero = {"Int": 0, "Long": 0, "Double": 0.0, "Float": 0.0}
+
+            def _cv(k, v):
+                return zero[anns[k]] if v is None and anns.get(k) in zero else v
+            out = KtList(pojo(**{k: _cv(k, row[k]) for k in row.keys()}) for row in rows)
         else:
             out = KtList((tuple(r)[0] if len(r) == 1 else tuple(r)) for r in rows)
         if single:
