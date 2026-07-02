@@ -155,5 +155,19 @@ class ViewModel:                             # androidx.lifecycle.ViewModel -- a
         return _P_
 
 
-def hiltViewModel(*a, **k):                  # DI entry -- the render layer (di.py) injects the real VM
-    return _P_
+_VM_FACTORY = None
+
+
+def set_vm_factory(fn):
+    """The render layer installs the assembler here: fn(cls) -> a real ViewModel (wired to the db and the
+    current navigation arguments) or None when it can't be built fully real."""
+    global _VM_FACTORY
+    _VM_FACTORY = fn
+
+
+def hiltViewModel(cls=None, *a, **k):        # DI entry -- called per screen call, with the declared type
+    if _VM_FACTORY is not None and isinstance(cls, type):
+        vm = _VM_FACTORY(cls)
+        if vm is not None:
+            return vm
+    return _P_                               # no factory / not fully buildable -> inert placeholder

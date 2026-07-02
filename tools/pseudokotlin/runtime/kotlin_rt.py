@@ -713,6 +713,44 @@ class KtMap(dict):
 
 
 class KtSet(set):
+    # kotlin Iterable transforms on a Set yield a LIST
+    def filter(self, p):
+        return KtList(x for x in self if p(x))
+
+    def filterNot(self, p):
+        return KtList(x for x in self if not p(x))
+
+    def map(self, f):
+        return KtList(f(x) for x in self)
+
+    def mapNotNull(self, f):
+        return KtList(y for y in (f(x) for x in self) if y is not None)
+
+    def flatMap(self, f):
+        return KtList(y for x in self for y in f(x))
+
+    def forEach(self, f):
+        for x in list(self):
+            f(x)
+
+    def any(self, p=None):
+        return any(p(x) for x in self) if p else bool(self)
+
+    def all(self, p):
+        return all(p(x) for x in self)
+
+    def none(self, p=None):
+        return not self.any(p)
+
+    def count(self, p=None):
+        return sum(1 for x in self if p(x)) if p else len(self)
+
+    def sortedBy(self, key):
+        return KtList(sorted(self, key=key))
+
+    def toList(self):
+        return KtList(self)
+
     @property
     def size(self):
         return len(self)

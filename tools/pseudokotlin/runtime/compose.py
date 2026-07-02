@@ -77,8 +77,8 @@ def _composable(kind):
                     continue
                 if callable(v):
                     _call(v)
-                elif k == "text" and isinstance(v, str):
-                    node.text = v
+                elif k in ("text", "value") and isinstance(v, str):
+                    node.text = v                # an input widget DISPLAYS its value -- record it
         finally:
             _STACK.pop()
         return node
@@ -104,6 +104,47 @@ for _n in _NAMES:
 
 def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever survives -> identity
     return fn if fn is not None else (lambda g: g)
+
+
+def _state_content(kind, state_key):
+    """AnimatedContent/Crossfade: the content lambda receives the REAL target state (the current page/
+    tab/step), not a placeholder -- otherwise the whole subtree renders around nothing."""
+    def make(*args, **kwargs):
+        node = Node(kind)
+        _emit(node)
+        _STACK.append(node)
+        try:
+            target = args[0] if args else kwargs.get(state_key)
+            fn = kwargs.get("content") or next((x for x in args[1:] if callable(x)), None)
+            if callable(fn):
+                try:
+                    fn(target)
+                except TypeError as e:
+                    if e.__traceback__.tb_next is not None:
+                        raise
+                    _call(fn)
+        finally:
+            _STACK.pop()
+        return node
+    return make
+
+
+AnimatedContent = _state_content("AnimatedContent", "targetState")
+Crossfade = _state_content("Crossfade", "targetState")
+
+
+def AnimatedVisibility(*args, **kwargs):     # content renders only when actually visible
+    node = Node("AnimatedVisibility")
+    _emit(node)
+    _STACK.append(node)
+    try:
+        visible = args[0] if args else kwargs.get("visible", True)
+        fn = kwargs.get("content") or next((x for x in args[1:] if callable(x)), None)
+        if visible and callable(fn):
+            _call(fn)
+    finally:
+        _STACK.pop()
+    return node
 
 
 # ---- LazyColumn / LazyRow DSL: item { } / items(list) { } / itemsIndexed emit into the lazy container ----

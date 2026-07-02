@@ -807,7 +807,8 @@ class Expressions:
             i += 1
         body = "".join(segs)
         if not interp:
-            esc = body.replace("\\", "\\\\")
+            body = body.replace("{{", "{").replace("}}", "}")   # a PLAIN string keeps literal braces --
+            esc = body.replace("\\", "\\\\")                     # doubling is only f-string escaping
             if "\n" in esc:                              # Kotlin raw `"""…"""` spanning lines
                 return '"""' + self._triple_safe(esc) + '"""'
             return '"' + esc.replace('"', '\\"') + '"'

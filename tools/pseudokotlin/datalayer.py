@@ -169,7 +169,14 @@ def dao_body(method_node):
             helper = "_list"                    # suspend List<X> -> all rows, not the single-row helper
         else:
             helper = "_one"
-        return f"return self.{helper}({sql!r}, {pdict})"
+        # the declared result CLASS (Room maps a column-select's rows to it by name): the innermost
+        # class-ish type that isn't a container or a scalar. Harmless for `SELECT *` entity queries
+        # (the entity branch wins in the engine).
+        inner = [t for t in re.findall(r"[A-Z]\w*", ret)
+                 if t not in ("Flow", "List", "MutableList", "Set", "MutableSet", "Map", "LiveData",
+                              "Int", "Long", "Double", "Float", "String", "Boolean", "Unit", "Any")]
+        pojo = f", pojo={inner[-1]}" if inner else ""
+        return f"return self.{helper}({sql!r}, {pdict}{pojo})"
     arg = params[0] if params else "entity"
     if "@Insert" in text:
         return f"return self._insert({arg})"
