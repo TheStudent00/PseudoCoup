@@ -588,6 +588,22 @@ class Declarations:
         lines = list(class_attrs)                          # class-level consts first
         if init_body and init_body != ["super().__init__()"]:   # a lone no-arg super call = pure no-op
             lines.append(f"def __init__({', '.join(sig)}):\n{_block(init_body)}")
+        # a kotlin `data class` gets copy(field=new) and VALUE equality (the reactive scheduler's
+        # changed-check and UiState.copy(...) updates depend on both).
+        mods_txt = next((c.text.decode() for c in node.children if c.type == "modifiers"), "")
+        if "data" in mods_txt.split() and ctor_params:
+            sps = [self._safe(p) for p in ctor_params]
+            kw = ", ".join(f"{p!r}: self.{p}" for p in sps)
+            lines.append("def copy(self, **_changes):\n" + _block(
+                [f"_kw = {{{kw}}}", "_kw.update(_changes)", "return type(self)(**_kw)"]))
+            mine = ", ".join(f"self.{p}" for p in sps) + ("," if len(sps) == 1 else "")
+            theirs = ", ".join(f"other.{p}" for p in sps) + ("," if len(sps) == 1 else "")
+            lines.append("def __eq__(self, other):\n" + _block(
+                ["if type(other) is not type(self):", "    return NotImplemented",
+                 f"return ({mine}) == ({theirs})"]))
+            lines.append("def __hash__(self):\n" + _block(   # content hash; unhashable fields (a List)
+                ["try:", f"    return hash((type(self), {mine}))",   # fall back to identity
+                 "except TypeError:", "    return object.__hash__(self)"]))
         # a companion's members are in scope (unqualified) inside this class's methods -> resolve a bare
         # `USER_TABLES` to `ClassName.USER_TABLES`. Set BEFORE rendering methods; instance members win, so
         # drop any name that is also an instance member (Kotlin precedence).

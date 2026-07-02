@@ -90,9 +90,12 @@ _STDLIB_PROPS = {
 _SCOPE_FNS = {
     "let":        lambda r, f, s: f"({f}({r}) if {r} is not None else None)" if s
                                   else f"{f}({r})",
-    "takeIf":     lambda r, f, s: f"({r} if {f}({r}) else None)",
-    "takeUnless": lambda r, f, s: f"({r} if not {f}({r}) else None)",
-    "also":       lambda r, f, s: f"({f}({r}), {r})[1]",      # run for effect, return recv
+    "takeIf":     lambda r, f, s: (f"({r} if {r} is not None and {f}({r}) else None)" if s
+                                   else f"({r} if {f}({r}) else None)"),      # ?. -> block never sees null
+    "takeUnless": lambda r, f, s: (f"({r} if {r} is not None and not {f}({r}) else None)" if s
+                                   else f"({r} if not {f}({r}) else None)"),
+    "also":       lambda r, f, s: (f"(({f}({r}), {r})[1] if {r} is not None else None)" if s
+                                   else f"({f}({r}), {r})[1]"),               # run for effect, return recv
 }
 
 # Kotlin builder functions: `buildString { append… }` / `buildList { add… }`. The lambda's implicit
@@ -403,13 +406,13 @@ class Expressions:
             in_args = self._render_args(in_args_node)
             in_fn = self.visit(inner)
             lam = self._lambda_str(trailing)
-            return f"{in_fn}({self._join_trailing(in_args, lam, in_args_node)})"
+            return f"{in_fn}({self._join_trailing(in_args, lam, in_args_node, callee=in_fn)})"
         if callee.type == "navigation_expression":
             fqn = self._fqn_simple(callee)               # com.sara.…ScienceInfoDialog(args) -> the simple call
             if fqn is not None:
                 args = self._render_args(own_args)
                 if trailing is not None:
-                    args = self._join_trailing(args, self._lambda_str(trailing), own_args)
+                    args = self._join_trailing(args, self._lambda_str(trailing), own_args, callee=fqn)
                 return f"{fqn}({args})"
             nk = self.named(callee)
             sel = self.text(nk[-1]) if len(nk) > 1 else ""
@@ -445,6 +448,12 @@ class Expressions:
             # navigation PROPERTY mappings (.first -> [0], .size -> len) don't fire on a
             # method CALL (`it.first()` is a method; `it.first` is the property).
             args = self._render_args(own_args)
+            if sel == "filterIsInstance" and not args:   # reified type arg IS the argument:
+                ta = next((c for c in node.children if c.type == "type_arguments"), None)
+                ut = next((c for c in ta.named_children[0].named_children
+                           if c.type == "user_type"), None) if ta and ta.named_children else None
+                if ut is not None:                        # xs.filterIsInstance<T>() -> xs.filterIsInstance(T)
+                    args = self._py_type_name(ut)
             if trailing is not None:
                 lam = self._lambda_str(trailing)
                 args = self._join_trailing(args, lam, own_args)
@@ -458,7 +467,9 @@ class Expressions:
         args = self._render_args(own_args)
         if trailing is not None:                       # `xs.map { v -> v*2 }`
             lam = self._lambda_str(trailing)
-            args = self._join_trailing(args, lam, own_args)
+            args = self._join_trailing(args, lam, own_args,
+                                       callee=self.text(callee) if callee.type in
+                                       ("identifier", "simple_identifier") else None)
         return f"{fn}({args})"
 
     def _leading_prefix(self, node):
@@ -755,13 +766,15 @@ class Expressions:
         return any(a.type == "value_argument" and any(c.type == "=" for c in a.children)
                    and len(a.named_children) > 1 for a in args_node.named_children)
 
-    def _join_trailing(self, args_str, lam, args_node):
-        # A trailing lambda after a named argument is positional-after-keyword (invalid Python), so
-        # give it a name. `content` is the correct slot name for most Compose calls; the wrong few
-        # fail LOUDLY (unexpected-keyword) rather than silently, and get the real name when callee
-        # signatures land. Only kicks in when a named argument actually precedes the lambda.
+    def _join_trailing(self, args_str, lam, args_node, callee=None):
+        # A trailing lambda after a named argument is positional-after-keyword (invalid Python), so give
+        # it a name. Kotlin binds a trailing lambda to the callee's LAST parameter: for a same-file fn we
+        # know that name (self._last_param); otherwise `content` (correct for the Compose surface). The
+        # wrong few fail LOUDLY (unexpected-keyword), never silently. Only kicks in when a named argument
+        # actually precedes the lambda.
         if self._has_named_arg(args_node):
-            return f"{args_str}, content={lam}" if args_str else f"content={lam}"
+            slot = self._last_param.get(callee, "content")
+            return f"{args_str}, {slot}={lam}" if args_str else f"{slot}={lam}"
         return f"{args_str}, {lam}" if args_str else lam
 
     def _string_to_fstring(self, node):

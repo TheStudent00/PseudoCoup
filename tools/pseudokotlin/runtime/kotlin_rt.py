@@ -269,6 +269,11 @@ class KtList(list):
     def filterNot(self, p):
         return KtList(x for x in self if not p(x))
 
+    def filterIsInstance(self, t=None):   # kotlin xs.filterIsInstance<T>() -- the reified T is the arg
+        if t is None:
+            return KtList(self)
+        return KtList(x for x in self if is_instance(x, t))
+
     def filterNotNull(self):
         return KtList(x for x in self if x is not None)
 
