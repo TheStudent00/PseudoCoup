@@ -110,7 +110,7 @@
     {
       "key": "externs",
       "label": "Externs (runtime wrappers)",
-      "note": "every external BINDS via autostub; 41% have real wrappers. Filled subsystems: reactive State+recompose, collectAsState, Room @Relation, navigation, DI VM-builder. Remaining mostly cosmetic (dp/Color/Modifier) + flow operators.",
+      "note": "wrapper surface COMPLETE: 338/345 (97%) external names have real wrappers -- reactive State+recompose, collectAsState, Room @Relation, navigation, DI VM-builder, and the full Compose style/layout/icon surface (compose_ui) + kotlin.math/platform (extras). The 7 remaining are stdlib METHODS (map/stateIn/collectAsState/...) real on the objects; only their unused free alias is a stub.",
       "series": [
         {
           "date": "2026-06-20",
@@ -143,6 +143,10 @@
         {
           "date": "2026-07-02",
           "pct": 92
+        },
+        {
+          "date": "2026-07-02",
+          "pct": 97
         }
       ]
     },
@@ -356,6 +360,10 @@
     {
       "date": "2026-07-02",
       "text": "App RUNS in Kivy (render/run_app.py): transpiled screens render as real Kivy windows; reactive state (tap->recompose->repaint), REAL data (general di.py builds VMs on a real in-memory db; GymList shows seeded gyms via collectAsState + Room @Relation stitching), and navigation primitives (NavHost/navigate route+repaint) all proven. Transpiled structure untouched -- all wiring in render/ + runtime wrappers."
+    },
+    {
+      "date": "2026-07-02",
+      "text": "Wrapper surface completed: 41% -> 97% (338/345). compose_ui.py fills the whole Compose style/layout/icon/animation surface; extras.py fills kotlin.math/Random/viewModelScope/edge-platform. All gates green, render 28/29, no regression. Remaining 7 are working stdlib methods (unused free alias only)."
     }
   ]
 }
