@@ -657,6 +657,22 @@ class KtMap(dict):
     def getOrElse(self, k, default):
         return self[k] if k in self else default()
 
+    def forEach(self, f):            # Kotlin Map.forEach { (k, v) -> … }
+        for k, v in list(self.items()):
+            f(KtEntry(k, v))
+
+    def any(self, p=None):
+        return any(p(KtEntry(k, v)) for k, v in self.items()) if p else bool(self)
+
+    def all(self, p):
+        return all(p(KtEntry(k, v)) for k, v in self.items())
+
+    def none(self, p=None):
+        return not self.any(p)
+
+    def count(self, p=None):
+        return sum(1 for k, v in self.items() if p(KtEntry(k, v))) if p else len(self)
+
     def map(self, f):                # Kotlin Map.map { entry -> … } yields a LIST
         return KtList(f(KtEntry(k, v)) for k, v in self.items())
 
@@ -879,6 +895,47 @@ def intArrayOf(*xs):
 
 
 Unit = type("Unit", (), {})     # kotlin.Unit -- the void singleton/type (a default import, used bare)
+
+
+_INT_RX = _re.compile(r"[+-]?\d+\Z")    # kotlin Int/Long parse grammar: optional sign + digits, nothing else
+                                         # (Python's int() is laxer: allows whitespace and underscores)
+
+
+def toIntOrNull(s):                      # kotlin String.toIntOrNull -- None on bad grammar OR overflow
+    t = str(s)
+    if not _INT_RX.match(t):
+        return None
+    from runtime.numbers import Int32
+    v = int(t)
+    return Int32(v) if -2 ** 31 <= v < 2 ** 31 else None
+
+
+def toLongOrNull(s):
+    t = str(s)
+    if not _INT_RX.match(t):
+        return None
+    from runtime.numbers import Int64
+    v = int(t)
+    return Int64(v) if -2 ** 63 <= v < 2 ** 63 else None
+
+
+def toDoubleOrNull(s):                   # kotlin String.toDoubleOrNull -- java Double grammar; float()
+    try:                                 # matches it closely for this app's text-input strings
+        return float(str(s))
+    except (ValueError, TypeError):
+        return None
+
+
+def toFloatOrNull(s):
+    return toDoubleOrNull(s)
+
+
+def is_instance(x, t):
+    """kotlin `is T`. T is usually a class -> isinstance. But a kotlin `object` (a singleton) is rebound to
+    its one INSTANCE in the module -- `is Success` then means 'is that singleton (or its type)'."""
+    if isinstance(t, type):
+        return isinstance(x, t)
+    return x is t or isinstance(x, type(t))
 
 
 def run(block=None, *a, **k):    # kotlin standalone `run { … }` -- execute the block, return its result

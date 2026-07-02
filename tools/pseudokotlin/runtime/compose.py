@@ -41,14 +41,21 @@ def _emit(node):
 
 
 def _call(fn):
-    """Run a slot lambda. It may take no arg (the `it=None` form) or one (a PaddingValues / a *Scope)."""
+    """Run a slot lambda. It may take no arg (the `it=None` form) or one (a PaddingValues / a *Scope).
+    Only ARITY TypeErrors (raised at the call frame itself, no deeper traceback) trigger the retry --
+    a TypeError from INSIDE the body is a real failure and must surface, never be swallowed (a swallowed
+    one silently drops the body's children and renders a lying, thinner tree)."""
     try:
         return fn()
-    except TypeError:
+    except TypeError as e:
+        if e.__traceback__.tb_next is not None:
+            raise
         from runtime.autostub import Stub
         try:
             return fn(Stub())
-        except TypeError:
+        except TypeError as e2:
+            if e2.__traceback__.tb_next is not None:
+                raise
             return None
 
 
