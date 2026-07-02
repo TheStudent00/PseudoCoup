@@ -23,11 +23,11 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 | objective | est. | trend (Jun 20→29) | what's left |
 |---|---|---|---|
-| Transpiler (Kt→Py engine) | **94%** | `▁▃▅▅▆███` | grammar fully routed, 278/278 parse, oracle 11/11; recent: numeric fidelity, $name interp, receiver-lambdas, braceless-loop bodies, nested-lambda hoist, companion members. Left: edge idioms surfaced by the UI phase. |
-| Externs (runtime wrappers) | **90%** | `▁▂▃▃▄▇█` | every external BINDS via autostub (gate = 0 gaps). Real: non-UI + Compose structure. Stub: UI styling / Hilt / Nav. surface.py now AST-classifies all 345 externals by kind (obj/func/class/value, real vs stub) — the spec for what to make real. |
-| Data layer (Room / sqlite3) | **90%** | `▁▁▁▁▂██` | runs end-to-end — @Entity/@Dao/@Database, CRUD + transactions, backup round-trip, and migration replay + schema validation. The instrumented suite is COMPLETE (4/4). Left: runtime edge cases as more app code exercises it. |
-| WFL domain functionality | **73%** | `▁▃▅▅▅██` | 11 engines proven (160 methods match Kotlin), repositories run on the data layer. Left: full repository coverage, feature surfaces (backup, etc.). |
-| UI (PseudoUI screens) | **74%** | `▁▁▂▂▂▂▇▇█` | transpiled Kotlin screens RENDER a structural UI tree (headless Compose). 28/29 render (only HistoryScreen thin). Render is STRUCTURAL under stub inputs -- the tree builds; behavioural fidelity needs the reactive bridge (real remember/collectAsState) + real wrappers. Left: that bridge, styling, a pixel kit. |
+| Transpiler (Kt→Py engine) | **94%** | `▁▃▅▅▆████` | 254/254 parse, oracle 11/11; +Room @Relation metadata emission. Left: preserve more type/annotation metadata (DI types) surfaced by the run phase. |
+| Externs (runtime wrappers) | **92%** | `▁▂▃▃▄▆██` | every external BINDS via autostub; 41% have real wrappers. Filled subsystems: reactive State+recompose, collectAsState, Room @Relation, navigation, DI VM-builder. Remaining mostly cosmetic (dp/Color/Modifier) + flow operators. |
+| Data layer (Room / sqlite3) | **91%** | `▁▁▁▁▂███` | runs end-to-end incl. Room @Relation stitching now (GymWithEquipment/ProgramExerciseWithSets assembled). Instrumented suite 4/4. |
+| WFL domain functionality | **76%** | `▁▃▄▅▅███` | 11 engines proven; ViewModels now constructible on a real db (general di.py) and drive real screen data. Left: full repository/VM coverage, the 9-dep AppViewModel. |
+| UI (PseudoUI screens) | **82%** | `▁▁▁▂▂▂▆▇▇█` | screens run in Kivy (render/): 28/29 render, reactive state proven (tap->recompose), REAL data proven (GymList: seeded db -> VM -> collectAsState -> @Relation -> cards), navigation primitives proven (route+repaint). Left: full multi-screen boot (AppNavigation needs the 9-dep AppViewModel wired), breadth, styling/icons. |
 
 ## On-deck — next sub-tasks (top = next)
 
@@ -47,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-07-02` App RUNS in Kivy (render/run_app.py): transpiled screens render as real Kivy windows; reactive state (tap->recompose->repaint), REAL data (general di.py builds VMs on a real in-memory db; GymList shows seeded gyms via collectAsState + Room @Relation stitching), and navigation primitives (NavHost/navigate route+repaint) all proven. Transpiled structure untouched -- all wiring in render/ + runtime wrappers.
 - `2026-06-30` Render 20/29 -> 28/29: render harness skips on* event handlers (they fire on user action, not at render), and android_rt platform stand-ins are class-level permissive (metaclass, no hand-listing). Only HistoryScreen (thin) remains. NOTE: render is structural under stub inputs, not behavioural.
 - `2026-06-30` Transpiler: buildString/buildList builder scope (the builder is the lambda receiver -> bare append/add bind to a fresh StringBuilder/KtList; real StringBuilder in kotlin_rt) + when-as-value always binds (vacuous else, fixing the free-variable closure crashes). Render 17/29 -> 20/29; all gates green.
 - `2026-06-30` AST-kind-aware wrapping: surface.py classifies all 345 externals by kind (obj/func/class/value) from how the AST uses them — the type-specific wrapper map + kit spec. autostub shapes Kotlin objects as singletons; the base stub is now arithmetic/comparison-robust. Gates green.
