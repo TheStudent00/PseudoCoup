@@ -65,6 +65,18 @@ class LocalDate:
     def getDayOfWeek(self):
         return self._d.isoweekday()             # Mon=1..Sun=7, matching java DayOfWeek value
 
+    def with_(self, adjuster):
+        # java `date.with(DayOfWeek.MONDAY)`: that day within the SAME ISO week (DayOfWeek is an adjuster)
+        if isinstance(adjuster, int):
+            return LocalDate(self._d + _td(days=int(adjuster) - self._d.isoweekday()))
+        return self
+
+    def withDayOfYear(self, n):
+        return LocalDate(_date(self._d.year, 1, 1) + _td(days=int(n) - 1))
+
+    def withDayOfMonth(self, n):
+        return LocalDate(self._d.replace(day=int(n)))
+
     def plusDays(self, n):
         return LocalDate(self._d + _td(days=n))
 
@@ -104,6 +116,10 @@ class LocalDate:
 
 
 LocalDate.EPOCH = LocalDate(_date(1970, 1, 1))      # java.time.LocalDate.EPOCH
+
+
+class DayOfWeek:                        # java.time.DayOfWeek -- the int IS getValue() (Mon=1..Sun=7),
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = 1, 2, 3, 4, 5, 6, 7   # and an adjuster
 
 
 class LocalDateTime:

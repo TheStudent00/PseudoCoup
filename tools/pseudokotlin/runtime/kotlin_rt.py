@@ -221,6 +221,9 @@ class KtEntry:                       # Kotlin Map.Entry (mapValues { it.value } 
     def __init__(self, key, value):
         self.key, self.value = key, value
 
+    def __iter__(self):              # `{ (k, v) -> … }` destructuring
+        return iter((self.key, self.value))
+
 
 class KtList(list):
     @property
@@ -653,6 +656,15 @@ class KtMap(dict):
 
     def getOrElse(self, k, default):
         return self[k] if k in self else default()
+
+    def map(self, f):                # Kotlin Map.map { entry -> … } yields a LIST
+        return KtList(f(KtEntry(k, v)) for k, v in self.items())
+
+    def mapNotNull(self, f):
+        return KtList(x for x in (f(KtEntry(k, v)) for k, v in self.items()) if x is not None)
+
+    def flatMap(self, f):
+        return KtList(x for k, v in self.items() for x in f(KtEntry(k, v)))
 
     def mapValues(self, f):
         return KtMap((k, f(KtEntry(k, v))) for k, v in self.items())
