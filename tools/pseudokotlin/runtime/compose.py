@@ -107,7 +107,7 @@ def item(*args, **kwargs):
 
 
 def items(data=None, *args, **kwargs):
-    fn = kwargs.get("itemContent") or next((a for a in args if callable(a)), None)
+    fn = kwargs.get("itemContent") or kwargs.get("content") or next((a for a in args if callable(a)), None)
     seq = data if hasattr(data, "__iter__") and not isinstance(data, str) else []
     if callable(fn):
         for d in seq:
@@ -118,7 +118,7 @@ def items(data=None, *args, **kwargs):
 
 
 def itemsIndexed(data=None, *args, **kwargs):
-    fn = kwargs.get("itemContent") or next((a for a in args if callable(a)), None)
+    fn = kwargs.get("itemContent") or kwargs.get("content") or next((a for a in args if callable(a)), None)
     seq = data if hasattr(data, "__iter__") and not isinstance(data, str) else []
     if callable(fn):
         for i, d in enumerate(seq):
