@@ -34,6 +34,10 @@ _BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMa
                    "Collection", "Iterable", "Sequence", "Array", "String",
                    "CharSequence", "Int", "Long", "Double", "Float", "Boolean",
                    "Char", "Byte", "Short", "Number", "Comparable", "Any", "Pair"}
+# an extension on a COLLECTION receiver patches onto our runtime collection type (a scalar/String receiver
+# can't patch a Python builtin -- those stay call-site rewrites in _STDLIB_METHODS).
+_EXT_TARGET = {"List": "KtList", "MutableList": "KtList", "Collection": "KtList", "Iterable": "KtList",
+               "Set": "KtSet", "MutableSet": "KtSet", "Map": "KtMap", "MutableMap": "KtMap"}
 # Kotlin type -> Python type for overload isinstance dispatch (a domain class maps to
 # itself). Int/Long stay int; Double/Float stay float -- distinguishable at runtime.
 _PYTYPE = {"Double": "float", "Float": "float", "Int": "int", "Long": "int",
@@ -99,6 +103,7 @@ class Declarations:
         fn = self._function(node, with_self=in_class or recv is not None)
         if recv is not None and not in_class:   # top-level extension: dispatch on the
             base = self._strip_pkg(recv.split("<")[0].strip())   # receiver -> patch it onto that class so
+            base = _EXT_TARGET.get(base, base)          # a List/Set/Map receiver -> KtList/KtSet/KtMap
             if base and base not in _BUILTIN_RECVRS:    # `recv.name(...)` resolves (Kotlin
                 nm = self._safe(self._name_of(node) or "unknown_func")  # ext semantics).
                 self._ext_patches.append(f"{base}.{nm} = {nm}")   # flushed at module end
@@ -301,6 +306,12 @@ class Declarations:
                 # Python forbids it -> force =None to keep the signature valid (valid calls
                 # always pass it, so no behavioral divergence).
                 parts.append(f"{p}{ann}=None" if seen_default else f"{p}{ann}")
+            elif "hiltViewModel(" in d:               # DI entry: must run PER CALL (a def-time default is
+                if t and d.strip() == "hiltViewModel()":   # one shared object) and carries the declared
+                    d = f"hiltViewModel({t})"              # type so the factory knows WHAT to assemble
+                parts.append(f"{p}{ann}=None")
+                guards.append(f"if {p} is None: {p} = {d}")
+                seen_default = True
             elif self._default_call_time(d, pnames):  # references self/another param ->
                 parts.append(f"{p}{ann}=None")        # not def-time-safe; sentinel + guard
                 guards.append(f"if {p} is None: {p} = {d}")
@@ -513,6 +524,7 @@ class Declarations:
                     recv = self._ext_receiver(c)
                     if recv is not None:        # member extension fn -> top-level def +
                         base = self._strip_pkg(recv.split("<")[0].strip())   # patch onto the receiver
+                        base = _EXT_TARGET.get(base, base)   # collection receiver -> runtime type
                         fname = self._safe(self._name_of(c) or "fn")
                         self._ext_patches.append(self._function(c, with_self=True))
                         if base and base not in _BUILTIN_RECVRS:

@@ -51,8 +51,8 @@ class Col:
         if self.kind == "enum":
             return self.enum.valueOf(v) if self.enum is not None else v
         if self.kind == "enum_list":
-            return [] if not v else [self.enum.valueOf(t.strip()) for t in v.split(",")]
-        return v
+            return KtList() if not v else KtList(self.enum.valueOf(t.strip()) for t in v.split(","))
+        return v                              # KtList: List-extension methods dispatch on it
 
     def sql_type(self):
         return {"int": "INTEGER", "long": "INTEGER", "real": "REAL", "bool": "INTEGER"}.get(self.kind, "TEXT")
@@ -105,19 +105,21 @@ class Database:
         for table in self._entities:
             self._conn.execute(f"DELETE FROM {table}")
 
-    def query(self, sql, params=None, single=False):
+    def query(self, sql, params=None, single=False, pojo=None):
         """Run a @Query. `SELECT *` from a known entity table maps rows -> entity objects (one/None when
-        single). A column/aggregate selection (COUNT(*)/MAX(x)/specific columns) is NOT an entity read --
-        real Room returns the plain value(s) there -- so return raw values, a single column unwrapped to
-        the bare value (Flow<Int> semantics)."""
+        single). A column selection with a declared result CLASS (pojo) maps each row to it by column
+        name -- Room's row-object mapping (the SQL aliases match the class's fields). Otherwise
+        (COUNT(*)/aggregates) return the plain value(s), a single column unwrapped to the bare value."""
         rows = self._conn.execute(sql, params or {}).fetchall()
         m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
         ent = self._entities.get(m.group(1)) if m else None
         star = _re.match(r"\s*SELECT\s+\*", sql, _re.IGNORECASE) is not None
-        if ent is None or not star:
-            out = KtList((tuple(r)[0] if len(r) == 1 else tuple(r)) for r in rows)
-        else:
+        if ent is not None and star:
             out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
+        elif pojo is not None:
+            out = KtList(pojo(**{k: row[k] for k in row.keys()}) for row in rows)
+        else:
+            out = KtList((tuple(r)[0] if len(r) == 1 else tuple(r)) for r in rows)
         if single:
             return out[0] if out else None
         return out
@@ -175,17 +177,17 @@ class Dao:
     def __init__(self, db):
         self._db = db
 
-    def _flow(self, sql, params=None):          # Flow<List<X>> -- emits the whole list as ONE value
-        return Flow([self._db.query(sql, params)])
+    def _flow(self, sql, params=None, pojo=None):    # Flow<List<X>> -- emits the whole list as ONE value
+        return Flow([self._db.query(sql, params, pojo=pojo)])
 
-    def _flowOne(self, sql, params=None):       # Flow<X?> -- emits the single entity (or None) as one value
-        return Flow([self._db.query(sql, params, single=True)])
+    def _flowOne(self, sql, params=None, pojo=None):  # Flow<X?> -- the single row (or None) as one value
+        return Flow([self._db.query(sql, params, single=True, pojo=pojo)])
 
-    def _one(self, sql, params=None):           # suspend X?
-        return self._db.query(sql, params, single=True)
+    def _one(self, sql, params=None, pojo=None):      # suspend X?
+        return self._db.query(sql, params, single=True, pojo=pojo)
 
-    def _list(self, sql, params=None):          # suspend List<X> -- ALL rows (not the single-row helper)
-        return self._db.query(sql, params)
+    def _list(self, sql, params=None, pojo=None):     # suspend List<X> -- ALL rows
+        return self._db.query(sql, params, pojo=pojo)
 
     def _relation(self, sql, params, pojo, emb_field, rel_field, rel_entity,
                   parent_col, entity_col, rel_is_list, as_list=True):
