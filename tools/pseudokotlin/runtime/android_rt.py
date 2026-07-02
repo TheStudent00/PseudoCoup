@@ -269,13 +269,17 @@ class ExistingPeriodicWorkPolicy:
 
 
 # ---- com.google (Firebase / Play / Wearable) ---------------------------------------------------- #
-class FirebaseApp:
+class FirebaseApp(_Stub):                # _Stub base: any other class-level read (getApps) yields a stub
     @staticmethod
     def initializeApp(*a, **k):
         return _Stub()
 
+    @staticmethod
+    def getApps(*a, **k):
+        return []                        # no Firebase off-device -> "not configured", the code's real branch
 
-class FirebaseCrashlytics:
+
+class FirebaseCrashlytics(_Stub):
     @staticmethod
     def getInstance(*a, **k):
         return _Stub()
