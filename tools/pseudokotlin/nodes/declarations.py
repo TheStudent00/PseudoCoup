@@ -533,10 +533,14 @@ class Declarations:
                 self._num_types.add(wname)
                 init_body.append(f"self.{sp} = ({wname}({sp}) if {sp} is not None else None)"
                                  if nullable else f"self.{sp} = {wname}({sp})")
-        for p in props:                                    # flush hoists (e.g. a multi-statement
-            before = len(self._hoist)                      # `combine(…){ … }` lambda -> def _lamN)
-            line = self._render_property(p, as_self=True)  # before the assignment that uses them
-            init_body += self._hoist[before:]
+        class_attrs = []
+        for p in props:
+            if self._is_const(p):                          # `const val` is static -> a class-level attribute
+                class_attrs.append(self._render_property(p, as_self=False))  # so Obj.CONST / Class.CONST work
+                continue
+            before = len(self._hoist)                      # flush hoists (e.g. a multi-statement
+            line = self._render_property(p, as_self=True)  # `combine(…){ … }` lambda -> def _lamN)
+            init_body += self._hoist[before:]              # before the assignment that uses them
             del self._hoist[before:]
             init_body.append(line)
         for ini in inits:                                  # init { … } -> __init__ body
@@ -545,8 +549,8 @@ class Declarations:
                 init_body += self.render_statements(self.named(blk))
         self._scopes.pop()
 
-        lines = []
-        if ctor_params or props or inits:
+        lines = list(class_attrs)                          # class-level consts first
+        if init_body:
             lines.append(f"def __init__({', '.join(sig)}):\n{_block(init_body)}")
         # a companion's members are in scope (unqualified) inside this class's methods -> resolve a bare
         # `USER_TABLES` to `ClassName.USER_TABLES`. Set BEFORE rendering methods; instance members win, so
