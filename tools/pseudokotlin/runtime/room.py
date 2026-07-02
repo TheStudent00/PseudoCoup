@@ -106,13 +106,16 @@ class Database:
             self._conn.execute(f"DELETE FROM {table}")
 
     def query(self, sql, params=None, single=False):
-        """Run a @Query. If its FROM table is a known entity, map rows -> entity objects (one/None when
-        single); otherwise (a scalar/aggregate query) return raw row tuples."""
+        """Run a @Query. `SELECT *` from a known entity table maps rows -> entity objects (one/None when
+        single). A column/aggregate selection (COUNT(*)/MAX(x)/specific columns) is NOT an entity read --
+        real Room returns the plain value(s) there -- so return raw values, a single column unwrapped to
+        the bare value (Flow<Int> semantics)."""
         rows = self._conn.execute(sql, params or {}).fetchall()
         m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
         ent = self._entities.get(m.group(1)) if m else None
-        if ent is None:
-            out = KtList(tuple(r) for r in rows)
+        star = _re.match(r"\s*SELECT\s+\*", sql, _re.IGNORECASE) is not None
+        if ent is None or not star:
+            out = KtList((tuple(r)[0] if len(r) == 1 else tuple(r)) for r in rows)
         else:
             out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
         if single:
@@ -156,6 +159,14 @@ class Database:
     def openHelper(self):
         """Room's `db.openHelper.writableDatabase.execSQL(...)` raw-SQL escape hatch."""
         return _OpenHelper(self._conn)
+
+
+class RoomDatabase:
+    """The base the @Database class now inherits (inheritance is kept in translation). The class is a
+    schema carrier -- the RUNNING database is the engine `Database` the builder returns -- so the base
+    only needs to exist."""
+    def __init__(self, *a, **k):
+        pass
 
 
 class Dao:
