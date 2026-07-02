@@ -8,7 +8,12 @@ foundation's tests. Wrapping these makes the names RESOLVE; it does not make the
 
 When a piece of this genuinely needs to run in Python (e.g. notification CONTENT built from domain data),
 the right move is to lift that logic out of the platform glue into the domain layer, where it is testable.
+
+Exception to "stubs only": app-private STORAGE (Context.filesDir, SharedPreferences) is real -- a local
+folder and JSON files -- because file/preference reads and writes are not phone hardware; they run fine
+in Python and the CrashReporter / debug-clock code paths need them for real.
 """
+import os as _os
 
 
 class _StubMeta(type):
@@ -47,11 +52,79 @@ class Log:
 
 
 # ---- android.* framework -------------------------------------------------------------------------- #
+# The phone's app-private storage, mapped to a REAL local folder: files under .appdata/files (the
+# CrashReporter's crash file lives there), preferences as JSON under .appdata/prefs (the debug clock's
+# offset lives there). Real inputs -- code that reads/writes them behaves as on the device.
+_APPDATA = _os.path.expanduser("~/Programming/WFL_MixingCenter/.appdata")
+
+
+class _SharedPreferences:
+    """android SharedPreferences: a named key->value store that survives restarts. JSON-file-backed."""
+    def __init__(self, name):
+        self._path = _os.path.join(_APPDATA, "prefs", str(name) + ".json")
+        try:
+            import json
+            with open(self._path) as fh:
+                self._d = json.load(fh)
+        except (OSError, ValueError):
+            self._d = {}
+
+    def _get(self, k, d):
+        return self._d.get(str(k), d)
+
+    def getLong(self, k, d=0):
+        return int(self._get(k, d))
+
+    getInt = getLong
+
+    def getFloat(self, k, d=0.0):
+        return float(self._get(k, d))
+
+    def getBoolean(self, k, d=False):
+        return bool(self._get(k, d))
+
+    def getString(self, k, d=None):
+        return self._get(k, d)
+
+    def edit(self):
+        return _PrefsEditor(self)
+
+
+class _PrefsEditor:
+    def __init__(self, prefs):
+        self._p = prefs
+
+    def _put(self, k, v):
+        self._p._d[str(k)] = v
+        return self
+
+    putLong = putInt = putFloat = putBoolean = putString = _put
+
+    def remove(self, k):
+        self._p._d.pop(str(k), None)
+        return self
+
+    def apply(self):
+        import json
+        _os.makedirs(_os.path.dirname(self._p._path), exist_ok=True)
+        with open(self._p._path, "w") as fh:
+            json.dump(self._p._d, fh)
+
+    commit = apply
+
+
 class Context(_Stub):
-    pass
+    @property
+    def filesDir(self):
+        d = _os.path.join(_APPDATA, "files")
+        _os.makedirs(d, exist_ok=True)
+        return d
+
+    def getSharedPreferences(self, name, mode=0):
+        return _SharedPreferences(name)
 
 
-class Application(_Stub):
+class Application(Context):
     pass
 
 
