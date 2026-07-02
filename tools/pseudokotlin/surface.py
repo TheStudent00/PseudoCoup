@@ -30,7 +30,7 @@ def _usage():
     from the transpiled Python (read as text + ast.parse -- never imported, so no circular dependency)."""
     u = collections.defaultdict(lambda: {"called": 0, "attrs": set(), "typed": 0, "files": 0})
     for f in glob.glob(ROOT + "/**/*.py", recursive=True):
-        if "/WFL/" in f or "/__pycache__/" in f:
+        if "/WFL/" in f or "/__pycache__/" in f or "/render/" in f:
             continue
         try:
             tree = ast.parse(open(f).read())

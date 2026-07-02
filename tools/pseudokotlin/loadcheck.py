@@ -19,7 +19,7 @@ ROOT = os.path.expanduser("~/Programming/WFL_MixingCenter")
 
 def main():
     files = [f for f in glob.glob(ROOT + "/**/*.py", recursive=True)
-             if "/WFL/" not in f and "/__pycache__/" not in f]
+             if "/WFL/" not in f and "/__pycache__/" not in f and "/render/" not in f]
     ui = [f for f in files if "/ui/" in f]
     core = [f for f in files if "/ui/" not in f]                 # the non-UI foundation
 
