@@ -113,6 +113,9 @@ class LocalDateTime:
     def toLocalDate(self):
         return LocalDate(self._dt.date())
 
+    def format(self, fmt):
+        return fmt.format(self)
+
 
 class ZonedDateTime:
     def __init__(self, dt):
@@ -120,6 +123,9 @@ class ZonedDateTime:
 
     def toLocalDate(self):
         return LocalDate(self._dt.date())
+
+    def toLocalTime(self):
+        return LocalDateTime(self._dt)
 
     def toLocalDateTime(self):
         return LocalDateTime(self._dt)
@@ -129,6 +135,9 @@ class ZonedDateTime:
 
     def toEpochSecond(self):
         return int(self._dt.timestamp())
+
+    def format(self, fmt):
+        return fmt.format(self)
 
 
 class Instant:
@@ -149,6 +158,38 @@ class Instant:
     def atZone(self, zone):
         tz = zone._tz if isinstance(zone, ZoneId) else _tz.utc
         return ZonedDateTime(_dt.fromtimestamp(self._ms / 1000, tz))
+
+
+# java.time.format.DateTimeFormatter -- ofPattern(java pattern).format(temporal). Java pattern letters map
+# to strftime; longest tokens first so MMM beats MM beats M.
+_JAVA_TOKS = [("yyyy", "%Y"), ("yy", "%y"), ("MMMM", "%B"), ("MMM", "%b"), ("MM", "%m"), ("M", "%-m"),
+              ("dd", "%d"), ("d", "%-d"), ("EEEE", "%A"), ("EEE", "%a"), ("HH", "%H"), ("hh", "%I"),
+              ("h", "%-I"), ("mm", "%M"), ("ss", "%S"), ("a", "%p")]
+
+
+def _java_to_strftime(pattern):
+    import re
+    rx = re.compile("|".join(t for t, _ in _JAVA_TOKS))
+    m = dict(_JAVA_TOKS)
+    return rx.sub(lambda x: m[x.group(0)], pattern)
+
+
+class DateTimeFormatter:
+    def __init__(self, strf):
+        self._strf = strf
+
+    @staticmethod
+    def ofPattern(pattern, *a):
+        return DateTimeFormatter(_java_to_strftime(pattern))
+
+    def format(self, temporal):
+        d = getattr(temporal, "_dt", None)
+        if d is None:
+            d = getattr(temporal, "_d", None)
+        return d.strftime(self._strf) if d is not None else str(temporal)
+
+    def withLocale(self, *a):
+        return self
 
 
 # ---- java.util.UUID ----------------------------------------------------------------------------- #

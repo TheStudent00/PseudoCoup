@@ -21,7 +21,8 @@ def load_foundation():
     """exec the non-UI foundation into one runtime-seeded namespace (multipass for ordering)."""
     ns = dict(registry.namespace())
     files = [f for f in glob.glob(ROOT + "/**/*.py", recursive=True)
-             if "/WFL/" not in f and "/__pycache__/" not in f and "/ui/" not in f and "/navigation/" not in f]
+             if "/WFL/" not in f and "/__pycache__/" not in f and "/ui/" not in f and "/navigation/" not in f
+             and "/render/" not in f]
     pending = {f: open(f).read() for f in files}
     while pending:
         progressed = False

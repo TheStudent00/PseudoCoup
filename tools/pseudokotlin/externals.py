@@ -39,7 +39,7 @@ def referenced_in_output():
     Context, LocalDate) does. Heuristic, but it separates dropped annotations from live references."""
     names = set()
     for f in glob.glob(os.path.join(PY, "**", "*.py"), recursive=True):
-        if "/WFL/" in f or "/__pycache__/" in f or _is_ui(f):
+        if "/WFL/" in f or "/__pycache__/" in f or "/render/" in f or _is_ui(f):
             continue
         names |= set(re.findall(r"(?<![.\w])([A-Za-z_]\w*)", open(f).read()))
     return names
