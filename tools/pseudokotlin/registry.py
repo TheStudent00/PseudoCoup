@@ -21,6 +21,7 @@ import runtime.room as room                # noqa: E402  (the sqlite3 data-layer
 import runtime.numbers as numbers          # noqa: E402  (fixed-width numeric wrappers, emitted at literals)
 import runtime.compose as compose          # noqa: E402  (headless Compose: a @Composable emits a UI tree)
 import runtime.reactive as reactive        # noqa: E402  (observable State + recompose scheduler)
+import runtime.navigation as navigation    # noqa: E402  (NavHost/NavController: route + repaint)
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
 # (provided() indexes by NAME across all of these, so a name already in kotlin_rt -- e.g. java Date or
@@ -31,6 +32,7 @@ ORIGIN_MODULE = {
     "java": java_rt,                       # java.time chain, UUID, TimeUnit, File, ... (+ Date in kotlin_rt)
     "javax": kotlin_rt,
     "kotlinx_coroutines": coroutines,      # synchronous Flow/StateFlow reactive stand-in
+    "androidx_navigation": navigation,     # NavHost/rememberNavController/composable -> route + repaint
     "org": json_rt,                        # org.json -> Python json (real)
     "android": android_rt,                 # Android-framework STUBS (no Python Android)
     "androidx": android_rt,
