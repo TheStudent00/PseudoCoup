@@ -119,7 +119,30 @@ WeekFields = TemporalAdjusters = TextStyle = _P_
 
 # ---- android / lifecycle / hilt / room markers ------------------------------------------------- #
 Uri = _P_
-SavedStateHandle = _P_
+
+
+class SavedStateHandle:
+    """androidx SavedStateHandle: the key->value holder navigation fills with the route's arguments (the
+    'which item?' input -- e.g. gymId for 'edit THIS gym'). Missing key -> None (Kotlin's get is nullable),
+    which is the launched-directly / create-new state. Navigation supplies real values when it routes."""
+    def __init__(self, args=None):
+        self._d = dict(args or {})
+
+    def __getitem__(self, k):
+        return self._d.get(k)
+
+    def get(self, k, default=None):
+        v = self._d.get(k)
+        return default if v is None else v
+
+    def __setitem__(self, k, v):
+        self._d[k] = v
+
+    def set(self, k, v):
+        self._d[k] = v
+
+    def contains(self, k):
+        return k in self._d
 HiltViewModel = _identity_deco
 Delete = _identity_deco
 

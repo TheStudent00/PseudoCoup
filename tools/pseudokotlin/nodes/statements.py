@@ -74,11 +74,16 @@ class Statements:
 
     def _when(self, node, lead):
         subj_node = next((c for c in node.named_children if c.type == "when_subject"), None)
-        subj = None
+        subj, bind = None, None
         if subj_node is not None:
             inner = self.named(subj_node)
-            subj = self.visit(inner[-1]) if inner else None
-        out, first, has_else = [], True, False
+            vd = next((c for c in inner if c.type == "variable_declaration"), None)
+            if vd is not None and inner:         # `when (val x = expr)`: BIND x first -- the branch
+                subj = self._safe(self._name_of(vd) or "_subj")   # bodies reference it by name
+                bind = f"{subj} = {self.visit(inner[-1])}"
+            elif inner:
+                subj = self.visit(inner[-1])
+        out, first, has_else = ([bind] if bind else []), True, False
         for e in [c for c in node.named_children if c.type == "when_entry"]:
             named = self.named(e)
             body = named[-1]
@@ -106,7 +111,7 @@ class Statements:
         if c.type == "type_test":
             neg = any(k.type == "!is" for k in c.children)
             tn = next((k for k in c.named_children if k.type == "user_type"), None)
-            chk = f"isinstance({subj}, {self._py_type_name(tn)})"
+            chk = f"is_instance({subj}, {self._py_type_name(tn)})"
             return f"not {chk}" if neg else chk
         return f"{subj} == {self.visit(c)}" if subj else self.visit(c)
 

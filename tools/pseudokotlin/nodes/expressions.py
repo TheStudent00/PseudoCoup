@@ -44,6 +44,10 @@ _STDLIB_METHODS = {
     "toFloat":       lambda r, a: f"float({r})",
     "toInt":         lambda r, a: f"int({r})",
     "toLong":        lambda r, a: f"int({r})",
+    "toIntOrNull":    lambda r, a: f"toIntOrNull({r})",     # runtime helpers (kotlin parse rules;
+    "toLongOrNull":   lambda r, a: f"toLongOrNull({r})",    # None on bad grammar/overflow) -- a real
+    "toDoubleOrNull": lambda r, a: f"toDoubleOrNull({r})",  # str has no such method to dispatch to
+    "toFloatOrNull":  lambda r, a: f"toFloatOrNull({r})",
     "toString":      lambda r, a: f"str({r})",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
     # ---- Kotlin String methods (names differ from Python's str) ---- #
@@ -311,8 +315,8 @@ class Expressions:
     def v_is(self, node):
         kids = self.named(node)
         neg = any(c.type == "!is" for c in node.children)
-        call = f"isinstance({self.visit(kids[0])}, {self.visit(kids[-1])})"
-        return f"(not {call})" if neg else call
+        call = f"is_instance({self.visit(kids[0])}, {self.visit(kids[-1])})"   # kotlin `is T` -- T may be
+        return f"(not {call})" if neg else call                                # an object SINGLETON
 
     @kind("parenthesized_expression")
     def v_paren(self, node):
@@ -434,8 +438,9 @@ class Expressions:
                         return self._let_guard(nk[0], lam, safe)
                     raise Untranspilable(node, f"non-local return in {sel} {{ … }}")
                 return _wrap(_SCOPE_FNS[sel](recv, self._lambda_str(trailing), safe))
-            if sel in _STDLIB_METHODS and not safe:     # WRAP: recv.coerceIn(...) -> min/max
-                return _wrap(_STDLIB_METHODS[sel](recv, self._arg_values(node)))
+            if sel in _STDLIB_METHODS:                  # WRAP: recv.coerceIn(...) -> min/max; a safe call
+                inner = _STDLIB_METHODS[sel](recv, self._arg_values(node))   # keeps its not-None guard
+                return _wrap(f"({inner} if {recv} is not None else None)" if safe else inner)
             # general method call -- build recv.sel(args) from the receiver+selector so the
             # navigation PROPERTY mappings (.first -> [0], .size -> len) don't fire on a
             # method CALL (`it.first()` is a method; `it.first` is the property).
@@ -733,7 +738,7 @@ class Expressions:
         # `x is Type` / `x !is Type` -> isinstance(x, Type) / not isinstance(x, Type)
         left = self.visit(self.named(node)[0])
         tn = next((k for k in node.named_children if k.type == "user_type"), None)
-        chk = f"isinstance({left}, {self._py_type_name(tn)})"
+        chk = f"is_instance({left}, {self._py_type_name(tn)})"
         return f"(not {chk})" if any(c.type == "!is" for c in node.children) else chk
 
     def _py_type_name(self, tn):
