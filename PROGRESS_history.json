@@ -235,7 +235,7 @@
     {
       "key": "ui",
       "label": "UI (PseudoUI screens)",
-      "note": "29/29 screens render HONESTLY (no error-swallowing) under per-file namespaces (Kotlin file visibility); 16/29 show REAL data from a real db; reactive + interaction proven in Kivy. Left: navigation args -> the 9 which-item screens + full app boot; 3 unverified sightings; styling.",
+      "note": "THE APP RUNS: run_app.py AppNavigation boots the whole app in one Kivy window -- real first-launch onboarding, navigation courier delivers route arguments (gym_editor?gymId=X -> Edit gym showing the real gym from the real db), back works, taps fire real handlers through recompose. render 29/29 honest. Left: drive the flows for the tail, styling, DebugPanel decision.",
       "series": [
         {
           "date": "2026-06-20",
@@ -280,6 +280,10 @@
         {
           "date": "2026-07-02",
           "pct": 88
+        },
+        {
+          "date": "2026-07-02",
+          "pct": 93
         }
       ]
     }
@@ -380,6 +384,10 @@
     {
       "date": "2026-07-02",
       "text": "Per-file namespaces land (loader.py, Kotlin file-visibility; class-body lookups pre-bound) -- all name-collision victims recover. Data classes get copy/value-equality. render 29/29 HONEST (strict error surfacing), screens with REAL data 16/29, VMs clean 18/31, all gates green, 0 loader gaps."
+    },
+    {
+      "date": "2026-07-02",
+      "text": "THE APP RUNS IN KIVY: full boot (AppNavigation) -- real onboarding on fresh install, the navigation courier (route-pattern matching -> SavedStateHandle) delivers which-item arguments, hiltViewModel is per-call with its declared type, natural flow proven headless AND in a window (sample_app_boot_onboarding.png). render 29/29, VMs 19/31, real-data 16/29, all gates green."
     }
   ]
 }
