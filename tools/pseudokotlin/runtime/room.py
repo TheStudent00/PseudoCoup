@@ -173,6 +173,22 @@ class Dao:
     def _one(self, sql, params=None):           # suspend X?
         return self._db.query(sql, params, single=True)
 
+    def _relation(self, sql, params, pojo, emb_field, rel_field, rel_entity,
+                  parent_col, entity_col, rel_is_list, as_list=True):
+        """A @Transaction @Query returning a @Relation POJO. Run the base query for the @Embedded rows, then
+        for each stitch its related rows (SELECT * FROM <rel table> WHERE <entityColumn> = row.<parentColumn>)
+        -- exactly Room's relation assembly. Returns Flow<List<POJO>> / Flow<POJO?>."""
+        table = rel_entity._room.table
+        parents = self._db.query(sql, params)
+
+        def stitch(p):
+            kids = self._db.query(f"SELECT * FROM {table} WHERE {entity_col} = :_pk",
+                                  {"_pk": getattr(p, parent_col)})
+            return pojo(**{emb_field: p, rel_field: (kids if rel_is_list else (kids[0] if kids else None))})
+
+        out = [stitch(p) for p in parents]
+        return Flow([out if as_list else (out[0] if out else None)])
+
     def _insert(self, obj, replace=True):       # @Insert one or a list
         for e in (obj if isinstance(obj, list) else [obj]):
             self._db.insert(e, replace)
