@@ -88,6 +88,11 @@ class Flow:
             action(v)
         return None
 
+    def collectLatest(self, action):    # synchronous model: only the LATEST value is ever delivered
+        if self._values:
+            action(self._values[-1])
+        return None
+
     def map(self, fn):
         return Flow(fn(v) for v in self._values)
 

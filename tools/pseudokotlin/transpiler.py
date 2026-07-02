@@ -52,6 +52,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._enum_types = set()      # enum class names -> their members/extensions see name/ordinal
         self._implicit_recv = []      # stack of apply/run/with receiver temps -> bare member calls bind here
         self._top_level = set()       # this file's top-level decl names -> never an implicit-receiver member
+        self._last_param = {}         # this file's fn name -> LAST param name (trailing-lambda slot)
         self._GLOBALS = _global_names()
 
     def transpile(self, source: bytes) -> str:
@@ -63,12 +64,18 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
     def _scan_top_level(self, root):
         # top-level fun/val/class/object names -> excluded from implicit-receiver qualification (a bare
         # `helper()` inside an apply on another object is the top-level helper, not a receiver method).
+        # Also record each top-level fn's LAST parameter name: kotlin binds a trailing lambda to the last
+        # parameter (whatever it is called), so a same-file call emits the correct keyword, not `content=`.
         for c in root.named_children:
             if c.type in ("function_declaration", "property_declaration",
                           "class_declaration", "object_declaration"):
                 nm = self._name_of(c, deep=(c.type == "property_declaration"))
                 if nm:
                     self._top_level.add(nm)
+                if c.type == "function_declaration":
+                    pts = self._param_types(c)
+                    if pts and pts[-1][0]:
+                        self._last_param[nm] = self._safe(pts[-1][0])
 
     def _scan_enums(self, node):
         if node.type == "class_declaration" and any(

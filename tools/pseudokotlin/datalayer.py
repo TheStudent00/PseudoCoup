@@ -165,6 +165,8 @@ def dao_body(method_node):
             helper = "_flow"
         elif "Flow" in ret:
             helper = "_flowOne"
+        elif "List" in ret:
+            helper = "_list"                    # suspend List<X> -> all rows, not the single-row helper
         else:
             helper = "_one"
         return f"return self.{helper}({sql!r}, {pdict})"

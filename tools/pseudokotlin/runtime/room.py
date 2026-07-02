@@ -184,6 +184,9 @@ class Dao:
     def _one(self, sql, params=None):           # suspend X?
         return self._db.query(sql, params, single=True)
 
+    def _list(self, sql, params=None):          # suspend List<X> -- ALL rows (not the single-row helper)
+        return self._db.query(sql, params)
+
     def _relation(self, sql, params, pojo, emb_field, rel_field, rel_entity,
                   parent_col, entity_col, rel_is_list, as_list=True):
         """A @Transaction @Query returning a @Relation POJO. Run the base query for the @Embedded rows, then
