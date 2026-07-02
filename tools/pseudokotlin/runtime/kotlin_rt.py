@@ -869,6 +869,10 @@ def intArrayOf(*xs):
 Unit = type("Unit", (), {})     # kotlin.Unit -- the void singleton/type (a default import, used bare)
 
 
+def run(block=None, *a, **k):    # kotlin standalone `run { … }` -- execute the block, return its result
+    return block() if callable(block) else block
+
+
 def repeat(n, action):
     for i in range(n):
         action(i)

@@ -150,7 +150,25 @@ class Declarations:
         decos = ([decorator] if decorator else []) + \
             [f"@{a}" for a in self._annotations(node) if a in _JUNIT_ANN]
         head = "".join(d + "\n" for d in decos)
-        return f"{head}def {name}({', '.join(params)}):\n{body}"
+        rt = self._return_type(node)                     # keep the return type (lets DI read what a recipe makes)
+        return f"{head}def {name}({', '.join(params)}){f' -> {rt}' if rt else ''}:\n{body}"
+
+    def _return_type(self, node):
+        """The declared return type (the `user_type` after the parameter list, not the extension receiver),
+        cleaned to a Python-safe identifier hint; None for constructors / complex types."""
+        kids = list(node.children)
+        vp = next((i for i, c in enumerate(kids) if c.type == "function_value_parameters"), None)
+        if vp is None:
+            return None
+        for c in kids[vp + 1:]:
+            if c.type in ("function_body", "block"):
+                break
+            if c.type in ("user_type", "nullable_type"):
+                ut = c if c.type == "user_type" else next((k for k in c.children if k.type == "user_type"), None)
+                if ut is not None:
+                    t = self._strip_pkg(self.text(ut).split("<")[0].strip().rstrip("?"))
+                    return t if t and all(p.isidentifier() for p in t.split(".")) else None
+        return None
 
     # ---- method overloading (Kotlin same-name, different signatures) ------- #
     def _render_overloads(self, name, variants):
