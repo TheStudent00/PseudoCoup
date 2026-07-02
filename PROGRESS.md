@@ -27,7 +27,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | Externs (runtime wrappers) | **97%** | `▁▂▃▃▄▆▇██` | wrapper surface COMPLETE: 338/345 (97%) external names have real wrappers -- reactive State+recompose, collectAsState, Room @Relation, navigation, DI VM-builder, and the full Compose style/layout/icon surface (compose_ui) + kotlin.math/platform (extras). The 7 remaining are stdlib METHODS (map/stateIn/collectAsState/...) real on the objects; only their unused free alias is a stub. |
 | Data layer (Room / sqlite3) | **91%** | `▁▁▁▁▂███` | runs end-to-end incl. Room @Relation stitching now (GymWithEquipment/ProgramExerciseWithSets assembled). Instrumented suite 4/4. |
 | WFL domain functionality | **76%** | `▁▃▄▅▅███` | 11 engines proven; ViewModels now constructible on a real db (general di.py) and drive real screen data. Left: full repository/VM coverage, the 9-dep AppViewModel. |
-| UI (PseudoUI screens) | **82%** | `▁▁▁▂▂▂▆▇▇█` | screens run in Kivy (render/): 28/29 render, reactive state proven (tap->recompose), REAL data proven (GymList: seeded db -> VM -> collectAsState -> @Relation -> cards), navigation primitives proven (route+repaint). Left: full multi-screen boot (AppNavigation needs the 9-dep AppViewModel wired), breadth, styling/icons. |
+| UI (PseudoUI screens) | **82%** | `▁▁▁▂▂▂▆▇▇█` | 28/29 was partly a lie (swallowed body errors) -- honestly 25/29 render + 11/29 on REAL data. Remaining causes: loader name-collisions (3 screens), HistoryScreen thin, nav-args (which-item screens), full app boot. |
 
 ## On-deck — next sub-tasks (top = next)
 
@@ -47,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-07-02` Five general causes fixed in one pass: string->number conversion family (real kotlin parse rules), real SavedStateHandle (which-item holder), real app storage (files+prefs as local folder/JSON), compose error-swallowing removed (render gate honestly 28->25: 4 hidden failures exposed, 1 fixed same-pass), when-val subject binding + is-checks on object singletons. Screens with REAL data 9->11, VMs clean 14/31. Named next cause: one-namespace loader collisions (per-file namespaces).
 - `2026-07-02` Wrapper surface completed: 41% -> 97% (338/345). compose_ui.py fills the whole Compose style/layout/icon/animation surface; extras.py fills kotlin.math/Random/viewModelScope/edge-platform. All gates green, render 28/29, no regression. Remaining 7 are working stdlib methods (unused free alias only).
 - `2026-07-02` App RUNS in Kivy (render/run_app.py): transpiled screens render as real Kivy windows; reactive state (tap->recompose->repaint), REAL data (general di.py builds VMs on a real in-memory db; GymList shows seeded gyms via collectAsState + Room @Relation stitching), and navigation primitives (NavHost/navigate route+repaint) all proven. Transpiled structure untouched -- all wiring in render/ + runtime wrappers.
 - `2026-06-30` Render 20/29 -> 28/29: render harness skips on* event handlers (they fire on user action, not at render), and android_rt platform stand-ins are class-level permissive (metaclass, no hand-listing). Only HistoryScreen (thin) remains. NOTE: render is structural under stub inputs, not behavioural.
