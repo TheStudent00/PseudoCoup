@@ -22,6 +22,8 @@ import runtime.numbers as numbers          # noqa: E402  (fixed-width numeric wr
 import runtime.compose as compose          # noqa: E402  (headless Compose: a @Composable emits a UI tree)
 import runtime.reactive as reactive        # noqa: E402  (observable State + recompose scheduler)
 import runtime.navigation as navigation    # noqa: E402  (NavHost/NavController: route + repaint)
+import runtime.compose_ui as compose_ui    # noqa: E402  (Modifier/Color/Icons/dp/animation: the style surface)
+import runtime.extras as extras            # noqa: E402  (kotlin.math, Random, viewModelScope, edge platform bits)
 
 # origin label (from resolve.origin) -> the runtime module that currently provides its stand-ins.
 # (provided() indexes by NAME across all of these, so a name already in kotlin_rt -- e.g. java Date or
@@ -46,7 +48,7 @@ ORIGIN_MODULE = {
 
 def _modules():
     seen, mods = set(), []
-    for m in [numbers, reactive, *ORIGIN_MODULE.values()]:   # numbers/reactive aren't import origins -- always available
+    for m in [numbers, reactive, compose_ui, extras, *ORIGIN_MODULE.values()]:   # non-origin modules, always available
         if m.__name__ not in seen:
             seen.add(m.__name__)
             mods.append(m)

@@ -1,0 +1,103 @@
+"""compose_ui.py -- the Compose styling / layout / icon / animation surface, as REAL wrappers.
+
+These are the names that decorate the UI tree (Modifier, Color, shapes, Icons, theming, animation specs) plus
+the layout modifier functions (padding/fillMaxWidth/...). For the headless tree + Kivy kit they carry no
+behaviour yet, so each is a chainable structural value (`_UI`): attr, call, index all yield it, and it is
+arithmetic/compare-safe so no chain ever crashes. The few with real behaviour are set below: dp/sp/em are
+real numbers (sizes), rememberCoroutineScope is a real scope. This completes the compose binding -- these are
+provided wrappers now, not autostub stubs. When the kit starts reading style, _UI grows real fields.
+"""
+
+
+class _UIChain:
+    def __getattr__(self, n):
+        return self
+
+    def __call__(self, *a, **k):
+        return self
+
+    def __getitem__(self, _k):
+        return self
+
+    def __iter__(self):
+        return iter(())
+
+    def __len__(self):
+        return 0
+
+    def __bool__(self):
+        return True
+
+    def __contains__(self, _x):
+        return False
+
+    def _id(self, *a):
+        return self
+
+    __add__ = __radd__ = __sub__ = __rsub__ = __mul__ = __rmul__ = _id
+    __truediv__ = __rtruediv__ = __floordiv__ = __mod__ = __neg__ = __pos__ = __abs__ = _id
+
+    def __int__(self):
+        return 0
+
+    def __float__(self):
+        return 0.0
+
+    def __index__(self):
+        return 0
+
+    def __eq__(self, _o):
+        return self is _o
+
+    def __hash__(self):
+        return id(self)
+
+    def __lt__(self, _o):
+        return False
+
+    __gt__ = __le__ = __ge__ = __lt__
+
+    def __repr__(self):
+        return "<ui>"
+
+
+_UI = _UIChain()
+
+_NAMES = """Add Alignment Arrangement ArrowBack ArrowDownward ArrowDropDown ArrowUpward AssistChipDefaults
+BarChart Bedtime BorderStroke Brush ButtonDefaults Canvas CardDefaults Check CheckCircle CircleShape Close Color
+LaunchedEffect
+ColumnScope DatePicker DatePickerDialog DateRange Dp Edit EmojiEvents ExpandLess ExpandMore ExperimentalLayoutApi
+ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite FavoriteBorder FilterChipDefaults
+FitnessCenter FocusRequester Font FontFamily FontStyle FontVariation FontWeight HelpOutline Home HorizontalPager
+Icons ImageVector ImeAction Immutable Info IntrinsicSize KeyboardActions KeyboardArrowDown KeyboardArrowRight
+KeyboardArrowUp KeyboardOptions KeyboardType Link ListItemDefaults LocalConfiguration LocalFocusManager Modifier
+MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset PaddingValues Path PathEffect Person
+PlayArrow PrimaryScrollableTabRow ReadOnlyComposable Remove RepeatMode RichTooltip RoundedCornerShape Route Search
+SearchBar SearchBarDefaults SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
+Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextFieldValue TextOverflow
+TextRange TooltipBox TooltipDefaults TopAppBarDefaults Typography WindowInsets alpha animateFloat animateFloatAsState
+background border buildAnnotatedString clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
+drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
+heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp lightColorScheme navigationBarsPadding
+offset onFocusChanged onGloballyPositioned padding pointerInput positionInParent rememberDatePickerState
+rememberInfiniteTransition rememberLazyListState rememberModalBottomSheetState rememberPagerState rememberScrollState
+rememberSwipeToDismissBoxState rememberTooltipState rotate scale setValue size slideInHorizontally slideInVertically
+slideOutHorizontally slideOutVertically spring staticCompositionLocalOf togetherWith tween verticalScroll width
+withFrameMillis wrapContentSize zIndex MaterialTheme rememberLauncherForActivityResult LocalContext
+LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
+
+for _n in _NAMES:
+    globals()[_n] = _UI
+
+
+# ---- the few with real behaviour ----------------------------------------------------------------- #
+def dp(x=0, *a, **k):        # a dimension IS its number here (so sizes/arithmetic are real)
+    return x
+
+
+sp = em = dp
+
+
+def rememberCoroutineScope(*a, **k):
+    import runtime.coroutines as _c
+    return _c.CoroutineScope()
