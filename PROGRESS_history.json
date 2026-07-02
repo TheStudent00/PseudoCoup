@@ -67,7 +67,7 @@
     {
       "key": "transpiler",
       "label": "Transpiler (Kt\u2192Py engine)",
-      "note": "254/254 parse, oracle 11/11; +Room @Relation metadata emission. Left: preserve more type/annotation metadata (DI types) surfaced by the run phase.",
+      "note": "254/254 parse, oracle 11/11. Now preserves: types, generics, inheritance, data-class copy/equality, trailing-lambda slots, safe-call scope fns, reified filterIsInstance, when-val bindings, const-as-static. Left: whatever running the rest surfaces.",
       "series": [
         {
           "date": "2026-06-20",
@@ -104,6 +104,10 @@
         {
           "date": "2026-07-02",
           "pct": 94
+        },
+        {
+          "date": "2026-07-02",
+          "pct": 97
         }
       ]
     },
@@ -231,7 +235,7 @@
     {
       "key": "ui",
       "label": "UI (PseudoUI screens)",
-      "note": "28/29 was partly a lie (swallowed body errors) -- honestly 25/29 render + 11/29 on REAL data. Remaining causes: loader name-collisions (3 screens), HistoryScreen thin, nav-args (which-item screens), full app boot.",
+      "note": "29/29 screens render HONESTLY (no error-swallowing) under per-file namespaces (Kotlin file visibility); 16/29 show REAL data from a real db; reactive + interaction proven in Kivy. Left: navigation args -> the 9 which-item screens + full app boot; 3 unverified sightings; styling.",
       "series": [
         {
           "date": "2026-06-20",
@@ -272,6 +276,10 @@
         {
           "date": "2026-07-02",
           "pct": 82
+        },
+        {
+          "date": "2026-07-02",
+          "pct": 88
         }
       ]
     }
@@ -368,6 +376,10 @@
     {
       "date": "2026-07-02",
       "text": "Five general causes fixed in one pass: string->number conversion family (real kotlin parse rules), real SavedStateHandle (which-item holder), real app storage (files+prefs as local folder/JSON), compose error-swallowing removed (render gate honestly 28->25: 4 hidden failures exposed, 1 fixed same-pass), when-val subject binding + is-checks on object singletons. Screens with REAL data 9->11, VMs clean 14/31. Named next cause: one-namespace loader collisions (per-file namespaces)."
+    },
+    {
+      "date": "2026-07-02",
+      "text": "Per-file namespaces land (loader.py, Kotlin file-visibility; class-body lookups pre-bound) -- all name-collision victims recover. Data classes get copy/value-equality. render 29/29 HONEST (strict error surfacing), screens with REAL data 16/29, VMs clean 18/31, all gates green, 0 loader gaps."
     }
   ]
 }
