@@ -82,12 +82,66 @@ heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp lightC
 offset onFocusChanged onGloballyPositioned padding pointerInput positionInParent rememberDatePickerState
 rememberInfiniteTransition rememberLazyListState rememberModalBottomSheetState rememberPagerState rememberScrollState
 rememberSwipeToDismissBoxState rememberTooltipState rotate scale setValue size slideInHorizontally slideInVertically
-slideOutHorizontally slideOutVertically spring staticCompositionLocalOf togetherWith tween verticalScroll width
+slideOutHorizontally slideOutVertically spring togetherWith tween verticalScroll width
 withFrameMillis wrapContentSize zIndex MaterialTheme rememberLauncherForActivityResult LocalContext
 LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
 
 for _n in _NAMES:
     globals()[_n] = _UI
+
+
+# ---- CompositionLocal: the theme's delivery path (was inert, so tokens/colors dropped) ----------- #
+class _Provided:
+    """The result of `LocalX provides value` (transpiled `LocalX.provides(value)`): a (local, value) pair
+    handed to CompositionLocalProvider, which pushes it for the duration of its content."""
+    __slots__ = ("local", "value")
+
+    def __init__(self, local, value):
+        self.local, self.value = local, value
+
+
+class CompositionLocal:
+    """A value provided high in the UI tree and read anywhere below via `.current`, without threading it
+    through every function. The theme is exactly this: `WflTheme.tokens` reads `LocalWflTokens.current`.
+    `.current` returns the innermost provided value, or the default the local was created with. Was an inert
+    `<ui>` before, which is why every `WflTheme.tokens.*` / `WflTheme.colors.*` read collapsed to nothing."""
+    __slots__ = ("_default_factory", "_stack")
+
+    def __init__(self, default_factory):
+        self._default_factory = default_factory
+        self._stack = []                         # provided values, innermost last
+
+    @property
+    def current(self):
+        if self._stack:
+            return self._stack[-1]
+        f = self._default_factory
+        if callable(f):
+            try:
+                return f()
+            except TypeError:
+                return f(None)                   # the default lambda is emitted as `lambda it=None: ...`
+        return f
+
+    def provides(self, value):
+        return _Provided(self, value)
+
+    def providesDefault(self, value):            # Compose's providesDefault -- same pairing here
+        return _Provided(self, value)
+
+    def push(self, value):                       # the provider brackets its content with push/pop
+        self._stack.append(value)
+
+    def pop(self):
+        if self._stack:
+            self._stack.pop()
+
+
+def staticCompositionLocalOf(default_factory=None, *a, **k):
+    return CompositionLocal(default_factory)
+
+
+compositionLocalOf = staticCompositionLocalOf   # (change-tracking distinction is moot in this model)
 
 
 # ---- the few with real behaviour ----------------------------------------------------------------- #
