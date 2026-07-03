@@ -27,7 +27,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 | Externs (runtime wrappers) | **97%** | `▁▂▃▃▄▆▇██` | wrapper surface COMPLETE: 338/345 (97%) external names have real wrappers -- reactive State+recompose, collectAsState, Room @Relation, navigation, DI VM-builder, and the full Compose style/layout/icon surface (compose_ui) + kotlin.math/platform (extras). The 7 remaining are stdlib METHODS (map/stateIn/collectAsState/...) real on the objects; only their unused free alias is a stub. |
 | Data layer (Room / sqlite3) | **91%** | `▁▁▁▁▂███` | runs end-to-end incl. Room @Relation stitching now (GymWithEquipment/ProgramExerciseWithSets assembled). Instrumented suite 4/4. |
 | WFL domain functionality | **76%** | `▁▃▄▅▅███` | 11 engines proven; ViewModels now constructible on a real db (general di.py) and drive real screen data. Left: full repository/VM coverage, the 9-dep AppViewModel. |
-| UI (PseudoUI screens) | **96%** | `▁▁▁▂▂▂▅▆▆▇▇██` | the FULL natural-flow walk is green (walk.py): 41-step onboarding through the real buttons -> today -> all tabs -> every destination -> a real tap into a which-item screen. render 29/29, VMs 20/31 (9 which-item VMs live via navigation, DebugPanel = debug-clock decision). Left: styling in the kit, flow-walking deeper interactions. |
+| UI (PseudoUI screens) | **96%** | `▁▁▁▂▂▂▅▆▆▇▇██` | the FULL walk is green AND styling flows: the wrapper records (Modifier chain ops, fonts, spacing, alignment as real distinct values), the kit applies (padding/size/weight/spacing/font/halign). sample_styled_logcardio.png. Left: layout polish (row-height/weight overlaps), deeper interaction walks, colors/theming. |
 
 ## On-deck — next sub-tasks (top = next)
 
@@ -47,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## Milestones — what landed, when
 
+- `2026-07-02` Styling pipeline live: Node.props + recording Modifier + real style constants (wrapper records) -> kivy_kit applies padding/dims/weight/spacing/fonts/alignment. Spaced chip rows, padded text, real selector values on screen. Gates green, walk 16/16.
 - `2026-07-02` FULL WALK GREEN: onboarding end-to-end (41 real steps: calibration, gym, equipment catalog, path, program) -> today -> every destination renders with real data -> real card-tap into gym_editor. Fixed en route: LaunchedEffect runs (slot-backed), per-destination slot scoping, implicit-it enclosing capture, dp/sp number properties, real DayOfWeek display names, ifBlank/ifEmpty. All gates green.
 - `2026-07-02` THE APP RUNS IN KIVY: full boot (AppNavigation) -- real onboarding on fresh install, the navigation courier (route-pattern matching -> SavedStateHandle) delivers which-item arguments, hiltViewModel is per-call with its declared type, natural flow proven headless AND in a window (sample_app_boot_onboarding.png). render 29/29, VMs 19/31, real-data 16/29, all gates green.
 - `2026-07-02` Per-file namespaces land (loader.py, Kotlin file-visibility; class-body lookups pre-bound) -- all name-collision victims recover. Data classes get copy/value-equality. render 29/29 HONEST (strict error surfacing), screens with REAL data 16/29, VMs clean 18/31, all gates green, 0 loader gaps.
