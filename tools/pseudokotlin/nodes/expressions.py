@@ -443,6 +443,8 @@ class Expressions:
                 g = self._empty_guard(recv, sel, self._lambda_node(trailing))
                 if g is not None:                            # `s.ifEmpty { continue }` -> guard
                     return _wrap(g)
+                return _wrap(f"{sel}({recv}, {self._lambda_str(trailing)})")   # runtime helper (real str
+                                                                               # has no such method)
             if sel in _SCOPE_FNS and trailing is not None:   # x.let { it… } -> f(x)
                 lam = self._lambda_node(trailing)
                 if self._has_nonlocal_return(lam):      # `x?.let { return it }` guard:
@@ -606,7 +608,11 @@ class Expressions:
                         params.append(nm); scope.add(nm)
         if not params:
             scope.add("it")
-        ps = ", ".join(params) if params else "it=None"
+        # a parameterless lambda's implicit `it`: if an ENCLOSING lambda bound `it`, kotlin's content
+        # lambdas (receiver lambdas, no parameter) see THAT it -- so default to it (captured at def time),
+        # not None. `definition?.let { ... Row { LabeledStat(it.min...) } ... }` reads the let's it inside.
+        outer_it = any("it" in s for s in self._scopes)
+        ps = ", ".join(params) if params else ("it=it" if outer_it else "it=None")
         body = [c for c in self.named(node) if c.type != "lambda_parameters"]
         if not body:
             return f"(lambda {ps}: None)"

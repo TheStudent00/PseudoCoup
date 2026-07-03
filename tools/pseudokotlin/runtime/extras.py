@@ -113,8 +113,8 @@ asSharedFlow = collectLatest = debounce = distinctUntilChanged = _P_
 viewModelScope = _coro.CoroutineScope()      # real scope -> viewModelScope.launch runs the block
 
 
-# ---- java.time extras (permissive; DayOfWeek is REAL in java_rt) -------------------------------- #
-WeekFields = TemporalAdjusters = TextStyle = _P_
+# ---- java.time extras (permissive; DayOfWeek and TextStyle are REAL in java_rt) ----------------- #
+WeekFields = TemporalAdjusters = _P_
 
 
 # ---- android / lifecycle / hilt / room markers ------------------------------------------------- #

@@ -977,6 +977,18 @@ def orEmpty(x):                          # kotlin `String?.orEmpty()` -- an exte
     return x if x is not None else ""    # (list receivers would fail loudly downstream; none sighted)
 
 
+def ifBlank(s, default):                 # kotlin `s.ifBlank { fallback }`
+    if s is None or not str(s).strip():
+        return default() if callable(default) else default
+    return s
+
+
+def ifEmpty(x, default):                 # kotlin `x.ifEmpty { fallback }` (string or collection)
+    if x is None or len(x) == 0:
+        return default() if callable(default) else default
+    return x
+
+
 # kotlin String.substring*/remove* family (no Python str equivalents; rewritten at call sites)
 def substringAfter(s, d, miss=None):
     i = str(s).find(d)

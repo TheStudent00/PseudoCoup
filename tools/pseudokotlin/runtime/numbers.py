@@ -48,6 +48,12 @@ class _NumOps:
     """Arithmetic overrides + Kotlin numeric promotion. Mixed into int/float subclasses (so `self` IS the
     number; int(self)/float(self) read its value without recursion)."""
 
+    @property
+    def dp(self):                       # compose `24.dp` / `16.sp` extension properties -- a dimension
+        return self                     # IS its number here (matches the dp()/sp() wrapper functions)
+
+    sp = dp
+
     def _promote(self, o):
         """-> (box, x, y, float_result) under Int < Long < Float < Double widening."""
         if isinstance(o, float) and not isinstance(o, Float32):        # a bare Double dominates
