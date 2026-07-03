@@ -136,6 +136,29 @@ def CompositionLocalProvider(*args, **kwargs):
             p.local.pop()
 
 
+def Scaffold(*args, **kwargs):
+    """Scaffold has SLOTS -- topBar / content / bottomBar / floatingActionButton -- and Compose FRAMES them
+    (bar pinned top, content filling with inset, FAB floating bottom-end). The plain emitter dropped which
+    child came from which slot, so the kit stacked them in emission order and the FAB landed on the title.
+    Tag each child with its slot name so the kit can place it. content also receives the inner PaddingValues
+    (a Stub here); the block runs so its subtree emits."""
+    node = Node("Scaffold")
+    _emit(node)
+    _STACK.append(node)
+    try:
+        content_fn = kwargs.get("content") or next((a for a in args if callable(a)), None)
+        for slot in ("topBar", "content", "floatingActionButton", "bottomBar", "snackbarHost"):
+            fn = content_fn if slot == "content" else kwargs.get(slot)
+            if callable(fn):
+                before = len(node.children)
+                _call(fn)
+                for ch in node.children[before:]:
+                    ch.props.setdefault("slot", slot)
+    finally:
+        _STACK.pop()
+    return node
+
+
 def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever survives -> identity
     return fn if fn is not None else (lambda g: g)
 
