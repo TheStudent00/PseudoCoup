@@ -19,6 +19,8 @@ class Node:
     def __init__(self, kind):
         self.kind, self.text, self.children = kind, None, []
         self.handlers = {}      # on*-event name -> the transpiled handler (wired to the kit, fired on action)
+        self.props = {}         # the widget's VALUE kwargs (modifier chain, fontSize, arrangement, ...) --
+                                # recorded here so the kit can APPLY them (the wrapper records, the kit draws)
 
     def tree(self, depth=0):
         line = "  " * depth + self.kind + (f": {self.text!r}" if isinstance(self.text, str) else "")
@@ -70,6 +72,8 @@ def _composable(kind):
                     _call(a)
                 elif node.text is None and isinstance(a, str):
                     node.text = a
+                elif hasattr(a, "_ops"):         # a positional Modifier chain: `Spacer(Modifier.height(8))`
+                    node.props.setdefault("modifier", a)
             for k, v in kwargs.items():          # `content=`, `topBar=`, `title=`, `label=`, `icon=`, …
                 if k.startswith("on"):           # an EVENT handler (onClick/onValueChange/onDone): STORE it
                     if callable(v):              # for the kit to fire on user action -- never call at render
@@ -79,6 +83,9 @@ def _composable(kind):
                     _call(v)
                 elif k in ("text", "value") and isinstance(v, str):
                     node.text = v                # an input widget DISPLAYS its value -- record it
+                else:
+                    node.props[k] = v            # a VALUE kwarg (modifier/fontSize/arrangement/...) --
+                                                 # recorded for the kit to apply
         finally:
             _STACK.pop()
         return node
