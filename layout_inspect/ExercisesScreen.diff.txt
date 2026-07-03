@@ -1,0 +1,13 @@
+ExercisesScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Exercises                            compose x=  3.9 y=  2.0 w= 22.6 h= 3.1  |  kivy x=  1.0 y=  2.4 w= 22.6 h= 2.8  |  worst Δ  2.9%
+  FAIL  No exercises found.                  compose x= 34.3 y= 22.7 w= 31.6 h= 1.9  |  kivy x=  5.8 y=  7.9 w= 29.4 h= 1.9  |  worst Δ 28.5%
+  MISS  All                                  in compose only (kivy never rendered it)
+  MISS  Built-in                             in compose only (kivy never rendered it)
+  MISS  Custom                               in compose only (kivy never rendered it)
+  MISS  Favorites                            in compose only (kivy never rendered it)
+  MISS  Search exercises…                    in compose only (kivy never rendered it)
+
+matched 2/7 compose components; 1 within ±3.0%
+LAYOUT FIDELITY: 14%  (1/7)

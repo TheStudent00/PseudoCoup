@@ -14,7 +14,8 @@ import re
 import subprocess
 import sys
 
-SCREENS = ["GymListScreen"]          # extend as more screens get a fixture in LayoutDumpTest
+SCREENS = ["GymListScreen", "LogCardioScreen", "ExercisesScreen"]   # each has a mirrored fixture in
+                                                                    # LayoutDumpTest + seed_fixtures
 WFL = os.path.expanduser("~/Programming/WFL_MixingCenter/WFL")
 RENDER = os.path.expanduser("~/Programming/WFL_MixingCenter/render")
 JAVA_HOME = "/usr/lib/jvm/java-25-openjdk-amd64"
