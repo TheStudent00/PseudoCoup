@@ -15,12 +15,28 @@ sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 _STACK = []     # the current composition parent -- children emit into _STACK[-1]
 
 
+def _call_site():
+    """The (file, line) in the TRANSPILED APP code that is creating the current node: walk up the call
+    stack past the runtime's own frames to the first frame executing app code. The loader compiles each
+    app file under its real path, so the frame carries ui/settings/SettingsScreen.py:123 exactly."""
+    rt = os.path.dirname(os.path.abspath(__file__))          # .../tools/pseudokotlin/runtime
+    f = sys._getframe(1)
+    while f is not None:
+        fn = f.f_code.co_filename
+        if not fn.startswith(rt) and "WFL_MixingCenter" in fn and os.sep + "render" + os.sep not in fn:
+            return fn, f.f_lineno
+        f = f.f_back
+    return None
+
+
 class Node:
     def __init__(self, kind):
         self.kind, self.text, self.children = kind, None, []
         self.handlers = {}      # on*-event name -> the transpiled handler (wired to the kit, fired on action)
         self.props = {}         # the widget's VALUE kwargs (modifier chain, fontSize, arrangement, ...) --
                                 # recorded here so the kit can APPLY them (the wrapper records, the kit draws)
+        self.src = _call_site()  # (file, line) in the TRANSPILED app code that emitted this node -- the
+                                 # inspector's link from a live component back to the code that declared it
 
     def tree(self, depth=0):
         line = "  " * depth + self.kind + (f": {self.text!r}" if isinstance(self.text, str) else "")
