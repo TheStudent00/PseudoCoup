@@ -1,0 +1,76 @@
+{
+ "screen": "ExercisesScreen",
+ "engine": "kivy-transpile",
+ "display": {
+  "w": 411,
+  "h": 915
+ },
+ "nodes": [
+  {
+   "path": "0",
+   "x": 0,
+   "y": 0,
+   "w": 411.0,
+   "h": 915,
+   "kind": "Box"
+  },
+  {
+   "path": "0/0",
+   "x": 0,
+   "y": 0,
+   "w": 411.0,
+   "h": 915,
+   "kind": "Scaffold"
+  },
+  {
+   "path": "0/0/0",
+   "x": 0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 48,
+   "kind": "TopAppBar"
+  },
+  {
+   "path": "0/0/0/0",
+   "x": 4,
+   "y": 22.0,
+   "w": 93,
+   "h": 26,
+   "text": "Exercises",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/1",
+   "x": 101.0,
+   "y": 0.0,
+   "w": 48,
+   "h": 48,
+   "kind": "IconButton"
+  },
+  {
+   "path": "0/0/1",
+   "x": 0,
+   "y": 48.0,
+   "w": 411.0,
+   "h": 867.0,
+   "kind": "LazyColumn"
+  },
+  {
+   "path": "0/0/1/0",
+   "x": 0,
+   "y": 48.0,
+   "w": 411.0,
+   "h": 65.0,
+   "kind": "Box"
+  },
+  {
+   "path": "0/0/1/0/0",
+   "x": 24.0,
+   "y": 72.0,
+   "w": 121,
+   "h": 17,
+   "text": "No exercises found.",
+   "kind": "Text"
+  }
+ ]
+}
