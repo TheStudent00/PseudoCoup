@@ -106,6 +106,36 @@ def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever 
     return fn if fn is not None else (lambda g: g)
 
 
+def LaunchedEffect(*args, **kwargs):
+    """Compose's enter-composition side effect: run the block on first composition and again whenever a
+    key changes (synchronous model -- the block runs inline). The onboarding-complete navigation, scroll
+    effects, etc. live in these blocks; inert would mean the app never leaves such screens."""
+    block = kwargs.get("block")
+    keys = args
+    if block is None and args and callable(args[-1]):
+        block, keys = args[-1], args[:-1]
+    if not callable(block):
+        return None
+
+    def run_block():
+        try:
+            block()
+        except TypeError as e:
+            if e.__traceback__.tb_next is not None:
+                raise
+            block(None)
+        return _EFFECT_RAN
+
+    if _COMPOSITION is None:
+        run_block()
+        return None
+    _COMPOSITION.slot(run_block, tuple(repr(k) for k in keys))
+    return None
+
+
+_EFFECT_RAN = object()
+
+
 def _state_content(kind, state_key):
     """AnimatedContent/Crossfade: the content lambda receives the REAL target state (the current page/
     tab/step), not a placeholder -- otherwise the whole subtree renders around nothing."""
@@ -184,20 +214,23 @@ _COMPOSITION = None     # the composition currently running -- remember() reads 
 
 
 class Composition:
-    """One screen's live composition: the composable + args, plus a positional slot table so `remember`
-    keeps the same value across recompositions (Compose's slot table). recompose() re-runs the composable
-    with the slots preserved and produces a fresh Node tree."""
+    """One live composition: the composable + args, plus a positional slot table so `remember` keeps the
+    same value across recompositions (Compose's slot table). Slots are SCOPED -- the navigation host pushes
+    each destination's route as a scope, so screen A's remembered values can never bleed into screen B's
+    positions when the rendered destination changes."""
     def __init__(self, fn, args=(), kwargs=None):
         self.fn, self.args, self.kwargs = fn, args, (kwargs or {})
-        self.slots = []                      # [(keys, value)] by call position
-        self._i = 0
+        self.slots = {}                      # scope -> [(keys, value)] by call position within the scope
+        self._i = {}                         # scope -> next position (reset each compose)
+        self._scopes = [None]
         self.root = None
 
     def compose(self):
         global _COMPOSITION
         prev = _COMPOSITION
         _COMPOSITION = self
-        self._i = 0
+        self._i = {}
+        self._scopes = [None]
         root = Node("root")
         _STACK.append(root)
         try:
@@ -209,16 +242,31 @@ class Composition:
         return self.root
 
     def slot(self, calc, keys):
-        if self._i < len(self.slots):
-            okeys, val = self.slots[self._i]
+        sc = self._scopes[-1]
+        lst = self.slots.setdefault(sc, [])
+        i = self._i.get(sc, 0)
+        self._i[sc] = i + 1
+        if i < len(lst):
+            okeys, val = lst[i]
             if okeys != keys:                # a key changed -> recompute this slot
                 val = calc()
-                self.slots[self._i] = (keys, val)
+                lst[i] = (keys, val)
         else:
             val = calc()
-            self.slots.append((keys, val))
-        self._i += 1
+            lst.append((keys, val))
         return val
+
+
+def push_slot_scope(scope):
+    """The navigation host brackets each destination's render with its route, so remember/effect slots are
+    per-destination (never misaligned across screens)."""
+    if _COMPOSITION is not None:
+        _COMPOSITION._scopes.append(scope)
+
+
+def pop_slot_scope():
+    if _COMPOSITION is not None and len(_COMPOSITION._scopes) > 1:
+        _COMPOSITION._scopes.pop()
 
 
 def remember(*args):

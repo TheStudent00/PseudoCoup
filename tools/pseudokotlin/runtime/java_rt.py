@@ -63,7 +63,11 @@ class LocalDate:
         return self._d.day
 
     def getDayOfWeek(self):
-        return self._d.isoweekday()             # Mon=1..Sun=7, matching java DayOfWeek value
+        return _Day(self._d.isoweekday())       # Mon=1..Sun=7, matching java DayOfWeek value
+
+    @property
+    def dayOfWeek(self):                        # kotlin reads it as a property: today().dayOfWeek
+        return _Day(self._d.isoweekday())
 
     def with_(self, adjuster):
         # java `date.with(DayOfWeek.MONDAY)`: that day within the SAME ISO week (DayOfWeek is an adjuster)
@@ -118,8 +122,41 @@ class LocalDate:
 LocalDate.EPOCH = LocalDate(_date(1970, 1, 1))      # java.time.LocalDate.EPOCH
 
 
-class DayOfWeek:                        # java.time.DayOfWeek -- the int IS getValue() (Mon=1..Sun=7),
-    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = 1, 2, 3, 4, 5, 6, 7   # and an adjuster
+class _Day(int):                        # a day-of-week VALUE: the int is getValue() (Mon=1..Sun=7, so the
+    _NAMES = ("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+
+    def getDisplayName(self, style=None, locale=None):     # adjuster math keeps working), plus java's
+        name = _Day._NAMES[int(self) - 1]                  # display-name reads
+        s = str(style).upper()
+        return name[:3] if "SHORT" in s or "NARROW" in s else name
+
+    def getValue(self):
+        return int(self)
+
+    @property
+    def name(self):
+        return _Day._NAMES[int(self) - 1].upper()
+
+
+class DayOfWeek:                        # java.time.DayOfWeek
+    MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = map(_Day, range(1, 8))
+
+
+class TextStyle:
+    """ONE name, two libraries: java.time.format.TextStyle (the display-name selectors, string constants)
+    and compose's TextStyle(fontSize=...) constructor (a style carrier -- accepted, chainable-inert)."""
+    FULL, FULL_STANDALONE = "FULL", "FULL"
+    SHORT, SHORT_STANDALONE = "SHORT", "SHORT"
+    NARROW, NARROW_STANDALONE = "NARROW", "NARROW"
+
+    def __init__(self, *a, **k):
+        pass
+
+    def __getattr__(self, _n):
+        return self
+
+    def __call__(self, *a, **k):
+        return self
 
 
 class LocalDateTime:
