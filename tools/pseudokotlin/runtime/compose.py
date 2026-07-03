@@ -109,6 +109,33 @@ for _n in _NAMES:
     globals()[_n] = _composable(_n)
 
 
+def CompositionLocalProvider(*args, **kwargs):
+    """Provide CompositionLocal values for the duration of the content. The transpiled call is
+    `CompositionLocalProvider(LocalX.provides(v), LocalY.provides(w), content=...)` (or the content lambda
+    positional). Push each (local, value) pair, run content so every `.current` read below sees it, then
+    pop. This is the theme's on-ramp: without the push, WflTheme.colors read only the local's default."""
+    from runtime.compose_ui import _Provided
+    provided = [a for a in args if isinstance(a, _Provided)]
+    content = kwargs.get("content")
+    if content is None:
+        content = next((a for a in args if callable(a) and not isinstance(a, _Provided)), None)
+    for p in provided:
+        p.local.push(p.value)
+    try:
+        node = Node("CompositionLocalProvider")
+        _emit(node)
+        _STACK.append(node)
+        try:
+            if callable(content):
+                _call(content)
+        finally:
+            _STACK.pop()
+        return node
+    finally:
+        for p in reversed(provided):
+            p.local.pop()
+
+
 def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever survives -> identity
     return fn if fn is not None else (lambda g: g)
 
