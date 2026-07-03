@@ -3,17 +3,21 @@
 Edit this list freely; `track.py render` folds it into PROGRESS.html / .md. Format: `- [area] task — why/where`.
 Top of the list is what's next.
 
-The foundation LOADS (all 254 files) and now RENDERS: a headless Compose runtime turns transpiled Kotlin
-screens into UI trees — 17/29 screens render (LogCardioScreen = 82 nodes), all gates green. UI was never a
-transpiler problem; it needed the wrapper floor + a Compose stand-in (the room.py move).
+The app RUNS in Python (boots, navigates by real buttons, real db) and the LAYOUT-FIDELITY instrument is
+live: the real Compose engine (Robolectric, headless) and the kivy kit both dump every component's box;
+`layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
+gauge on this board — the continue/shutdown instrument.
 
-- [ui] Clear the render long-tail — the ~12 non-rendering screens are mostly receiver-lambda builders (`buildString`/`buildList` — extend the apply/with/run support) + a few harness artifacts (Stub passed for a param the screen does arithmetic on — real calls pass real args). Push render OK toward 29/29.
-- [ui] Reactive bridge + styling — `collectAsState`/`remember` → real state that drives re-render (today they stub, so state-branching bodies render thin); thread `Modifier`/colors through the tree. This is rungs 3→4 for the UI.
-- [ui] Point the tree at a pixel kit — the headless tree is neutral; render it on the PseudoUI Flutter/Kivy kit for actual pixels + goldens. (Architecture call.)
-- [transpiler] AST-kind-aware stubs (your refinement) — tag each external name by kind from the AST; shape the stub to match. Permissive floor stays the fallback.
-- [domain] Broaden runnable coverage — point the oracle at more repositories / use-cases. Running real code keeps surfacing real bugs.
+- [fidelity] Rows not going full-width — the three big GymList FAILs share one signature (title width, chip x, Delete-gym x all pack left): fillMaxWidth isn't landing on some card rows. One cause; find it in the kit/recorder, never per-screen.
+- [fidelity] Extend LayoutDumpTest to more screens (Settings, Today, LogCardio) once GymList climbs — each screen needs its fixture seeded identically on both sides.
+- [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
+- [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
+- [ui] Scaffold innerPadding inset + Modifier order (padding-before-size vs after) — minor, after the big rows.
+- [transpiler] .kt line map — emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
+- [domain] Broaden runnable coverage — point the oracle at more repositories / use-cases.
 
 Recently shipped:
-- Headless Compose (`runtime/compose.py`): a `@Composable` emits a UI tree; registered so autostub serves Column/Text/Button real and stubs styling. Transpiled ReportForm → full form (intro, fields, 3 live BugSeverity buttons, Send). 17/29 screens render.
-- Auto-stub floor: one front door binds every external (real → builtin → inert stub); ALL 254 files load (87/87 UI, was 0). Platform/DI glue blessed real so extern stays 0. UI-load is now a measured gate.
-- Transpiler fixes the render surfaced: Unit, inline fully-qualified-ref collapse, qualified extension receivers, const-hoist + nested-class-default late-binding.
+- Layout-fidelity instrument: LayoutDumpTest (real Compose boxes, headless JVM) + inspect_layout JSON + layout_diff (%-of-display, tolerance band) → per-screen fidelity %, now a measured gauge (`fidelity.py`).
+- Layout inspector (`layout_inspect/*.html`): per component — the code line that created it (file:line, .kt path) ‖ declared shape ‖ live computed box.
+- Compose measure/place reconstructed on Kivy: wrap-by-default, Box z-stack, arrangement spacers, Scaffold slot framing + FAB float, fill-vs-scroll reconciliation, weight-on-parent-axis, top-pack columns (Kivy bottom-packs spare space — measured), M3 type scale + TopAppBar/icon-button spec geometry, `then`-chain splicing, Spacer(weight).
+- Theme tokens live: real CompositionLocal — WflTheme.tokens.* resolve to real dp values (24 files move together).

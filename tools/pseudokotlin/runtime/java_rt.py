@@ -150,7 +150,11 @@ class TextStyle:
     NARROW, NARROW_STANDALONE = "NARROW", "NARROW"
 
     def __init__(self, *a, **k):
-        pass
+        # the compose-side constructor RECORDS the style values the kit can apply (None when absent --
+        # __getattr__ is only consulted for attributes that were never set)
+        self.fontSize = k.get("fontSize")
+        self.fontWeight = k.get("fontWeight")
+        self.textAlign = k.get("textAlign")
 
     def __getattr__(self, _n):
         return self
