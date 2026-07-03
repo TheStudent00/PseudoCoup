@@ -83,7 +83,7 @@ offset onFocusChanged onGloballyPositioned padding pointerInput positionInParent
 rememberInfiniteTransition rememberLazyListState rememberModalBottomSheetState rememberPagerState rememberScrollState
 rememberSwipeToDismissBoxState rememberTooltipState rotate scale setValue size slideInHorizontally slideInVertically
 slideOutHorizontally slideOutVertically spring togetherWith tween verticalScroll width
-withFrameMillis wrapContentSize zIndex MaterialTheme rememberLauncherForActivityResult LocalContext
+withFrameMillis wrapContentSize zIndex rememberLauncherForActivityResult LocalContext
 LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
 
 for _n in _NAMES:
@@ -155,6 +155,43 @@ sp = em = dp
 def rememberCoroutineScope(*a, **k):
     import runtime.coroutines as _c
     return _c.CoroutineScope()
+
+
+# ---- MaterialTheme: the M3 DEFAULT TYPE SCALE as real values (the Material spec, app-agnostic) ---- #
+class _M3Typography:
+    """material3's default type scale (fontSize in sp; sp == px here). Text(style = MaterialTheme.
+    typography.titleLarge) was reading an inert <ui>, so every styled text fell back to one size."""
+    def __init__(self):
+        from runtime.java_rt import TextStyle
+        for name, size in (("displayLarge", 57), ("displayMedium", 45), ("displaySmall", 36),
+                           ("headlineLarge", 32), ("headlineMedium", 28), ("headlineSmall", 24),
+                           ("titleLarge", 22), ("titleMedium", 16), ("titleSmall", 14),
+                           ("bodyLarge", 16), ("bodyMedium", 14), ("bodySmall", 12),
+                           ("labelLarge", 14), ("labelMedium", 12), ("labelSmall", 11)):
+            setattr(self, name, TextStyle(fontSize=size))
+
+
+class _MaterialTheme:
+    """MaterialTheme is BOTH the theme object (`MaterialTheme.typography.bodyMedium`) and a composable
+    (`MaterialTheme(colorScheme=..., typography=..., content=...)`). The object side carries the real M3
+    type scale; the composable side runs its content so children emit. colorScheme stays inert until the
+    kit paints colors."""
+    def __init__(self):
+        self.typography = _M3Typography()
+        self.colorScheme = _UI
+        self.shapes = _UI
+
+    def __call__(self, *args, **kwargs):
+        content = kwargs.get("content") or next((a for a in args if callable(a)), None)
+        if callable(content):
+            try:
+                return content()
+            except TypeError:
+                return content(None)
+        return None
+
+
+MaterialTheme = _MaterialTheme()
 
 
 # ---- the RECORDED style surface (the wrapper records, the kit applies) --------------------------- #
