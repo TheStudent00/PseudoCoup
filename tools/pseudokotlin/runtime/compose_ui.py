@@ -101,3 +101,70 @@ sp = em = dp
 def rememberCoroutineScope(*a, **k):
     import runtime.coroutines as _c
     return _c.CoroutineScope()
+
+
+# ---- the RECORDED style surface (the wrapper records, the kit applies) --------------------------- #
+class _Mod:
+    """A Modifier chain that RECORDS its calls: Modifier.fillMaxWidth().padding(16) -> a value carrying
+    (('fillMaxWidth', (), {}), ('padding', (16,), {})). Immutable -- every call yields a new chain, like
+    Kotlin's Modifier. The kit reads ._ops and applies what it understands."""
+    __slots__ = ("_ops",)
+
+    def __init__(self, ops=()):
+        object.__setattr__(self, "_ops", tuple(ops))
+
+    def __getattr__(self, name):
+        def add(*a, **k):
+            return _Mod(self._ops + ((name, a, k),))
+        return add
+
+    def __repr__(self):
+        return f"<Modifier {'.'.join(o[0] for o in self._ops) or '-'}>"
+
+
+Modifier = _Mod()
+
+
+class FontWeight:            # DISTINCT values (an inert shared object can't tell Bold from Normal)
+    Thin = Light = ExtraLight = "light"
+    Normal = W400 = "normal"
+    Medium = W500 = "medium"
+    SemiBold = W600 = "semibold"
+    Bold = W700 = ExtraBold = Black = "bold"
+
+
+class TextAlign:
+    Start = Left = "left"
+    Center = "center"
+    End = Right = "right"
+    Justify = "justify"
+
+
+class _Spaced(float):        # Arrangement.spacedBy(n): the spacing value, marked by type
+    pass
+
+
+class Arrangement:
+    Start = Top = "start"
+    Center = "center"
+    End = Bottom = "end"
+    SpaceBetween = "space_between"
+    SpaceAround = "space_around"
+    SpaceEvenly = "space_evenly"
+
+    @staticmethod
+    def spacedBy(v=0, *a, **k):
+        try:
+            return _Spaced(v)
+        except (TypeError, ValueError):
+            return _Spaced(0)
+
+
+class Alignment:
+    Start = CenterStart = "start"
+    End = CenterEnd = "end"
+    Top = TopCenter = TopStart = TopEnd = "top"
+    Bottom = BottomCenter = BottomStart = BottomEnd = "bottom"
+    Center = "center"
+    CenterHorizontally = "center_h"
+    CenterVertically = "center_v"
