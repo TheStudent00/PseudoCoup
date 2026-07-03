@@ -22,7 +22,7 @@ import sys
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 import runtime.reactive as reactive           # noqa: E402
-from runtime.compose import _call, remember   # noqa: E402
+from runtime.compose import _call, remember, push_slot_scope, pop_slot_scope   # noqa: E402
 
 _NAV_STACK = []     # active NavHost route-registration collectors (composable() fills the top one)
 _ARGS_STACK = []    # the arguments of the destination currently rendering (for hiltViewModel/di)
@@ -171,9 +171,11 @@ def NavHost(navController=None, startDestination=None, content=None, **k):
         fn = next(iter(routes.values()), None) if routes else None
     if callable(fn):
         _ARGS_STACK.append(args)                      # the courier's delivery: current_args() while
+        push_slot_scope(_pattern if navController is not None else current)   # per-destination remember
         try:                                          # this destination (and its ViewModel) builds
             _call(fn)
         finally:
+            pop_slot_scope()
             _ARGS_STACK.pop()
 
 
