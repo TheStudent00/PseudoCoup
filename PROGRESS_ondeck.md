@@ -8,7 +8,7 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] GymList 6/7 — last FAIL is the weighted title's WIDTH (kivy 34% vs compose 60%): a `Text(Modifier.weight(1f))` should span the whole remaining row slot. Pin why the label's realized width is a fraction of its slot.
+- [fidelity] GymList 6/7 — last FAIL: text ANCHORING inside icon-buttons (the dump centers a consumed label in its button; M3 anchors it after the leading icon: 12 + 18 + 8). Implement the M3 in-button slot layout — general, not per-widget constants.
 - [fidelity] Extend LayoutDumpTest to more screens (Settings, Today, LogCardio) — each screen needs its fixture seeded identically on both sides.
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
