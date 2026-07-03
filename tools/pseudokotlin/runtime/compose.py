@@ -190,7 +190,14 @@ def _topbar(kind):
             for slot in ("navigationIcon", "title", "actions"):
                 fn = kwargs.get(slot)
                 if callable(fn):
+                    before = len(node.children)
                     _call(fn)
+                    if slot == "title":          # M3: the title SLOT applies titleLarge -- a bare
+                        from runtime.java_rt import TextStyle      # Text() in it is styled by the bar
+                        for ch in node.children[before:]:
+                            for t in [ch] + ch.find("Text"):
+                                if t.text is not None:
+                                    t.props.setdefault("style", TextStyle(fontSize=22))
             for k, v in kwargs.items():              # non-slot kwargs keep the normal recording rules
                 if k in ("navigationIcon", "title", "actions"):
                     continue
