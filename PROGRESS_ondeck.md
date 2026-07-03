@@ -8,8 +8,11 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] GymList 6/7 — last FAIL: text ANCHORING inside icon-buttons (the dump centers a consumed label in its button; M3 anchors it after the leading icon: 12 + 18 + 8). Implement the M3 in-button slot layout — general, not per-widget constants.
-- [fidelity] Extend LayoutDumpTest to more screens (Settings, Today, LogCardio) — each screen needs its fixture seeded identically on both sides.
+- [fidelity] FlowRow line-wrapping — LogCardio's dominant cause: chips run off-screen in ONE row (kivy x to 167% of display); Compose wraps to new lines. Kit: implement wrap layout for FlowRow/FlowColumn.
+- [fidelity] Text soft-wrap at the max-width constraint — wrap-width labels grow unbounded (the LogCardio intro is 171% wide); Compose wraps text at the incoming max width. Same family as the constraint-propagation rule.
+- [fidelity] SearchBar (+ any container still in compose_ui's inert list) swallows its content lambda — Exercises' tabs/search never enter the TREE (recorder-level, not kit). Audit _NAMES for containers that take content.
+- [fidelity] GymList 7th: M3 in-button anchoring refined (content-group centering landed; Delete-gym still Δ>3) — revisit with the button-box ground truth (compose dumps Role=Button boxes; differ could pair those too).
+- [fidelity] Add Settings/Today to LayoutDumpTest (deeper VM chains: BackupRepository/TodayViewModel — mirror di.py's assembly).
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
 - [ui] Scaffold innerPadding inset + Modifier order (padding-before-size vs after) — minor, after the big rows.
