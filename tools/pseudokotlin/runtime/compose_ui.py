@@ -71,7 +71,7 @@ ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite Favori
 FitnessCenter FocusRequester Font FontFamily FontStyle FontVariation FontWeight HelpOutline Home HorizontalPager
 Icons ImageVector ImeAction Immutable Info IntrinsicSize KeyboardActions KeyboardArrowDown KeyboardArrowRight
 KeyboardArrowUp KeyboardOptions KeyboardType Link ListItemDefaults LocalConfiguration LocalFocusManager Modifier
-MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset PaddingValues Path PathEffect Person
+MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset Path PathEffect Person
 PlayArrow PrimaryScrollableTabRow ReadOnlyComposable Remove RepeatMode RichTooltip RoundedCornerShape Route Search
 SearchBar SearchBarDefaults SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
 Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextFieldValue TextOverflow
@@ -192,6 +192,40 @@ class _MaterialTheme:
 
 
 MaterialTheme = _MaterialTheme()
+
+
+class PaddingValues:
+    """A REAL padding record (was inert, so LazyColumn(contentPadding=...) silently dropped its inset).
+    Forms: PaddingValues(all) / (horizontal=, vertical=) / (start=, top=, end=, bottom=). The kit reads
+    .l/.t/.r/.b."""
+    __slots__ = ("l", "t", "r", "b")
+
+    def __init__(self, *a, **k):
+        def num(v):
+            try:
+                return float(v)
+            except (TypeError, ValueError):
+                return 0.0
+        if len(a) == 1 and not k:
+            self.l = self.t = self.r = self.b = num(a[0])
+            return
+        h, v = num(k.get("horizontal")), num(k.get("vertical"))
+        self.l = num(k.get("start", k.get("left"))) or h
+        self.r = num(k.get("end", k.get("right"))) or h
+        self.t = num(k.get("top")) or v
+        self.b = num(k.get("bottom")) or v
+
+    def calculateTopPadding(self):
+        return self.t
+
+    def calculateBottomPadding(self):
+        return self.b
+
+    def calculateStartPadding(self, *_):
+        return self.l
+
+    def calculateEndPadding(self, *_):
+        return self.r
 
 
 # ---- the RECORDED style surface (the wrapper records, the kit applies) --------------------------- #
