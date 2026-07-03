@@ -18,6 +18,8 @@ What each metric reads, and the gauge it runs:
   data      datalayer_oracle  instrumented DAO/txn test classes green    (ratio, up)
   extern    externals.py      external names USED but unwrapped          (count, down=better)
   unrouted  coverage.py       grammar kinds with no handler (the worklist)(count, down=better)
+  fidelity  fidelity.py       layout boxes matching the REAL Compose engine within a tolerance band
+                              (both engines re-rendered headlessly; %-of-display, never pixels) (ratio, up)
 """
 import datetime
 import json
@@ -42,6 +44,7 @@ METRICS = [
     ("data",     "Data — instrumented DB tests green",   "up",   "ratio"),
     ("extern",   "External gaps — used but unwrapped",   "down", "count"),
     ("unrouted", "Grammar kinds unrouted — the worklist","down", "count"),
+    ("fidelity", "Layout fidelity — matches real Compose (±3% of display)", "up", "ratio"),
 ]
 GATES = ["parse", "load", "ui", "extern", "logic", "data"]
 # the instrumented suite the data gate draws from. 2 run green; 2 are blocked ABOVE the data layer
@@ -84,6 +87,8 @@ def measure():
     data_green = len(re.findall(r"^===\s+\w+\s+\(\d+/\d+\)", dl, re.M))
     data_gate = "ALL GREEN" in dl
 
+    fid = _grab(r"FIDELITY ALL:\s*(\d+)/(\d+)", _run("fidelity.py"), "layout fidelity")
+
     pn, pd = int(parse.group(1)), int(parse.group(2))
     ln, ld = int(load.group(1)), int(load.group(2))
     uin, uid = int(uild.group(1)), int(uild.group(2))
@@ -93,6 +98,7 @@ def measure():
         "date": datetime.date.today().isoformat(),
         "parse": [pn, pd], "load": [ln, ld], "ui": [uin, uid], "logic": [logic_n, logic_d],
         "data": [data_green, TOTAL_INSTRUMENTED], "extern": ex, "unrouted": un,
+        "fidelity": [int(fid.group(1)), int(fid.group(2))],
         "gates": {"parse": pn == pd, "load": ln == ld, "ui": uin == uid, "extern": ex == 0,
                   "logic": logic_gate, "data": data_gate},
     }

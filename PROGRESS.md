@@ -3,19 +3,20 @@
 Measured by re-running the gates (`tools/pseudokotlin/track.py`) — never hand-typed. A 🔴 gate or a falling
 sparkline is a real regression, not a stale doc. (Browser version with trend charts: `PROGRESS.html`.)
 
-As of 2026-06-30.
+As of 2026-07-03.
 
 ## Gates + momentum (measured)
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **278/278** | `▄▄` | 🟢 |
-| Load — non-UI domain imports clean | **167/167** | `▁█` | 🟢 |
-| UI — files load (inert via autostub) | **87/87** | `▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/160** | `▄▄` | 🟢 |
-| Data — instrumented DB tests green | **4/4** | `▄▄` | 🟢 |
-| External gaps — used but unwrapped | **0** ↓better | `▄▄` | 🟢 |
-| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄` |  |
+| Parse — all .kt transpile + compile | **279/279** | `▁▁█` | 🟢 |
+| Load — non-UI domain imports clean | **167/167** | `▁██` | 🟢 |
+| UI — files load (inert via autostub) | **87/87** | `▄▄` | 🟢 |
+| Logic — engine methods match Kotlin | **160/161** | `▄▄▄` | 🔴 |
+| Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
+| External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
+| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **0/7** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -31,19 +32,24 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[ui]** Clear the render long-tail  ← next
-  - the ~12 non-rendering screens are mostly receiver-lambda builders (`buildString`/`buildList` — extend the apply/with/run support) + a few harness artifacts (Stub passed for a param the screen does arithmetic on — real calls pass real args). Push render OK toward 29/29.
-1. **[ui]** Reactive bridge + styling
-  - `collectAsState`/`remember` → real state that drives re-render (today they stub, so state-branching bodies render thin); thread `Modifier`/colors through the tree. This is rungs 3→4 for the UI.
-1. **[ui]** Point the tree at a pixel kit
-  - the headless tree is neutral; render it on the PseudoUI Flutter/Kivy kit for actual pixels + goldens. (Architecture call.)
-1. **[transpiler]** AST-kind-aware stubs (your refinement)
-  - tag each external name by kind from the AST; shape the stub to match. Permissive floor stays the fallback.
+1. **[fidelity]** Rows not going full-width  ← next
+  - the three big GymList FAILs share one signature (title width, chip x, Delete-gym x all pack left): fillMaxWidth isn't landing on some card rows. One cause; find it in the kit/recorder, never per-screen.
+1. **[fidelity]** Extend LayoutDumpTest to more screens (Settings, Today, LogCardio) once GymList climbs
+  - each screen needs its fixture seeded identically on both sides.
+1. **[ui]** Paint layer
+  - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
+1. **[ui]** Popups render inline
+  - DropdownMenu items should be hidden until opened (Settings overlaps).
+1. **[ui]** Scaffold innerPadding inset + Modifier order (padding-before-size vs after)
+  - minor, after the big rows.
+1. **[transpiler]** .kt line map
+  - emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
 1. **[domain]** Broaden runnable coverage
-  - point the oracle at more repositories / use-cases. Running real code keeps surfacing real bugs.
-1. Headless Compose (`runtime/compose.py`): a `@Composable` emits a UI tree; registered so autostub serves Column/Text/Button real and stubs styling. Transpiled ReportForm → full form (intro, fields, 3 live BugSeverity buttons, Send). 17/29 screens render.
-1. Auto-stub floor: one front door binds every external (real → builtin → inert stub); ALL 254 files load (87/87 UI, was 0). Platform/DI glue blessed real so extern stays 0. UI-load is now a measured gate.
-1. Transpiler fixes the render surfaced: Unit, inline fully-qualified-ref collapse, qualified extension receivers, const-hoist + nested-class-default late-binding.
+  - point the oracle at more repositories / use-cases.
+1. Layout-fidelity instrument: LayoutDumpTest (real Compose boxes, headless JVM) + inspect_layout JSON + layout_diff (%-of-display, tolerance band) → per-screen fidelity %, now a measured gauge (`fidelity.py`).
+1. Layout inspector (`layout_inspect/*.html`): per component — the code line that created it (file:line, .kt path) ‖ declared shape ‖ live computed box.
+1. Compose measure/place reconstructed on Kivy: wrap-by-default, Box z-stack, arrangement spacers, Scaffold slot framing + FAB float, fill-vs-scroll reconciliation, weight-on-parent-axis, top-pack columns (Kivy bottom-packs spare space — measured), M3 type scale + TopAppBar/icon-button spec geometry, `then`-chain splicing, Spacer(weight).
+1. Theme tokens live: real CompositionLocal — WflTheme.tokens.* resolve to real dp values (24 files move together).
 
 ## Milestones — what landed, when
 

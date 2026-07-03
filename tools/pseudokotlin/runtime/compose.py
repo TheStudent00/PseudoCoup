@@ -95,6 +95,9 @@ def _composable(kind):
                     if callable(v):              # for the kit to fire on user action -- never call at render
                         node.handlers[k] = v     # (calling it here would run app logic mid-build).
                     continue
+                if k == "style":                 # a TextStyle VALUE -- it happens to be callable (permissive
+                    node.props[k] = v            # object), so the slot-lambda branch would swallow it
+                    continue
                 if callable(v):
                     _call(v)
                 elif k in ("text", "value") and isinstance(v, str):
@@ -173,6 +176,37 @@ def Scaffold(*args, **kwargs):
     finally:
         _STACK.pop()
     return node
+
+
+def _topbar(kind):
+    """TopAppBar has SLOTS with a spec-defined visual ORDER: navigationIcon (left), title, then actions
+    (right). The plain emitter ran kwargs in call order (title first), so the title rendered at the left
+    edge and the nav icon after it -- backwards."""
+    def make(*args, **kwargs):
+        node = Node(kind)
+        _emit(node)
+        _STACK.append(node)
+        try:
+            for slot in ("navigationIcon", "title", "actions"):
+                fn = kwargs.get(slot)
+                if callable(fn):
+                    _call(fn)
+            for k, v in kwargs.items():              # non-slot kwargs keep the normal recording rules
+                if k in ("navigationIcon", "title", "actions"):
+                    continue
+                if k.startswith("on") and callable(v):
+                    node.handlers[k] = v
+                elif not callable(v):
+                    node.props[k] = v
+        finally:
+            _STACK.pop()
+        return node
+    return make
+
+
+TopAppBar = _topbar("TopAppBar")
+CenterAlignedTopAppBar = _topbar("CenterAlignedTopAppBar")
+MediumTopAppBar = _topbar("MediumTopAppBar")
 
 
 def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever survives -> identity
