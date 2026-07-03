@@ -214,11 +214,20 @@ class Arrangement:
             return _Spaced(0)
 
 
-class Alignment:
-    Start = CenterStart = "start"
-    End = CenterEnd = "end"
-    Top = TopCenter = TopStart = TopEnd = "top"
-    Bottom = BottomCenter = BottomStart = BottomEnd = "bottom"
+class Alignment:                        # DISTINCT 9-point values (an inert shared "top" can't tell a
+    TopStart = "top_start"              # bottom-END FAB from a top-START one), so the kit can place each
+    TopCenter = "top_center"
+    TopEnd = "top_end"
+    CenterStart = "center_start"
     Center = "center"
-    CenterHorizontally = "center_h"
-    CenterVertically = "center_v"
+    CenterEnd = "center_end"
+    BottomStart = "bottom_start"
+    BottomCenter = "bottom_center"
+    BottomEnd = "bottom_end"
+    # 1-D alignments (used as cross-axis alignment in Row/Column) mapped onto the grid as best they can
+    Top = "top_center"
+    Bottom = "bottom_center"
+    Start = "center_start"
+    End = "center_end"
+    CenterHorizontally = "center"
+    CenterVertically = "center"
