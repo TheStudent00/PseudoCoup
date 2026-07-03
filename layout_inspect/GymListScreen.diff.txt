@@ -1,0 +1,13 @@
+GymListScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  FAIL  Gym profiles                         compose x= 13.6 y=  2.0 w= 30.9 h= 3.1  |  kivy x=  0.0 y=  0.0 w= 20.4 h= 3.5  |  worst Δ 13.6%
+  FAIL  My Gym                               compose x=  7.8 y= 11.0 w= 59.9 h= 2.4  |  kivy x=  3.9 y= 72.9 w=  8.6 h= 3.9  |  worst Δ 61.9%
+  FAIL  Equipment                            compose x=  7.8 y= 15.3 w= 14.4 h= 1.4  |  kivy x=  3.9 y= 79.5 w= 17.3 h= 3.5  |  worst Δ 64.2%
+  FAIL  0 items                              compose x=  7.8 y= 16.7 w= 11.9 h= 1.9  |  kivy x=  3.9 y= 83.4 w= 12.4 h= 3.5  |  worst Δ 66.7%
+  FAIL  No equipment listed                  compose x=  7.8 y= 19.9 w= 28.7 h= 1.5  |  kivy x=  3.9 y= 88.6 w= 33.1 h= 3.5  |  worst Δ 68.7%
+  MISS  Active                               in compose only (kivy never rendered it)
+  MISS  Delete gym                           in compose only (kivy never rendered it)
+
+matched 5/7 compose components; 0 within ±3.0%
+LAYOUT FIDELITY: 0%  (0/7)
