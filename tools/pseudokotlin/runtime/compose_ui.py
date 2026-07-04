@@ -321,6 +321,12 @@ class Arrangement:
             return _Spaced(0)
 
 
+class IntrinsicSize:                    # height(IntrinsicSize.Min) = size to the content's intrinsic
+    Min = "intrinsic_min"               # measure -- for the kit that IS wrap-to-content. The values are
+    Max = "intrinsic_max"               # non-numeric ON PURPOSE: the autostub float-coerces to 0.0, which
+                                        # collapsed every IntrinsicSize row to zero height (roadmap overlap).
+
+
 class Alignment:                        # DISTINCT 9-point values (an inert shared "top" can't tell a
     TopStart = "top_start"              # bottom-END FAB from a top-START one), so the kit can place each
     TopCenter = "top_center"
