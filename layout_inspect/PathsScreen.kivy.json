@@ -1,0 +1,101 @@
+{
+ "screen": "PathsScreen",
+ "engine": "kivy-transpile",
+ "display": {
+  "w": 411,
+  "h": 915
+ },
+ "nodes": [
+  {
+   "path": "0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915,
+   "kind": "CompositionLocalProvider"
+  },
+  {
+   "path": "0/0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915.0,
+   "kind": "Box"
+  },
+  {
+   "path": "0/0/0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915.0,
+   "kind": "LazyColumn"
+  },
+  {
+   "path": "0/0/0/0",
+   "x": 16.0,
+   "y": 0.0,
+   "w": 379.0,
+   "h": 286.0,
+   "kind": "Item"
+  },
+  {
+   "path": "0/0/0/0/0",
+   "x": 16.0,
+   "y": 0.0,
+   "w": 379.0,
+   "h": 286.0,
+   "kind": "Column"
+  },
+  {
+   "path": "0/0/0/0/0/0",
+   "x": 100.5,
+   "y": 48.0,
+   "w": 210.0,
+   "h": 29,
+   "text": "Start with your why.",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/0/0/1",
+   "x": 40.0,
+   "y": 93.0,
+   "w": 331,
+   "h": 57.0,
+   "text": "A Path connects your training to what actually matters \u2014 evidence-backed goals for mental health, bone strength, brain function, and more.",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/0/0/2",
+   "x": 205.5,
+   "y": 166.0,
+   "w": 0,
+   "h": 8.0,
+   "kind": "Spacer"
+  },
+  {
+   "path": "0/0/0/0/0/3",
+   "x": 40.0,
+   "y": 190.0,
+   "w": 331.0,
+   "h": 48,
+   "kind": "Button"
+  },
+  {
+   "path": "0/0/0/0/0/3/0",
+   "x": 160.5,
+   "y": 205.5,
+   "w": 90,
+   "h": 17,
+   "text": "Find your path",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/1",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 100,
+   "h": 0,
+   "kind": "AnimatedVisibility"
+  }
+ ]
+}

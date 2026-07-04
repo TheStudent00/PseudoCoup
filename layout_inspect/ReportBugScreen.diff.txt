@@ -1,0 +1,16 @@
+ReportBugScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Report a bug                         compose x= 13.6 y=  2.0 w= 30.9 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 29.9 h= 2.8  |  worst Δ  2.2%
+  PASS  Tell us what went wrong — what you   compose x=  3.9 y=  7.9 w= 92.2 h= 6.2  |  kivy x=  3.9 y=  7.9 w= 92.2 h= 6.2  |  worst Δ  0.0%
+  PASS  What happened?                       compose x=  7.8 y= 18.5 w= 30.2 h= 2.6  |  kivy x=  7.8 y= 17.8 w= 30.0 h= 2.2  |  worst Δ  0.7%
+  FAIL  How bad is it?                       compose x=  3.9 y= 35.1 w= 21.9 h= 1.9  |  kivy x=  3.9 y= 23.7 w= 22.0 h= 1.9  |  worst Δ 11.4%
+  FAIL  Minor                                compose x= 15.3 y= 39.5 w=  8.3 h= 1.5  |  kivy x= 14.9 y= 27.5 w=  8.8 h= 1.9  |  worst Δ 12.0%
+  FAIL  Annoying                             compose x= 43.3 y= 39.5 w= 13.6 h= 1.5  |  kivy x= 42.9 y= 27.5 w= 14.1 h= 1.9  |  worst Δ 12.0%
+  FAIL  Blocking                             compose x= 74.5 y= 39.5 w= 12.4 h= 1.5  |  kivy x= 74.2 y= 27.5 w= 13.1 h= 1.9  |  worst Δ 12.0%
+  FAIL  Your name (optional)                 compose x=  3.9 y= 44.6 w= 28.0 h= 1.4  |  kivy x=  3.9 y= 32.3 w= 27.6 h= 1.5  |  worst Δ 12.2%
+  FAIL  User                                 compose x=  3.9 y= 46.4 w= 92.2 h= 3.2  |  kivy x=  3.9 y= 34.3 w= 92.2 h= 3.5  |  worst Δ 12.1%
+  FAIL  Send report                          compose x= 40.6 y= 53.8 w= 18.7 h= 2.2  |  kivy x= 40.8 y= 42.1 w= 18.5 h= 1.9  |  worst Δ 11.6%
+
+matched 10/10 compose components; 3 within ±3.0%
+LAYOUT FIDELITY: 30%  (3/10)
