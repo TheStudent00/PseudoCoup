@@ -6,8 +6,8 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Built-in                             compose x= 27.3 y=  8.5 w= 11.4 h= 2.2  |  kivy x= 28.2 y=  8.2 w= 11.2 h= 2.0  |  worst Δ  1.0%
   PASS  Custom                               compose x= 48.4 y=  8.5 w= 12.7 h= 2.2  |  kivy x= 50.4 y=  8.2 w= 12.7 h= 2.0  |  worst Δ  1.9%
   PASS  Favorites                            compose x= 69.6 y=  8.5 w= 14.6 h= 2.2  |  kivy x= 72.5 y=  8.2 w= 14.8 h= 2.0  |  worst Δ  2.9%
-  FAIL  Search exercises…                    compose x=  7.8 y= 15.3 w= 32.8 h= 2.6  |  kivy x=  3.9 y= 12.2 w= 29.9 h= 2.0  |  worst Δ  3.9%
-  FAIL  No exercises found.                  compose x= 34.3 y= 22.7 w= 31.6 h= 1.9  |  kivy x=  5.8 y= 18.6 w= 29.4 h= 1.9  |  worst Δ 28.5%
+  PASS  Search exercises…                    compose x=  7.8 y= 15.3 w= 32.8 h= 2.6  |  kivy x=  7.8 y= 13.6 w= 29.9 h= 2.0  |  worst Δ  2.9%
+  PASS  No exercises found.                  compose x= 34.3 y= 22.7 w= 31.6 h= 1.9  |  kivy x= 35.3 y= 20.8 w= 29.4 h= 1.9  |  worst Δ  2.2%
 
-matched 7/7 compose components; 5 within ±3.0%
-LAYOUT FIDELITY: 71%  (5/7)
+matched 7/7 compose components; 7 within ±3.0%
+LAYOUT FIDELITY: 100%  (7/7)
