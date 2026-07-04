@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **107/109** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **109/109** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,9 +32,8 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 107/109 on 8 screens. Constraint tracking LANDED (build-time incoming-max threaded through to_widget; static ceiling joins the dynamic parent cap  ← next
-  - no oscillation) + lazy-list Item boundary nodes (list spacing between ITEMS only). ExerciseDetail's last 2 fails: a uniform +3.5% y accumulation above its final section (band-edge; likely small per-section padding differences) -- probe DetailSection's chain.
-1. [fidelity] Next screens: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
+1. **[fidelity]** 109/109  ← next
+  - ALL 8 measured screens at 100%, guarded by TWO fail-loud specimen gates (text metrics + lazy-list boundary metrics). Next growth: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears

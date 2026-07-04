@@ -37,14 +37,15 @@ def main():
     # SPECIMEN GATE (not counted -- synthetic): known texts in known roles; the text-metric rules
     # (natural single-line stacking, letterSpacing widths) are derived from this pair. If it drifts,
     # every screen number is suspect -- fail loud.
-    rc, out = run(["xvfb-run", "-a", "python3", "inspect_layout.py", "Specimen"], RENDER,
-                  {"DISPLAY_SIZE": "411x915"})
-    rc2, out2 = run([sys.executable, "layout_diff.py", "Specimen"], RENDER)
-    m = re.search(r"LAYOUT FIDELITY:\s*\d+%\s*\((\d+)/(\d+)\)", out2)
-    if rc != 0 or rc2 != 0 or m is None or m.group(1) != m.group(2):
-        print(out2[-1500:])
-        raise SystemExit("fidelity.py: the SPECIMEN gate failed -- text metrics have drifted (above)")
-    print(f"  Specimen gate: {m.group(1)}/{m.group(2)} (not counted)")
+    for gate in ("Specimen", "SpecimenList"):
+        rc, out = run(["xvfb-run", "-a", "python3", "inspect_layout.py", gate], RENDER,
+                      {"DISPLAY_SIZE": "411x915"})
+        rc2, out2 = run([sys.executable, "layout_diff.py", gate], RENDER)
+        m = re.search(r"LAYOUT FIDELITY:\s*\d+%\s*\((\d+)/(\d+)\)", out2)
+        if rc != 0 or rc2 != 0 or m is None or m.group(1) != m.group(2):
+            print(out2[-1500:])
+            raise SystemExit(f"fidelity.py: the {gate} gate failed -- derived metrics have drifted (above)")
+        print(f"  {gate} gate: {m.group(1)}/{m.group(2)} (not counted)")
     passed = total = 0
     for screen in SCREENS:
         rc, out = run(["xvfb-run", "-a", "python3", "inspect_layout.py", screen], RENDER,

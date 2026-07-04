@@ -8,15 +8,15 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Primary muscles                      compose x=  3.9 y= 15.7 w= 26.3 h= 1.9  |  kivy x=  3.9 y= 15.7 w= 25.4 h= 1.9  |  worst Δ  0.9%
   PASS  Quadriceps                           compose x=  7.8 y= 20.2 w= 18.2 h= 1.9  |  kivy x=  7.8 y= 20.2 w= 17.8 h= 1.9  |  worst Δ  0.5%
   PASS  Glutes                               compose x= 35.8 y= 20.2 w= 10.7 h= 1.9  |  kivy x= 35.3 y= 20.2 w= 10.2 h= 1.9  |  worst Δ  0.5%
-  PASS  Secondary muscles                    compose x=  3.9 y= 25.5 w= 31.1 h= 1.9  |  kivy x=  3.9 y= 26.3 w= 30.8 h= 1.9  |  worst Δ  0.9%
-  PASS  Hamstrings                           compose x=  7.8 y= 29.9 w= 18.2 h= 1.9  |  kivy x=  7.8 y= 30.8 w= 17.8 h= 1.9  |  worst Δ  0.8%
-  PASS  Lower Back                           compose x= 35.8 y= 29.9 w= 18.2 h= 1.9  |  kivy x= 35.3 y= 30.8 w= 17.8 h= 1.9  |  worst Δ  0.8%
-  PASS  Movement & equipment                 compose x=  3.9 y= 35.2 w= 38.4 h= 1.9  |  kivy x=  3.9 y= 36.9 w= 37.5 h= 1.9  |  worst Δ  1.7%
-  PASS  Squat · Barbell                      compose x=  3.9 y= 37.9 w= 24.3 h= 1.9  |  kivy x=  3.9 y= 39.7 w= 25.0 h= 1.9  |  worst Δ  1.7%
-  PASS  Form notes                           compose x=  3.9 y= 42.1 w= 18.2 h= 1.9  |  kivy x=  3.9 y= 44.7 w= 17.8 h= 1.9  |  worst Δ  2.6%
-  PASS  Brace a barbell across the upper b   compose x=  3.9 y= 44.8 w= 92.2 h= 6.2  |  kivy x=  3.9 y= 47.4 w= 92.2 h= 6.2  |  worst Δ  2.6%
-  FAIL  Video reference                      compose x=  3.9 y= 52.8 w= 26.0 h= 1.9  |  kivy x=  3.9 y= 56.3 w= 25.7 h= 1.9  |  worst Δ  3.5%
-  FAIL  https://media.giphy.com/media/v1.Y   compose x=  3.9 y= 55.5 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 59.0 w= 92.2 h= 8.5  |  worst Δ  3.5%
+  PASS  Secondary muscles                    compose x=  3.9 y= 25.5 w= 31.1 h= 1.9  |  kivy x=  3.9 y= 25.5 w= 30.8 h= 1.9  |  worst Δ  0.3%
+  PASS  Hamstrings                           compose x=  7.8 y= 29.9 w= 18.2 h= 1.9  |  kivy x=  7.8 y= 29.9 w= 17.8 h= 1.9  |  worst Δ  0.5%
+  PASS  Lower Back                           compose x= 35.8 y= 29.9 w= 18.2 h= 1.9  |  kivy x= 35.3 y= 29.9 w= 17.8 h= 1.9  |  worst Δ  0.5%
+  PASS  Movement & equipment                 compose x=  3.9 y= 35.2 w= 38.4 h= 1.9  |  kivy x=  3.9 y= 35.2 w= 37.5 h= 1.9  |  worst Δ  1.0%
+  PASS  Squat · Barbell                      compose x=  3.9 y= 37.9 w= 24.3 h= 1.9  |  kivy x=  3.9 y= 37.9 w= 25.0 h= 1.9  |  worst Δ  0.6%
+  PASS  Form notes                           compose x=  3.9 y= 42.1 w= 18.2 h= 1.9  |  kivy x=  3.9 y= 42.1 w= 17.8 h= 1.9  |  worst Δ  0.5%
+  PASS  Brace a barbell across the upper b   compose x=  3.9 y= 44.8 w= 92.2 h= 6.2  |  kivy x=  3.9 y= 44.8 w= 92.2 h= 6.2  |  worst Δ  0.0%
+  PASS  Video reference                      compose x=  3.9 y= 52.8 w= 26.0 h= 1.9  |  kivy x=  3.9 y= 52.8 w= 25.7 h= 1.9  |  worst Δ  0.4%
+  PASS  https://media.giphy.com/media/v1.Y   compose x=  3.9 y= 55.5 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 55.5 w= 92.2 h= 8.5  |  worst Δ  0.1%
 
-matched 16/16 compose components; 14 within ±3.0%
-LAYOUT FIDELITY: 88%  (14/16)
+matched 16/16 compose components; 16 within ±3.0%
+LAYOUT FIDELITY: 100%  (16/16)
