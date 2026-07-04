@@ -1,0 +1,63 @@
+SettingsScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  FAIL  Back up my data                      compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y= 99.0 w= 25.3 h= 1.9  |  worst Δ 99.0%
+  FAIL  Save workouts, progress & custom p   compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y=101.3 w= 64.2 h= 1.4  |  worst Δ 101.3%
+  FAIL  Restore from backup                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y=105.9 w= 31.4 h= 1.9  |  worst Δ 105.9%
+  FAIL  Replace current data with a backup   compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y=108.2 w= 47.2 h= 1.4  |  worst Δ 108.2%
+  FAIL  Help & feedback                      compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  0.0 y=111.4 w= 21.2 h= 1.6  |  worst Δ 111.4%
+  FAIL  Report a bug                         compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y=114.3 w= 19.5 h= 1.9  |  worst Δ 114.3%
+  FAIL  Send us a problem with diagnostic    compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=  3.9 y=116.6 w= 58.9 h= 1.4  |  worst Δ 116.6%
+  FAIL  Profile                              compose x=  3.9 y=  2.2 w=  9.7 h= 1.5  |  kivy x=  0.0 y=  0.0 w=  8.3 h= 1.6  |  worst Δ  3.9%
+  PASS  Display name                         compose x=  3.9 y=  5.5 w= 20.9 h= 1.9  |  kivy x=  3.9 y=  3.0 w= 20.0 h= 1.9  |  worst Δ  2.5%
+  PASS  User                                 compose x= 62.0 y=  5.6 w= 34.1 h= 3.2  |  kivy x= 62.0 y=  3.4 w= 34.1 h= 3.7  |  worst Δ  2.2%
+  FAIL  How the app addresses you            compose x=  3.9 y=  7.3 w= 36.7 h= 1.4  |  kivy x=  3.9 y=  5.2 w= 33.1 h= 1.4  |  worst Δ  3.6%
+  PASS  Body weight                          compose x=  3.9 y= 10.6 w= 19.7 h= 1.9  |  kivy x=  3.9 y=  9.8 w= 18.7 h= 1.9  |  worst Δ  1.0%
+  FAIL  kg                                   compose x= 89.5 y= 11.6 w=  3.6 h= 1.4  |  kivy x= 66.9 y= 11.5 w=  2.7 h= 1.4  |  worst Δ 22.6%
+  FAIL  Used for relative strength           compose x=  3.9 y= 12.5 w= 34.5 h= 1.4  |  kivy x=  3.9 y= 12.1 w= 30.7 h= 1.4  |  worst Δ  3.9%
+  FAIL  Display preferences                  compose x=  3.9 y= 16.9 w= 29.0 h= 1.5  |  kivy x=  0.0 y= 15.3 w= 25.3 h= 1.6  |  worst Δ  3.9%
+  PASS  Effort scale                         compose x=  3.9 y= 20.3 w= 18.2 h= 1.9  |  kivy x=  3.9 y= 22.3 w= 17.3 h= 1.9  |  worst Δ  2.0%
+  PASS  RPE                                  compose x= 83.7 y= 21.1 w=  6.6 h= 1.9  |  kivy x= 83.7 y= 19.5 w=  6.3 h= 1.9  |  worst Δ  1.6%
+  FAIL  How effort is recorded each set      compose x=  3.9 y= 22.2 w= 42.1 h= 1.4  |  kivy x=  3.9 y= 24.6 w= 38.4 h= 1.4  |  worst Δ  3.6%
+  FAIL  Weight unit                          compose x=  3.9 y= 25.7 w= 18.0 h= 1.9  |  kivy x=  3.9 y= 30.5 w= 16.8 h= 1.9  |  worst Δ  4.8%
+  PASS  KG                                   compose x= 84.9 y= 26.4 w=  5.4 h= 1.9  |  kivy x= 85.9 y= 29.2 w=  4.4 h= 1.9  |  worst Δ  2.7%
+  FAIL  Summaries and plate calculator       compose x=  3.9 y= 27.5 w= 42.3 h= 1.4  |  kivy x=  3.9 y= 32.8 w= 38.7 h= 1.4  |  worst Δ  5.2%
+  FAIL  Gyms & exercises                     compose x=  3.9 y= 32.1 w= 25.5 h= 1.5  |  kivy x=  0.0 y= 36.0 w= 22.4 h= 1.6  |  worst Δ  3.9%
+  FAIL  Gym profiles                         compose x=  3.9 y= 35.4 w= 20.2 h= 1.9  |  kivy x=  3.9 y= 38.9 w= 18.7 h= 1.9  |  worst Δ  3.5%
+  FAIL  Manage gyms and equipment            compose x=  3.9 y= 37.3 w= 38.9 h= 1.4  |  kivy x=  3.9 y= 41.2 w= 35.8 h= 1.4  |  worst Δ  3.9%
+  FAIL  Exercises                            compose x=  3.9 y= 40.5 w= 15.6 h= 1.9  |  kivy x=  3.9 y= 45.8 w= 13.9 h= 1.9  |  worst Δ  5.2%
+  FAIL  Browse, favourite, and create exer   compose x=  3.9 y= 42.4 w= 52.6 h= 1.4  |  kivy x=  3.9 y= 48.1 w= 47.2 h= 1.4  |  worst Δ  5.7%
+  FAIL  Notifications                        compose x=  3.9 y= 46.9 w= 19.2 h= 1.5  |  kivy x=  0.0 y= 51.3 w= 17.0 h= 1.6  |  worst Δ  4.4%
+  FAIL  Workout reminders                    compose x=  3.9 y= 50.2 w= 30.2 h= 1.9  |  kivy x=  3.9 y= 54.2 w= 28.5 h= 1.9  |  worst Δ  4.0%
+  FAIL  Remind you when it's time to log y   compose x=  3.9 y= 52.1 w= 67.2 h= 1.4  |  kivy x=  3.9 y= 56.5 w= 61.1 h= 1.4  |  worst Δ  6.1%
+  PASS  Push                                 compose x= 16.3 y= 56.4 w=  6.3 h= 1.4  |  kivy x= 15.4 y= 59.2 w=  7.8 h= 1.9  |  worst Δ  2.8%
+  PASS  In-app                               compose x= 45.5 y= 56.4 w=  9.2 h= 1.4  |  kivy x= 45.1 y= 59.2 w=  9.7 h= 1.9  |  worst Δ  2.8%
+  PASS  None                                 compose x= 77.1 y= 56.4 w=  7.3 h= 1.4  |  kivy x= 76.7 y= 59.2 w=  8.0 h= 1.9  |  worst Δ  2.8%
+  FAIL  Microcycle reminders                 compose x=  3.9 y= 61.5 w= 34.3 h= 1.9  |  kivy x=  3.9 y= 65.0 w= 31.6 h= 1.9  |  worst Δ  3.5%
+  FAIL  Only 1 more workout left to hit yo   compose x=  3.9 y= 63.5 w= 67.2 h= 1.4  |  kivy x=  3.9 y= 67.3 w= 59.6 h= 1.4  |  worst Δ  7.5%
+  PASS  Push                                 compose x= 16.3 y= 67.8 w=  6.3 h= 1.4  |  kivy x= 15.4 y= 70.0 w=  7.8 h= 1.9  |  worst Δ  2.2%
+  PASS  In-app                               compose x= 45.5 y= 67.8 w=  9.2 h= 1.4  |  kivy x= 45.1 y= 70.0 w=  9.7 h= 1.9  |  worst Δ  2.2%
+  PASS  None                                 compose x= 77.1 y= 67.8 w=  7.3 h= 1.4  |  kivy x= 76.7 y= 70.0 w=  8.0 h= 1.9  |  worst Δ  2.2%
+  PASS  Mesocycle reminders                  compose x=  3.9 y= 72.9 w= 34.1 h= 1.9  |  kivy x=  3.9 y= 75.8 w= 31.4 h= 1.9  |  worst Δ  3.0%
+  FAIL  Peak week push and upcoming deload   compose x=  3.9 y= 74.9 w= 63.7 h= 1.4  |  kivy x=  3.9 y= 78.1 w= 57.4 h= 1.4  |  worst Δ  6.3%
+  PASS  Push                                 compose x= 16.3 y= 79.1 w=  6.3 h= 1.4  |  kivy x= 15.4 y= 80.8 w=  7.8 h= 1.9  |  worst Δ  1.7%
+  PASS  In-app                               compose x= 45.5 y= 79.1 w=  9.2 h= 1.4  |  kivy x= 45.1 y= 80.8 w=  9.7 h= 1.9  |  worst Δ  1.7%
+  PASS  None                                 compose x= 77.1 y= 79.1 w=  7.3 h= 1.4  |  kivy x= 76.7 y= 80.8 w=  8.0 h= 1.9  |  worst Δ  1.7%
+  PASS  Log a victory                        compose x=  3.9 y= 84.3 w= 20.0 h= 1.9  |  kivy x=  3.9 y= 86.7 w= 19.2 h= 1.9  |  worst Δ  2.4%
+  FAIL  Prompts to record qualitative wins   compose x=  3.9 y= 86.2 w= 71.8 h= 1.4  |  kivy x=  3.9 y= 89.0 w= 65.2 h= 1.4  |  worst Δ  6.6%
+  PASS  Push                                 compose x= 16.3 y= 90.5 w=  6.3 h= 1.4  |  kivy x= 15.4 y= 91.6 w=  7.8 h= 1.9  |  worst Δ  1.5%
+  PASS  In-app                               compose x= 45.5 y= 90.5 w=  9.2 h= 1.4  |  kivy x= 45.1 y= 91.6 w=  9.7 h= 1.9  |  worst Δ  1.1%
+  PASS  None                                 compose x= 77.1 y= 90.5 w=  7.3 h= 1.4  |  kivy x= 76.7 y= 91.6 w=  8.0 h= 1.9  |  worst Δ  1.1%
+  FAIL  Data                                 compose x=  3.9 y= 96.8 w=  6.8 h= 1.5  |  kivy x=  0.0 y= 96.1 w=  6.3 h= 1.6  |  worst Δ  3.9%
+  MISS  Developer                            in compose only (kivy never rendered it)
+  MISS  Debug panel                          in compose only (kivy never rendered it)
+  MISS  Time travel + seed test state        in compose only (kivy never rendered it)
+  XTRA  User                                 in kivy only (not in compose ground truth)
+  XTRA  RPE                                  in kivy only (not in compose ground truth)
+  XTRA  No lingo                             in kivy only (not in compose ground truth)
+  XTRA  RIR                                  in kivy only (not in compose ground truth)
+  XTRA  KG                                   in kivy only (not in compose ground truth)
+  XTRA  LB                                   in kivy only (not in compose ground truth)
+
+matched 48/51 compose components; 20 within ±3.0%
+LAYOUT FIDELITY: 39%  (20/51)
