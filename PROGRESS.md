@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **165/231** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **225/231** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,8 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** COVERAGE IS NOW AUTOMATIC: gen_layout_dumps.py scans every `fun XxxScreen(` in the app and generates its ground-truth test (Assembler.kt builds any ViewModel by constructor type, like di.py). 20 of 29 screens measured  ← next
-  - 165/231. The 10 hand-tuned screens hold 128/128; the 10 auto-added ones are honest new baselines: WorkoutWarmup 3/32, UpdateProgramWizard 3/15, GymCreateWizard 4/13, ReportBug 3/10, Onboarding 0/3, PathsScreen 2/3, ExerciseCreate 14/18, GymEditor 4/5, MyProgram 3/3, PathDetail 1/1. Diagnose by cause, largest groups first.
+1. **[fidelity]** 225/231 on 20 screens (16 at 100%). Remaining 6 fails, by cause: (a) MULTILINE-field label placement  ← next
+  - an empty minLines>1 field's label position in compose is neither centered nor top+16 (both measured and rejected); extend dumpSpecimen with a minLines=5 OutlinedTextField before touching the rule (ReportBug 1, ExerciseCreate 2 follow-drift). (b) "Unilateral/Compound" toggle w +7% -- identify the component class and its inset (ExerciseCreate 2). (c) two band-edge shaper widths at large sizes (Onboarding "Let's go" 3.6, Paths headline 3.6).
 1. [fidelity] 9 screens remain unmeasured (generator skip table, reasons recorded): 8 need a navigation id + session/program fixtures; DebugPanel is a dev tool.
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
