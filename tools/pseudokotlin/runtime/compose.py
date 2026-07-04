@@ -344,10 +344,27 @@ def AnimatedVisibility(*args, **kwargs):     # content renders only when actuall
 
 
 # ---- LazyColumn / LazyRow DSL: item { } / items(list) { } / itemsIndexed emit into the lazy container ----
+def _in_item(fn, *a):
+    """Run one lazy-list item's content inside an Item BOUNDARY node: a LazyColumn's item spacing
+    (verticalArrangement=spacedBy) applies BETWEEN items, never between the composables inside one
+    item -- without the boundary, a divider+spacer+section item got the list gap inserted between
+    its own children."""
+    node = Node("Item")
+    _emit(node)
+    _STACK.append(node)
+    try:
+        if a:
+            fn(*a)
+        else:
+            _call(fn)
+    finally:
+        _STACK.pop()
+
+
 def item(*args, **kwargs):
     fn = next((a for a in args if callable(a)), None) or kwargs.get("content")
     if callable(fn):
-        _call(fn)
+        _in_item(fn)
 
 
 def items(data=None, *args, **kwargs):
@@ -356,9 +373,9 @@ def items(data=None, *args, **kwargs):
     if callable(fn):
         for d in seq:
             try:
-                fn(d)
+                _in_item(fn, d)
             except TypeError:
-                _call(fn)
+                _in_item(fn)
 
 
 def itemsIndexed(data=None, *args, **kwargs):
@@ -367,7 +384,7 @@ def itemsIndexed(data=None, *args, **kwargs):
     if callable(fn):
         for i, d in enumerate(seq):
             try:
-                fn(i, d)
+                _in_item(fn, i, d)
             except TypeError:
                 pass
 
