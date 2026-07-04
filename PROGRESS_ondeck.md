@@ -8,8 +8,8 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] ONE fail left (82/83): Settings "Peak week…" width Δ3.0 — the Robolectric text shaper measures 0–4% wider than the font file's advances (measured on the specimen; not a constant, so no honest calibration exists). Options: accept as band-edge noise, or investigate minikin's width computation under Robolectric.
-- [fidelity] Grow coverage again: add more screens to LayoutDumpTest (Programs, Wins, ExerciseDetail…) — the instrument is proven; the number's meaning now scales with coverage.
+- [fidelity] 83/83 on 5 screens + specimen gate. Next growth is COVERAGE: add screens to LayoutDumpTest (Programs, Wins, ExerciseDetail, LogWorkout…) — the instrument is proven; the number's meaning scales with coverage.
+- [fidelity] The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself — measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 - [fidelity] SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears — never infer from mixed app screens.
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).

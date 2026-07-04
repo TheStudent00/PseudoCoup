@@ -34,7 +34,7 @@
    "path": "0/0/0/0",
    "x": 16.0,
    "y": 20.0,
-   "w": 36.8,
+   "w": 37.989999999999995,
    "h": 15,
    "text": "Profile",
    "kind": "Text"
@@ -68,7 +68,7 @@
    "path": "0/0/0/1/0/1",
    "x": 16.0,
    "y": 69.0,
-   "w": 146.5,
+   "w": 151.19,
    "h": 14,
    "text": "How the app addresses you",
    "kind": "Text"
@@ -143,7 +143,7 @@
    "path": "0/0/0/3/0/1",
    "x": 16.0,
    "y": 118.0,
-   "w": 137.0,
+   "w": 141.34,
    "h": 14,
    "text": "Used for relative strength",
    "kind": "Text"
@@ -169,7 +169,7 @@
    "path": "0/0/0/3/1/0/0",
    "x": 267.0,
    "y": 106.0,
-   "w": 101.0,
+   "w": 100.65,
    "h": 20,
    "kind": "Box"
   },
@@ -183,7 +183,7 @@
   },
   {
    "path": "0/0/0/3/1/0/1",
-   "x": 368.0,
+   "x": 367.65,
    "y": 126.0,
    "w": 4.0,
    "h": 0,
@@ -191,9 +191,9 @@
   },
   {
    "path": "0/0/0/3/1/0/2",
-   "x": 372.0,
+   "x": 371.65,
    "y": 112.0,
-   "w": 11.0,
+   "w": 11.35,
    "h": 14,
    "text": "kg",
    "kind": "Text"
@@ -202,7 +202,7 @@
    "path": "0/0/0/4",
    "x": 16.0,
    "y": 160.0,
-   "w": 114.6,
+   "w": 118,
    "h": 15,
    "text": "Display preferences",
    "kind": "Text"
@@ -236,7 +236,7 @@
    "path": "0/0/0/5/0/1",
    "x": 16.0,
    "y": 209.0,
-   "w": 169.5,
+   "w": 174.89,
    "h": 14,
    "text": "How effort is recorded each set",
    "kind": "Text"
@@ -311,7 +311,7 @@
    "path": "0/0/0/7/0/1",
    "x": 16.0,
    "y": 258.0,
-   "w": 168.0,
+   "w": 173.355,
    "h": 14,
    "text": "Summaries and plate calculator",
    "kind": "Text"
@@ -353,7 +353,7 @@
    "path": "0/0/0/8",
    "x": 16.0,
    "y": 300.0,
-   "w": 102.4,
+   "w": 105.75999999999999,
    "h": 15,
    "text": "Gyms & exercises",
    "kind": "Text"
@@ -387,7 +387,7 @@
    "path": "0/0/0/9/0/1",
    "x": 16.0,
    "y": 348.0,
-   "w": 155.5,
+   "w": 160.505,
    "h": 14,
    "text": "Manage gyms and equipment",
    "kind": "Text"
@@ -437,7 +437,7 @@
    "path": "0/0/0/11/0/1",
    "x": 16.0,
    "y": 396.0,
-   "w": 209.5,
+   "w": 216.14999999999998,
    "h": 14,
    "text": "Browse, favourite, and create exercises",
    "kind": "Text"
@@ -454,7 +454,7 @@
    "path": "0/0/0/12",
    "x": 16.0,
    "y": 438.0,
-   "w": 74.2,
+   "w": 76.615,
    "h": 15,
    "text": "Notifications",
    "kind": "Text"
@@ -480,7 +480,7 @@
    "path": "0/0/0/13/1",
    "x": 16.0,
    "y": 487.0,
-   "w": 267.0,
+   "w": 275.46999999999997,
    "h": 14,
    "text": "Remind you when it's time to log your next session",
    "kind": "Text"
@@ -573,7 +573,7 @@
    "path": "0/0/0/15/1",
    "x": 16.0,
    "y": 584.0,
-   "w": 265.0,
+   "w": 273.4,
    "h": 14,
    "text": "Only 1 more workout left to hit your weekly target",
    "kind": "Text"
@@ -666,7 +666,7 @@
    "path": "0/0/0/17/1",
    "x": 16.0,
    "y": 681.0,
-   "w": 249.5,
+   "w": 257.48,
    "h": 14,
    "text": "Peak week push and upcoming deload previews",
    "kind": "Text"
@@ -759,7 +759,7 @@
    "path": "0/0/0/19/1",
    "x": 16.0,
    "y": 778.0,
-   "w": 283.5,
+   "w": 292.495,
    "h": 14,
    "text": "Prompts to record qualitative wins and personal highs",
    "kind": "Text"
@@ -827,7 +827,7 @@
    "path": "0/0/0/20",
    "x": 16.0,
    "y": 868.0,
-   "w": 25.6,
+   "w": 26.439999999999998,
    "h": 15,
    "text": "Data",
    "kind": "Text"
@@ -861,7 +861,7 @@
    "path": "0/0/0/21/0/1",
    "x": 16.0,
    "y": 916.0,
-   "w": 280.5,
+   "w": 289.42499999999995,
    "h": 14,
    "text": "Save workouts, progress & custom programs to a file",
    "kind": "Text"
@@ -911,7 +911,7 @@
    "path": "0/0/0/23/0/1",
    "x": 16.0,
    "y": 964.0,
-   "w": 209.5,
+   "w": 216.14999999999998,
    "h": 14,
    "text": "Replace current data with a backup file",
    "kind": "Text"
@@ -928,7 +928,7 @@
    "path": "0/0/0/24",
    "x": 16.0,
    "y": 1006.0,
-   "w": 96.0,
+   "w": 99.14999999999999,
    "h": 15,
    "text": "Help & feedback",
    "kind": "Text"
@@ -962,7 +962,7 @@
    "path": "0/0/0/25/0/1",
    "x": 16.0,
    "y": 1054.0,
-   "w": 257.5,
+   "w": 265.68999999999994,
    "h": 14,
    "text": "Send us a problem with diagnostic logs attached",
    "kind": "Text"
@@ -979,7 +979,7 @@
    "path": "0/0/0/26",
    "x": 16.0,
    "y": 1096.0,
-   "w": 58,
+   "w": 60.525,
    "h": 15,
    "text": "Developer",
    "kind": "Text"
@@ -1013,7 +1013,7 @@
    "path": "0/0/0/27/0/1",
    "x": 16.0,
    "y": 1144.0,
-   "w": 153.5,
+   "w": 158.36499999999998,
    "h": 14,
    "text": "Time travel + seed test state",
    "kind": "Text"
