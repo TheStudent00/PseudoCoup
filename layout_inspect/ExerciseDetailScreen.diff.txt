@@ -1,7 +1,7 @@
 ExerciseDetailScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Barbell Back Squat                   compose x= 13.6 y=  2.0 w= 44.0 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 45.5 h= 2.8  |  worst Δ  2.2%
+  PASS  Barbell Back Squat                   compose x= 13.6 y=  2.0 w= 44.0 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 45.5 h= 2.8  |  worst Δ  2.0%
   PASS  Built-in                             compose x=  7.8 y= 10.5 w= 11.4 h= 1.9  |  kivy x=  7.8 y= 10.4 w= 10.9 h= 1.9  |  worst Δ  0.5%
   PASS  Compound                             compose x= 29.0 y= 10.5 w= 17.5 h= 1.9  |  kivy x= 28.5 y= 10.4 w= 17.0 h= 1.9  |  worst Δ  0.5%
   PASS  Bilateral                            compose x= 56.2 y= 10.5 w= 12.7 h= 1.9  |  kivy x= 55.2 y= 10.4 w= 12.2 h= 1.9  |  worst Δ  1.0%

@@ -33,7 +33,7 @@
   {
    "path": "0/0/0/0",
    "x": 4.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -41,7 +41,7 @@
   {
    "path": "0/0/0/1",
    "x": 52.0,
-   "y": 38.0,
+   "y": 0.0,
    "w": 186.843,
    "h": 26,
    "text": "Barbell Back Squat",
@@ -50,7 +50,7 @@
   {
    "path": "0/0/0/2",
    "x": 311.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -58,7 +58,7 @@
   {
    "path": "0/0/0/3",
    "x": 359.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -334,7 +334,7 @@
    "path": "0/0/1/4/2",
    "x": 16.0,
    "y": 385.0,
-   "w": 379,
+   "w": 379.0,
    "h": 82.0,
    "kind": "Column"
   },
@@ -351,7 +351,7 @@
    "path": "0/0/1/4/2/1",
    "x": 16.0,
    "y": 410.0,
-   "w": 379,
+   "w": 379.0,
    "h": 57.0,
    "text": "Brace a barbell across the upper back and squat to at least parallel, then drive up through the legs to standing while keeping the torso braced.",
    "kind": "Text"
@@ -360,7 +360,7 @@
    "path": "0/0/1/5",
    "x": 16.0,
    "y": 483.0,
-   "w": 379,
+   "w": 379.0,
    "h": 102.5,
    "kind": "Item"
   },
@@ -368,7 +368,7 @@
    "path": "0/0/1/5/0",
    "x": 16.0,
    "y": 483.0,
-   "w": 379,
+   "w": 379.0,
    "h": 102.5,
    "kind": "Column"
   },
@@ -385,7 +385,7 @@
    "path": "0/0/1/5/0/1",
    "x": 16.0,
    "y": 508.0,
-   "w": 379,
+   "w": 379.0,
    "h": 77.5,
    "text": "https://media.giphy.com/media/v1.Y2lkPTc5MGI3NjExYXVwamVsbHAxa3hvbzluY3NwemJsNzJxdWp5N2dhZ3MwYzByNW1wdCZlcD12MV9naWZzX3NlYXJjaCZjdD1n/RTNDA7OxcwuOMcCPhL/giphy.gif",
    "kind": "Text"

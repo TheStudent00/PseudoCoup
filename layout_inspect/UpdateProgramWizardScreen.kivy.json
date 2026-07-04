@@ -33,7 +33,7 @@
   {
    "path": "0/0/0/0",
    "x": 4.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -41,7 +41,7 @@
   {
    "path": "0/0/0/1",
    "x": 52.0,
-   "y": 38.0,
+   "y": 0.0,
    "w": 158.255,
    "h": 26,
    "text": "Update program",
@@ -175,7 +175,7 @@
    "path": "0/0/1/0/0/0/5/0/2/1",
    "x": 83.84,
    "y": 177.0,
-   "w": 295,
+   "w": 295.0,
    "h": 37.0,
    "text": "Going away \u2014 pause or ease off while you're gone.",
    "kind": "Text"
@@ -242,7 +242,7 @@
    "path": "0/0/1/0/0/0/7/0/2/1",
    "x": 83.84,
    "y": 276.0,
-   "w": 295,
+   "w": 295.0,
    "h": 37.0,
    "text": "Something hurts \u2014 log it and what to work around.",
    "kind": "Text"
@@ -309,7 +309,7 @@
    "path": "0/0/1/0/0/0/9/0/2/1",
    "x": 83.84,
    "y": 375.0,
-   "w": 295,
+   "w": 295.0,
    "h": 37.0,
    "text": "Add or avoid specific work \u2014 e.g. on physio advice.",
    "kind": "Text"
@@ -376,7 +376,7 @@
    "path": "0/0/1/0/0/0/11/0/2/1",
    "x": 83.84,
    "y": 474.0,
-   "w": 295,
+   "w": 295.0,
    "h": 37.0,
    "text": "Stress or a busy stretch \u2014 lighten the load for a while.",
    "kind": "Text"

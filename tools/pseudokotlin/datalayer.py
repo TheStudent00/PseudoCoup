@@ -159,8 +159,10 @@ def dao_body(method_node):
                      if t in _relation_pojos()), None)
         if pojo:                                 # return type is a @Relation POJO -> stitch, don't return bare rows
             r = _relation_pojos()[pojo]
+            # a suspend (non-Flow) relation query returns its VALUE, not a Flow (`len(dao.getXOnce(id))`)
+            unwrap = "" if "Flow" in ret else ".first()"
             return (f"return self._relation({sql!r}, {pdict}, {pojo}, {r['emb_field']!r}, {r['rel_field']!r}, "
-                    f"{r['rel_type']}, {r['parent']!r}, {r['entity']!r}, {r['is_list']}, {'List' in ret})")
+                    f"{r['rel_type']}, {r['parent']!r}, {r['entity']!r}, {r['is_list']}, {'List' in ret}){unwrap}")
         if "Flow" in ret and "List" in ret:
             helper = "_flow"
         elif "Flow" in ret:

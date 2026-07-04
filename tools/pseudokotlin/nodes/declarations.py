@@ -38,6 +38,20 @@ _BUILTIN_RECVRS = {"List", "MutableList", "Set", "MutableSet", "Map", "MutableMa
 # can't patch a Python builtin -- those stay call-site rewrites in _STDLIB_METHODS).
 _EXT_TARGET = {"List": "KtList", "MutableList": "KtList", "Collection": "KtList", "Iterable": "KtList",
                "Set": "KtSet", "MutableSet": "KtSet", "Map": "KtMap", "MutableMap": "KtMap"}
+
+
+def _collection_api():
+    """Inside `fun/val List<X>.name …`, a bare `filter { }` is Kotlin's this.filter (receiver scope wins) --
+    NOT Python's builtin filter. The runtime collection classes define exactly that API; treating their
+    method names as receiver members makes those bare calls emit self.filter(...)."""
+    try:
+        from runtime.kotlin_rt import KtList, KtMap, KtSet
+        return {n for cls in (KtList, KtMap, KtSet) for n in dir(cls) if not n.startswith("_")}
+    except Exception:                            # noqa: BLE001 -- transpiling without the runtime on path
+        return set()
+
+
+_COLLECTION_API = _collection_api()
 # Kotlin type -> Python type for overload isinstance dispatch (a domain class maps to
 # itself). Int/Long stay int; Double/Float stay float -- distinguishable at runtime.
 _PYTYPE = {"Double": "float", "Float": "float", "Int": "int", "Long": "int",
@@ -59,6 +73,18 @@ class Declarations:
         # top-level `const val`s are compile-time literals with no forward deps -> emit them FIRST, so a
         # class that uses one as a default arg (evaluated at def time in Python) sees it already bound.
         decls = [c for c in self.named(node) if c.type in _TOP_DECLS]
+        # prescan: receiver -> the extension names this FILE declares on it, so a sibling extension's
+        # body reading another one bare (`workingSets.size` inside workingSetCount's getter, Kotlin
+        # implicit this.) resolves to self.<name> instead of an unbound free name.
+        self._ext_members = {}
+        for d in decls:
+            if d.type in ("function_declaration", "property_declaration") and \
+                    any(c.type == "." for c in d.children):
+                ut = next((c for c in d.children if c.type == "user_type"), None)
+                nm = self._name_of(d, deep=(d.type == "property_declaration"))
+                if ut is not None and nm:
+                    simple = self._strip_pkg(self.text(ut).split("<")[0].strip()).split(".")[-1]
+                    self._ext_members.setdefault(simple, set()).add(self._safe(nm))
         is_const = lambda c: c.type == "property_declaration" and self._is_const(c)   # noqa: E731
         parts = [self.visit(c) for c in
                  [d for d in decls if is_const(d)] + [d for d in decls if not is_const(d)]]
@@ -138,7 +164,9 @@ class Declarations:
         prev_m = self._members
         if recv is not None:
             simple = recv.split("<")[0].strip().split(".")[-1]
-            self._members = self._members | _TYPE_FIELDS.get(simple, set())
+            self._members = self._members | _TYPE_FIELDS.get(simple, set()) \
+                | getattr(self, "_ext_members", {}).get(simple, set()) \
+                | (_COLLECTION_API if simple in _EXT_TARGET else set())
             if simple in self._enum_types:          # extension on an enum: name/ordinal -> self.*
                 self._members = self._members | {"name", "ordinal"}
         own = set(names) | self._local_names(body_node)
@@ -696,14 +724,31 @@ class Declarations:
 
     def _render_ext_getter(self, prop, getter):
         # top-level computed property `val [Recv.]name get() = …` -> a function; an
-        # extension property (receiver before the name, marked by a `.`) takes self.
+        # extension property (receiver before the name, marked by a `.`) takes self,
+        # is PATCHED onto the receiver class as a real @property (call sites read it
+        # as an attribute: `sets.workingSetCount`), and sees its sibling extensions
+        # on the same receiver as members (implicit this.).
         name = self._safe(self._name_of(prop, deep=True) or "_prop")
-        params = ["self"] if any(c.type == "." for c in prop.children) else []
+        is_ext = any(c.type == "." for c in prop.children)
+        params = ["self"] if is_ext else []
         body_node = next((c for c in getter.named_children
                           if c.type in ("function_body", "block")), None)
+        prev_m = self._members
+        if is_ext:
+            ut = next((c for c in prop.children if c.type == "user_type"), None)
+            if ut is not None:
+                recv = self._strip_pkg(self.text(ut).split("<")[0].strip())
+                simple = recv.split(".")[-1]
+                self._members = self._members | _TYPE_FIELDS.get(simple, set()) \
+                    | getattr(self, "_ext_members", {}).get(simple, set()) \
+                    | (_COLLECTION_API if simple in _EXT_TARGET else set())
+                base = _EXT_TARGET.get(recv, recv)
+                if base and base not in _BUILTIN_RECVRS:
+                    self._ext_patches.append(f"{base}.{name} = property({name})")
         self._scopes.append(set())
         body = self._render_function_body(body_node)
         self._scopes.pop()
+        self._members = prev_m
         return f"def {name}({', '.join(params)}):\n{body}"
 
     def _render_lazy(self, prop):

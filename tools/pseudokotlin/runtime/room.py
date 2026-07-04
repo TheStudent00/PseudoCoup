@@ -235,11 +235,11 @@ class Dao:
         parents = self._db.query(sql, params)
 
         def stitch(p):
-            kids = self._db.query(f"SELECT * FROM {table} WHERE {entity_col} = :_pk",
-                                  {"_pk": getattr(p, parent_col)})
+            kids = KtList(self._db.query(f"SELECT * FROM {table} WHERE {entity_col} = :_pk",
+                                         {"_pk": getattr(p, parent_col)}))
             return pojo(**{emb_field: p, rel_field: (kids if rel_is_list else (kids[0] if kids else None))})
 
-        out = [stitch(p) for p in parents]
+        out = KtList(stitch(p) for p in parents)   # Kotlin collection methods (mapNotNull/...) dispatch on it
         return Flow([out if as_list else (out[0] if out else None)])
 
     def _insert(self, obj, replace=True):       # @Insert one or a list

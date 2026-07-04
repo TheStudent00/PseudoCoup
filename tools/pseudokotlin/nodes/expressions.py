@@ -405,6 +405,23 @@ class Expressions:
         own_args = next((c for c in node.children if c.type == "value_arguments"), None)
         trailing = next((c for c in node.named_children
                          if c.type in ("annotated_lambda", "lambda_literal")), None)
+        # `!f(a, b)` parses with the unary wrapping only the CALLEE (`(!f)(a,b)`); the operator
+        # applies to the CALL's value. Peel it off, render the call, wrap the result.
+        if callee.type == "unary_expression":
+            uops = [c.type for c in callee.children if not c.is_named]
+            inner_callee = self.named(callee)[0]
+            if any(o in uops for o in ("!", "-", "+", "!!")):
+                _args = self._render_args(own_args)
+                if trailing is not None:
+                    _args = self._join_trailing(_args, self._lambda_str(trailing), own_args)
+                stripped = f"{self.visit(inner_callee)}({_args})"
+                if "!" in uops:
+                    return f"(not {stripped})"
+                if "-" in uops:
+                    return f"-{stripped}"
+                if "+" in uops:
+                    return f"+{stripped}"
+                return stripped              # `!!f(...)`: not-null assert on the result -> drop
         # buildString { append… } / buildList { add… }: the builder is the receiver -- make one, bind the
         # body's bare members to it, yield the built value. (Bare callee, trailing lambda, no value args.)
         if (callee.type in ("identifier", "simple_identifier") and trailing is not None
@@ -458,6 +475,13 @@ class Expressions:
                     return _wrap(g)
                 return _wrap(f"{sel}({recv}, {self._lambda_str(trailing)})")   # runtime helper (real str
                                                                                # has no such method)
+            if sel in ("forEach", "forEachIndexed") and trailing is not None:
+                lam = self._lambda_node(trailing)
+                # a BARE `return` in an inline forEach lambda returns from the ENCLOSING fn (Kotlin
+                # inline semantics); as a def it only skipped the item. Lower to a real for loop.
+                # (a LABELED return@forEach keeps the def form -- there `return` = next item, correct.)
+                if lam is not None and self._has_bare_return(lam):
+                    return _wrap(self._foreach_loop(nk[0], sel, lam, safe))
             if sel in _SCOPE_FNS and trailing is not None:   # x.let { it… } -> f(x)
                 lam = self._lambda_node(trailing)
                 if self._has_nonlocal_return(lam):      # `x?.let { return it }` guard:
@@ -536,6 +560,55 @@ class Expressions:
             if self._has_nonlocal_return(c):
                 return True
         return False
+
+    def _has_bare_return(self, node):
+        # like _has_nonlocal_return, but only an UNLABELED `return` counts -- `return@forEach`
+        # is a per-item skip and stays correct in the lambda-as-def form.
+        for c in node.children:
+            if c.type == "return_expression":
+                if not any(k.type == "return@" for k in c.children):
+                    return True
+                continue
+            if c.type in ("lambda_literal", "function_declaration", "anonymous_function"):
+                continue
+            if self._has_bare_return(c):
+                return True
+        return False
+
+    def _foreach_loop(self, recv_node, sel, lam, safe):
+        # `xs.forEach { … return r … }` / forEachIndexed: Kotlin inlines these, so the bare return
+        # exits the ENCLOSING function -- reproduce by lowering to a real for loop (hoisted; the
+        # expression value is None, matching Unit in statement position).
+        self._lam += 1
+        tmp = f"_fe{self._lam}"
+        recv = self.visit(recv_node)
+        pnode = next((c for c in lam.children if c.type == "lambda_parameters"), None)
+        names = []
+        if pnode is not None:
+            for vd in pnode.named_children:
+                pid = next((c for c in vd.children if c.type == "identifier"), None)
+                if pid is None:
+                    raise Untranspilable(lam, f"destructuring param in {sel} with non-local return")
+                names.append(self._safe(self.text(pid)))
+        if sel == "forEachIndexed":
+            names = (names + ["_i", "_x"])[:2]
+            head = f"for {names[0]}, {names[1]} in enumerate({tmp}):"
+        else:
+            names = names or ["it"]
+            head = f"for {names[0]} in {tmp}:"
+        body = [c for c in self.named(lam) if c.type != "lambda_parameters"]
+        self._scopes.append(set(names) | self._local_names(lam))
+        try:
+            lines = self.render_statements(body)
+        finally:
+            self._scopes.pop()
+        loop = head + "\n" + _block(lines or ["pass"])
+        if safe:
+            block = [f"{tmp} = {recv}", f"if {tmp} is not None:\n{_block([loop])}"]
+        else:
+            block = [f"{tmp} = {recv}", loop]
+        self._hoist.append("\n".join(block))
+        return "None"
 
     def _let_guard(self, recv_node, lam, safe):
         # `recv[?].let { … return … }` -> evaluate recv once, bind the lambda param, run
@@ -637,8 +710,10 @@ class Expressions:
         if not body:
             return f"(lambda {ps}: None)"
         # the lambda's params shadow enclosing members in its body (a param `query` is the param,
-        # NOT self.query). Push them as a local scope while rendering the body.
-        self._scopes.append(scope)
+        # NOT self.query). Push them as a local scope while rendering the body -- INCLUDING the body's
+        # own val/var locals, exactly like a named function's scope push: a lambda nested deeper must
+        # see them as an enclosing scope, or its `x += ...` on a captured var misses its `nonlocal`.
+        self._scopes.append(scope | self._local_names(node))
         try:
             if not unpacks and len(body) == 1 and not self._renders_stmt(body[0]):
                 before = len(self._hoist)

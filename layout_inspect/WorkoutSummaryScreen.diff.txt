@@ -1,8 +1,8 @@
 WorkoutSummaryScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Workout complete                     compose x= 13.6 y=  2.0 w= 44.8 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 44.5 h= 2.8  |  worst Δ  2.2%
-  PASS  Done                                 compose x= 85.2 y=  2.3 w= 10.9 h= 2.4  |  kivy x= 85.9 y=  3.2 w= 10.2 h= 2.4  |  worst Δ  0.9%
+  PASS  Workout complete                     compose x= 13.6 y=  2.0 w= 44.8 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 44.5 h= 2.8  |  worst Δ  2.0%
+  PASS  Done                                 compose x= 85.2 y=  2.3 w= 10.9 h= 2.4  |  kivy x= 85.9 y=  1.4 w= 10.2 h= 2.4  |  worst Δ  0.9%
   XTRA  0:00                                 in kivy only (not in compose ground truth)
   XTRA  Duration                             in kivy only (not in compose ground truth)
   XTRA  0 kg                                 in kivy only (not in compose ground truth)

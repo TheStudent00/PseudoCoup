@@ -33,7 +33,7 @@
   {
    "path": "0/0/0/0",
    "x": 4.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -41,7 +41,7 @@
   {
    "path": "0/0/0/1",
    "x": 52.0,
-   "y": 38.0,
+   "y": 0.0,
    "w": 182.759,
    "h": 26,
    "text": "Log other exercise",
@@ -59,7 +59,7 @@
    "path": "0/0/1/0",
    "x": 16.0,
    "y": 72.0,
-   "w": 379,
+   "w": 379.0,
    "h": 37.0,
    "text": "Log cardio or other activity so it counts toward your week and your strength readiness. We never estimate calories.",
    "kind": "Text"

@@ -67,6 +67,14 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         # Also record each top-level fn's LAST parameter name: kotlin binds a trailing lambda to the last
         # parameter (whatever it is called), so a same-file call emits the correct keyword, not `content=`.
         for c in root.named_children:
+            if c.type in ("import", "import_header"):
+                # an IMPORTED name is a known free name too -- without this, a bare call to an
+                # imported top-level fn inside a builder scope misbinds to the implicit receiver
+                # (`formatWeight(...)` became `_recv.formatWeight(...)` inside buildString)
+                seg = self.text(c).split()[-1].split(".")[-1]
+                if seg != "*":
+                    self._top_level.add(seg)
+                continue
             if c.type in ("function_declaration", "property_declaration",
                           "class_declaration", "object_declaration"):
                 nm = self._name_of(c, deep=(c.type == "property_declaration"))

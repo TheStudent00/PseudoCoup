@@ -33,7 +33,7 @@
   {
    "path": "0/0/0/0",
    "x": 4.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -41,7 +41,7 @@
   {
    "path": "0/0/0/1",
    "x": 52.0,
-   "y": 38.0,
+   "y": 0.0,
    "w": 133.75099999999998,
    "h": 26,
    "text": "New exercise",
@@ -50,7 +50,7 @@
   {
    "path": "0/0/0/2",
    "x": 359.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -489,7 +489,7 @@
    "path": "0/0/1/6/0/1",
    "x": 20.0,
    "y": 536.0,
-   "w": 371,
+   "w": 370.53,
    "h": 30.0,
    "text": "For a new movement, we'll start near your weight on the lift you pick, then adjust from your first set.",
    "kind": "Text"
