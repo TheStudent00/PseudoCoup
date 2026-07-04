@@ -8,11 +8,9 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] Text WIDTH frame question: for long strings the compose ground truth reports ~10% wider than the actual font file's advance widths (measured: "Remind you…" = 246px true Figtree-400 advance at 12px, kivy 242, compose dump 276). Likely Robolectric font fallback (custom res/font may not load in JVM tests) + letterSpacing (0.15–0.2sp/char, no Kivy equivalent). Needs a controlled specimen test (one screen rendering known strings in each role) before touching the kit — do NOT fit constants to it. Costs ~6 width FAILs on Settings.
-- [fidelity] Settings residual y-drift: starts +0.7% at the first SettingsRow subtitle and accumulates ~+0.4%/row (rows with trailing controls center their title column differently than compose). Probe one SettingsRow's chain.
-- [fidelity] Settings: trailing dropdown x ("kg" at 66.9 vs 89.5) — CompactDropdown row not end-anchored; segmented Push/In-app/None text h 1.9 vs compose 1.4 (label style inside SegmentedButton not labelSmall).
-- [fidelity] Settings MISS Developer/Debug panel: BuildConfig.DEBUG=True in the Kotlin debug test build, False in python — align the harness (or dump via release test).
+- [fidelity] Remaining 5 fails (79/84): Settings "kg" trailing-dropdown x (row not end-anchored, Δ22.6); Settings "Back up my data" fold-edge case (kivy content 1.7% shorter, item peeks above the fold that compose clips); Exercises "No exercises found" y −3.1 (search-bar block pitch); LogCardio "Notes (optional)" y −3.2 (field-label block); Settings "Peak week…" width −3.0 (letterSpacing/font residual on a long string).
 - [fidelity] XTRA "User": the display-name field's value appears twice in the kivy tree (field container + consumed dump path) — dedup.
+- [fidelity] SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears — never infer from mixed app screens.
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
 - [ui] Scaffold innerPadding inset + Modifier order (padding-before-size vs after) — minor, after the big rows.

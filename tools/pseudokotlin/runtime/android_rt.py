@@ -179,9 +179,11 @@ for _n in ("Inject", "Provides", "Provider", "Module", "Binds", "Singleton", "In
 
 class BuildConfig:
     # Gradle-generated at build time (no Kotlin source) -- a stand-in so version strings resolve.
-    DEBUG = False
+    # DEBUG matches the layout ground truth, which runs the DEBUG unit-test build (testDebugUnitTest):
+    # debug-only UI (the Developer section) must render on both sides or it diffs as MISS.
+    DEBUG = True
     APPLICATION_ID = "com.sara.workoutforlife"
-    BUILD_TYPE = "release"
+    BUILD_TYPE = "debug"
     VERSION_CODE = 1
     VERSION_NAME = "1.0"
 
