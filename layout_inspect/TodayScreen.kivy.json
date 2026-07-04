@@ -12,18 +12,26 @@
    "y": 0.0,
    "w": 411.0,
    "h": 915,
-   "kind": "Box"
+   "kind": "CompositionLocalProvider"
   },
   {
    "path": "0/0",
    "x": 0.0,
    "y": 0.0,
    "w": 411.0,
-   "h": 915,
-   "kind": "LazyColumn"
+   "h": 915.0,
+   "kind": "Box"
   },
   {
    "path": "0/0/0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915.0,
+   "kind": "LazyColumn"
+  },
+  {
+   "path": "0/0/0/0",
    "x": 0.0,
    "y": 0.0,
    "w": 411.0,
@@ -31,7 +39,7 @@
    "kind": "Card"
   },
   {
-   "path": "0/0/0/0",
+   "path": "0/0/0/0/0",
    "x": 12.0,
    "y": 8.0,
    "w": 387.0,
@@ -39,42 +47,42 @@
    "kind": "Row"
   },
   {
-   "path": "0/0/0/0/0",
+   "path": "0/0/0/0/0/0",
    "x": 28.0,
    "y": 21.5,
-   "w": 133,
+   "w": 136,
    "h": 17,
    "text": "This week's workouts",
    "kind": "Text"
   },
   {
-   "path": "0/0/0/1",
+   "path": "0/0/0/0/1",
    "x": 28.0,
    "y": 53.5,
-   "w": 246,
+   "w": 259,
    "h": 17,
    "text": "Set up a program to see your week here.",
    "kind": "Text"
   },
   {
-   "path": "0/0/1",
+   "path": "0/0/0/1",
    "x": 20.0,
    "y": 113.5,
-   "w": 335,
+   "w": 345,
    "h": 17,
    "text": "No program enrolled yet. Head to Paths to get started.",
    "kind": "Text"
   },
   {
-   "path": "0/1",
+   "path": "0/0/1",
    "x": 0.0,
    "y": 0.0,
    "w": 411.0,
-   "h": 915,
+   "h": 915.0,
    "kind": "Box"
   },
   {
-   "path": "0/1/0",
+   "path": "0/0/1/0",
    "x": 339.0,
    "y": 847.0,
    "w": 72.0,
@@ -82,7 +90,7 @@
    "kind": "Column"
   },
   {
-   "path": "0/1/0/0",
+   "path": "0/0/1/0/0",
    "x": 339.0,
    "y": 847.0,
    "w": 56,

@@ -68,7 +68,7 @@ BarChart Bedtime BorderStroke Brush ButtonDefaults Canvas CardDefaults Check Che
 LaunchedEffect
 ColumnScope DatePicker DatePickerDialog DateRange Dp Edit EmojiEvents ExpandLess ExpandMore ExperimentalLayoutApi
 ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite FavoriteBorder FilterChipDefaults
-FitnessCenter FocusRequester Font FontFamily FontStyle FontVariation FontWeight HelpOutline Home
+FitnessCenter FocusRequester FontStyle FontVariation FontWeight HelpOutline Home
 Icons ImageVector ImeAction Immutable Info IntrinsicSize KeyboardActions KeyboardArrowDown KeyboardArrowRight
 KeyboardArrowUp KeyboardOptions KeyboardType Link ListItemDefaults LocalConfiguration LocalFocusManager Modifier
 MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset Path PathEffect Person
@@ -170,6 +170,27 @@ class _M3Typography:
                                  ("bodyLarge", 16, 24), ("bodyMedium", 14, 20), ("bodySmall", 12, 16),
                                  ("labelLarge", 14, 20), ("labelMedium", 12, 16), ("labelSmall", 11, 16)):
             setattr(self, name, TextStyle(fontSize=size, lineHeight=line))
+
+
+class Font:
+    """A font resource reference: Font(R.font.x, weight=...) -- R.font.x resolves to the resource NAME,
+    so the kit can find the actual file under the app's res/font/."""
+    def __init__(self, resource=None, *a, **k):
+        self.resource = resource if isinstance(resource, str) else None
+        self.weight = k.get("weight")
+
+
+class FontFamily:
+    """A set of Font()s (was inert, so the app's real typeface -- and therefore every measured text
+    width -- silently fell back to Kivy's default font)."""
+    Default = Monospace = SansSerif = Serif = Cursive = None
+
+    def __init__(self, *fonts, **k):
+        self.fonts = [f for f in fonts if isinstance(f, Font)]
+
+    @property
+    def resource(self):
+        return next((f.resource for f in self.fonts if f.resource), None)
 
 
 def Typography(*a, **roles):
