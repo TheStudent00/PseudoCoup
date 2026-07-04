@@ -52,7 +52,7 @@
    "path": "0/0/0/2",
    "x": 0.0,
    "y": 34.0,
-   "w": 48.0,
+   "w": 49.54,
    "h": 14,
    "text": "Beta one",
    "kind": "Text"
@@ -61,7 +61,7 @@
    "path": "0/0/0/3",
    "x": 0.0,
    "y": 48.0,
-   "w": 47.0,
+   "w": 48.504999999999995,
    "h": 14,
    "text": "Beta two",
    "kind": "Text"
@@ -88,7 +88,7 @@
    "path": "0/0/0/6",
    "x": 0.0,
    "y": 106.0,
-   "w": 259.0,
+   "w": 267.75,
    "h": 15,
    "text": "Remind you when it's time to log your workout",
    "kind": "Text"
