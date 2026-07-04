@@ -12,11 +12,11 @@ As of 2026-07-03.
 | Parse — all .kt transpile + compile | **279/279** | `▁▁█` | 🟢 |
 | Load — non-UI domain imports clean | **167/167** | `▁██` | 🟢 |
 | UI — files load (inert via autostub) | **87/87** | `▄▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/165** | `▄▄▄` | 🔴 |
+| Logic — engine methods match Kotlin | **160/166** | `▄▄▄` | 🔴 |
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **62/86** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **79/84** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,15 +32,11 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** Text WIDTH frame question: for long strings the compose ground truth reports ~10% wider than the actual font file's advance widths (measured: "Remind you…" = 246px true Figtree-400 advance at 12px, kivy 242, compose dump 276). Likely Robolectric font fallback (custom res/font may not load in JVM tests) + letterSpacing (0.15–0.2sp/char, no Kivy equivalent). Needs a controlled specimen test (one screen rendering known strings in each role) before touching the kit  ← next
-  - do NOT fit constants to it. Costs ~6 width FAILs on Settings.
-1. [fidelity] Settings residual y-drift: starts +0.7% at the first SettingsRow subtitle and accumulates ~+0.4%/row (rows with trailing controls center their title column differently than compose). Probe one SettingsRow's chain.
-1. **[fidelity]** Settings: trailing dropdown x ("kg" at 66.9 vs 89.5)
-  - CompactDropdown row not end-anchored; segmented Push/In-app/None text h 1.9 vs compose 1.4 (label style inside SegmentedButton not labelSmall).
-1. **[fidelity]** Settings MISS Developer/Debug panel: BuildConfig.DEBUG=True in the Kotlin debug test build, False in python
-  - align the harness (or dump via release test).
+1. [fidelity] Remaining 5 fails (79/84): Settings "kg" trailing-dropdown x (row not end-anchored, Δ22.6); Settings "Back up my data" fold-edge case (kivy content 1.7% shorter, item peeks above the fold that compose clips); Exercises "No exercises found" y −3.1 (search-bar block pitch); LogCardio "Notes (optional)" y −3.2 (field-label block); Settings "Peak week…" width −3.0 (letterSpacing/font residual on a long string).  ← next
 1. **[fidelity]** XTRA "User": the display-name field's value appears twice in the kivy tree (field container + consumed dump path)
   - dedup.
+1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
+  - never infer from mixed app screens.
 1. **[ui]** Paint layer
   - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 1. **[ui]** Popups render inline
