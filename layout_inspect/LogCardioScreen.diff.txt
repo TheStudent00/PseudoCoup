@@ -1,31 +1,31 @@
 LogCardioScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Log other exercise                   compose x= 13.6 y=  2.0 w= 44.5 h= 3.1  |  kivy x= 13.6 y=  2.4 w= 43.6 h= 2.8  |  worst Δ  1.0%
+  PASS  Log other exercise                   compose x= 13.6 y=  2.0 w= 44.5 h= 3.1  |  kivy x= 12.7 y=  2.4 w= 43.6 h= 2.8  |  worst Δ  1.0%
   PASS  Log cardio or other activity so it   compose x=  3.9 y=  7.9 w= 92.2 h= 4.0  |  kivy x=  3.9 y=  7.9 w= 92.2 h= 3.7  |  worst Δ  0.3%
   PASS  Activity                             compose x=  3.9 y= 13.7 w= 10.7 h= 1.4  |  kivy x=  3.9 y= 14.2 w=  9.2 h= 1.4  |  worst Δ  1.5%
-  PASS  Run                                  compose x=  7.8 y= 17.5 w=  6.6 h= 1.9  |  kivy x=  7.8 y= 18.4 w=  6.1 h= 2.0  |  worst Δ  0.9%
-  PASS  Bike                                 compose x= 24.1 y= 17.5 w=  7.1 h= 1.9  |  kivy x= 23.6 y= 18.4 w=  6.8 h= 2.0  |  worst Δ  0.9%
-  PASS  Swim                                 compose x= 40.9 y= 17.5 w=  9.0 h= 1.9  |  kivy x= 40.1 y= 18.4 w=  9.0 h= 2.0  |  worst Δ  0.9%
-  PASS  Walk                                 compose x= 59.6 y= 17.5 w=  7.8 h= 1.9  |  kivy x= 58.9 y= 18.4 w=  7.8 h= 2.0  |  worst Δ  0.9%
-  PASS  Hike                                 compose x= 77.1 y= 17.5 w=  7.5 h= 1.9  |  kivy x= 76.4 y= 18.4 w=  7.3 h= 2.0  |  worst Δ  0.9%
-  PASS  Row                                  compose x=  7.8 y= 22.7 w=  7.1 h= 1.9  |  kivy x=  7.8 y= 23.6 w=  7.1 h= 2.0  |  worst Δ  0.9%
-  PASS  Elliptical                           compose x= 24.6 y= 22.7 w= 12.9 h= 1.9  |  kivy x= 24.6 y= 23.6 w= 14.1 h= 2.0  |  worst Δ  1.2%
-  PASS  HIIT                                 compose x= 47.2 y= 22.7 w=  7.1 h= 1.9  |  kivy x= 48.4 y= 23.6 w=  6.6 h= 2.0  |  worst Δ  1.2%
-  PASS  Class                                compose x= 64.0 y= 22.7 w=  8.8 h= 1.9  |  kivy x= 64.7 y= 23.6 w=  9.2 h= 2.0  |  worst Δ  0.9%
-  FAIL  Sport                                compose x= 82.5 y= 22.7 w=  9.0 h= 1.9  |  kivy x=  7.8 y= 28.9 w=  8.8 h= 2.0  |  worst Δ 74.7%
-  FAIL  Other                                compose x=  7.8 y= 28.0 w=  9.5 h= 1.9  |  kivy x= 26.3 y= 28.9 w=  8.8 h= 2.0  |  worst Δ 18.5%
-  PASS  When                                 compose x=  3.9 y= 33.2 w=  7.8 h= 1.4  |  kivy x=  3.9 y= 35.5 w=  6.8 h= 1.4  |  worst Δ  2.3%
-  FAIL  Today                                compose x= 16.1 y= 36.8 w= 74.2 h= 2.2  |  kivy x= 13.1 y= 39.7 w= 80.0 h= 2.0  |  worst Δ  5.8%
-  FAIL  Duration (minutes)                   compose x=  3.9 y= 42.3 w= 25.1 h= 1.4  |  kivy x=  3.9 y= 45.5 w= 22.6 h= 1.5  |  worst Δ  3.2%
-  FAIL  Intensity                            compose x=  3.9 y= 49.1 w= 11.7 h= 1.4  |  kivy x=  3.9 y= 52.2 w= 10.7 h= 1.4  |  worst Δ  3.2%
-  FAIL  Low                                  compose x= 16.1 y= 52.7 w=  6.6 h= 2.2  |  kivy x= 15.5 y= 56.4 w=  6.8 h= 2.0  |  worst Δ  3.7%
-  FAIL  Moderate                             compose x= 45.5 y= 52.7 w= 15.3 h= 2.2  |  kivy x= 42.3 y= 56.4 w= 15.3 h= 2.0  |  worst Δ  3.7%
-  FAIL  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 77.3 y= 56.4 w=  7.5 h= 2.0  |  worst Δ  3.7%
-  FAIL  Distance (km)                        compose x=  3.9 y= 58.1 w= 18.7 h= 1.4  |  kivy x=  3.9 y= 62.2 w= 17.3 h= 1.5  |  worst Δ  4.0%
-  FAIL  Avg HR (bpm)                         compose x= 51.3 y= 58.1 w= 19.2 h= 1.4  |  kivy x= 51.5 y= 62.2 w= 16.5 h= 1.5  |  worst Δ  4.0%
-  PASS  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  7.8 y= 69.4 w= 26.8 h= 2.0  |  worst Δ  2.7%
-  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.2 y= 76.5 w=  7.5 h= 2.0  |  worst Δ  0.4%
+  PASS  Run                                  compose x=  7.8 y= 17.5 w=  6.6 h= 1.9  |  kivy x=  7.8 y= 18.0 w=  6.1 h= 1.9  |  worst Δ  0.5%
+  PASS  Bike                                 compose x= 24.1 y= 17.5 w=  7.1 h= 1.9  |  kivy x= 23.6 y= 18.0 w=  6.1 h= 1.9  |  worst Δ  1.0%
+  PASS  Swim                                 compose x= 40.9 y= 17.5 w=  9.0 h= 1.9  |  kivy x= 39.4 y= 18.0 w=  8.3 h= 1.9  |  worst Δ  1.5%
+  PASS  Walk                                 compose x= 59.6 y= 17.5 w=  7.8 h= 1.9  |  kivy x= 57.4 y= 18.0 w=  7.3 h= 1.9  |  worst Δ  2.2%
+  PASS  Hike                                 compose x= 77.1 y= 17.5 w=  7.5 h= 1.9  |  kivy x= 74.5 y= 18.0 w=  6.3 h= 1.9  |  worst Δ  2.7%
+  PASS  Row                                  compose x=  7.8 y= 22.7 w=  7.1 h= 1.9  |  kivy x=  7.8 y= 22.3 w=  6.8 h= 1.9  |  worst Δ  0.4%
+  PASS  Elliptical                           compose x= 24.6 y= 22.7 w= 12.9 h= 1.9  |  kivy x= 24.3 y= 22.3 w= 12.4 h= 1.9  |  worst Δ  0.5%
+  PASS  HIIT                                 compose x= 47.2 y= 22.7 w=  7.1 h= 1.9  |  kivy x= 46.5 y= 22.3 w=  6.3 h= 1.9  |  worst Δ  0.7%
+  PASS  Class                                compose x= 64.0 y= 22.7 w=  8.8 h= 1.9  |  kivy x= 62.5 y= 22.3 w=  8.3 h= 1.9  |  worst Δ  1.5%
+  PASS  Sport                                compose x= 82.5 y= 22.7 w=  9.0 h= 1.9  |  kivy x= 80.5 y= 22.3 w=  8.3 h= 1.9  |  worst Δ  1.9%
+  PASS  Other                                compose x=  7.8 y= 28.0 w=  9.5 h= 1.9  |  kivy x=  7.8 y= 26.7 w=  8.5 h= 1.9  |  worst Δ  1.3%
+  PASS  When                                 compose x=  3.9 y= 33.2 w=  7.8 h= 1.4  |  kivy x=  3.9 y= 32.9 w=  6.8 h= 1.4  |  worst Δ  1.0%
+  PASS  Today                                compose x= 16.1 y= 36.8 w= 74.2 h= 2.2  |  kivy x= 16.1 y= 37.1 w= 74.2 h= 1.9  |  worst Δ  0.3%
+  PASS  Duration (minutes)                   compose x=  3.9 y= 42.3 w= 25.1 h= 1.4  |  kivy x=  3.9 y= 42.8 w= 22.6 h= 1.5  |  worst Δ  2.4%
+  PASS  Intensity                            compose x=  3.9 y= 49.1 w= 11.7 h= 1.4  |  kivy x=  3.9 y= 51.6 w= 10.7 h= 1.4  |  worst Δ  2.5%
+  PASS  Low                                  compose x= 16.1 y= 52.7 w=  6.6 h= 2.2  |  kivy x= 16.0 y= 55.4 w=  6.6 h= 1.9  |  worst Δ  2.7%
+  PASS  Moderate                             compose x= 45.5 y= 52.7 w= 15.3 h= 2.2  |  kivy x= 42.8 y= 55.4 w= 14.4 h= 1.9  |  worst Δ  2.7%
+  PASS  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 77.2 y= 55.4 w=  7.1 h= 1.9  |  worst Δ  2.7%
+  PASS  Distance (km)                        compose x=  3.9 y= 58.1 w= 18.7 h= 1.4  |  kivy x=  3.9 y= 60.7 w= 17.3 h= 1.5  |  worst Δ  2.5%
+  PASS  Avg HR (bpm)                         compose x= 51.3 y= 58.1 w= 19.2 h= 1.4  |  kivy x= 51.5 y= 60.7 w= 16.5 h= 1.5  |  worst Δ  2.7%
+  PASS  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  7.8 y= 69.8 w= 26.8 h= 2.0  |  worst Δ  2.7%
+  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.5 y= 77.0 w=  7.1 h= 1.9  |  worst Δ  0.9%
 
-matched 25/25 compose components; 15 within ±3.0%
-LAYOUT FIDELITY: 60%  (15/25)
+matched 25/25 compose components; 25 within ±3.0%
+LAYOUT FIDELITY: 100%  (25/25)
