@@ -75,7 +75,7 @@ MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset Pat
 PlayArrow ReadOnlyComposable Remove RepeatMode RoundedCornerShape Route Search
 SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
 Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextFieldValue TextOverflow
-TextRange TooltipDefaults TopAppBarDefaults Typography WindowInsets alpha animateFloat animateFloatAsState
+TextRange TooltipDefaults TopAppBarDefaults WindowInsets alpha animateFloat animateFloatAsState
 background border buildAnnotatedString clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
 drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
 heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp lightColorScheme navigationBarsPadding
@@ -163,25 +163,40 @@ class _M3Typography:
     typography.titleLarge) was reading an inert <ui>, so every styled text fell back to one size."""
     def __init__(self):
         from runtime.java_rt import TextStyle
-        for name, size in (("displayLarge", 57), ("displayMedium", 45), ("displaySmall", 36),
-                           ("headlineLarge", 32), ("headlineMedium", 28), ("headlineSmall", 24),
-                           ("titleLarge", 22), ("titleMedium", 16), ("titleSmall", 14),
-                           ("bodyLarge", 16), ("bodyMedium", 14), ("bodySmall", 12),
-                           ("labelLarge", 14), ("labelMedium", 12), ("labelSmall", 11)):
-            setattr(self, name, TextStyle(fontSize=size))
+        for name, size, line in (("displayLarge", 57, 64), ("displayMedium", 45, 52),
+                                 ("displaySmall", 36, 44), ("headlineLarge", 32, 40),
+                                 ("headlineMedium", 28, 36), ("headlineSmall", 24, 32),
+                                 ("titleLarge", 22, 28), ("titleMedium", 16, 24), ("titleSmall", 14, 20),
+                                 ("bodyLarge", 16, 24), ("bodyMedium", 14, 20), ("bodySmall", 12, 16),
+                                 ("labelLarge", 14, 20), ("labelMedium", 12, 16), ("labelSmall", 11, 16)):
+            setattr(self, name, TextStyle(fontSize=size, lineHeight=line))
+
+
+def Typography(*a, **roles):
+    """The app's type scale as REAL role -> TextStyle mappings (was inert, so the theme's custom sizes and
+    line heights -- e.g. this app's titleMedium 18/24 vs M3's 16/24 -- silently fell back to M3 defaults).
+    Unspecified roles keep the M3 default."""
+    t = _M3Typography()
+    for name, style in roles.items():
+        if getattr(style, "fontSize", None) is not None:
+            setattr(t, name, style)
+    return t
 
 
 class _MaterialTheme:
     """MaterialTheme is BOTH the theme object (`MaterialTheme.typography.bodyMedium`) and a composable
     (`MaterialTheme(colorScheme=..., typography=..., content=...)`). The object side carries the real M3
-    type scale; the composable side runs its content so children emit. colorScheme stays inert until the
-    kit paints colors."""
+    type scale; the composable side INSTALLS a provided typography (the app theme's custom type scale)
+    and runs its content so children emit. colorScheme stays inert until the kit paints colors."""
     def __init__(self):
         self.typography = _M3Typography()
         self.colorScheme = _UI
         self.shapes = _UI
 
     def __call__(self, *args, **kwargs):
+        t = kwargs.get("typography")
+        if isinstance(t, _M3Typography):
+            self.typography = t                  # the app theme's scale: every later style read sees it
         content = kwargs.get("content") or next((a for a in args if callable(a)), None)
         if callable(content):
             try:
