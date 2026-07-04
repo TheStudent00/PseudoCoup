@@ -346,6 +346,9 @@ class KtList(list):
     def findLast(self, p):
         return next((x for x in reversed(self) if p(x)), None)
 
+    def firstNotNullOfOrNull(self, transform):   # first non-null transform(x), else null
+        return next((r for x in self for r in (transform(x),) if r is not None), None)
+
     def last(self, p=None):
         if p:
             return next(x for x in reversed(self) if p(x))

@@ -129,6 +129,9 @@ class Flow:
     def distinctUntilChanged(self):
         return self
 
+    def debounce(self, _ms):            # synchronous model: no timing -- the latest value stands
+        return self
+
     def catch(self, *a):
         return self
 
@@ -259,6 +262,11 @@ def combine(*args):
     """combine(f1, f2, …, transform) -> StateFlow(transform(current(f1), current(f2), …)). A DAO-backed
     flow with no data contributes None (the data-layer gap)."""
     *flows, transform = args
+    if len(flows) == 1 and isinstance(flows[0], (list, tuple)):
+        # Kotlin's collection overload `combine(flows) { arr -> ... }`: the transform receives the
+        # current values as ONE array argument, not spread varargs.
+        from .kotlin_rt import KtList
+        return StateFlow(transform(KtList(_current(f) for f in flows[0])))
     return StateFlow(transform(*[_current(f) for f in flows]))
 
 

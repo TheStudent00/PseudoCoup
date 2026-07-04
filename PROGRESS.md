@@ -9,14 +9,14 @@ As of 2026-07-04.
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **281/281** | `▁▁▃█` | 🟢 |
+| Parse — all .kt transpile + compile | **280/281** | `▁▁▅█` | 🔴 |
 | Load — non-UI domain imports clean | **167/167** | `▁███` | 🟢 |
 | UI — files load (inert via autostub) | **87/87** | `▄▄▄` | 🟢 |
 | Logic — engine methods match Kotlin | **86/86** | `███▁` | 🔴 |
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **231/231** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **261/368** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,9 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 231/231 on all 20 measured screens (100% everywhere). This round's causes closed: labeled-field geometry (8dp label band above the border + resting label at top+24, specimen-proven at minLines 1 and 5), Switch M3 layout size 52x32 (Modifier.scale is draw-only), Text-in-Button keeps its own declared style, per-Text fontWeight reaches the variable-font instancing, and the shaper calibration curve refined by band (<=12sp x1.035, 13-15sp exact, >=16sp x1.021, SemiBold+ x1.042 extra  ← next
-  - all specimen-pinned; Figtree's file advances are weight-constant, the engine widens 600+ synthetically).
+1. [fidelity] Coverage now ALL 28 measurable screens (DebugPanel dev-only excluded): 344 counted components, 254 within tolerance; the original 20 screens hold at 100% (the differ discounts content below the fold in BOTH engines). The new session/program screens ran through the app's own seeders (SampleProgramRepository + WorkoutExecutionRepository on both engines) and surfaced SIX real transpiler/runtime gaps, all fixed generally: extension-on-primitive calls (ktext dispatcher + build pre-pass registry), Java printf ',' grouping flag, Room enum query-parameter binding, Room aliased-star JOIN reads skipping enum conversion, Kotlin combine(collection){arr} overload, Flow.debounce + firstNotNullOfOrNull missing, and IntrinsicSize float-coercing to 0 via the autostub (collapsed every IntrinsicSize row).  ← next
+1. **[fidelity]** NEXT, by screen: (a) ProgramEditorScreen 0/34
+  - the kivy dump reports the Scaffold subtree at 100x100 bottom-left while a direct mount probe shows a correct FloatLayout(1,1); the dump's node->widget registry hands back an unmounted twin for this screen only (suspect: emit()'s render_node building a second widget tree that re-tags nodes). (b) WorkoutCooldownScreen 11/25, WorkoutExecutionScreen 1/2, ExercisePickerScreen 6/46, ProgramDayEditorScreen 0/1 -- undiagnosed, likely per-cause groups. (c) SessionDetailScreen 0/0 -- neither engine pairs anything; needs a waitFor anchor + check the completed-session fixture renders.
 1. [fidelity] NEXT: 9 screens remain unmeasured (generator skip table, reasons recorded): 8 need a navigation id + session/program fixtures; DebugPanel is a dev tool.
 1. [fidelity] Sanctioned non-general bridges (user-approved as engine/font-specific, all specimen-pinned): shaper width calibration by size/weight band, and emoji advance = 1.28 x fontSize. Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
