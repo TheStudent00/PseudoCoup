@@ -4,9 +4,9 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Analytics                            compose x=  9.2 y=  1.5 w= 14.8 h= 2.2  |  kivy x=  9.7 y=  1.7 w= 13.9 h= 1.9  |  worst Δ  1.0%
   PASS  Bests                                compose x= 45.5 y=  1.5 w=  9.2 h= 2.2  |  kivy x= 45.6 y=  1.7 w=  8.8 h= 1.9  |  worst Δ  0.5%
   PASS  History                              compose x= 77.4 y=  1.5 w= 11.9 h= 2.2  |  kivy x= 77.7 y=  1.7 w= 11.2 h= 1.9  |  worst Δ  0.7%
-  PASS  Your wins                            compose x=  7.8 y=  8.3 w= 15.6 h= 1.9  |  kivy x=  7.8 y=  8.3 w= 15.1 h= 1.9  |  worst Δ  0.5%
+  PASS  Your wins                            compose x=  7.8 y=  8.3 w= 15.6 h= 1.9  |  kivy x=  7.8 y=  8.3 w= 15.7 h= 1.9  |  worst Δ  0.1%
   PASS  More than the numbers — the real-l   compose x= 32.1 y= 11.5 w= 60.1 h= 4.0  |  kivy x= 32.1 y= 11.5 w= 60.1 h= 4.0  |  worst Δ  0.0%
-  PASS  0                                    compose x= 16.5 y= 15.0 w=  3.2 h= 2.4  |  kivy x= 16.7 y= 14.8 w=  2.7 h= 2.4  |  worst Δ  0.5%
+  PASS  0                                    compose x= 16.5 y= 15.0 w=  3.2 h= 2.4  |  kivy x= 16.6 y= 14.8 w=  2.9 h= 2.4  |  worst Δ  0.3%
   PASS  wins                                 compose x= 14.8 y= 17.4 w=  6.3 h= 1.4  |  kivy x= 15.1 y= 17.2 w=  5.8 h= 1.5  |  worst Δ  0.6%
   PASS  Log a win                            compose x= 43.3 y= 18.6 w= 14.6 h= 1.9  |  kivy x= 44.3 y= 18.5 w= 14.6 h= 1.9  |  worst Δ  1.0%
   PASS  Log your first workout to see stre   compose x=  3.9 y= 25.6 w= 92.2 h= 4.0  |  kivy x=  3.9 y= 25.6 w= 92.2 h= 4.0  |  worst Δ  0.0%

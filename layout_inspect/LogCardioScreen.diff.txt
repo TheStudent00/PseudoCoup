@@ -1,7 +1,7 @@
 LogCardioScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Log other exercise                   compose x= 13.6 y=  2.0 w= 44.5 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 43.6 h= 2.8  |  worst Δ  2.2%
+  PASS  Log other exercise                   compose x= 13.6 y=  2.0 w= 44.5 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 44.5 h= 2.8  |  worst Δ  2.2%
   PASS  Log cardio or other activity so it   compose x=  3.9 y=  7.9 w= 92.2 h= 4.0  |  kivy x=  3.9 y=  7.9 w= 92.2 h= 4.0  |  worst Δ  0.0%
   PASS  Activity                             compose x=  3.9 y= 13.7 w= 10.7 h= 1.4  |  kivy x=  3.9 y= 13.7 w= 10.0 h= 1.5  |  worst Δ  0.7%
   PASS  Run                                  compose x=  7.8 y= 17.5 w=  6.6 h= 1.9  |  kivy x=  7.8 y= 17.5 w=  6.1 h= 1.9  |  worst Δ  0.5%
@@ -24,8 +24,8 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 77.1 y= 53.2 w=  7.3 h= 1.9  |  worst Δ  0.5%
   PASS  Distance (km)                        compose x=  3.9 y= 58.1 w= 18.7 h= 1.4  |  kivy x=  3.9 y= 58.0 w= 18.7 h= 1.5  |  worst Δ  0.1%
   PASS  Avg HR (bpm)                         compose x= 51.3 y= 58.1 w= 19.2 h= 1.4  |  kivy x= 51.5 y= 58.0 w= 18.6 h= 1.5  |  worst Δ  0.6%
-  PASS  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  7.8 y= 67.2 w= 28.3 h= 2.2  |  worst Δ  1.1%
-  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.4 y= 75.7 w=  7.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  7.8 y= 67.9 w= 28.9 h= 2.2  |  worst Δ  0.5%
+  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.4 y= 76.6 w=  7.3 h= 1.9  |  worst Δ  0.5%
 
 matched 25/25 compose components; 25 within ±3.0%
 LAYOUT FIDELITY: 100%  (25/25)

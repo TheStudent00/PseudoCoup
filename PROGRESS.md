@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **225/231** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **231/231** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,11 +32,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 225/231 on 20 screens (16 at 100%). Remaining 6 fails, by cause: (a) MULTILINE-field label placement  ← next
-  - an empty minLines>1 field's label position in compose is neither centered nor top+16 (both measured and rejected); extend dumpSpecimen with a minLines=5 OutlinedTextField before touching the rule (ReportBug 1, ExerciseCreate 2 follow-drift). (b) "Unilateral/Compound" toggle w +7% -- identify the component class and its inset (ExerciseCreate 2). (c) two band-edge shaper widths at large sizes (Onboarding "Let's go" 3.6, Paths headline 3.6).
-1. [fidelity] 9 screens remain unmeasured (generator skip table, reasons recorded): 8 need a navigation id + session/program fixtures; DebugPanel is a dev tool.
-1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
-  - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
+1. **[fidelity]** 231/231 on all 20 measured screens (100% everywhere). This round's causes closed: labeled-field geometry (8dp label band above the border + resting label at top+24, specimen-proven at minLines 1 and 5), Switch M3 layout size 52x32 (Modifier.scale is draw-only), Text-in-Button keeps its own declared style, per-Text fontWeight reaches the variable-font instancing, and the shaper calibration curve refined by band (<=12sp x1.035, 13-15sp exact, >=16sp x1.021, SemiBold+ x1.042 extra  ← next
+  - all specimen-pinned; Figtree's file advances are weight-constant, the engine widens 600+ synthetically).
+1. [fidelity] NEXT: 9 screens remain unmeasured (generator skip table, reasons recorded): 8 need a navigation id + session/program fixtures; DebugPanel is a dev tool.
+1. [fidelity] Sanctioned non-general bridges (user-approved as engine/font-specific, all specimen-pinned): shaper width calibration by size/weight band, and emoji advance = 1.28 x fontSize. Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
   - never infer from mixed app screens.
 1. **[ui]** Paint layer
