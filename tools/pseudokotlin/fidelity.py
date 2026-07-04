@@ -14,7 +14,8 @@ import re
 import subprocess
 import sys
 
-SCREENS = ["GymListScreen", "LogCardioScreen", "ExercisesScreen", "SettingsScreen", "TodayScreen", "ProgramsScreen", "HistoryScreen", "ExerciseDetailScreen", "WinsListScreen", "ProgressScreen"]   # each has a mirrored fixture in
+SCREENS = [ln.strip() for ln in open(os.path.expanduser(
+    "~/Programming/WFL_MixingCenter/render/layout_screens.txt")) if ln.strip()]   # each has a mirrored fixture in
                                                                     # LayoutDumpTest + seed_fixtures
 WFL = os.path.expanduser("~/Programming/WFL_MixingCenter/WFL")
 RENDER = os.path.expanduser("~/Programming/WFL_MixingCenter/render")
@@ -28,8 +29,9 @@ def run(cmd, cwd, env_extra=None, timeout=420):
 
 
 def main():
-    rc, out = run(["./gradlew", ":app:testDebugUnitTest", "--tests",
-                   "com.sara.workoutforlife.layout.LayoutDumpTest"], WFL,
+    rc, out = run(["./gradlew", ":app:testDebugUnitTest",
+                   "--tests", "com.sara.workoutforlife.layout.LayoutDumpTest",
+                   "--tests", "com.sara.workoutforlife.layout.LayoutDumpAllTest"], WFL,
                   {"JAVA_HOME": JAVA_HOME})
     if rc != 0:
         print(out[-1500:])

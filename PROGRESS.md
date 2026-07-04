@@ -9,14 +9,14 @@ As of 2026-07-04.
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **279/279** | `▁▁██` | 🟢 |
+| Parse — all .kt transpile + compile | **281/281** | `▁▁▃█` | 🟢 |
 | Load — non-UI domain imports clean | **167/167** | `▁███` | 🟢 |
 | UI — files load (inert via autostub) | **87/87** | `▄▄▄` | 🟢 |
 | Logic — engine methods match Kotlin | **86/86** | `███▁` | 🔴 |
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **128/128** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **165/231** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,9 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 128/128  ← next
-  - ALL 10 measured screens at 100% (+WinsList with a seeded win card, +Progress via the first sanctioned Kotlin adjustment: winsViewModel threaded through ProgressScreen so a non-Hilt host can supply it, runtime default unchanged). Two specimen gates guard derived metrics. Next: LogWorkout, Onboarding (CrashlyticsBridge stand-in), a seeded program (Programs/Today populated lists).
+1. **[fidelity]** COVERAGE IS NOW AUTOMATIC: gen_layout_dumps.py scans every `fun XxxScreen(` in the app and generates its ground-truth test (Assembler.kt builds any ViewModel by constructor type, like di.py). 20 of 29 screens measured  ← next
+  - 165/231. The 10 hand-tuned screens hold 128/128; the 10 auto-added ones are honest new baselines: WorkoutWarmup 3/32, UpdateProgramWizard 3/15, GymCreateWizard 4/13, ReportBug 3/10, Onboarding 0/3, PathsScreen 2/3, ExerciseCreate 14/18, GymEditor 4/5, MyProgram 3/3, PathDetail 1/1. Diagnose by cause, largest groups first.
+1. [fidelity] 9 screens remain unmeasured (generator skip table, reasons recorded): 8 need a navigation id + session/program fixtures; DebugPanel is a dev tool.
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
