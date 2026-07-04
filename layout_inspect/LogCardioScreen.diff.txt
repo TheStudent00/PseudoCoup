@@ -16,12 +16,12 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   FAIL  Sport                                compose x= 82.5 y= 22.7 w=  9.0 h= 1.9  |  kivy x=  7.8 y= 28.9 w=  8.8 h= 2.0  |  worst Δ 74.7%
   FAIL  Other                                compose x=  7.8 y= 28.0 w=  9.5 h= 1.9  |  kivy x= 26.3 y= 28.9 w=  8.8 h= 2.0  |  worst Δ 18.5%
   PASS  When                                 compose x=  3.9 y= 33.2 w=  7.8 h= 1.4  |  kivy x=  3.9 y= 35.5 w=  6.8 h= 1.4  |  worst Δ  2.3%
-  FAIL  Today                                compose x= 16.1 y= 36.8 w= 74.2 h= 2.2  |  kivy x= 48.3 y= 39.7 w=  9.7 h= 2.0  |  worst Δ 64.5%
+  FAIL  Today                                compose x= 16.1 y= 36.8 w= 74.2 h= 2.2  |  kivy x= 13.1 y= 39.7 w= 80.0 h= 2.0  |  worst Δ  5.8%
   FAIL  Duration (minutes)                   compose x=  3.9 y= 42.3 w= 25.1 h= 1.4  |  kivy x=  3.9 y= 45.5 w= 22.6 h= 1.5  |  worst Δ  3.2%
   FAIL  Intensity                            compose x=  3.9 y= 49.1 w= 11.7 h= 1.4  |  kivy x=  3.9 y= 61.4 w= 10.7 h= 1.4  |  worst Δ 12.3%
-  FAIL  Low                                  compose x= 16.1 y= 52.7 w=  6.6 h= 2.2  |  kivy x=  7.8 y= 65.6 w=  6.8 h= 2.0  |  worst Δ 12.9%
-  FAIL  Moderate                             compose x= 45.5 y= 52.7 w= 15.3 h= 2.2  |  kivy x= 23.4 y= 65.6 w= 15.3 h= 2.0  |  worst Δ 22.1%
-  FAIL  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 47.4 y= 65.6 w=  7.5 h= 2.0  |  worst Δ 29.4%
+  FAIL  Low                                  compose x= 16.1 y= 52.7 w=  6.6 h= 2.2  |  kivy x= 15.5 y= 65.6 w=  6.8 h= 2.0  |  worst Δ 12.9%
+  FAIL  Moderate                             compose x= 45.5 y= 52.7 w= 15.3 h= 2.2  |  kivy x= 42.3 y= 65.6 w= 15.3 h= 2.0  |  worst Δ 12.9%
+  FAIL  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 77.3 y= 65.6 w=  7.5 h= 2.0  |  worst Δ 12.9%
   FAIL  Distance (km)                        compose x=  3.9 y= 58.1 w= 18.7 h= 1.4  |  kivy x=  3.9 y= 71.4 w= 17.3 h= 1.5  |  worst Δ 13.2%
   FAIL  Avg HR (bpm)                         compose x= 51.3 y= 58.1 w= 19.2 h= 1.4  |  kivy x= 51.5 y= 71.4 w= 16.5 h= 1.5  |  worst Δ 13.2%
   FAIL  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.2 y=103.0 w=  7.5 h= 2.0  |  worst Δ 26.9%

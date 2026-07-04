@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **20/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **24/39** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,16 +32,16 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** SegmentedButton fills its row share  ← next
-  - LogCardio's "Today" selector: compose w=74% (segments split the row), kivy hugs text (9.7%). M3: segments in a SingleChoice/MultiChoiceSegmentedButtonRow divide the row equally. Drives the y-drift below it too.
-1. **[fidelity]** TabRow divides width equally among tabs
-  - Exercises' All/Built-in/Custom/Favorites pack left; compose centers each in row_width/n. (The one spot Kivy's equal-division default was RIGHT.)
-1. **[fidelity]** SearchBarDefaults still inert
-  - the "Search exercises…" placeholder never emits (MISS). Same audit family as SearchBar.
+1. **[fidelity]** LogCardio: the ~140px block between "Duration" and "Intensity"  ← next
+  - a custom stepper control (CompactControls) renders ~2.5x taller than compose; probe its widget chain (the M3 56dp text-field rule landed but this block isn't a bare text field). Drives the uniform 12.9% drift on 6 components below it.
 1. **[fidelity]** LogCardio chip line-break off by one chip (Sport)
-  - cumulative chip-width drift moves the wrap point; refine chip width fidelity (icon/selected-state space).
+  - cumulative chip-width drift moves the wrap point; likely the SELECTED chip's leading checkmark (Run is selected; compose adds ~26px my tree doesn't have).
+1. **[fidelity]** "Notes (optional)" MISS
+  - an OutlinedTextField label slot that never emits; find which slot lambda is swallowed.
+1. **[fidelity]** Exercises "No exercises found"
+  - Box(contentAlignment=Center) child not centering (x 5.8 vs 34.3).
 1. **[fidelity]** GymList 7th: Delete-gym in-button anchoring still Δ>3
-  - revisit with button-box ground truth (compose dumps Role=Button boxes; differ could pair those too).
+  - revisit with button-box ground truth.
 1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains
   - mirror di.py's assembly).
 1. **[ui]** Paint layer
