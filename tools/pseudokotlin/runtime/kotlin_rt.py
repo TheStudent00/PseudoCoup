@@ -1360,7 +1360,41 @@ def ktformat(receiver, *args):
     String.format(pattern, ...) arrives with the String TYPE as receiver -- the pattern is args[0].
     Any other receiver (DateTimeFormatter, LocalDate) keeps its own format method."""
     if isinstance(receiver, str):
-        return receiver % tuple(args)
+        return _printf(receiver, args)
     if args and isinstance(args[0], str):
-        return args[0] % tuple(args[1:])
+        return _printf(args[0], tuple(args[1:]))
     return receiver.format(*args)
+
+
+_DIRECTIVE = _re.compile(r"%(?P<flags>[-+ #0,]*)(?P<width>\d*)(?P<prec>\.\d+)?(?P<conv>[a-zA-Z%])")
+
+
+def _printf(pattern, args):
+    """Java printf semantics. Python's % operator covers everything except Java's ',' grouping flag
+    ("%,.0f" -> "12,480") -- directives carrying it go through format()'s ',' spec instead."""
+    if "," not in pattern:
+        return pattern % tuple(args)
+    it = iter(args)
+
+    def _one(m):
+        if m["conv"] == "%":
+            return "%"
+        v = next(it)
+        if "," in m["flags"]:
+            conv = m["conv"].lower()
+            spec = (m["width"] or "") + "," + (m["prec"] or "") + ("f" if conv == "f" else "d")
+            return format(v, spec)
+        return ("%" + m["flags"] + m["width"] + (m["prec"] or "") + m["conv"]) % (v,)
+
+    return _DIRECTIVE.sub(_one, pattern)
+
+
+def ktext(receiver, name, ext_fn, *args):
+    """Kotlin extension-call dispatch, mirroring Kotlin's own resolution rule: a MEMBER with the name
+    wins; otherwise the hoisted top-level extension function is called with the receiver first.
+    (`kg.toDisplay(unit)` on a plain float has no member -- the transpiler routes every call whose
+    name matches a declared extension through here, since a primitive receiver can't carry attrs.)"""
+    member = getattr(receiver, name, None)
+    if callable(member):
+        return member(*args)
+    return ext_fn(receiver, *args)

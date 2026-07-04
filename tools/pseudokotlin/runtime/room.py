@@ -58,6 +58,21 @@ class Col:
         return {"int": "INTEGER", "long": "INTEGER", "real": "REAL", "bool": "INTEGER"}.get(self.kind, "TEXT")
 
 
+def _bind(params):
+    """Adapt @Query PARAMETERS the way Col.to_db adapts entity fields -- Room runs its TypeConverters
+    on query args too (an enum arg binds as its name, a Boolean as 0/1). sqlite3 would otherwise
+    reject the object outright."""
+    out = {}
+    for k, v in (params or {}).items():
+        if isinstance(v, bool):
+            v = int(v)
+        elif not isinstance(v, (int, float, str, bytes, type(None))):
+            n = getattr(v, "name", None)         # enum constant -> its name (Room's converter)
+            v = n if isinstance(n, str) else str(v)
+        out[k] = v
+    return out
+
+
 class Entity:
     """Binds an entity class to a table: its columns + a factory(dict)->instance for reads."""
     def __init__(self, table, columns, factory):
@@ -110,7 +125,7 @@ class Database:
         single). A column selection with a declared result CLASS (pojo) maps each row to it by column
         name -- Room's row-object mapping (the SQL aliases match the class's fields). Otherwise
         (COUNT(*)/aggregates) return the plain value(s), a single column unwrapped to the bare value."""
-        rows = self._conn.execute(sql, params or {}).fetchall()
+        rows = self._conn.execute(sql, _bind(params)).fetchall()
         m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
         ent = self._entities.get(m.group(1)) if m else None
         star = _re.match(r"\s*SELECT\s+\*", sql, _re.IGNORECASE) is not None
@@ -165,7 +180,7 @@ class Database:
 
     def execute(self, sql, params=None):
         """A raw @Query that isn't a row->entity SELECT (UPDATE/DELETE, or a scalar)."""
-        cur = self._conn.execute(sql, params or {})
+        cur = self._conn.execute(sql, _bind(params))
         self._conn.commit()
         return cur
 
