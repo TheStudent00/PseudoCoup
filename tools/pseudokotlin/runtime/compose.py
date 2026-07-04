@@ -104,6 +104,21 @@ def _composable(kind):
                 if k == "style":                 # a TextStyle VALUE -- it happens to be callable (permissive
                     node.props[k] = v            # object), so the slot-lambda branch would swallow it
                     continue
+                if k == "decorationBox" and callable(v):
+                    # Compose calls decorationBox(innerTextField): the field's text layout renders exactly
+                    # where the slot invokes inner(). Reproduce that: hand it an inner that EMITS the value
+                    # text at the call position (one line tall even when empty -- the cursor line).
+                    def _inner(*_a, _n=node, **_k):
+                        t = Node("Text")
+                        t.text = str(_n.text) if _n.text else " "
+                        return _emit(t)
+                    try:
+                        v(_inner)
+                    except TypeError as e:
+                        if e.__traceback__.tb_next is not None:
+                            raise
+                    node.props["decorated"] = True
+                    continue
                 if callable(v):
                     _call(v)
                 elif k in ("text", "value") and isinstance(v, str):

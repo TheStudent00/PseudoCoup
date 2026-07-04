@@ -8,11 +8,8 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] LogCardio chip line-break off by one chip (Sport) — cumulative chip-width drift moves the wrap point. NOT the selected chip's checkmark (measured: compose's selected "Run" text starts at the same x as unselected chips); it is kivy's font running slightly wider per chip (Elliptical 14.1% vs 12.9%) until the last chip tips over. Needs a font-metric answer, not a per-chip constant.
-- [fidelity] LogCardio residual: 7 components sit 0.2–1.0% OUTSIDE the ±3% band — small per-block y accumulations (a few px at each label/spacer/button boundary), no single dominant cause left.
-- [fidelity] Exercises "No exercises found" — Box(contentAlignment=Center) child not centering (x 5.8 vs 34.3).
-- [fidelity] GymList 7th: Delete-gym in-button anchoring still Δ>3 — revisit with button-box ground truth.
-- [fidelity] Add Settings/Today to LayoutDumpTest (deeper VM chains — mirror di.py's assembly).
+- [fidelity] Add Settings/Today to LayoutDumpTest (deeper VM chains — mirror di.py's assembly). The 3 measured screens are at 39/39; the gauge's next growth is COVERAGE.
+- [fidelity] Replace the vertical 4px stacking approximation with real M3 line-height stacking (Compose positions the next sibling below a text's LINE height; Kivy stacks the glyph texture; removing the 4px drifted a 20-child column ~76px). Real fix: TextStyle carries lineHeight, labels' widget height = lines x lineHeight, dump reports the glyph box.
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
 - [ui] Scaffold innerPadding inset + Modifier order (padding-before-size vs after) — minor, after the big rows.

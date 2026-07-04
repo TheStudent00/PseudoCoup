@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **29/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **39/39** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,16 +32,9 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** LogCardio chip line-break off by one chip (Sport)  ← next
-  - cumulative chip-width drift moves the wrap point. NOT the selected chip's checkmark (measured: compose's selected "Run" text starts at the same x as unselected chips); it is kivy's font running slightly wider per chip (Elliptical 14.1% vs 12.9%) until the last chip tips over. Needs a font-metric answer, not a per-chip constant.
-1. **[fidelity]** LogCardio residual: 7 components sit 0.2–1.0% OUTSIDE the ±3% band
-  - small per-block y accumulations (a few px at each label/spacer/button boundary), no single dominant cause left.
-1. **[fidelity]** Exercises "No exercises found"
-  - Box(contentAlignment=Center) child not centering (x 5.8 vs 34.3).
-1. **[fidelity]** GymList 7th: Delete-gym in-button anchoring still Δ>3
-  - revisit with button-box ground truth.
-1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains
-  - mirror di.py's assembly).
+1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains  ← next
+  - mirror di.py's assembly). The 3 measured screens are at 39/39; the gauge's next growth is COVERAGE.
+1. [fidelity] Replace the vertical 4px stacking approximation with real M3 line-height stacking (Compose positions the next sibling below a text's LINE height; Kivy stacks the glyph texture; removing the 4px drifted a 20-child column ~76px). Real fix: TextStyle carries lineHeight, labels' widget height = lines x lineHeight, dump reports the glyph box.
 1. **[ui]** Paint layer
   - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 1. **[ui]** Popups render inline
