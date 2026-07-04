@@ -1,0 +1,52 @@
+{
+ "screen": "HistoryScreen",
+ "engine": "kivy-transpile",
+ "display": {
+  "w": 411,
+  "h": 915
+ },
+ "nodes": [
+  {
+   "path": "0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915,
+   "kind": "CompositionLocalProvider"
+  },
+  {
+   "path": "0/0",
+   "x": 0.0,
+   "y": 0.0,
+   "w": 411.0,
+   "h": 915.0,
+   "kind": "Box"
+  },
+  {
+   "path": "0/0/0",
+   "x": 50.55000000000001,
+   "y": 430.0,
+   "w": 309.9,
+   "h": 55.0,
+   "kind": "Column"
+  },
+  {
+   "path": "0/0/0/0",
+   "x": 138.75,
+   "y": 430.0,
+   "w": 133.5,
+   "h": 22,
+   "text": "No workouts yet",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/1",
+   "x": 50.55000000000001,
+   "y": 460.0,
+   "w": 309.9,
+   "h": 17,
+   "text": "Completed sessions and cardio will appear here",
+   "kind": "Text"
+  }
+ ]
+}

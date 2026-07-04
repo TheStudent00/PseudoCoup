@@ -12,19 +12,19 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   OFF   Debug panel                          below the viewport in BOTH engines
   OFF   Time travel + seed test state        below the viewport in BOTH engines
   PASS  Profile                              compose x=  3.9 y=  2.2 w=  9.7 h= 1.5  |  kivy x=  3.9 y=  2.2 w=  9.2 h= 1.6  |  worst Δ  0.5%
-  PASS  Display name                         compose x=  3.9 y=  5.5 w= 20.9 h= 1.9  |  kivy x=  3.9 y=  5.7 w= 20.6 h= 1.9  |  worst Δ  0.3%
+  PASS  Display name                         compose x=  3.9 y=  5.5 w= 20.9 h= 1.9  |  kivy x=  3.9 y=  5.6 w= 20.6 h= 1.9  |  worst Δ  0.3%
   PASS  User                                 compose x= 62.0 y=  5.6 w= 34.1 h= 3.2  |  kivy x= 62.0 y=  5.6 w= 34.1 h= 3.5  |  worst Δ  0.3%
   PASS  How the app addresses you            compose x=  3.9 y=  7.3 w= 36.7 h= 1.4  |  kivy x=  3.9 y=  7.5 w= 36.8 h= 1.5  |  worst Δ  0.2%
   PASS  Body weight                          compose x=  3.9 y= 10.6 w= 19.7 h= 1.9  |  kivy x=  3.9 y= 11.0 w= 19.4 h= 1.9  |  worst Δ  0.4%
-  PASS  kg                                   compose x= 89.5 y= 11.6 w=  3.6 h= 1.4  |  kivy x= 90.4 y= 12.2 w=  2.8 h= 1.5  |  worst Δ  0.9%
-  PASS  Used for relative strength           compose x=  3.9 y= 12.5 w= 34.5 h= 1.4  |  kivy x=  3.9 y= 12.9 w= 34.4 h= 1.5  |  worst Δ  0.4%
+  PASS  kg                                   compose x= 89.5 y= 11.6 w=  3.6 h= 1.4  |  kivy x= 90.4 y= 11.9 w=  2.8 h= 1.5  |  worst Δ  0.9%
+  PASS  Used for relative strength           compose x=  3.9 y= 12.5 w= 34.5 h= 1.4  |  kivy x=  3.9 y= 12.8 w= 34.4 h= 1.5  |  worst Δ  0.4%
   PASS  Display preferences                  compose x=  3.9 y= 16.9 w= 29.0 h= 1.5  |  kivy x=  3.9 y= 17.5 w= 28.7 h= 1.6  |  worst Δ  0.5%
-  PASS  Effort scale                         compose x=  3.9 y= 20.3 w= 18.2 h= 1.9  |  kivy x=  3.9 y= 21.0 w= 18.2 h= 1.9  |  worst Δ  0.7%
-  PASS  RPE                                  compose x= 83.7 y= 21.1 w=  6.6 h= 1.9  |  kivy x= 84.1 y= 22.1 w=  6.2 h= 1.9  |  worst Δ  1.0%
-  PASS  How effort is recorded each set      compose x=  3.9 y= 22.2 w= 42.1 h= 1.4  |  kivy x=  3.9 y= 22.8 w= 42.6 h= 1.5  |  worst Δ  0.7%
-  PASS  Weight unit                          compose x=  3.9 y= 25.7 w= 18.0 h= 1.9  |  kivy x=  3.9 y= 26.3 w= 17.9 h= 1.9  |  worst Δ  0.7%
-  PASS  KG                                   compose x= 84.9 y= 26.4 w=  5.4 h= 1.9  |  kivy x= 85.6 y= 27.4 w=  4.7 h= 1.9  |  worst Δ  1.0%
-  PASS  Summaries and plate calculator       compose x=  3.9 y= 27.5 w= 42.3 h= 1.4  |  kivy x=  3.9 y= 28.2 w= 42.2 h= 1.5  |  worst Δ  0.7%
+  PASS  Effort scale                         compose x=  3.9 y= 20.3 w= 18.2 h= 1.9  |  kivy x=  3.9 y= 20.9 w= 18.2 h= 1.9  |  worst Δ  0.6%
+  PASS  RPE                                  compose x= 83.7 y= 21.1 w=  6.6 h= 1.9  |  kivy x= 84.1 y= 21.7 w=  6.2 h= 1.9  |  worst Δ  0.6%
+  PASS  How effort is recorded each set      compose x=  3.9 y= 22.2 w= 42.1 h= 1.4  |  kivy x=  3.9 y= 22.8 w= 42.6 h= 1.5  |  worst Δ  0.6%
+  PASS  Weight unit                          compose x=  3.9 y= 25.7 w= 18.0 h= 1.9  |  kivy x=  3.9 y= 26.3 w= 17.9 h= 1.9  |  worst Δ  0.6%
+  PASS  KG                                   compose x= 84.9 y= 26.4 w=  5.4 h= 1.9  |  kivy x= 85.6 y= 27.0 w=  4.7 h= 1.9  |  worst Δ  0.7%
+  PASS  Summaries and plate calculator       compose x=  3.9 y= 27.5 w= 42.3 h= 1.4  |  kivy x=  3.9 y= 28.1 w= 42.2 h= 1.5  |  worst Δ  0.6%
   PASS  Gyms & exercises                     compose x=  3.9 y= 32.1 w= 25.5 h= 1.5  |  kivy x=  3.9 y= 32.8 w= 25.7 h= 1.6  |  worst Δ  0.7%
   PASS  Gym profiles                         compose x=  3.9 y= 35.4 w= 20.2 h= 1.9  |  kivy x=  3.9 y= 36.2 w= 20.1 h= 1.9  |  worst Δ  0.8%
   PASS  Manage gyms and equipment            compose x=  3.9 y= 37.3 w= 38.9 h= 1.4  |  kivy x=  3.9 y= 38.0 w= 39.1 h= 1.5  |  worst Δ  0.8%
