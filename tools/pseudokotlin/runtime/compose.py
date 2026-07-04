@@ -231,6 +231,21 @@ CenterAlignedTopAppBar = _topbar("CenterAlignedTopAppBar")
 MediumTopAppBar = _topbar("MediumTopAppBar")
 
 
+class _SearchBarDefaults:
+    """SearchBarDefaults.InputField is the search bar's input widget -- its placeholder/leadingIcon
+    lambdas must RUN (inert, the 'Search…' placeholder never entered the tree and reported MISS)."""
+    @staticmethod
+    def InputField(*args, **kwargs):
+        return _composable("SearchBarInputField")(*args, **kwargs)
+
+    def __getattr__(self, _n):          # non-composable defaults (colors/shape helpers) stay inert
+        from runtime.compose_ui import _UI
+        return _UI
+
+
+SearchBarDefaults = _SearchBarDefaults()
+
+
 def Composable(fn=None, *a, **k):       # the @Composable annotation if it ever survives -> identity
     return fn if fn is not None else (lambda g: g)
 
