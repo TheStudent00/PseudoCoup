@@ -3,20 +3,20 @@
 Measured by re-running the gates (`tools/pseudokotlin/track.py`) — never hand-typed. A 🔴 gate or a falling
 sparkline is a real regression, not a stale doc. (Browser version with trend charts: `PROGRESS.html`.)
 
-As of 2026-07-03.
+As of 2026-07-04.
 
 ## Gates + momentum (measured)
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **279/279** | `▁▁█` | 🟢 |
-| Load — non-UI domain imports clean | **167/167** | `▁██` | 🟢 |
-| UI — files load (inert via autostub) | **87/87** | `▄▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/166** | `▄▄▄` | 🔴 |
-| Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
-| External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
-| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **79/84** | `▄` |  |
+| Parse — all .kt transpile + compile | **279/279** | `▁▁██` | 🟢 |
+| Load — non-UI domain imports clean | **167/167** | `▁███` | 🟢 |
+| UI — files load (inert via autostub) | **87/87** | `▄▄▄` | 🟢 |
+| Logic — engine methods match Kotlin | **160/166** | `▄▄▄▄` | 🔴 |
+| Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
+| External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
+| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **82/83** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,9 +32,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. [fidelity] Remaining 5 fails (79/84): Settings "kg" trailing-dropdown x (row not end-anchored, Δ22.6); Settings "Back up my data" fold-edge case (kivy content 1.7% shorter, item peeks above the fold that compose clips); Exercises "No exercises found" y −3.1 (search-bar block pitch); LogCardio "Notes (optional)" y −3.2 (field-label block); Settings "Peak week…" width −3.0 (letterSpacing/font residual on a long string).  ← next
-1. **[fidelity]** XTRA "User": the display-name field's value appears twice in the kivy tree (field container + consumed dump path)
-  - dedup.
+1. **[fidelity]** ONE fail left (82/83): Settings "Peak week…" width Δ3.0  ← next
+  - the Robolectric text shaper measures 0–4% wider than the font file's advances (measured on the specimen; not a constant, so no honest calibration exists). Options: accept as band-edge noise, or investigate minikin's width computation under Robolectric.
+1. **[fidelity]** Grow coverage again: add more screens to LayoutDumpTest (Programs, Wins, ExerciseDetail…)
+  - the instrument is proven; the number's meaning now scales with coverage.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
   - never infer from mixed app screens.
 1. **[ui]** Paint layer

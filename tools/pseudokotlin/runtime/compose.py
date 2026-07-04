@@ -111,7 +111,8 @@ def _composable(kind):
                     def _inner(*_a, _n=node, **_k):
                         t = Node("Text")
                         t.text = str(_n.text) if _n.text else " "
-                        return _emit(t)
+                        t.props["from_decoration"] = True   # layout-only: the FIELD node carries the
+                        return _emit(t)                     # value identity (compose reports the field box)
                     try:
                         v(_inner)
                     except TypeError as e:
