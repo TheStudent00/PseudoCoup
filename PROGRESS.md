@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **82/83** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **83/83** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,10 +32,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** ONE fail left (82/83): Settings "Peak week…" width Δ3.0  ← next
-  - the Robolectric text shaper measures 0–4% wider than the font file's advances (measured on the specimen; not a constant, so no honest calibration exists). Options: accept as band-edge noise, or investigate minikin's width computation under Robolectric.
-1. **[fidelity]** Grow coverage again: add more screens to LayoutDumpTest (Programs, Wins, ExerciseDetail…)
-  - the instrument is proven; the number's meaning now scales with coverage.
+1. **[fidelity]** 83/83 on 5 screens + specimen gate. Next growth is COVERAGE: add screens to LayoutDumpTest (Programs, Wins, ExerciseDetail, LogWorkout…)  ← next
+  - the instrument is proven; the number's meaning scales with coverage.
+1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
+  - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
   - never infer from mixed app screens.
 1. **[ui]** Paint layer
