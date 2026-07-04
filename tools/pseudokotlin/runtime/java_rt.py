@@ -156,12 +156,13 @@ class TextStyle:
         self.fontWeight = k.get("fontWeight")
         self.textAlign = k.get("textAlign")
         self.lineHeight = k.get("lineHeight")
-        self.fontFamily = k.get("fontFamily")    # the LAYOUT height of one text line -- Compose stacks
+        self.fontFamily = k.get("fontFamily")
+        self.letterSpacing = k.get("letterSpacing")    # the LAYOUT height of one text line -- Compose stacks
                                                  # the next sibling below the line box, not the glyphs
 
     def copy(self, *a, **k):
         n = TextStyle()
-        for f in ("fontSize", "fontWeight", "textAlign", "lineHeight", "fontFamily"):
+        for f in ("fontSize", "fontWeight", "textAlign", "lineHeight", "fontFamily", "letterSpacing"):
             setattr(n, f, k.get(f, getattr(self, f)))
         return n
 

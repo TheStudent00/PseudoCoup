@@ -1,0 +1,14 @@
+Specimen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Alpha one                            compose x=  0.0 y=  0.0 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  0.0 w= 15.7 h= 1.9  |  worst Δ  0.2%
+  PASS  Alpha two                            compose x=  0.0 y=  1.9 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  1.9 w= 15.4 h= 1.9  |  worst Δ  0.4%
+  PASS  Beta one                             compose x=  0.0 y=  3.7 w= 11.9 h= 1.4  |  kivy x=  0.0 y=  3.7 w= 11.7 h= 1.5  |  worst Δ  0.2%
+  PASS  Beta two                             compose x=  0.0 y=  5.1 w= 12.2 h= 1.4  |  kivy x=  0.0 y=  5.2 w= 11.4 h= 1.5  |  worst Δ  0.7%
+  PASS  Gamma one                            compose x=  0.0 y=  6.6 w= 23.8 h= 2.4  |  kivy x=  0.0 y=  6.8 w= 23.8 h= 2.4  |  worst Δ  0.2%
+  PASS  Gamma two                            compose x=  0.0 y=  9.0 w= 24.1 h= 2.4  |  kivy x=  0.0 y=  9.2 w= 23.8 h= 2.4  |  worst Δ  0.3%
+  PASS  Remind you when it's time to log y   compose x=  0.0 y= 11.4 w= 64.5 h= 1.5  |  kivy x=  0.0 y= 11.6 w= 63.0 h= 1.6  |  worst Δ  1.5%
+  PASS  abcdefghijklmnopqrstuvwxyz 0123456   compose x=  0.0 y= 12.9 w= 67.2 h= 1.9  |  kivy x=  0.0 y= 13.2 w= 66.6 h= 2.0  |  worst Δ  0.6%
+
+matched 8/8 compose components; 8 within ±3.0%
+LAYOUT FIDELITY: 100%  (8/8)
