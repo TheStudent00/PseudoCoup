@@ -146,6 +146,19 @@ class Loader:
                     dict.__setitem__(nsd, name, self.resolve(key, name))
                 except KeyError:
                     pass
+            else:
+                # Kotlin visibility: a SAME-PACKAGE declaration shadows a wildcard-imported library name
+                # (Theme.kt's `Typography` is Type.kt's val, not material3's) -- unless this file's
+                # header EXPLICITLY imports the name from outside the app.
+                pkg = os.path.dirname(key)
+                same = [c for c in self.symbols.get(name, []) if os.path.dirname(c) == pkg and c != key]
+                if len(same) == 1:
+                    fqn = (self._header(key) or {}).get("imports", {}).get(name)
+                    if not (fqn and not fqn.startswith(APP_PKG + ".")):
+                        try:
+                            dict.__setitem__(nsd, name, self.resolve(key, name))
+                        except KeyError:
+                            pass
         try:
             exec(compile(self.code[key], os.path.join(self.root, key), "exec"), nsd)
             self.loaded.add(key)

@@ -148,7 +148,24 @@ class Cursor(_Stub):
     FIELD_TYPE_BLOB = 4
 
 
-R = _Stub()     # com.sara.workoutforlife.R -- Gradle-generated resources (R.string.x / R.drawable.y / …)
+class _RBucket:
+    def __init__(self, t):
+        self._t = t
+
+    def __getattr__(self, name):
+        return name                              # R.font.figtree_variable -> "figtree_variable"
+
+
+class _RNames:
+    """R.<type>.<name> -> the resource NAME (a string). Real enough for the kit to resolve actual files
+    (R.font.* -> res/font/<name>.ttf) and for ids to be stable comparable values."""
+    def __getattr__(self, t):
+        b = _RBucket(t)
+        setattr(self, t, b)
+        return b
+
+
+R = _RNames()   # com.sara.workoutforlife.R -- Gradle-generated resources (R.string.x / R.font.y / …)
 
 # Dagger/Hilt DI markers + a couple Wearable platform names. DI is hand-wired in the constructed objects
 # (there is no runtime DI container), so these are INTENTIONAL no-ops -- defined here as real, inert names
