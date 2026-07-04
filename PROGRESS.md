@@ -12,11 +12,11 @@ As of 2026-07-03.
 | Parse — all .kt transpile + compile | **279/279** | `▁▁█` | 🟢 |
 | Load — non-UI domain imports clean | **167/167** | `▁██` | 🟢 |
 | UI — files load (inert via autostub) | **87/87** | `▄▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/163** | `▄▄▄` | 🔴 |
+| Logic — engine methods match Kotlin | **160/165** | `▄▄▄` | 🔴 |
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **39/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **60/93** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 

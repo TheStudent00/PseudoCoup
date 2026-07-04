@@ -14,7 +14,7 @@ import re
 import subprocess
 import sys
 
-SCREENS = ["GymListScreen", "LogCardioScreen", "ExercisesScreen"]   # each has a mirrored fixture in
+SCREENS = ["GymListScreen", "LogCardioScreen", "ExercisesScreen", "SettingsScreen", "TodayScreen"]   # each has a mirrored fixture in
                                                                     # LayoutDumpTest + seed_fixtures
 WFL = os.path.expanduser("~/Programming/WFL_MixingCenter/WFL")
 RENDER = os.path.expanduser("~/Programming/WFL_MixingCenter/render")
