@@ -16,9 +16,9 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Base starting weight on (optional)   compose x=  4.9 y= 53.6 w= 46.0 h= 1.4  |  kivy x=  4.9 y= 51.8 w= 44.9 h= 1.5  |  worst Δ  1.7%
   PASS  None — start light                   compose x=  7.8 y= 56.3 w= 29.0 h= 1.9  |  kivy x=  7.8 y= 54.6 w= 29.4 h= 1.9  |  worst Δ  1.7%
   PASS  For a new movement, we'll start ne   compose x=  4.9 y= 59.3 w= 90.3 h= 3.2  |  kivy x=  4.9 y= 57.7 w= 90.3 h= 3.3  |  worst Δ  1.6%
-  PASS  Form notes (optional)                compose x=  8.8 y= 67.3 w= 38.7 h= 2.6  |  kivy x=  8.8 y= 65.1 w= 37.3 h= 2.2  |  worst Δ  2.2%
-  FAIL  Coaching cues (optional)             compose x=  8.8 y= 81.7 w= 45.3 h= 2.6  |  kivy x=  8.8 y= 73.4 w= 44.2 h= 2.2  |  worst Δ  8.3%
-  FAIL  Video link (optional)                compose x=  4.9 y= 90.9 w= 27.5 h= 1.4  |  kivy x=  4.9 y= 79.8 w= 26.2 h= 1.5  |  worst Δ 11.1%
+  PASS  Form notes (optional)                compose x=  8.8 y= 67.3 w= 38.7 h= 2.6  |  kivy x=  8.8 y= 67.8 w= 37.3 h= 2.2  |  worst Δ  1.4%
+  PASS  Coaching cues (optional)             compose x=  8.8 y= 81.7 w= 45.3 h= 2.6  |  kivy x=  8.8 y= 80.0 w= 44.2 h= 2.2  |  worst Δ  1.7%
+  FAIL  Video link (optional)                compose x=  4.9 y= 90.9 w= 27.5 h= 1.4  |  kivy x=  4.9 y= 87.7 w= 26.2 h= 1.5  |  worst Δ  3.3%
 
-matched 18/18 compose components; 14 within ±3.0%
-LAYOUT FIDELITY: 78%  (14/18)
+matched 18/18 compose components; 15 within ±3.0%
+LAYOUT FIDELITY: 83%  (15/18)
