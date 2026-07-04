@@ -193,9 +193,10 @@ def Scaffold(*args, **kwargs):
         # -- and content insets itself with .padding(innerPadding). A stub here meant 0, so content sat
         # UNDER the bar (a uniform ~64px y-shift on everything below it).
         from runtime.compose_ui import PaddingValues
-        inner = PaddingValues(top=64 if callable(kwargs.get("topBar")) else 0,
-                              bottom=80 if callable(kwargs.get("bottomBar")) else 0)
-        for slot in ("topBar", "content", "floatingActionButton", "bottomBar", "snackbarHost"):
+        inner = PaddingValues(top=0, bottom=0)   # set from what the bar slots actually EMIT (below):
+                                                 # a topBar lambda that composes nothing on this step
+                                                 # insets nothing (compose measures the real bar)
+        for slot in ("topBar", "bottomBar", "content", "floatingActionButton", "snackbarHost"):
             fn = content_fn if slot == "content" else kwargs.get(slot)
             if callable(fn):
                 before = len(node.children)
@@ -210,6 +211,11 @@ def Scaffold(*args, **kwargs):
                     _call(fn)
                 for ch in node.children[before:]:
                     ch.props.setdefault("slot", slot)
+                if len(node.children) > before:  # the slot EMITTED -> its M3 height insets the content
+                    if slot == "topBar":
+                        inner.t = 64
+                    elif slot == "bottomBar":
+                        inner.b = 80
     finally:
         _STACK.pop()
     return node
@@ -229,6 +235,8 @@ def _topbar(kind):
                 if callable(fn):
                     before = len(node.children)
                     _call(fn)
+                    for ch in node.children[before:]:
+                        ch.props.setdefault("barSlot", slot)     # the kit anchors slots (actions RIGHT)
                     if slot == "title":          # M3: the title SLOT applies titleLarge -- a bare
                         from runtime.java_rt import TextStyle      # Text() in it is styled by the bar
                         for ch in node.children[before:]:
