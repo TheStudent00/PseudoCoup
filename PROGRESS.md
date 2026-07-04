@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **28/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **29/39** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
