@@ -1,54 +1,54 @@
 ExercisePickerScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  FAIL  Lats                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=105.4 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 105.4%
-  FAIL  Lower Back                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=121.4 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 121.4%
-  FAIL  Front Delts                          compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=148.9 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 148.9%
-  FAIL  Side Delts                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=175.7 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 175.7%
-  FAIL  Rear Delts                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=201.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 201.2%
-  FAIL  Biceps                               compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=227.0 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 227.0%
-  FAIL  Triceps                              compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=247.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 247.2%
-  FAIL  Forearms                             compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=268.1 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 268.1%
-  FAIL  Quadriceps                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=292.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 292.2%
-  FAIL  Hamstrings                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=319.7 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 319.7%
-  FAIL  Glutes                               compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=347.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 347.2%
-  FAIL  Hip Flexors                          compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=367.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 367.2%
-  FAIL  Adductors                            compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=394.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 394.2%
-  FAIL  Abductors                            compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=419.7 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 419.7%
-  FAIL  Calves                               compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=445.5 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 445.5%
-  FAIL  Tibialis                             compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=465.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 465.2%
-  FAIL  Core                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=485.2 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 485.2%
-  FAIL  Obliques                             compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=502.4 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 502.4%
-  FAIL  Traps                                compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=525.8 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 525.8%
-  FAIL  Neck                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x=543.8 y= 17.9 w=  0.0 h= 1.9  |  worst Δ 543.8%
-  OFF   Bar Hang                             below the viewport in BOTH engines
-  OFF   Forearms, Lats                       below the viewport in BOTH engines
   PASS  Add exercise                         compose x= 13.6 y=  2.0 w= 31.1 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 30.8 h= 2.8  |  worst Δ  2.2%
   PASS  Search exercises…                    compose x=  7.8 y= 10.1 w= 32.8 h= 2.6  |  kivy x=  7.8 y= 10.3 w= 32.7 h= 2.2  |  worst Δ  0.4%
   PASS  Favorites                            compose x=  7.8 y= 17.0 w= 14.6 h= 1.9  |  kivy x=  7.8 y= 17.9 w= 13.9 h= 1.9  |  worst Δ  0.8%
   PASS  All muscles                          compose x= 32.1 y= 17.0 w= 18.0 h= 1.9  |  kivy x= 31.4 y= 17.9 w= 17.5 h= 1.9  |  worst Δ  0.8%
   PASS  Chest                                compose x= 59.9 y= 17.0 w=  9.7 h= 1.9  |  kivy x= 58.6 y= 17.9 w=  9.2 h= 1.9  |  worst Δ  1.2%
   PASS  Upper Back                           compose x= 79.3 y= 17.0 w= 18.2 h= 1.9  |  kivy x= 77.6 y= 17.9 w= 18.0 h= 1.9  |  worst Δ  1.7%
-  FAIL  3-Way Ankle Mobility                 compose x=  4.9 y= 23.3 w= 33.8 h= 1.9  |  kivy x=  1.0 y= 21.9 w= 32.8 h= 1.9  |  worst Δ  3.9%
-  FAIL  Calves, Tibialis                     compose x=  4.9 y= 25.1 w= 20.7 h= 1.5  |  kivy x=  1.0 y= 23.7 w= 20.7 h= 1.6  |  worst Δ  3.9%
-  FAIL  Ab Wheel Rollout                     compose x=  4.9 y= 31.1 w= 27.5 h= 1.9  |  kivy x=  1.0 y= 30.6 w= 27.1 h= 1.9  |  worst Δ  3.9%
-  FAIL  Core, Obliques, Lats                 compose x=  4.9 y= 33.0 w= 28.2 h= 1.5  |  kivy x=  1.0 y= 32.5 w= 28.7 h= 1.6  |  worst Δ  3.9%
-  FAIL  Arnold Press                         compose x=  4.9 y= 39.0 w= 20.2 h= 1.9  |  kivy x=  1.0 y= 39.3 w= 19.7 h= 1.9  |  worst Δ  3.9%
-  FAIL  Front Delts, Side Delts, Rear Delt   compose x=  4.9 y= 40.9 w= 47.4 h= 1.5  |  kivy x=  1.0 y= 41.2 w= 47.0 h= 1.6  |  worst Δ  3.9%
-  FAIL  B Stance Deadlift                    compose x=  4.9 y= 46.9 w= 27.5 h= 1.9  |  kivy x=  1.0 y= 48.1 w= 27.6 h= 1.9  |  worst Δ  3.9%
-  FAIL  Hamstrings, Glutes, Lower Back       compose x=  4.9 y= 48.7 w= 43.8 h= 1.5  |  kivy x=  1.0 y= 49.9 w= 44.3 h= 1.6  |  worst Δ  3.9%
-  FAIL  Back Extension                       compose x=  4.9 y= 54.8 w= 24.1 h= 1.9  |  kivy x=  1.0 y= 56.8 w= 23.9 h= 1.9  |  worst Δ  3.9%
-  FAIL  Lower Back, Glutes, Hamstrings       compose x=  4.9 y= 56.6 w= 43.8 h= 1.5  |  kivy x=  1.0 y= 58.7 w= 44.3 h= 1.6  |  worst Δ  3.9%
-  FAIL  Backward Sled Drag                   compose x=  4.9 y= 62.6 w= 31.6 h= 1.9  |  kivy x=  1.0 y= 65.6 w= 31.6 h= 1.9  |  worst Δ  3.9%
-  FAIL  Quadriceps, Glutes, Calves           compose x=  4.9 y= 64.5 w= 37.5 h= 1.5  |  kivy x=  1.0 y= 67.4 w= 38.0 h= 1.6  |  worst Δ  3.9%
-  FAIL  Band Face Pull                       compose x=  4.9 y= 70.5 w= 22.9 h= 1.9  |  kivy x=  1.0 y= 74.3 w= 22.9 h= 1.9  |  worst Δ  3.9%
-  FAIL  Rear Delts, Traps, Upper Back        compose x=  4.9 y= 72.3 w= 40.6 h= 1.5  |  kivy x=  1.0 y= 76.2 w= 40.9 h= 1.6  |  worst Δ  3.9%
-  FAIL  Band Tricep Overhead Press           compose x=  4.9 y= 78.4 w= 44.3 h= 1.9  |  kivy x=  1.0 y= 83.1 w= 44.7 h= 1.9  |  worst Δ  4.7%
-  FAIL  Triceps                              compose x=  4.9 y= 80.2 w= 10.2 h= 1.5  |  kivy x=  1.0 y= 84.9 w=  9.9 h= 1.6  |  worst Δ  4.7%
-  FAIL  Band Tricep Push Down                compose x=  4.9 y= 86.2 w= 37.2 h= 1.9  |  kivy x=  1.0 y= 91.8 w= 37.5 h= 1.9  |  worst Δ  5.6%
-  FAIL  Triceps                              compose x=  4.9 y= 88.1 w= 10.2 h= 1.5  |  kivy x=  1.0 y= 93.7 w=  9.9 h= 1.6  |  worst Δ  5.6%
-  FAIL  Bar Dip                              compose x=  4.9 y= 94.1 w= 11.4 h= 1.9  |  kivy x=  1.0 y=100.5 w= 11.4 h= 1.9  |  worst Δ  6.4%
-  FAIL  Chest, Triceps, Front Delts          compose x=  4.9 y= 96.0 w= 37.5 h= 1.5  |  kivy x=  1.0 y=102.4 w= 37.1 h= 1.6  |  worst Δ  6.4%
+  PASS  3-Way Ankle Mobility                 compose x=  4.9 y= 23.3 w= 33.8 h= 1.9  |  kivy x=  4.9 y= 24.0 w= 32.8 h= 1.9  |  worst Δ  1.0%
+  PASS  Calves, Tibialis                     compose x=  4.9 y= 25.1 w= 20.7 h= 1.5  |  kivy x=  4.9 y= 25.9 w= 20.7 h= 1.6  |  worst Δ  0.8%
+  PASS  Ab Wheel Rollout                     compose x=  4.9 y= 31.1 w= 27.5 h= 1.9  |  kivy x=  4.9 y= 31.9 w= 27.1 h= 1.9  |  worst Δ  0.8%
+  PASS  Core, Obliques, Lats                 compose x=  4.9 y= 33.0 w= 28.2 h= 1.5  |  kivy x=  4.9 y= 33.8 w= 28.7 h= 1.6  |  worst Δ  0.8%
+  PASS  Arnold Press                         compose x=  4.9 y= 39.0 w= 20.2 h= 1.9  |  kivy x=  4.9 y= 39.8 w= 19.7 h= 1.9  |  worst Δ  0.8%
+  PASS  Front Delts, Side Delts, Rear Delt   compose x=  4.9 y= 40.9 w= 47.4 h= 1.5  |  kivy x=  4.9 y= 41.6 w= 47.0 h= 1.6  |  worst Δ  0.8%
+  PASS  B Stance Deadlift                    compose x=  4.9 y= 46.9 w= 27.5 h= 1.9  |  kivy x=  4.9 y= 47.7 w= 27.6 h= 1.9  |  worst Δ  0.8%
+  PASS  Hamstrings, Glutes, Lower Back       compose x=  4.9 y= 48.7 w= 43.8 h= 1.5  |  kivy x=  4.9 y= 49.5 w= 44.3 h= 1.6  |  worst Δ  0.8%
+  PASS  Back Extension                       compose x=  4.9 y= 54.8 w= 24.1 h= 1.9  |  kivy x=  4.9 y= 55.5 w= 23.9 h= 1.9  |  worst Δ  0.8%
+  PASS  Lower Back, Glutes, Hamstrings       compose x=  4.9 y= 56.6 w= 43.8 h= 1.5  |  kivy x=  4.9 y= 57.4 w= 44.3 h= 1.6  |  worst Δ  0.8%
+  PASS  Backward Sled Drag                   compose x=  4.9 y= 62.6 w= 31.6 h= 1.9  |  kivy x=  4.9 y= 63.4 w= 31.6 h= 1.9  |  worst Δ  0.8%
+  PASS  Quadriceps, Glutes, Calves           compose x=  4.9 y= 64.5 w= 37.5 h= 1.5  |  kivy x=  4.9 y= 65.2 w= 38.0 h= 1.6  |  worst Δ  0.8%
+  PASS  Band Face Pull                       compose x=  4.9 y= 70.5 w= 22.9 h= 1.9  |  kivy x=  4.9 y= 71.3 w= 22.9 h= 1.9  |  worst Δ  0.8%
+  PASS  Rear Delts, Traps, Upper Back        compose x=  4.9 y= 72.3 w= 40.6 h= 1.5  |  kivy x=  4.9 y= 73.1 w= 40.9 h= 1.6  |  worst Δ  0.8%
+  PASS  Band Tricep Overhead Press           compose x=  4.9 y= 78.4 w= 44.3 h= 1.9  |  kivy x=  4.9 y= 79.1 w= 44.7 h= 1.9  |  worst Δ  0.8%
+  PASS  Triceps                              compose x=  4.9 y= 80.2 w= 10.2 h= 1.5  |  kivy x=  4.9 y= 81.0 w=  9.9 h= 1.6  |  worst Δ  0.8%
+  PASS  Band Tricep Push Down                compose x=  4.9 y= 86.2 w= 37.2 h= 1.9  |  kivy x=  4.9 y= 87.0 w= 37.5 h= 1.9  |  worst Δ  0.8%
+  PASS  Triceps                              compose x=  4.9 y= 88.1 w= 10.2 h= 1.5  |  kivy x=  4.9 y= 88.9 w=  9.9 h= 1.6  |  worst Δ  0.8%
+  PASS  Bar Dip                              compose x=  4.9 y= 94.1 w= 11.4 h= 1.9  |  kivy x=  4.9 y= 94.9 w= 11.4 h= 1.9  |  worst Δ  0.8%
+  PASS  Chest, Triceps, Front Delts          compose x=  4.9 y= 96.0 w= 37.5 h= 1.5  |  kivy x=  4.9 y= 96.7 w= 37.1 h= 1.6  |  worst Δ  0.8%
+  OFF   Lats                                 not visible in EITHER engine
+  OFF   Lower Back                           not visible in EITHER engine
+  OFF   Front Delts                          not visible in EITHER engine
+  OFF   Side Delts                           not visible in EITHER engine
+  OFF   Rear Delts                           not visible in EITHER engine
+  OFF   Biceps                               not visible in EITHER engine
+  OFF   Triceps                              not visible in EITHER engine
+  OFF   Forearms                             not visible in EITHER engine
+  OFF   Quadriceps                           not visible in EITHER engine
+  OFF   Hamstrings                           not visible in EITHER engine
+  OFF   Glutes                               not visible in EITHER engine
+  OFF   Hip Flexors                          not visible in EITHER engine
+  OFF   Adductors                            not visible in EITHER engine
+  OFF   Abductors                            not visible in EITHER engine
+  OFF   Calves                               not visible in EITHER engine
+  OFF   Tibialis                             not visible in EITHER engine
+  OFF   Core                                 not visible in EITHER engine
+  OFF   Obliques                             not visible in EITHER engine
+  OFF   Traps                                not visible in EITHER engine
+  OFF   Neck                                 not visible in EITHER engine
+  OFF   Bar Hang                             not visible in EITHER engine
+  OFF   Forearms, Lats                       not visible in EITHER engine
   XTRA  Chest                                in kivy only (not in compose ground truth)
   XTRA  Lats                                 in kivy only (not in compose ground truth)
   XTRA  Front Delts                          in kivy only (not in compose ground truth)
@@ -392,5 +392,5 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   XTRA  Wrist Extensor Stretch               in kivy only (not in compose ground truth)
   XTRA  Wrist Flexor Stretch                 in kivy only (not in compose ground truth)
 
-matched 48/46 compose components; 6 within ±3.0%
-LAYOUT FIDELITY: 13%  (6/46)
+matched 48/26 compose components; 26 within ±3.0%
+LAYOUT FIDELITY: 100%  (26/26)
