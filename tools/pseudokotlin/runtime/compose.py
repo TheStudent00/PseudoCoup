@@ -90,7 +90,13 @@ def _composable(kind):
                     node.text = a
                 elif hasattr(a, "_ops"):         # a positional Modifier chain: `Spacer(Modifier.height(8))`
                     node.props.setdefault("modifier", a)
-            for k, v in kwargs.items():          # `content=`, `topBar=`, `title=`, `label=`, `icon=`, …
+            # Compose places SLOTS by NAME, not by call-site order: a chip's leadingIcon draws before its
+            # label even when the source writes `label=` first. Emit callable slots in M3 slot order so the
+            # recorded child order matches the drawn order (the dump counts leading icons from child order).
+            _rank = {"leadingIcon": 0, "icon": 0, "navigationIcon": 0, "leadingContent": 0,
+                     "trailingIcon": 2, "trailingContent": 2, "actions": 2}
+            for k, v in sorted(kwargs.items(), key=lambda kv: _rank.get(kv[0], 1)):
+                                                 # `content=`, `topBar=`, `title=`, `label=`, `icon=`, …
                 if k.startswith("on"):           # an EVENT handler (onClick/onValueChange/onDone): STORE it
                     if callable(v):              # for the kit to fire on user action -- never call at render
                         node.handlers[k] = v     # (calling it here would run app logic mid-build).
