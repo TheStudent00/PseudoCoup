@@ -24,8 +24,8 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   FAIL  High                                 compose x= 76.9 y= 52.7 w=  7.8 h= 2.2  |  kivy x= 77.3 y= 56.4 w=  7.5 h= 2.0  |  worst Δ  3.7%
   FAIL  Distance (km)                        compose x=  3.9 y= 58.1 w= 18.7 h= 1.4  |  kivy x=  3.9 y= 62.2 w= 17.3 h= 1.5  |  worst Δ  4.0%
   FAIL  Avg HR (bpm)                         compose x= 51.3 y= 58.1 w= 19.2 h= 1.4  |  kivy x= 51.5 y= 62.2 w= 16.5 h= 1.5  |  worst Δ  4.0%
-  FAIL  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  3.9 y= 69.0 w= 26.8 h= 2.0  |  worst Δ  3.9%
-  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.2 y= 76.1 w=  7.5 h= 2.0  |  worst Δ  0.2%
+  PASS  Notes (optional)                     compose x=  7.8 y= 67.5 w= 29.4 h= 2.6  |  kivy x=  7.8 y= 69.4 w= 26.8 h= 2.0  |  worst Δ  2.7%
+  PASS  Save                                 compose x= 46.2 y= 76.1 w=  7.8 h= 2.2  |  kivy x= 46.2 y= 76.5 w=  7.5 h= 2.0  |  worst Δ  0.4%
 
-matched 25/25 compose components; 14 within ±3.0%
-LAYOUT FIDELITY: 56%  (14/25)
+matched 25/25 compose components; 15 within ±3.0%
+LAYOUT FIDELITY: 60%  (15/25)
