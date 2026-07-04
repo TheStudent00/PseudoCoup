@@ -114,7 +114,7 @@ viewModelScope = _coro.CoroutineScope()      # real scope -> viewModelScope.laun
 
 
 # ---- java.time extras (permissive; DayOfWeek and TextStyle are REAL in java_rt) ----------------- #
-WeekFields = TemporalAdjusters = _P_
+WeekFields = _P_
 
 
 # ---- android / lifecycle / hilt / room markers ------------------------------------------------- #

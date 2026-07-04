@@ -48,7 +48,7 @@ class LocalDate:
 
     @staticmethod
     def ofEpochDay(n):
-        return LocalDate(_date(1970, 1, 1) + _td(days=n))
+        return LocalDate(_date(1970, 1, 1) + _td(days=int(n)))
 
     @property
     def year(self):
@@ -71,6 +71,10 @@ class LocalDate:
 
     def with_(self, adjuster):
         # java `date.with(DayOfWeek.MONDAY)`: that day within the SAME ISO week (DayOfWeek is an adjuster)
+        if isinstance(adjuster, _DowAdjuster):     # previousOrSame / nextOrSame(dayOfWeek)
+            wd = self._d.isoweekday()
+            delta = (wd - adjuster.dow) % 7 if adjuster.prev else -((adjuster.dow - wd) % 7)
+            return LocalDate(self._d - _td(days=delta))
         if isinstance(adjuster, int):
             return LocalDate(self._d + _td(days=int(adjuster) - self._d.isoweekday()))
         return self
@@ -82,13 +86,14 @@ class LocalDate:
         return LocalDate(self._d.replace(day=int(n)))
 
     def plusDays(self, n):
-        return LocalDate(self._d + _td(days=n))
+        # int(n): a 32-bit Int32 operand overflows inside timedelta's usec math (6 days -> -1 day)
+        return LocalDate(self._d + _td(days=int(n)))
 
     def minusDays(self, n):
-        return LocalDate(self._d - _td(days=n))
+        return LocalDate(self._d - _td(days=int(n)))
 
     def plusWeeks(self, n):
-        return LocalDate(self._d + _td(weeks=n))
+        return LocalDate(self._d + _td(weeks=int(n)))
 
     def toEpochDay(self):
         return (self._d - _date(1970, 1, 1)).days
@@ -98,6 +103,9 @@ class LocalDate:
 
     def isAfter(self, o):
         return self._d > o._d
+
+    def format(self, fmt):
+        return fmt.format(self)
 
     def atStartOfDay(self, zone=None):
         tz = zone._tz if isinstance(zone, ZoneId) else _tz.utc
@@ -140,6 +148,22 @@ class _Day(int):                        # a day-of-week VALUE: the int is getVal
 
 class DayOfWeek:                        # java.time.DayOfWeek
     MONDAY, TUESDAY, WEDNESDAY, THURSDAY, FRIDAY, SATURDAY, SUNDAY = map(_Day, range(1, 8))
+
+
+class _DowAdjuster:
+    """A TemporalAdjusters.previousOrSame/nextOrSame(dayOfWeek) value: LocalDate.with_ applies it."""
+    def __init__(self, dow, prev):
+        self.dow, self.prev = int(dow), prev
+
+
+class TemporalAdjusters:
+    @staticmethod
+    def previousOrSame(dow):
+        return _DowAdjuster(dow, True)
+
+    @staticmethod
+    def nextOrSame(dow):
+        return _DowAdjuster(dow, False)
 
 
 class TextStyle:
@@ -238,7 +262,26 @@ def _java_to_strftime(pattern):
     import re
     rx = re.compile("|".join(t for t, _ in _JAVA_TOKS))
     m = dict(_JAVA_TOKS)
-    return rx.sub(lambda x: m[x.group(0)], pattern)
+    # java patterns QUOTE literals ('at' in "MMM d 'at' h:mm a"); pattern letters inside quotes are
+    # literal text, never tokens (the 'a' in 'at' was translating to %p -> "AMt")
+    out, i = [], 0
+    while i < len(pattern):
+        c = pattern[i]
+        if c == "'":
+            j = pattern.find("'", i + 1)
+            if j == i + 1:
+                out.append("'")                    # '' = a literal quote
+                i += 2
+            else:
+                out.append(pattern[i + 1:j if j != -1 else len(pattern)].replace("%", "%%"))
+                i = (j + 1) if j != -1 else len(pattern)
+        else:
+            k = i
+            while k < len(pattern) and pattern[k] != "'":
+                k += 1
+            out.append(rx.sub(lambda x: m[x.group(0)], pattern[i:k]))
+            i = k
+    return "".join(out)
 
 
 class DateTimeFormatter:

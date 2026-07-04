@@ -114,8 +114,8 @@
         87
       ],
       "logic": [
-        160,
-        168
+        86,
+        86
       ],
       "data": [
         4,
@@ -124,8 +124,8 @@
       "extern": 0,
       "unrouted": 0,
       "fidelity": [
-        88,
-        88
+        93,
+        93
       ],
       "gates": {
         "parse": true,
