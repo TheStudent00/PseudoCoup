@@ -8,8 +8,7 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] 107/109 on 8 screens. Constraint tracking LANDED (build-time incoming-max threaded through to_widget; static ceiling joins the dynamic parent cap -- no oscillation) + lazy-list Item boundary nodes (list spacing between ITEMS only). ExerciseDetail's last 2 fails: a uniform +3.5% y accumulation above its final section (band-edge; likely small per-section padding differences) -- probe DetailSection's chain.
-- [fidelity] Next screens: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
+- [fidelity] 109/109 -- ALL 8 measured screens at 100%, guarded by TWO fail-loud specimen gates (text metrics + lazy-list boundary metrics). Next growth: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
 - [fidelity] The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself — measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 - [fidelity] SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears — never infer from mixed app screens.
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
