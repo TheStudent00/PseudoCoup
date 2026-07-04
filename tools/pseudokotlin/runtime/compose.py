@@ -121,7 +121,11 @@ def _composable(kind):
                     node.props["decorated"] = True
                     continue
                 if callable(v):
+                    _before = len(node.children)
                     _call(v)
+                    for ch in node.children[_before:]:   # remember which slot emitted the child --
+                        ch.props.setdefault("slot", k)   # layout rules key off the slot (e.g. a
+                    continue                             # field's `label` gets M3 label geometry)
                 elif k in ("text", "value") and isinstance(v, str):
                     node.text = v                # an input widget DISPLAYS its value -- record it
                 else:

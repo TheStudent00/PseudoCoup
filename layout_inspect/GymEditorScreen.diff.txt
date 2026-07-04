@@ -1,10 +1,10 @@
 GymEditorScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  New gym                              compose x= 13.6 y=  2.0 w= 23.4 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 22.1 h= 2.8  |  worst Δ  2.2%
+  PASS  New gym                              compose x= 13.6 y=  2.0 w= 23.4 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 22.6 h= 2.8  |  worst Δ  2.2%
   PASS  Save                                 compose x= 88.1 y=  2.4 w=  7.8 h= 2.2  |  kivy x= 88.8 y=  3.4 w=  7.3 h= 1.9  |  worst Δ  1.0%
   PASS  Gym name                             compose x=  3.9 y=  8.7 w= 14.1 h= 1.4  |  kivy x=  3.9 y=  8.7 w= 14.3 h= 1.5  |  worst Δ  0.2%
-  PASS  Equipment                            compose x=  3.9 y= 16.4 w= 22.6 h= 2.4  |  kivy x=  3.9 y= 16.8 w= 21.6 h= 2.4  |  worst Δ  1.0%
+  PASS  Equipment                            compose x=  3.9 y= 16.4 w= 22.6 h= 2.4  |  kivy x=  3.9 y= 16.8 w= 23.0 h= 2.4  |  worst Δ  0.4%
   PASS  No equipment added yet.              compose x=  3.9 y= 21.1 w= 39.7 h= 1.9  |  kivy x=  3.9 y= 21.5 w= 39.8 h= 1.9  |  worst Δ  0.4%
 
 matched 5/5 compose components; 5 within ±3.0%

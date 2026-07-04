@@ -1,9 +1,9 @@
 OnboardingScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Workout for Life                     compose x= 20.7 y= 46.4 w= 58.6 h= 4.2  |  kivy x= 22.0 y= 46.3 w= 56.0 h= 4.3  |  worst Δ  2.7%
-  PASS  Your workouts. Your way. Built to    compose x= 17.0 y= 51.5 w= 66.2 h= 2.1  |  kivy x= 18.0 y= 51.5 w= 64.0 h= 2.2  |  worst Δ  2.2%
-  FAIL  Let's go                             compose x= 42.1 y= 60.7 w= 15.8 h= 2.4  |  kivy x= 43.9 y= 61.0 w= 12.2 h= 1.9  |  worst Δ  3.6%
+  PASS  Workout for Life                     compose x= 20.7 y= 46.4 w= 58.6 h= 4.2  |  kivy x= 20.2 y= 46.3 w= 59.5 h= 4.3  |  worst Δ  0.9%
+  PASS  Your workouts. Your way. Built to    compose x= 17.0 y= 51.5 w= 66.2 h= 2.1  |  kivy x= 17.4 y= 51.5 w= 65.3 h= 2.2  |  worst Δ  0.9%
+  PASS  Let's go                             compose x= 42.1 y= 60.7 w= 15.8 h= 2.4  |  kivy x= 42.5 y= 60.8 w= 15.1 h= 2.4  |  worst Δ  0.7%
 
-matched 3/3 compose components; 2 within ±3.0%
-LAYOUT FIDELITY: 67%  (2/3)
+matched 3/3 compose components; 3 within ±3.0%
+LAYOUT FIDELITY: 100%  (3/3)
