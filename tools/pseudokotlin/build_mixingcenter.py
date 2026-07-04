@@ -13,11 +13,36 @@ Usage:
 import ast
 import glob
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from transpiler import KtToPy  # noqa: E402
+from nodes import expressions  # noqa: E402
+
+# a TOP-LEVEL (column-0) extension declaration: `fun Recv.name(` with optional modifiers/generics
+_EXT_RE = re.compile(
+    r"^(?:(?:public|private|internal|suspend|inline|infix|operator)\s+)*"
+    r"fun\s+(?:<[^>\n]+>\s+)?([A-Za-z0-9_.]+)(?:<[^>\n]*>)?\??\.(\w+)\s*\(", re.M)
+# receivers that are Python builtins at runtime -- the declarations.py class-patch mechanism
+# (`Recv.name = name`) can't reach them, so their call sites go through the runtime's ktext
+# dispatcher instead. User-class receivers stay on the patch path (attribute lookup just works,
+# and the same extension NAME on several classes would make a bare free-name call ambiguous).
+_PRIMITIVE_RECVRS = {"Double", "Float", "Int", "Long", "Short", "Byte", "Number",
+                     "String", "CharSequence", "Char", "Boolean"}
+
+
+def scan_extensions(kt_files):
+    """Pre-pass: top-level `fun Recv.name(...)` declarations whose receivers are ALL primitive ->
+    the ktext registry (nodes.expressions.EXTENSION_FNS). Mixed/user receivers are excluded: they
+    resolve via the class patches the transpiler already emits."""
+    by_name = {}
+    for kt in kt_files:
+        with open(kt) as f:
+            for recv, name in _EXT_RE.findall(f.read()):
+                by_name.setdefault(name, set()).add(recv.split(".")[-1])
+    return {n for n, recvs in by_name.items() if recvs <= _PRIMITIVE_RECVRS}
 
 DEFAULT_APP = os.path.expanduser(
     "~/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife")
@@ -31,6 +56,9 @@ def main():
     if not kt_files:
         print(f"No .kt found under {app_root}")
         return 1
+
+    expressions.EXTENSION_FNS.update(scan_extensions(kt_files))
+    print(f"extension registry: {len(expressions.EXTENSION_FNS)} names")
 
     total = written = compile_ok = transpile_err = compile_err = 0
     t_fails, c_fails = [], []

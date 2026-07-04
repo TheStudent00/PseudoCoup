@@ -1,0 +1,11 @@
+WorkoutExecutionScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Finish                               compose x= 72.3 y=  2.3 w= 12.2 h= 2.4  |  kivy x= 73.2 y=  3.2 w= 11.2 h= 2.4  |  worst Δ  1.0%
+  MISS  Workout                              in compose only (kivy never rendered it)
+  XTRA  NEW PERSONAL RECORD                  in kivy only (not in compose ground truth)
+  XTRA  tap to dismiss                       in kivy only (not in compose ground truth)
+  XTRA  tap to dismiss                       in kivy only (not in compose ground truth)
+
+matched 1/2 compose components; 1 within ±3.0%
+LAYOUT FIDELITY: 50%  (1/2)
