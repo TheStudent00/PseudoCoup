@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **60/93** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **62/86** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,9 +32,15 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains  ← next
-  - mirror di.py's assembly). The 3 measured screens are at 39/39; the gauge's next growth is COVERAGE.
-1. [fidelity] Replace the vertical 4px stacking approximation with real M3 line-height stacking (Compose positions the next sibling below a text's LINE height; Kivy stacks the glyph texture; removing the 4px drifted a 20-child column ~76px). Real fix: TextStyle carries lineHeight, labels' widget height = lines x lineHeight, dump reports the glyph box.
+1. **[fidelity]** Text WIDTH frame question: for long strings the compose ground truth reports ~10% wider than the actual font file's advance widths (measured: "Remind you…" = 246px true Figtree-400 advance at 12px, kivy 242, compose dump 276). Likely Robolectric font fallback (custom res/font may not load in JVM tests) + letterSpacing (0.15–0.2sp/char, no Kivy equivalent). Needs a controlled specimen test (one screen rendering known strings in each role) before touching the kit  ← next
+  - do NOT fit constants to it. Costs ~6 width FAILs on Settings.
+1. [fidelity] Settings residual y-drift: starts +0.7% at the first SettingsRow subtitle and accumulates ~+0.4%/row (rows with trailing controls center their title column differently than compose). Probe one SettingsRow's chain.
+1. **[fidelity]** Settings: trailing dropdown x ("kg" at 66.9 vs 89.5)
+  - CompactDropdown row not end-anchored; segmented Push/In-app/None text h 1.9 vs compose 1.4 (label style inside SegmentedButton not labelSmall).
+1. **[fidelity]** Settings MISS Developer/Debug panel: BuildConfig.DEBUG=True in the Kotlin debug test build, False in python
+  - align the harness (or dump via release test).
+1. **[fidelity]** XTRA "User": the display-name field's value appears twice in the kivy tree (field container + consumed dump path)
+  - dedup.
 1. **[ui]** Paint layer
   - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 1. **[ui]** Popups render inline
@@ -45,6 +51,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
   - emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
 1. **[domain]** Broaden runnable coverage
   - point the oracle at more repositories / use-cases.
+1. 4 of 5 screens at/near-perfect: GymList 7/7, LogCardio 23/25, Exercises 7/7, Today 3/3; Settings 22/44. One session took the gauge 24/39 → 62/86 (5 screens) via: M3 slot order, class heights/insets, real line-height stacking (app Typography honored end-to-end), popups excluded from layout, harness renders inside the app theme, loader same-package shadowing (Kotlin visibility), real Font/FontFamily + variable-font weight instancing, off-viewport differ rule.
 1. Input fields render their slot subtrees: a node with text AND children is a field container (value as child label), not a leaf — one fix removed the 100px stepper block AND the "Notes (optional)" MISS. BasicTextField dropped from the 56dp rule (it's foundation, undecorated); empty Box collapses instead of Kivy's 100x100 default. Save Δ26.9→0.2.
 1. Layout-fidelity instrument: LayoutDumpTest (real Compose boxes, headless JVM) + inspect_layout JSON + layout_diff (%-of-display, tolerance band) → per-screen fidelity %, now a measured gauge (`fidelity.py`).
 1. Layout inspector (`layout_inspect/*.html`): per component — the code line that created it (file:line, .kt path) ‖ declared shape ‖ live computed box.
