@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **24/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **25/39** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,12 +32,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** LogCardio: the ~140px block between "Duration" and "Intensity"  ← next
-  - a custom stepper control (CompactControls) renders ~2.5x taller than compose; probe its widget chain (the M3 56dp text-field rule landed but this block isn't a bare text field). Drives the uniform 12.9% drift on 6 components below it.
-1. **[fidelity]** LogCardio chip line-break off by one chip (Sport)
-  - cumulative chip-width drift moves the wrap point; likely the SELECTED chip's leading checkmark (Run is selected; compose adds ~26px my tree doesn't have).
-1. **[fidelity]** "Notes (optional)" MISS
-  - an OutlinedTextField label slot that never emits; find which slot lambda is swallowed.
+1. **[fidelity]** LogCardio chip line-break off by one chip (Sport)  ← next
+  - cumulative chip-width drift moves the wrap point. NOT the selected chip's checkmark (measured: compose's selected "Run" text starts at the same x as unselected chips); it is kivy's font running slightly wider per chip (Elliptical 14.1% vs 12.9%) until the last chip tips over. Needs a font-metric answer, not a per-chip constant.
+1. **[fidelity]** LogCardio residual: 7 components sit 0.2–1.0% OUTSIDE the ±3% band
+  - small per-block y accumulations (a few px at each label/spacer/button boundary), no single dominant cause left.
 1. **[fidelity]** Exercises "No exercises found"
   - Box(contentAlignment=Center) child not centering (x 5.8 vs 34.3).
 1. **[fidelity]** GymList 7th: Delete-gym in-button anchoring still Δ>3
@@ -54,6 +52,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
   - emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
 1. **[domain]** Broaden runnable coverage
   - point the oracle at more repositories / use-cases.
+1. Input fields render their slot subtrees: a node with text AND children is a field container (value as child label), not a leaf — one fix removed the 100px stepper block AND the "Notes (optional)" MISS. BasicTextField dropped from the 56dp rule (it's foundation, undecorated); empty Box collapses instead of Kivy's 100x100 default. Save Δ26.9→0.2.
 1. Layout-fidelity instrument: LayoutDumpTest (real Compose boxes, headless JVM) + inspect_layout JSON + layout_diff (%-of-display, tolerance band) → per-screen fidelity %, now a measured gauge (`fidelity.py`).
 1. Layout inspector (`layout_inspect/*.html`): per component — the code line that created it (file:line, .kt path) ‖ declared shape ‖ live computed box.
 1. Compose measure/place reconstructed on Kivy: wrap-by-default, Box z-stack, arrangement spacers, Scaffold slot framing + FAB float, fill-vs-scroll reconciliation, weight-on-parent-axis, top-pack columns (Kivy bottom-packs spare space — measured), M3 type scale + TopAppBar/icon-button spec geometry, `then`-chain splicing, Spacer(weight).
