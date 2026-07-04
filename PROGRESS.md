@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **93/93** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **104/107** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,7 +32,9 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. [fidelity] 93/93 on 7 screens + specimen gate; History now measures a DATA-RICH card (seeded cardio session), which surfaced and fixed 4 content bugs (see shipped). Keep growing coverage: Wins, ExerciseDetail (nav args), LogWorkout, Onboarding; and richer fixtures (a seeded program for Programs/Today).  ← next
+1. **[fidelity]** 104/107 on 8 screens (+ExerciseDetail via nav-args/SavedStateHandle + seeded catalog). The 3 fails are ONE cause: a paragraph inside a WRAP-width Column never receives the max-width constraint (Compose passes constraints THROUGH wrap containers; the kit caps a label at its direct parent, which wraps to the label  ← next
+  - circular). Attempts measured and reverted: (a) width-equality climb guard -> wrap/unwrap OSCILLATES (parent shrink lags label shrink); (b) blanket climb through _wrap_x-marked ancestors -> mid-settle Kivy 100px defaults crush other screens (Settings 32%, Today 33%) -- marking _pad_container wrappers made it worse, unmarked they deadlock. The stable fix likely needs constraint TRACKING at build time (record each node's incoming max width during to_widget descent) instead of reading live widget widths. Suite must stay green: Specimen+8 screens all at 100% except these 3.
+1. [fidelity] Next screens: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
