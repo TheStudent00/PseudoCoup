@@ -33,21 +33,30 @@ HANDWRITTEN = {"GymListScreen", "LogCardioScreen", "ExercisesScreen", "SettingsS
                "ProgressScreen"}
 
 # the per-screen facts a machine cannot guess
+# seed values: "program" = exercise catalog + curated sample programs (deterministic ids --
+# prog_gup_3d_beg / day_gup_3d_beg_w1_d1); "session" = program + a live session started from that
+# day THROUGH the app's own WorkoutExecutionRepository (its generated sessionId becomes the
+# "sessionId" nav arg -- ids need not match across engines, only rendered text does);
+# "sessionDone" = the same session, completed.
 EXCEPTIONS = {
     "waitFor": {},                    # screen -> a text that must be on screen before dumping
-    "navArgs": {},                    # screen -> kotlin map literal for the SavedStateHandle
+    "navArgs": {                      # screen -> kotlin map literal for the SavedStateHandle
+        "ProgramEditorScreen": 'mapOf("programId" to "prog_gup_3d_beg")',
+        "ProgramDayEditorScreen": 'mapOf("dayId" to "day_gup_3d_beg_w1_d1")',
+        "ExercisePickerScreen": 'mapOf("dayId" to "day_gup_3d_beg_w1_d1")',
+    },
+    "seed": {                         # screen -> fixture bundle beyond the standard gym+cardio
+        "ProgramEditorScreen": "program",
+        "ProgramDayEditorScreen": "program",
+        "ExercisePickerScreen": "program",
+        "WorkoutExecutionScreen": "session",
+        "WorkoutCooldownScreen": "session",
+        "SuggestedStretchesScreen": "session",
+        "WorkoutSummaryScreen": "sessionDone",
+        "SessionDetailScreen": "sessionDone",
+    },
     "skip": {                         # screen -> reason (filled as runs surface real blockers)
         "DebugPanelScreen": "dev-only tool; PaddingValues type clash in its signature",
-        # these 8 demand a navigation argument (a session/program id) AND the database rows it points
-        # at -- per-screen fixtures to add via navArgs when their flows are measured:
-        "WorkoutExecutionScreen": "needs a live session id + session fixture",
-        "WorkoutSummaryScreen": "needs a finished session id + fixture",
-        "WorkoutCooldownScreen": "needs a session id + fixture",
-        "SessionDetailScreen": "needs a session id + fixture",
-        "SuggestedStretchesScreen": "needs a session id + fixture",
-        "ProgramEditorScreen": "needs a program id + program fixture",
-        "ProgramDayEditorScreen": "needs a program day id + fixture",
-        "ExercisePickerScreen": "needs a program-exercise context id + fixture",
     },
 }
 
@@ -139,13 +148,15 @@ def main():
                     skipped.append((screen, reason))
                     continue
                 nav = EXCEPTIONS["navArgs"].get(screen, "emptyMap()")
+                seed = EXCEPTIONS["seed"].get(screen)
+                seed_arg = f', seed = "{seed}"' if seed else ""
                 wf = EXCEPTIONS["waitFor"].get(screen)
                 wf_arg = f', waitFor = "{wf}"' if wf else ""
                 arg_txt = ",\n                ".join(args)
                 tests.append(f"""
     @Test
     fun dump{screen}() {{
-        val a = assembler({nav})
+        val a = assembler({nav}{seed_arg})
         dump("{screen}"{wf_arg}) {{
             {pkg}.{screen}(
                 {arg_txt},
@@ -198,11 +209,14 @@ class LayoutDumpAllTest {
     }
 
     /** The STANDARD fixture, identical to the python harness's global seed (inspect_layout.
-     *  seed_fixtures): one active gym, one cardio session at a fixed instant. */
-    private fun assembler(navArgs: Map<String, Any?> = emptyMap()): Assembler {
+     *  seed_fixtures): one active gym, one cardio session at a fixed instant. `seed` layers the
+     *  program/session bundles on top -- always THROUGH the app's own repositories, so both engines
+     *  produce the same rows by construction (see EXCEPTIONS["seed"] in the generator). */
+    private fun assembler(navArgs: Map<String, Any?> = emptyMap(), seed: String? = null): Assembler {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
         val db = Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java)
             .allowMainThreadQueries().build()
+        var args = navArgs
         runBlocking {
             db.gymProfileDao().insert(GymProfileEntity(
                 id = "fixture-gym-1", name = "My Gym", isActive = true, createdAt = 0L, updatedAt = 0L))
@@ -214,8 +228,22 @@ class LayoutDumpAllTest {
                 perceivedRpe = null, distanceMeters = 5000.0, avgHeartRate = null, maxHeartRate = null,
                 activeKcal = null, affectsMuscleGroups = emptyList(), linkedWorkoutSessionId = null,
                 externalId = null, notes = null, createdAt = 1718438400000L, updatedAt = 1718438400000L))
+            if (seed != null) {
+                val boot = Assembler(db, ctx)
+                boot.build(com.sara.workoutforlife.data.repository.ExerciseRepository::class.java)
+                    .seedIfNeeded()
+                boot.build(com.sara.workoutforlife.data.repository.SampleProgramRepository::class.java)
+                    .seedIfNeeded()
+                if (seed == "session" || seed == "sessionDone") {
+                    val exec = boot.build(
+                        com.sara.workoutforlife.data.repository.WorkoutExecutionRepository::class.java)
+                    val sid = exec.startSessionFromProgramDay("day_gup_3d_beg_w1_d1")
+                    if (seed == "sessionDone") exec.completeSession(sid)
+                    args = mapOf("sessionId" to sid)
+                }
+            }
         }
-        return Assembler(db, ctx, navArgs)
+        return Assembler(db, ctx, args)
     }
 
     private fun dump(screen: String, waitFor: String? = null, content: @Composable () -> Unit) {

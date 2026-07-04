@@ -22,6 +22,12 @@ _OP_TOKENS = {"+", "-", "*", "/", "%", "==", "!=", ">", "<", ">=", "<=",
 _UNIT_EXT = {"dp": "dp", "sp": "sp", "em": "em"}
 _NUMBER_KINDS = {"number_literal", "float_literal"}
 
+# Top-level extension functions declared ANYWHERE in the project being transpiled
+# (`fun Recv.name(...)`). Filled by the build's pre-pass (build_mixingcenter.scan_extensions);
+# call sites with these names emit through the runtime's ktext dispatcher (member wins,
+# else the hoisted free function), mirroring Kotlin's own resolution rule.
+EXTENSION_FNS = set()
+
 # Kotlin stdlib methods with no Python builtin -> rewritten at the CALL site (Python
 # builtins can't carry them). recv + positional arg strings -> a Python expression.
 # Scalar/string Kotlin stdlib methods with no Python builtin. Collection methods are
@@ -472,7 +478,14 @@ class Expressions:
             if trailing is not None:
                 lam = self._lambda_str(trailing)
                 args = self._join_trailing(args, lam, own_args)
-            call = f"{recv}.{self._safe(sel)}({args})"
+            if sel in EXTENSION_FNS:
+                # a declared top-level extension `fun Recv.sel(...)` is hoisted to a free function;
+                # ktext applies Kotlin's resolution rule at runtime (member wins, else extension) --
+                # a primitive receiver (Double/String) can't carry the attr, so the plain
+                # `recv.sel(args)` emission would AttributeError.
+                call = f"ktext({recv}, {sel!r}, {sel}" + (f", {args})" if args else ")")
+            else:
+                call = f"{recv}.{self._safe(sel)}({args})"
             return _wrap(f"({call} if {recv} is not None else None)" if safe else call)
         fn = self.visit(callee)
         if callee.type in ("identifier", "simple_identifier"):   # bare call inside apply/run/with that is

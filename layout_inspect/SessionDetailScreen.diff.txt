@@ -1,0 +1,6 @@
+SessionDetailScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+
+matched 0/0 compose components; 0 within ±3.0%
+LAYOUT FIDELITY: 0%  (0/0)
