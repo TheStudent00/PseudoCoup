@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **104/107** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **107/109** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,8 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 104/107 on 8 screens (+ExerciseDetail via nav-args/SavedStateHandle + seeded catalog). The 3 fails are ONE cause: a paragraph inside a WRAP-width Column never receives the max-width constraint (Compose passes constraints THROUGH wrap containers; the kit caps a label at its direct parent, which wraps to the label  ← next
-  - circular). Attempts measured and reverted: (a) width-equality climb guard -> wrap/unwrap OSCILLATES (parent shrink lags label shrink); (b) blanket climb through _wrap_x-marked ancestors -> mid-settle Kivy 100px defaults crush other screens (Settings 32%, Today 33%) -- marking _pad_container wrappers made it worse, unmarked they deadlock. The stable fix likely needs constraint TRACKING at build time (record each node's incoming max width during to_widget descent) instead of reading live widget widths. Suite must stay green: Specimen+8 screens all at 100% except these 3.
+1. **[fidelity]** 107/109 on 8 screens. Constraint tracking LANDED (build-time incoming-max threaded through to_widget; static ceiling joins the dynamic parent cap  ← next
+  - no oscillation) + lazy-list Item boundary nodes (list spacing between ITEMS only). ExerciseDetail's last 2 fails: a uniform +3.5% y accumulation above its final section (band-edge; likely small per-section padding differences) -- probe DetailSection's chain.
 1. [fidelity] Next screens: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
