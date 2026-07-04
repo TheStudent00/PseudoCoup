@@ -1353,3 +1353,14 @@ def checkNotNull(*args):
     if args[0] is None:
         raise RuntimeError("value was null")
     return args[0]
+
+
+def ktformat(receiver, *args):
+    """Kotlin `.format(...)`: printf-style on String ("%.1f".format(x) -> "5.0"). The STATIC form
+    String.format(pattern, ...) arrives with the String TYPE as receiver -- the pattern is args[0].
+    Any other receiver (DateTimeFormatter, LocalDate) keeps its own format method."""
+    if isinstance(receiver, str):
+        return receiver % tuple(args)
+    if args and isinstance(args[0], str):
+        return args[0] % tuple(args[1:])
+    return receiver.format(*args)

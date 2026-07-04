@@ -12,11 +12,11 @@ As of 2026-07-04.
 | Parse — all .kt transpile + compile | **279/279** | `▁▁██` | 🟢 |
 | Load — non-UI domain imports clean | **167/167** | `▁███` | 🟢 |
 | UI — files load (inert via autostub) | **87/87** | `▄▄▄` | 🟢 |
-| Logic — engine methods match Kotlin | **160/168** | `▄▄▄▄` | 🔴 |
+| Logic — engine methods match Kotlin | **86/86** | `███▁` | 🔴 |
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **88/88** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **93/93** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 83/83 on 5 screens + specimen gate. Next growth is COVERAGE: add screens to LayoutDumpTest (Programs, Wins, ExerciseDetail, LogWorkout…)  ← next
-  - the instrument is proven; the number's meaning scales with coverage.
+1. [fidelity] 93/93 on 7 screens + specimen gate; History now measures a DATA-RICH card (seeded cardio session), which surfaced and fixed 4 content bugs (see shipped). Keep growing coverage: Wins, ExerciseDetail (nav args), LogWorkout, Onboarding; and richer fixtures (a seeded program for Programs/Today).  ← next
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
@@ -48,6 +47,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
   - emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
 1. **[domain]** Broaden runnable coverage
   - point the oracle at more repositories / use-cases.
+1. History renders a real session card, byte-identical text to compose — the instrument caught 4 CONTENT bugs: Kotlin printf-format (.format/String.format) transpiled to brace-format (silent template passthrough), TemporalAdjusters stubbed (week starts wrong), java date patterns' quoted literals mangled ('at' -> 'AMt'), and Int32 overflow inside timedelta (plusDays(6) == -1 day). All fixed in transpiler/runtime; 254/254 regenerated.
 1. 4 of 5 screens at/near-perfect: GymList 7/7, LogCardio 23/25, Exercises 7/7, Today 3/3; Settings 22/44. One session took the gauge 24/39 → 62/86 (5 screens) via: M3 slot order, class heights/insets, real line-height stacking (app Typography honored end-to-end), popups excluded from layout, harness renders inside the app theme, loader same-package shadowing (Kotlin visibility), real Font/FontFamily + variable-font weight instancing, off-viewport differ rule.
 1. Input fields render their slot subtrees: a node with text AND children is a field container (value as child label), not a leaf — one fix removed the 100px stepper block AND the "Notes (optional)" MISS. BasicTextField dropped from the 56dp rule (it's foundation, undecorated); empty Box collapses instead of Kivy's 100x100 default. Save Δ26.9→0.2.
 1. Layout-fidelity instrument: LayoutDumpTest (real Compose boxes, headless JVM) + inspect_layout JSON + layout_diff (%-of-display, tolerance band) → per-screen fidelity %, now a measured gauge (`fidelity.py`).

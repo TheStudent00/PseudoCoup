@@ -58,6 +58,10 @@ _STDLIB_METHODS = {
     "removeSuffix":        lambda r, a: f"removeSuffix({r}, {', '.join(a)})",
     "orEmpty":             lambda r, a: f"orEmpty({r})",     # a nullable-receiver extension: works ON null
     "toString":      lambda r, a: f"str({r})",
+    # Kotlin String.format is PRINTF-style ("%.1f".format(x)); Python str.format is brace-style, so the
+    # same name silently returns the template. Route through a receiver-aware runtime helper (other
+    # receivers -- DateTimeFormatter/LocalDate -- keep their own .format).
+    "format":        lambda r, a: f"ktformat({r}, {', '.join(a)})" if a else f"{r}.format()",
     "asSequence":    lambda r, a: f"{r}",                 # lazy seq -> identity (iterable)
     # ---- Kotlin String methods (names differ from Python's str) ---- #
     "lowercase":     lambda r, a: f"{r}.lower()",
