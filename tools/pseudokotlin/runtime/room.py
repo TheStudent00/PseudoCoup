@@ -129,6 +129,16 @@ class Database:
         m = _re.search(r"\bFROM\s+(\w+)", sql, _re.IGNORECASE)
         ent = self._entities.get(m.group(1)) if m else None
         star = _re.match(r"\s*SELECT\s+\*", sql, _re.IGNORECASE) is not None
+        if not star:
+            # aliased whole-row select from a JOIN (`SELECT ms.* FROM mesocycles ms INNER JOIN ...`):
+            # still an entity read -- resolve the alias to its table so enum/bool columns CONVERT
+            # (the pojo fallback maps raw values, which handed the VM a bare string for an enum).
+            am = _re.match(r"\s*SELECT\s+(\w+)\.\*", sql, _re.IGNORECASE)
+            if am:
+                tm = _re.search(r"\b(?:FROM|JOIN)\s+(\w+)\s+(?:AS\s+)?" + am.group(1) + r"\b",
+                                sql, _re.IGNORECASE)
+                if tm and tm.group(1) in self._entities:
+                    ent, star = self._entities[tm.group(1)], True
         if ent is not None and star:
             out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
         elif pojo is not None:

@@ -102,7 +102,7 @@
     {
       "date": "2026-07-04",
       "parse": [
-        281,
+        280,
         281
       ],
       "load": [
@@ -124,11 +124,11 @@
       "extern": 0,
       "unrouted": 0,
       "fidelity": [
-        231,
-        231
+        261,
+        368
       ],
       "gates": {
-        "parse": true,
+        "parse": false,
         "load": true,
         "ui": true,
         "extern": true,
