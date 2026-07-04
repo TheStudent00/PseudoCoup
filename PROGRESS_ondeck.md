@@ -8,11 +8,11 @@ live: the real Compose engine (Robolectric, headless) and the kivy kit both dump
 `layout_diff.py` compares them as %-of-display within a tolerance band. That number is now a measured
 gauge on this board — the continue/shutdown instrument.
 
-- [fidelity] SegmentedButton fills its row share — LogCardio's "Today" selector: compose w=74% (segments split the row), kivy hugs text (9.7%). M3: segments in a SingleChoice/MultiChoiceSegmentedButtonRow divide the row equally. Drives the y-drift below it too.
-- [fidelity] TabRow divides width equally among tabs — Exercises' All/Built-in/Custom/Favorites pack left; compose centers each in row_width/n. (The one spot Kivy's equal-division default was RIGHT.)
-- [fidelity] SearchBarDefaults still inert — the "Search exercises…" placeholder never emits (MISS). Same audit family as SearchBar.
-- [fidelity] LogCardio chip line-break off by one chip (Sport) — cumulative chip-width drift moves the wrap point; refine chip width fidelity (icon/selected-state space).
-- [fidelity] GymList 7th: Delete-gym in-button anchoring still Δ>3 — revisit with button-box ground truth (compose dumps Role=Button boxes; differ could pair those too).
+- [fidelity] LogCardio: the ~140px block between "Duration" and "Intensity" — a custom stepper control (CompactControls) renders ~2.5x taller than compose; probe its widget chain (the M3 56dp text-field rule landed but this block isn't a bare text field). Drives the uniform 12.9% drift on 6 components below it.
+- [fidelity] LogCardio chip line-break off by one chip (Sport) — cumulative chip-width drift moves the wrap point; likely the SELECTED chip's leading checkmark (Run is selected; compose adds ~26px my tree doesn't have).
+- [fidelity] "Notes (optional)" MISS — an OutlinedTextField label slot that never emits; find which slot lambda is swallowed.
+- [fidelity] Exercises "No exercises found" — Box(contentAlignment=Center) child not centering (x 5.8 vs 34.3).
+- [fidelity] GymList 7th: Delete-gym in-button anchoring still Δ>3 — revisit with button-box ground truth.
 - [fidelity] Add Settings/Today to LayoutDumpTest (deeper VM chains — mirror di.py's assembly).
 - [ui] Paint layer — colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
 - [ui] Popups render inline — DropdownMenu items should be hidden until opened (Settings overlaps).
