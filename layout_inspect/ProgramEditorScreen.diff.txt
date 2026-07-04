@@ -1,361 +1,361 @@
 ProgramEditorScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  FAIL  Full Body C — Push                   compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 49.5 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 42.0 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 47.0 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  OFF   Week 4                               below the viewport in BOTH engines
-  FAIL  Progression                          compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 23.4 y= 36.0 w= 18.4 h= 1.9  |  worst Δ 36.0%
-  FAIL  Full Body A — Squat                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 39.5 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 52.0 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Full Body B — Hinge                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 44.5 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 54.5 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Full Body C — Push                   compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 74.4 w= 69.3 h= 1.9  |  worst Δ 74.4%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 66.9 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 71.9 w= 69.3 h= 1.9  |  worst Δ 71.9%
-  OFF   Week 5                               below the viewport in BOTH engines
-  FAIL  Progression                          compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 23.4 y= 60.9 w= 18.4 h= 1.9  |  worst Δ 60.9%
-  FAIL  Full Body A — Squat                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 64.4 w= 69.3 h= 1.9  |  worst Δ 69.3%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 76.9 w= 69.3 h= 1.9  |  worst Δ 76.9%
-  FAIL  Full Body B — Hinge                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 69.4 w= 69.3 h= 1.9  |  worst Δ 69.4%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 79.5 w= 69.3 h= 1.9  |  worst Δ 79.5%
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 91.8 w= 69.3 h= 1.9  |  worst Δ 91.8%
-  FAIL  Rest                                 compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 96.8 w= 69.3 h= 1.9  |  worst Δ 96.8%
-  OFF   Week 6                               below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  FAIL  Full Body A — Squat                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 89.3 w= 69.3 h= 1.9  |  worst Δ 89.3%
-  OFF   Rest                                 below the viewport in BOTH engines
-  FAIL  Full Body B — Hinge                  compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 26.8 y= 94.3 w= 69.3 h= 1.9  |  worst Δ 94.3%
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Mesocycle 2 · Accumulation           below the viewport in BOTH engines
-  OFF   — 7 weeks                            below the viewport in BOTH engines
-  OFF   Week 7                               below the viewport in BOTH engines
-  FAIL  Progression                          compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 23.4 y= 85.8 w= 18.4 h= 1.9  |  worst Δ 85.8%
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 8                               below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 9                               below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 10                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 11                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 12                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 13                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  FAIL  — 13 weeks                           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 12.7 y= 24.8 w= 18.5 h= 1.5  |  worst Δ 24.8%
-  FAIL  Mesocycle 1 · Accumulation           compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 17.5 y= 28.3 w= 45.5 h= 1.9  |  worst Δ 45.5%
-  FAIL  — 6 weeks                            compose x=  0.0 y=  0.0 w=  0.0 h= 0.0  |  kivy x= 17.5 y= 30.2 w= 18.0 h= 1.6  |  worst Δ 30.2%
-  OFF   Week 14                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 15                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 16                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 17                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 18                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 19                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Mesocycle 2 · Intensification        below the viewport in BOTH engines
-  OFF   — 7 weeks                            below the viewport in BOTH engines
-  OFF   Week 20                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 21                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 22                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 23                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 24                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 25                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 26                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   — 11 weeks                           below the viewport in BOTH engines
-  OFF   Mesocycle 1 · Realization            below the viewport in BOTH engines
-  OFF   — 5 weeks                            below the viewport in BOTH engines
-  OFF   Week 27                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 28                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 29                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 30                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 31                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Mesocycle 2 · Maintenance            below the viewport in BOTH engines
-  OFF   — 6 weeks                            below the viewport in BOTH engines
-  OFF   Week 32                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 33                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 34                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 35                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 36                              below the viewport in BOTH engines
-  OFF   Progression                          below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Week 37                              below the viewport in BOTH engines
-  OFF   Deload                               below the viewport in BOTH engines
-  OFF   Full Body A — Squat                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body B — Hinge                  below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Full Body C — Push                   below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
-  OFF   Rest                                 below the viewport in BOTH engines
   PASS  Program details                      compose x= 13.6 y=  2.0 w= 37.5 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 37.8 h= 2.8  |  worst Δ  2.2%
   PASS  Join                                 compose x= 88.6 y=  2.4 w=  6.8 h= 2.2  |  kivy x= 89.8 y=  3.4 w=  6.3 h= 1.9  |  worst Δ  1.2%
   PASS  3-Day Full Body — Ground Up          compose x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  kivy x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  worst Δ  0.0%
   PASS  Three macrocycles that walk a true   compose x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  worst Δ  0.0%
-  FAIL  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y=363.2 w= 18.5 h= 1.5  |  worst Δ 336.8%
-  FAIL  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y=366.7 w= 45.5 h= 1.9  |  worst Δ 336.9%
-  FAIL  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y=836.9 w= 18.0 h= 1.6  |  worst Δ 805.4%
-  PASS  Week 1                               compose x= 22.4 y= 35.1 w= 13.1 h= 2.1  |  kivy x= 22.4 y= 33.8 w= 12.6 h= 2.2  |  worst Δ  1.3%
-  FAIL  Progression                          compose x= 23.4 y= 37.2 w= 19.0 h= 1.9  |  kivy x= 23.4 y=892.6 w= 18.4 h= 1.9  |  worst Δ 855.4%
-  FAIL  Full Body A — Squat                  compose x= 26.8 y= 40.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y=921.0 w= 69.3 h= 1.9  |  worst Δ 880.3%
-  FAIL  Rest                                 compose x= 26.8 y= 43.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y=933.6 w= 69.3 h= 1.9  |  worst Δ 890.4%
-  FAIL  Full Body B — Hinge                  compose x= 26.8 y= 45.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y=926.0 w= 69.3 h= 1.9  |  worst Δ 880.3%
-  FAIL  Rest                                 compose x= 26.8 y= 48.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y=936.1 w= 69.3 h= 1.9  |  worst Δ 887.9%
-  FAIL  Full Body C — Push                   compose x= 26.8 y= 50.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y=956.0 w= 69.3 h= 1.9  |  worst Δ 905.2%
-  FAIL  Rest                                 compose x= 26.8 y= 53.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y=948.4 w= 69.3 h= 1.9  |  worst Δ 895.2%
-  FAIL  Rest                                 compose x= 26.8 y= 55.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y=953.4 w= 69.3 h= 1.9  |  worst Δ 897.7%
-  PASS  Week 2                               compose x= 22.4 y= 59.9 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 58.7 w= 13.1 h= 2.2  |  worst Δ  1.2%
-  FAIL  Progression                          compose x= 23.4 y= 62.0 w= 19.0 h= 1.9  |  kivy x= 23.4 y=917.5 w= 18.4 h= 1.9  |  worst Δ 855.5%
-  FAIL  Full Body A — Squat                  compose x= 26.8 y= 65.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y=945.9 w= 69.3 h= 1.9  |  worst Δ 880.4%
-  FAIL  Rest                                 compose x= 26.8 y= 68.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y=958.5 w= 69.3 h= 1.9  |  worst Δ 890.5%
-  FAIL  Full Body B — Hinge                  compose x= 26.8 y= 70.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y=950.9 w= 69.3 h= 1.9  |  worst Δ 880.4%
-  FAIL  Rest                                 compose x= 26.8 y= 73.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y=961.0 w= 69.3 h= 1.9  |  worst Δ 888.0%
-  FAIL  Full Body C — Push                   compose x= 26.8 y= 75.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y=980.9 w= 69.3 h= 1.9  |  worst Δ 905.4%
-  FAIL  Rest                                 compose x= 26.8 y= 78.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y=973.3 w= 69.3 h= 1.9  |  worst Δ 895.3%
-  FAIL  Rest                                 compose x= 26.8 y= 80.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y=978.4 w= 69.3 h= 1.9  |  worst Δ 897.8%
-  PASS  Week 3                               compose x= 22.4 y= 84.7 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 83.6 w= 13.1 h= 2.2  |  worst Δ  1.1%
-  FAIL  Progression                          compose x= 23.4 y= 86.8 w= 19.0 h= 1.9  |  kivy x= 23.4 y=942.4 w= 18.4 h= 1.9  |  worst Δ 855.6%
-  FAIL  Full Body A — Squat                  compose x= 26.8 y= 90.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y=970.8 w= 69.3 h= 1.9  |  worst Δ 880.5%
-  FAIL  Rest                                 compose x= 26.8 y= 92.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y=983.4 w= 69.3 h= 1.9  |  worst Δ 890.6%
-  FAIL  Full Body B — Hinge                  compose x= 26.8 y= 95.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y=975.8 w= 69.3 h= 1.9  |  worst Δ 880.5%
-  FAIL  Rest                                 compose x= 26.8 y= 97.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y=985.9 w= 69.3 h= 1.9  |  worst Δ 888.1%
-  MISS  MACROCYCLE 2 · Build — Strength      in compose only (kivy never rendered it)
-  MISS  MACROCYCLE 3 · Own It — Autonomy     in compose only (kivy never rendered it)
-  MISS  MACROCYCLE 1 · Foundations — Movem   in compose only (kivy never rendered it)
+  FAIL  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 81.6 h= 1.6  |  worst Δ  3.5%
+  PASS  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y= 26.4 w= 18.5 h= 1.5  |  worst Δ  0.3%
+  PASS  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y= 29.9 w= 45.5 h= 1.9  |  worst Δ  1.2%
+  PASS  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y= 31.8 w= 18.0 h= 1.6  |  worst Δ  0.2%
+  PASS  Week 1                               compose x= 22.4 y= 35.1 w= 13.1 h= 2.1  |  kivy x= 22.4 y= 35.4 w= 12.6 h= 2.2  |  worst Δ  0.5%
+  PASS  Progression                          compose x= 23.4 y= 37.2 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 37.6 w= 18.4 h= 1.9  |  worst Δ  0.6%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 40.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 41.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Rest                                 compose x= 26.8 y= 43.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 43.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 45.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 46.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Rest                                 compose x= 26.8 y= 48.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 48.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Full Body C — Push                   compose x= 26.8 y= 50.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 51.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Rest                                 compose x= 26.8 y= 53.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 53.7 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Rest                                 compose x= 26.8 y= 55.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 56.2 w= 69.3 h= 1.9  |  worst Δ  0.4%
+  PASS  Week 2                               compose x= 22.4 y= 59.9 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 60.3 w= 13.1 h= 2.2  |  worst Δ  0.5%
+  PASS  Progression                          compose x= 23.4 y= 62.0 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 62.5 w= 18.4 h= 1.9  |  worst Δ  0.6%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 65.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 66.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Rest                                 compose x= 26.8 y= 68.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 68.5 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 70.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 71.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Rest                                 compose x= 26.8 y= 73.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 73.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Full Body C — Push                   compose x= 26.8 y= 75.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 76.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Rest                                 compose x= 26.8 y= 78.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 78.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Rest                                 compose x= 26.8 y= 80.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 81.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
+  PASS  Week 3                               compose x= 22.4 y= 84.7 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 85.2 w= 13.1 h= 2.2  |  worst Δ  0.5%
+  PASS  Progression                          compose x= 23.4 y= 86.8 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 87.4 w= 18.4 h= 1.9  |  worst Δ  0.7%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 90.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 90.9 w= 69.3 h= 1.9  |  worst Δ  0.7%
+  PASS  Rest                                 compose x= 26.8 y= 92.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 93.4 w= 69.3 h= 1.9  |  worst Δ  0.7%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 95.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 96.0 w= 69.3 h= 1.9  |  worst Δ  0.7%
+  PASS  Rest                                 compose x= 26.8 y= 97.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 98.5 w= 69.3 h= 1.9  |  worst Δ  0.7%
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 4                               not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 5                               not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 6                               not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Mesocycle 2 · Accumulation           not visible in EITHER engine
+  OFF   — 7 weeks                            not visible in EITHER engine
+  OFF   Week 7                               not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 8                               not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 9                               not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 10                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 11                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 12                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 13                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   MACROCYCLE 2 · Build — Strength      not visible in EITHER engine
+  OFF   — 13 weeks                           not visible in EITHER engine
+  OFF   Mesocycle 1 · Accumulation           not visible in EITHER engine
+  OFF   — 6 weeks                            not visible in EITHER engine
+  OFF   Week 14                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 15                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 16                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 17                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 18                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 19                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Mesocycle 2 · Intensification        not visible in EITHER engine
+  OFF   — 7 weeks                            not visible in EITHER engine
+  OFF   Week 20                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 21                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 22                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 23                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 24                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 25                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 26                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   MACROCYCLE 3 · Own It — Autonomy     not visible in EITHER engine
+  OFF   — 11 weeks                           not visible in EITHER engine
+  OFF   Mesocycle 1 · Realization            not visible in EITHER engine
+  OFF   — 5 weeks                            not visible in EITHER engine
+  OFF   Week 27                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 28                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 29                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 30                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 31                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Mesocycle 2 · Maintenance            not visible in EITHER engine
+  OFF   — 6 weeks                            not visible in EITHER engine
+  OFF   Week 32                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 33                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 34                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 35                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 36                              not visible in EITHER engine
+  OFF   Progression                          not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Week 37                              not visible in EITHER engine
+  OFF   Deload                               not visible in EITHER engine
+  OFF   Full Body A — Squat                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body B — Hinge                  not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Full Body C — Push                   not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
+  OFF   Rest                                 not visible in EITHER engine
 
-matched 352/58 compose components; 7 within ±3.0%
-LAYOUT FIDELITY: 12%  (7/58)
+matched 355/32 compose components; 31 within ±3.0%
+LAYOUT FIDELITY: 97%  (31/32)
