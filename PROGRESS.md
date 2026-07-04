@@ -16,7 +16,7 @@ As of 2026-07-04.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **109/109** | `▁█` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **128/128** | `▁█` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,8 +32,8 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** 109/109  ← next
-  - ALL 8 measured screens at 100%, guarded by TWO fail-loud specimen gates (text metrics + lazy-list boundary metrics). Next growth: Wins, LogWorkout, Onboarding (needs CrashlyticsBridge stand-in); richer fixtures: a seeded program (Programs/Today list layouts).
+1. **[fidelity]** 128/128  ← next
+  - ALL 10 measured screens at 100% (+WinsList with a seeded win card, +Progress via the first sanctioned Kotlin adjustment: winsViewModel threaded through ProgressScreen so a non-Hilt host can supply it, runtime default unchanged). Two specimen gates guard derived metrics. Next: LogWorkout, Onboarding (CrashlyticsBridge stand-in), a seeded program (Programs/Today populated lists).
 1. **[fidelity]** The ONE sanctioned non-general bridge: small-text (<=12sp) widths get a 1.035 shaper calibration (the ground-truth engine measures small text wider than the font file itself
   - measured on the specimen against two fonts; user-approved as engine-specific). Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
