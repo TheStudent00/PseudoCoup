@@ -1,7 +1,7 @@
 HistoryScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Jun 10 – Jun 16 2024                 compose x=  3.9 y=  1.3 w= 33.3 h= 1.9  |  kivy x=  3.9 y=  1.3 w= 33.8 h= 1.9  |  worst Δ  0.5%
+  PASS  Jun 10 – Jun 16 2024                 compose x=  3.9 y=  1.3 w= 33.3 h= 1.9  |  kivy x=  3.9 y=  1.3 w= 35.2 h= 1.9  |  worst Δ  1.9%
   PASS  Run                                  compose x=  7.8 y=  6.2 w= 75.4 h= 2.1  |  kivy x=  7.8 y=  6.2 w= 75.6 h= 2.2  |  worst Δ  0.2%
   PASS  Cardio                               compose x= 83.2 y=  6.2 w=  9.0 h= 1.4  |  kivy x= 83.4 y=  6.2 w=  8.8 h= 1.5  |  worst Δ  0.2%
   PASS  Sat, Jun 15 at 8:00 AM               compose x=  7.8 y=  8.7 w= 31.4 h= 1.5  |  kivy x=  7.8 y=  8.9 w= 31.5 h= 1.6  |  worst Δ  0.2%
