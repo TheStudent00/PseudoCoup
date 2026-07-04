@@ -1,7 +1,7 @@
 ExercisesScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Exercises                            compose x=  3.9 y=  2.0 w= 22.6 h= 3.1  |  kivy x=  1.0 y=  4.2 w= 23.1 h= 2.8  |  worst Δ  2.9%
+  PASS  Exercises                            compose x=  3.9 y=  2.0 w= 22.6 h= 3.1  |  kivy x=  1.0 y=  0.0 w= 23.1 h= 2.8  |  worst Δ  2.9%
   PASS  All                                  compose x=  8.8 y=  8.5 w=  4.4 h= 2.2  |  kivy x=  9.1 y=  8.7 w=  3.6 h= 1.9  |  worst Δ  0.7%
   PASS  Built-in                             compose x= 27.3 y=  8.5 w= 11.4 h= 2.2  |  kivy x= 27.4 y=  8.7 w= 10.9 h= 1.9  |  worst Δ  0.5%
   PASS  Custom                               compose x= 48.4 y=  8.5 w= 12.7 h= 2.2  |  kivy x= 48.7 y=  8.7 w= 12.2 h= 1.9  |  worst Δ  0.5%

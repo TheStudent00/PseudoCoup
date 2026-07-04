@@ -304,7 +304,8 @@ class Statements:
     def _loop_iterable(self, node, exclude):
         kinds = ("call_expression", "navigation_expression", "identifier",
                  "binary_expression", "range_expression", "parenthesized_expression",
-                 "index_expression", "infix_expression")
+                 "index_expression", "infix_expression",
+                 "this_expression")           # `for (ex in this)` in an extension fn iterates the receiver
         cand = next((c for c in node.children
                      if c.type in kinds and c is not exclude), None)
         return self.visit(cand) if cand is not None else "[]"

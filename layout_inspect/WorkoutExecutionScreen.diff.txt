@@ -1,11 +1,40 @@
 WorkoutExecutionScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Finish                               compose x= 72.3 y=  2.3 w= 12.2 h= 2.4  |  kivy x= 73.2 y=  3.2 w= 11.2 h= 2.4  |  worst Δ  1.0%
-  MISS  Workout                              in compose only (kivy never rendered it)
-  XTRA  NEW PERSONAL RECORD                  in kivy only (not in compose ground truth)
-  XTRA  tap to dismiss                       in kivy only (not in compose ground truth)
-  XTRA  tap to dismiss                       in kivy only (not in compose ground truth)
+  PASS  Full Body A — Squat                  compose x= 13.6 y=  2.3 w= 41.4 h= 2.4  |  kivy x= 12.7 y=  0.0 w= 43.4 h= 2.4  |  worst Δ  2.3%
+  PASS  Finish                               compose x= 72.3 y=  2.3 w= 12.2 h= 2.4  |  kivy x= 73.2 y=  1.4 w= 11.2 h= 2.4  |  worst Δ  1.0%
+  PASS  Goblet Squat                         compose x=  2.9 y=  8.2 w= 35.3 h= 3.2  |  kivy x=  2.9 y=  8.1 w= 36.8 h= 3.2  |  worst Δ  1.5%
+  PASS  Target · 10–12 reps · RPE 6          compose x=  2.9 y= 11.4 w= 38.0 h= 1.5  |  kivy x=  2.9 y= 11.3 w= 38.1 h= 1.6  |  worst Δ  0.2%
+  FAIL  Set #                                compose x=  2.9 y= 15.3 w= 14.1 h= 1.5  |  kivy x=  2.9 y= 16.2 w=  2.8 h= 6.9  |  worst Δ 11.3%
+  FAIL  RPE                                  compose x= 17.0 y= 15.3 w= 23.6 h= 1.5  |  kivy x=  5.7 y= 17.9 w=  4.6 h= 3.4  |  worst Δ 19.0%
+  FAIL  Weight (kg)                          compose x= 40.6 y= 15.3 w= 23.6 h= 1.5  |  kivy x= 10.3 y= 15.3 w=  4.6 h= 8.6  |  worst Δ 30.3%
+  FAIL  Reps                                 compose x= 64.2 y= 15.3 w= 14.1 h= 1.5  |  kivy x= 14.9 y= 16.2 w=  2.8 h= 6.9  |  worst Δ 49.3%
+  FAIL  Set type                             compose x= 78.3 y= 15.3 w= 18.7 h= 1.5  |  kivy x= 17.7 y= 16.2 w=  3.7 h= 6.9  |  worst Δ 60.6%
+  FAIL  1                                    compose x=  2.9 y= 18.7 w= 14.1 h= 1.9  |  kivy x=  2.9 y= 26.9 w=  2.8 h= 1.9  |  worst Δ 11.3%
+  FAIL  6                                    compose x= 17.0 y= 18.7 w= 23.6 h= 1.9  |  kivy x=  5.7 y= 26.9 w=  4.6 h= 1.9  |  worst Δ 19.0%
+  FAIL  0 kg                                 compose x= 40.6 y= 18.7 w= 23.6 h= 1.9  |  kivy x= 10.3 y= 25.8 w=  4.6 h= 4.0  |  worst Δ 30.3%
+  FAIL  12                                   compose x= 64.2 y= 18.7 w= 14.1 h= 1.9  |  kivy x= 14.9 y= 25.8 w=  2.8 h= 4.0  |  worst Δ 49.3%
+  FAIL  Standard                             compose x= 81.5 y= 18.9 w= 12.7 h= 1.5  |  kivy x= 13.3 y= 27.0 w= 12.5 h= 1.6  |  worst Δ 68.2%
+  FAIL  RPE                                  compose x= 16.1 y= 22.3 w=  5.4 h= 1.4  |  kivy x=  3.3 y= 31.6 w=  5.4 h= 1.5  |  worst Δ 12.8%
+  FAIL  Weight                               compose x= 45.0 y= 22.3 w= 10.0 h= 1.4  |  kivy x=  7.6 y= 31.6 w=  9.0 h= 1.5  |  worst Δ 37.4%
+  FAIL  Reps                                 compose x= 78.1 y= 22.3 w=  6.8 h= 1.4  |  kivy x= 15.1 y= 31.6 w=  6.5 h= 1.5  |  worst Δ 63.0%
+  FAIL  12                                   compose x= 74.7 y= 24.2 w= 13.6 h= 5.2  |  kivy x= 14.9 y= 50.4 w=  2.8 h= 4.0  |  worst Δ 59.8%
+  FAIL  Log set                              compose x= 79.6 y= 32.7 w= 11.7 h= 2.2  |  kivy x=  4.1 y= 40.5 w= 11.4 h= 1.9  |  worst Δ 75.4%
+  FAIL  2                                    compose x=  8.8 y= 38.7 w=  2.4 h= 1.9  |  kivy x=  3.3 y= 51.5 w=  2.0 h= 1.9  |  worst Δ 12.8%
+  FAIL  —                                    compose x= 17.0 y= 38.7 w= 23.6 h= 1.9  |  kivy x=  5.7 y= 51.5 w=  4.6 h= 1.9  |  worst Δ 19.0%
+  FAIL  —                                    compose x= 40.6 y= 38.7 w= 23.6 h= 1.9  |  kivy x= 10.3 y= 51.5 w=  4.6 h= 1.9  |  worst Δ 30.3%
+  FAIL  Standard                             compose x= 78.3 y= 38.9 w= 18.7 h= 1.5  |  kivy x= 17.7 y= 49.0 w=  3.7 h= 6.9  |  worst Δ 60.6%
+  FAIL  Add set                              compose x= 47.0 y= 44.2 w= 12.4 h= 1.9  |  kivy x=  9.5 y= 59.4 w= 11.7 h= 1.9  |  worst Δ 37.5%
+  FAIL  Exercise notes                       compose x=  6.8 y= 52.0 w= 26.0 h= 2.6  |  kivy x=  6.8 y= 51.6 w= 10.7 h= 7.4  |  worst Δ 15.4%
+  PASS  UP NEXT                              compose x=  3.9 y= 91.0 w= 87.3 h= 1.4  |  kivy x=  3.9 y= 92.8 w= 87.3 h= 1.5  |  worst Δ  1.7%
+  PASS  Goblet Squat                         compose x=  6.8 y= 95.7 w= 20.6 h= 1.7  |  kivy x=  7.8 y= 96.6 w= 18.7 h= 1.6  |  worst Δ  1.9%
+  PASS  Dumbbell Bench Press                 compose x= 36.3 y= 95.7 w= 30.9 h= 1.5  |  kivy x= 36.2 y= 96.6 w= 31.4 h= 1.6  |  worst Δ  0.9%
+  PASS  Chest-Supported Dumbbell Row         compose x= 76.9 y= 95.7 w= 23.1 h= 1.5  |  kivy x= 77.4 y= 96.6 w= 22.6 h= 1.6  |  worst Δ  0.9%
+  MISS  6                                    in compose only (kivy never rendered it)
+  MISS  12                                   in compose only (kivy never rendered it)
+  XTRA  General notes for this exercise...   in kivy only (not in compose ground truth)
+  XTRA  Dumbbell Lateral Raise               in kivy only (not in compose ground truth)
+  XTRA  Hanging Leg Raise                    in kivy only (not in compose ground truth)
 
-matched 1/2 compose components; 1 within ±3.0%
-LAYOUT FIDELITY: 50%  (1/2)
+matched 29/31 compose components; 8 within ±3.0%
+LAYOUT FIDELITY: 26%  (8/31)

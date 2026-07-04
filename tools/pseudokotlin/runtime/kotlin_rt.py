@@ -286,6 +286,9 @@ class KtList(list):
     def mapIndexed(self, f):
         return KtList(f(i, x) for i, x in enumerate(self))
 
+    def mapIndexedNotNull(self, f):
+        return KtList(y for y in (f(i, x) for i, x in enumerate(self)) if y is not None)
+
     def mapNotNull(self, f):
         return KtList(y for y in (f(x) for x in self) if y is not None)
 

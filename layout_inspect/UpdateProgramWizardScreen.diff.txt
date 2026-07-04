@@ -1,7 +1,7 @@
 UpdateProgramWizardScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Update program                       compose x= 13.6 y=  2.0 w= 39.7 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 38.5 h= 2.8  |  worst Δ  2.2%
+  PASS  Update program                       compose x= 13.6 y=  2.0 w= 39.7 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 38.5 h= 2.8  |  worst Δ  2.0%
   PASS  What kind of update?                 compose x=  3.9 y=  7.9 w= 57.2 h= 3.2  |  kivy x=  3.9 y=  7.9 w= 59.0 h= 3.2  |  worst Δ  1.8%
   PASS  Tell us what changed and we'll adj   compose x=  3.9 y= 11.5 w= 80.0 h= 1.9  |  kivy x=  3.9 y= 11.5 w= 81.4 h= 2.0  |  worst Δ  1.4%
   PASS  Vacation                             compose x= 20.4 y= 16.8 w= 18.0 h= 2.4  |  kivy x= 20.4 y= 16.9 w= 18.3 h= 2.4  |  worst Δ  0.3%
