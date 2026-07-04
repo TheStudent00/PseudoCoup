@@ -16,7 +16,7 @@ As of 2026-07-03.
 | Data — instrumented DB tests green | **4/4** | `▄▄▄` | 🟢 |
 | External gaps — used but unwrapped | **0** ↓better | `▄▄▄` | 🟢 |
 | Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **12/39** | `▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **20/39** | `▄` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -32,15 +32,17 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 
 ## On-deck — next sub-tasks (top = next)
 
-1. **[fidelity]** FlowRow line-wrapping  ← next
-  - LogCardio's dominant cause: chips run off-screen in ONE row (kivy x to 167% of display); Compose wraps to new lines. Kit: implement wrap layout for FlowRow/FlowColumn.
-1. **[fidelity]** Text soft-wrap at the max-width constraint
-  - wrap-width labels grow unbounded (the LogCardio intro is 171% wide); Compose wraps text at the incoming max width. Same family as the constraint-propagation rule.
-1. **[fidelity]** SearchBar (+ any container still in compose_ui's inert list) swallows its content lambda
-  - Exercises' tabs/search never enter the TREE (recorder-level, not kit). Audit _NAMES for containers that take content.
-1. **[fidelity]** GymList 7th: M3 in-button anchoring refined (content-group centering landed; Delete-gym still Δ>3)
-  - revisit with the button-box ground truth (compose dumps Role=Button boxes; differ could pair those too).
-1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains: BackupRepository/TodayViewModel
+1. **[fidelity]** SegmentedButton fills its row share  ← next
+  - LogCardio's "Today" selector: compose w=74% (segments split the row), kivy hugs text (9.7%). M3: segments in a SingleChoice/MultiChoiceSegmentedButtonRow divide the row equally. Drives the y-drift below it too.
+1. **[fidelity]** TabRow divides width equally among tabs
+  - Exercises' All/Built-in/Custom/Favorites pack left; compose centers each in row_width/n. (The one spot Kivy's equal-division default was RIGHT.)
+1. **[fidelity]** SearchBarDefaults still inert
+  - the "Search exercises…" placeholder never emits (MISS). Same audit family as SearchBar.
+1. **[fidelity]** LogCardio chip line-break off by one chip (Sport)
+  - cumulative chip-width drift moves the wrap point; refine chip width fidelity (icon/selected-state space).
+1. **[fidelity]** GymList 7th: Delete-gym in-button anchoring still Δ>3
+  - revisit with button-box ground truth (compose dumps Role=Button boxes; differ could pair those too).
+1. **[fidelity]** Add Settings/Today to LayoutDumpTest (deeper VM chains
   - mirror di.py's assembly).
 1. **[ui]** Paint layer
   - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.

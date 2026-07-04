@@ -123,7 +123,8 @@ RadioButton TriStateCheckbox NavigationBar NavigationBarItem NavigationRail Navi
 AlertDialog BasicAlertDialog Dialog Badge BadgedBox Tab LeadingIconTab TabRow ScrollableTabRow PrimaryTabRow
 Snackbar SnackbarHost ModalNavigationDrawer DismissibleNavigationDrawer PermanentNavigationDrawer
 SwipeToDismissBox PullToRefreshBox AnimatedVisibility AnimatedContent Crossfade SelectionContainer
-ProvideTextStyle CompositionLocalProvider DropdownMenu DropdownMenuItem ExposedDropdownMenuBox ListItem""".split()
+ProvideTextStyle CompositionLocalProvider DropdownMenu DropdownMenuItem ExposedDropdownMenuBox ListItem
+SearchBar DockedSearchBar HorizontalPager VerticalPager PrimaryScrollableTabRow RichTooltip TooltipBox""".split()
 for _n in _NAMES:
     globals()[_n] = _composable(_n)
 
@@ -166,11 +167,25 @@ def Scaffold(*args, **kwargs):
     _STACK.append(node)
     try:
         content_fn = kwargs.get("content") or next((a for a in args if callable(a)), None)
+        # Compose hands content the REAL innerPadding -- the bars' heights (M3: top bar 64, bottom bar 80)
+        # -- and content insets itself with .padding(innerPadding). A stub here meant 0, so content sat
+        # UNDER the bar (a uniform ~64px y-shift on everything below it).
+        from runtime.compose_ui import PaddingValues
+        inner = PaddingValues(top=64 if callable(kwargs.get("topBar")) else 0,
+                              bottom=80 if callable(kwargs.get("bottomBar")) else 0)
         for slot in ("topBar", "content", "floatingActionButton", "bottomBar", "snackbarHost"):
             fn = content_fn if slot == "content" else kwargs.get(slot)
             if callable(fn):
                 before = len(node.children)
-                _call(fn)
+                if slot == "content":
+                    try:
+                        fn(inner)                 # the transpiled lambda takes (it=None): pass the real
+                    except TypeError as e:        # PaddingValues; only an arity error falls back
+                        if e.__traceback__.tb_next is not None:
+                            raise
+                        _call(fn)
+                else:
+                    _call(fn)
                 for ch in node.children[before:]:
                     ch.props.setdefault("slot", slot)
     finally:
