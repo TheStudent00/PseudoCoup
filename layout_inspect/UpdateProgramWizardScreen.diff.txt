@@ -1,0 +1,21 @@
+UpdateProgramWizardScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Update program                       compose x= 13.6 y=  2.0 w= 39.7 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 37.7 h= 2.8  |  worst Δ  2.2%
+  PASS  What kind of update?                 compose x=  3.9 y=  7.9 w= 57.2 h= 3.2  |  kivy x=  3.9 y=  7.9 w= 55.5 h= 3.2  |  worst Δ  1.7%
+  PASS  Tell us what changed and we'll adj   compose x=  3.9 y= 11.5 w= 80.0 h= 1.9  |  kivy x=  3.9 y= 11.5 w= 81.4 h= 2.0  |  worst Δ  1.4%
+  FAIL  Vacation                             compose x= 20.4 y= 16.8 w= 18.0 h= 2.4  |  kivy x= 16.6 y= 16.9 w= 17.2 h= 2.4  |  worst Δ  3.8%
+  FAIL  🏝️                                   compose x=  7.8 y= 18.3 w=  8.8 h= 3.7  |  kivy x=  7.8 y= 18.3 w=  4.9 h= 3.7  |  worst Δ  3.8%
+  FAIL  Going away — pause or ease off whi   compose x= 20.4 y= 19.2 w= 71.8 h= 4.0  |  kivy x= 16.6 y= 19.3 w= 75.4 h= 4.0  |  worst Δ  3.8%
+  FAIL  Injury                               compose x= 20.4 y= 27.7 w= 11.9 h= 2.4  |  kivy x= 16.6 y= 27.8 w= 11.1 h= 2.4  |  worst Δ  3.9%
+  FAIL  🩹                                    compose x=  7.8 y= 29.1 w=  8.8 h= 3.7  |  kivy x=  7.8 y= 29.1 w=  4.9 h= 3.7  |  worst Δ  3.9%
+  FAIL  Something hurts — log it and what    compose x= 20.4 y= 30.1 w= 71.8 h= 4.0  |  kivy x= 16.6 y= 30.2 w= 75.4 h= 4.0  |  worst Δ  3.9%
+  FAIL  Adapt exercises                      compose x= 20.4 y= 38.5 w= 32.6 h= 2.4  |  kivy x= 16.6 y= 38.6 w= 31.3 h= 2.4  |  worst Δ  3.9%
+  FAIL  🎯                                    compose x=  7.8 y= 39.9 w=  8.8 h= 3.7  |  kivy x=  7.8 y= 39.9 w=  4.9 h= 3.7  |  worst Δ  3.9%
+  FAIL  Add or avoid specific work — e.g.    compose x= 20.4 y= 40.9 w= 71.8 h= 4.0  |  kivy x= 16.6 y= 41.0 w= 75.4 h= 4.0  |  worst Δ  3.9%
+  FAIL  Life is happening                    compose x= 20.4 y= 49.3 w= 34.8 h= 2.4  |  kivy x= 16.6 y= 49.4 w= 33.5 h= 2.4  |  worst Δ  3.9%
+  FAIL  🌊                                    compose x=  7.8 y= 50.7 w=  8.8 h= 3.7  |  kivy x=  7.8 y= 50.8 w=  4.9 h= 3.7  |  worst Δ  3.9%
+  FAIL  Stress or a busy stretch — lighten   compose x= 20.4 y= 51.7 w= 71.8 h= 4.0  |  kivy x= 16.6 y= 51.8 w= 75.4 h= 4.0  |  worst Δ  3.9%
+
+matched 15/15 compose components; 3 within ±3.0%
+LAYOUT FIDELITY: 20%  (3/15)

@@ -1,0 +1,7 @@
+PathDetailScreen: compose display 411x915 vs kivy display 411x915
+tolerance: ±3.0% of display   (x,w over width; y,h over height)
+
+  PASS  Path not found.                      compose x=  5.8 y=  9.6 w= 27.3 h= 2.1  |  kivy x=  5.8 y=  9.6 w= 26.8 h= 2.2  |  worst Δ  0.4%
+
+matched 1/1 compose components; 1 within ±3.0%
+LAYOUT FIDELITY: 100%  (1/1)
