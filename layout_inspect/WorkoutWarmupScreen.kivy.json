@@ -33,7 +33,7 @@
   {
    "path": "0/0/0/0",
    "x": 4.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -41,7 +41,7 @@
   {
    "path": "0/0/0/1",
    "x": 52.0,
-   "y": 38.0,
+   "y": 0.0,
    "w": 87.806,
    "h": 26,
    "text": "Warm up",
@@ -50,7 +50,7 @@
   {
    "path": "0/0/0/2",
    "x": 359.0,
-   "y": 16.0,
+   "y": 0.0,
    "w": 48,
    "h": 48,
    "kind": "IconButton"
@@ -92,7 +92,7 @@
    "path": "0/0/1/0/2",
    "x": 16.0,
    "y": 129.0,
-   "w": 379,
+   "w": 379.0,
    "h": 37.0,
    "text": "Pick something fun for a few minutes \u2014 a song, a stretch, a walk. A little here protects everything else.",
    "kind": "Text"
@@ -184,7 +184,7 @@
    "path": "0/0/1/0/3/0/0/2/1",
    "x": 81.84,
    "y": 215.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "Put on one favourite track and move \u2014 it hits the warm-up target and it's fun.",
    "kind": "Text"
@@ -292,7 +292,7 @@
    "path": "0/0/1/0/3/1/0/2/1",
    "x": 81.84,
    "y": 303.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "6\u20138 slow rounds \u2014 hips, shoulders, spine, and breath all in one flow.",
    "kind": "Text"
@@ -400,7 +400,7 @@
    "path": "0/0/1/0/3/2/0/2/1",
    "x": 81.84,
    "y": 391.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "Leg swings, arm circles, hip circles, inchworms \u2014 open up your range.",
    "kind": "Text"
@@ -508,7 +508,7 @@
    "path": "0/0/1/0/3/3/0/2/1",
    "x": 81.84,
    "y": 479.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "Light jabs and footwork \u2014 warms the shoulders and gets the heart going.",
    "kind": "Text"
@@ -616,7 +616,7 @@
    "path": "0/0/1/0/3/4/0/2/1",
    "x": 81.84,
    "y": 567.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "Bike, row, or treadmill at a comfortable pace \u2014 nothing strenuous.",
    "kind": "Text"
@@ -724,7 +724,7 @@
    "path": "0/0/1/0/3/5/0/2/1",
    "x": 81.84,
    "y": 655.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "A quick walk to raise your temperature and shake off the day.",
    "kind": "Text"
@@ -832,7 +832,7 @@
    "path": "0/0/1/0/3/6/0/2/1",
    "x": 81.84,
    "y": 744.0,
-   "w": 249,
+   "w": 248.39999999999998,
    "h": 31.0,
    "text": "An easy jog in place or around the block to get the blood moving.",
    "kind": "Text"

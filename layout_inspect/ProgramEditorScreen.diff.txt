@@ -1,361 +1,367 @@
 ProgramEditorScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Program details                      compose x= 13.6 y=  2.0 w= 37.5 h= 3.1  |  kivy x= 12.7 y=  4.2 w= 37.8 h= 2.8  |  worst Δ  2.2%
-  PASS  Join                                 compose x= 88.6 y=  2.4 w=  6.8 h= 2.2  |  kivy x= 89.8 y=  3.4 w=  6.3 h= 1.9  |  worst Δ  1.2%
-  PASS  3-Day Full Body — Ground Up          compose x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  kivy x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  worst Δ  0.0%
-  PASS  Three macrocycles that walk a true   compose x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  worst Δ  0.0%
-  FAIL  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 81.6 h= 1.6  |  worst Δ  3.5%
-  PASS  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y= 26.4 w= 18.5 h= 1.5  |  worst Δ  0.3%
-  PASS  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y= 29.9 w= 45.5 h= 1.9  |  worst Δ  1.2%
-  PASS  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y= 31.8 w= 18.0 h= 1.6  |  worst Δ  0.2%
-  PASS  Week 1                               compose x= 22.4 y= 35.1 w= 13.1 h= 2.1  |  kivy x= 22.4 y= 35.4 w= 12.6 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 37.2 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 37.6 w= 18.4 h= 1.9  |  worst Δ  0.6%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 40.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 41.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 43.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 43.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 45.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 46.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 48.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 48.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Full Body C — Push                   compose x= 26.8 y= 50.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 51.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 53.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 53.7 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 55.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 56.2 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Week 2                               compose x= 22.4 y= 59.9 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 60.3 w= 13.1 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 62.0 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 62.5 w= 18.4 h= 1.9  |  worst Δ  0.6%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 65.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 66.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 68.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 68.5 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 70.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 71.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 73.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 73.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Full Body C — Push                   compose x= 26.8 y= 75.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 76.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 78.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 78.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 80.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 81.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Week 3                               compose x= 22.4 y= 84.7 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 85.2 w= 13.1 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 86.8 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 87.4 w= 18.4 h= 1.9  |  worst Δ  0.7%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 90.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 90.9 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Rest                                 compose x= 26.8 y= 92.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 93.4 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 95.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 96.0 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Rest                                 compose x= 26.8 y= 97.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 98.5 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 4                               not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 5                               not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 6                               not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Mesocycle 2 · Accumulation           not visible in EITHER engine
-  OFF   — 7 weeks                            not visible in EITHER engine
-  OFF   Week 7                               not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 8                               not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 9                               not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 10                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 11                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 12                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 13                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   MACROCYCLE 2 · Build — Strength      not visible in EITHER engine
-  OFF   — 13 weeks                           not visible in EITHER engine
-  OFF   Mesocycle 1 · Accumulation           not visible in EITHER engine
-  OFF   — 6 weeks                            not visible in EITHER engine
-  OFF   Week 14                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 15                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 16                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 17                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 18                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 19                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Mesocycle 2 · Intensification        not visible in EITHER engine
-  OFF   — 7 weeks                            not visible in EITHER engine
-  OFF   Week 20                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 21                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 22                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 23                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 24                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 25                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 26                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   MACROCYCLE 3 · Own It — Autonomy     not visible in EITHER engine
-  OFF   — 11 weeks                           not visible in EITHER engine
-  OFF   Mesocycle 1 · Realization            not visible in EITHER engine
-  OFF   — 5 weeks                            not visible in EITHER engine
-  OFF   Week 27                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 28                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 29                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 30                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 31                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Mesocycle 2 · Maintenance            not visible in EITHER engine
-  OFF   — 6 weeks                            not visible in EITHER engine
-  OFF   Week 32                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 33                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 34                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 35                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 36                              not visible in EITHER engine
-  OFF   Progression                          not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Week 37                              not visible in EITHER engine
-  OFF   Deload                               not visible in EITHER engine
-  OFF   Full Body A — Squat                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body B — Hinge                  not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Full Body C — Push                   not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
-  OFF   Rest                                 not visible in EITHER engine
+  PASS  Program details                      compose x= 13.6 y=  2.0 w= 37.5 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 37.8 h= 2.8  |  worst Δ  2.0%
+  PASS  Join                                 compose x= 88.6 y=  2.4 w=  6.8 h= 2.2  |  kivy x= 89.8 y=  1.7 w=  6.3 h= 1.9  |  worst Δ  1.2%
+  PASS  3-Day Full Body — Ground Up          compose x=  3.9 y= 10.6 w= 92.2 h= 3.2  |  kivy x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  worst Δ  1.9%
+  FAIL  Three macrocycles that walk a true   compose x=  3.9 y= 15.1 w= 92.2 h=14.9  |  kivy x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  worst Δ  6.4%
+  MISS  Program name                         in compose only (kivy never rendered it)
+  MISS  Description                          in compose only (kivy never rendered it)
+  MISS  Linked paths                         in compose only (kivy never rendered it)
+  MISS  1 selected                           in compose only (kivy never rendered it)
+  MISS  Weeks                                in compose only (kivy never rendered it)
+  MISS  Add week                             in compose only (kivy never rendered it)
+  XTRA  MACROCYCLE 1 · Foundations — Movem   in kivy only (not in compose ground truth)
+  XTRA  — 13 weeks                           in kivy only (not in compose ground truth)
+  XTRA  — 13 weeks                           in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 1 · Accumulation           in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 1 · Accumulation           in kivy only (not in compose ground truth)
+  XTRA  — 6 weeks                            in kivy only (not in compose ground truth)
+  XTRA  — 6 weeks                            in kivy only (not in compose ground truth)
+  XTRA  — 6 weeks                            in kivy only (not in compose ground truth)
+  XTRA  Week 1                               in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Progression                          in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Full Body A — Squat                  in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Rest                                 in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body B — Hinge                  in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Full Body C — Push                   in kivy only (not in compose ground truth)
+  XTRA  Week 2                               in kivy only (not in compose ground truth)
+  XTRA  Week 3                               in kivy only (not in compose ground truth)
+  XTRA  Week 4                               in kivy only (not in compose ground truth)
+  XTRA  Week 5                               in kivy only (not in compose ground truth)
+  XTRA  Week 6                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Deload                               in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 2 · Accumulation           in kivy only (not in compose ground truth)
+  XTRA  — 7 weeks                            in kivy only (not in compose ground truth)
+  XTRA  — 7 weeks                            in kivy only (not in compose ground truth)
+  XTRA  Week 7                               in kivy only (not in compose ground truth)
+  XTRA  Week 8                               in kivy only (not in compose ground truth)
+  XTRA  Week 9                               in kivy only (not in compose ground truth)
+  XTRA  Week 10                              in kivy only (not in compose ground truth)
+  XTRA  Week 11                              in kivy only (not in compose ground truth)
+  XTRA  Week 12                              in kivy only (not in compose ground truth)
+  XTRA  Week 13                              in kivy only (not in compose ground truth)
+  XTRA  MACROCYCLE 2 · Build — Strength      in kivy only (not in compose ground truth)
+  XTRA  Week 14                              in kivy only (not in compose ground truth)
+  XTRA  Week 15                              in kivy only (not in compose ground truth)
+  XTRA  Week 16                              in kivy only (not in compose ground truth)
+  XTRA  Week 17                              in kivy only (not in compose ground truth)
+  XTRA  Week 18                              in kivy only (not in compose ground truth)
+  XTRA  Week 19                              in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 2 · Intensification        in kivy only (not in compose ground truth)
+  XTRA  Week 20                              in kivy only (not in compose ground truth)
+  XTRA  Week 21                              in kivy only (not in compose ground truth)
+  XTRA  Week 22                              in kivy only (not in compose ground truth)
+  XTRA  Week 23                              in kivy only (not in compose ground truth)
+  XTRA  Week 24                              in kivy only (not in compose ground truth)
+  XTRA  Week 25                              in kivy only (not in compose ground truth)
+  XTRA  Week 26                              in kivy only (not in compose ground truth)
+  XTRA  MACROCYCLE 3 · Own It — Autonomy     in kivy only (not in compose ground truth)
+  XTRA  — 11 weeks                           in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 1 · Realization            in kivy only (not in compose ground truth)
+  XTRA  — 5 weeks                            in kivy only (not in compose ground truth)
+  XTRA  Week 27                              in kivy only (not in compose ground truth)
+  XTRA  Week 28                              in kivy only (not in compose ground truth)
+  XTRA  Week 29                              in kivy only (not in compose ground truth)
+  XTRA  Week 30                              in kivy only (not in compose ground truth)
+  XTRA  Week 31                              in kivy only (not in compose ground truth)
+  XTRA  Mesocycle 2 · Maintenance            in kivy only (not in compose ground truth)
+  XTRA  Week 32                              in kivy only (not in compose ground truth)
+  XTRA  Week 33                              in kivy only (not in compose ground truth)
+  XTRA  Week 34                              in kivy only (not in compose ground truth)
+  XTRA  Week 35                              in kivy only (not in compose ground truth)
+  XTRA  Week 36                              in kivy only (not in compose ground truth)
+  XTRA  Week 37                              in kivy only (not in compose ground truth)
 
-matched 355/32 compose components; 31 within ±3.0%
-LAYOUT FIDELITY: 97%  (31/32)
+matched 4/10 compose components; 3 within ±3.0%
+LAYOUT FIDELITY: 30%  (3/10)

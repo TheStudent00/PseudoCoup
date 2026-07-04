@@ -39,7 +39,13 @@ HANDWRITTEN = {"GymListScreen", "LogCardioScreen", "ExercisesScreen", "SettingsS
 # "sessionId" nav arg -- ids need not match across engines, only rendered text does);
 # "sessionDone" = the same session, completed.
 EXCEPTIONS = {
-    "waitFor": {},                    # screen -> a text that must be on screen before dumping
+    "waitFor": {                      # screen -> a text that must be on screen before dumping
+        # waitForIdle alone can dump the stateIn() INITIAL state before the Room flow emits --
+        # anchor on a text only the loaded state renders (seeded ids are deterministic)
+        "ProgramDayEditorScreen": "Full Body A — Squat",
+        "SessionDetailScreen": "Full Body A — Squat",
+        "WorkoutExecutionScreen": "Full Body A — Squat",
+    },
     "navArgs": {                      # screen -> kotlin map literal for the SavedStateHandle
         "ProgramEditorScreen": 'mapOf("programId" to "prog_gup_3d_beg")',
         "ProgramDayEditorScreen": 'mapOf("dayId" to "day_gup_3d_beg_w1_d1")',

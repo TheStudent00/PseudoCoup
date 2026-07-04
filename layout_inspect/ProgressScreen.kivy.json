@@ -184,7 +184,7 @@
    "path": "0/0/1/0/0/0/2/1/0",
    "x": 132.0,
    "y": 105.0,
-   "w": 247,
+   "w": 247.0,
    "h": 37.0,
    "text": "More than the numbers \u2014 the real-life wins training makes possible.",
    "kind": "Text"
@@ -218,7 +218,7 @@
    "path": "0/0/1/1/0",
    "x": 16.0,
    "y": 234.0,
-   "w": 379,
+   "w": 379.0,
    "h": 37.0,
    "text": "Log your first workout to see strength, volume and training-time analytics here.",
    "kind": "Text"
