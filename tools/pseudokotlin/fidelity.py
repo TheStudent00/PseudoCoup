@@ -29,7 +29,9 @@ def run(cmd, cwd, env_extra=None, timeout=420):
 
 
 def main():
-    rc, out = run(["./gradlew", ":app:testDebugUnitTest",
+    # --max-workers=1 + a 2g heap cap: the full suite at gradle's defaults exhausted the machine's RAM
+    rc, out = run(["./gradlew", ":app:testDebugUnitTest", "--max-workers=1",
+                   "-Dorg.gradle.jvmargs=-Xmx2g",
                    "--tests", "com.sara.workoutforlife.layout.LayoutDumpTest",
                    "--tests", "com.sara.workoutforlife.layout.LayoutDumpAllTest"], WFL,
                   {"JAVA_HOME": JAVA_HOME})

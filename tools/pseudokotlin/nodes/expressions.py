@@ -123,6 +123,9 @@ _SCOPE_FNS = {
 _BUILDERS = {
     "buildString": ("StringBuilder()", lambda r: f"{r}.toString()"),
     "buildList":   ("KtList()",        lambda r: r),
+    # compose text: the builder collects the plain text (spans are style, which the kit reads elsewhere);
+    # the call yields the accumulated string, which Text() renders directly.
+    "buildAnnotatedString": ("AnnotatedStringBuilder()", lambda r: f"{r}.toString()"),
 }
 
 

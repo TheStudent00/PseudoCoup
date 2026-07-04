@@ -76,7 +76,7 @@ PlayArrow ReadOnlyComposable Remove RepeatMode RoundedCornerShape Route Search
 SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
 Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextFieldValue TextOverflow
 TextRange TooltipDefaults TopAppBarDefaults WindowInsets alpha animateFloat animateFloatAsState
-background border buildAnnotatedString clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
+background border clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
 drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
 heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp lightColorScheme navigationBarsPadding
 offset onFocusChanged onGloballyPositioned padding pointerInput positionInParent rememberDatePickerState
@@ -88,6 +88,53 @@ LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
 
 for _n in _NAMES:
     globals()[_n] = _UI
+
+
+class AnnotatedStringBuilder:
+    """buildAnnotatedString { append… withStyle(...) { append… } }: collects the PLAIN text (the spans are
+    style, which the kit does not paint yet); toString() yields it, and Text() renders that directly. The
+    transpiler's builder scope makes one of these the implicit receiver, exactly like buildString."""
+    def __init__(self):
+        self._parts = []
+
+    def append(self, x=""):
+        self._parts.append("" if x is None else str(x))
+        return self
+
+    def appendLine(self, x=""):
+        self._parts.append(("" if x is None else str(x)) + "\n")
+        return self
+
+    def withStyle(self, _style=None, block=None):
+        if block is None and callable(_style):
+            _style, block = None, _style
+        if callable(block):
+            block()                       # bare append inside still binds to this builder (receiver scope)
+        return self
+
+    def pushStyle(self, _style=None):
+        return 0
+
+    def popStyle(self, *_a):
+        return self
+
+    pushStringAnnotation = withStyle
+    pop = popStyle
+
+    def toAnnotatedString(self):
+        return self.toString()
+
+    def toString(self):
+        return "".join(self._parts)
+
+    def __str__(self):
+        return self.toString()
+
+
+def buildAnnotatedString(block):        # kept real for a first-class reference; usually inlined by the
+    b = AnnotatedStringBuilder()        # transpiler's builder scope
+    block(b)
+    return b.toString()
 
 
 # ---- CompositionLocal: the theme's delivery path (was inert, so tokens/colors dropped) ----------- #
