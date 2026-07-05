@@ -708,6 +708,19 @@ class KtMap(dict):
     def filter(self, p):
         return KtMap((k, v) for k, v in self.items() if p(KtEntry(k, v)))
 
+    def maxByOrNull(self, selector):    # Kotlin Map.maxByOrNull { entry -> … } -> the ENTRY (or None)
+        entries = [KtEntry(k, v) for k, v in self.items()]
+        return max(entries, key=selector) if entries else None
+
+    def minByOrNull(self, selector):
+        entries = [KtEntry(k, v) for k, v in self.items()]
+        return min(entries, key=selector) if entries else None
+
+    def maxWithOrNull(self, cmp):
+        import functools
+        entries = [KtEntry(k, v) for k, v in self.items()]
+        return max(entries, key=functools.cmp_to_key(cmp)) if entries else None
+
     def toList(self):
         return KtList(Pair(k, v) for k, v in self.items())
 
@@ -916,6 +929,26 @@ def listOfNotNull(*xs):
 # Kotlin type names used as values (String(chars), Boolean("true"), …) -> Python types
 String = str
 CharSequence = str
+
+
+class _CharCompanion:
+    """Kotlin `Char` companion, so a method REFERENCE `Char::isDigit` (transpiled `Char.isDigit`) is a
+    callable `(Char) -> …`. Python has no distinct char type -- a Kotlin Char is a 1-char str -- so these
+    forward to the str predicates under Kotlin's names."""
+    isDigit = staticmethod(lambda c: c.isdigit())
+    isLetter = staticmethod(lambda c: c.isalpha())
+    isLetterOrDigit = staticmethod(lambda c: c.isalnum())
+    isWhitespace = staticmethod(lambda c: c.isspace())
+    isUpperCase = staticmethod(lambda c: c.isupper())
+    isLowerCase = staticmethod(lambda c: c.islower())
+    uppercase = staticmethod(lambda c: c.upper())
+    lowercase = staticmethod(lambda c: c.lower())
+    uppercaseChar = staticmethod(lambda c: c.upper())
+    lowercaseChar = staticmethod(lambda c: c.lower())
+    digitToInt = staticmethod(lambda c: int(c))
+
+
+Char = _CharCompanion()
 Any = object                            # kotlin.Any -> Python object; `Any()` is a bare lock/sentinel
 
 
@@ -1404,3 +1437,101 @@ def ktext(receiver, name, ext_fn, *args):
     if callable(member):
         return member(*args)
     return ext_fn(receiver, *args)
+
+
+# ---- Kotlin CharSequence/String stdlib extensions (filter/map/count/…) --------------------------- #
+# A bare python `str` carries none of these (and some, e.g. .count/.index, EXIST on str with a DIFFERENT
+# meaning), so a `s.filter { … }` emission would AttributeError or silently call the wrong method. These
+# implement the Kotlin CharSequence semantics; the transpiler routes the known extension names through
+# kstrext, which uses the Kotlin resolution rule (a real member wins, so a KtList/KtMap keeps its own).
+def _cs_filter(s, p):        return "".join(c for c in s if p(c))
+def _cs_filterNot(s, p):     return "".join(c for c in s if not p(c))
+def _cs_filterIndexed(s, p): return "".join(c for i, c in enumerate(s) if p(i, c))
+def _cs_takeWhile(s, p):
+    out = []
+    for c in s:
+        if not p(c): break
+        out.append(c)
+    return "".join(out)
+def _cs_takeLastWhile(s, p):
+    out = []
+    for c in reversed(s):
+        if not p(c): break
+        out.append(c)
+    return "".join(reversed(out))
+def _cs_dropWhile(s, p):
+    i = 0
+    while i < len(s) and p(s[i]): i += 1
+    return s[i:]
+def _cs_dropLastWhile(s, p):
+    i = len(s)
+    while i > 0 and p(s[i - 1]): i -= 1
+    return s[:i]
+def _cs_count(s, p=None):    return len(s) if p is None else sum(1 for c in s if p(c))
+def _cs_map(s, f):           return KtList(f(c) for c in s)
+def _cs_mapNotNull(s, f):    return KtList(x for x in (f(c) for c in s) if x is not None)
+def _cs_mapIndexed(s, f):    return KtList(f(i, c) for i, c in enumerate(s))
+def _cs_flatMap(s, f):       return KtList(x for c in s for x in f(c))
+def _cs_any(s, p=None):      return (len(s) > 0) if p is None else any(p(c) for c in s)
+def _cs_all(s, p):           return all(p(c) for c in s)
+def _cs_none(s, p=None):     return (len(s) == 0) if p is None else not any(p(c) for c in s)
+def _cs_forEach(s, f):
+    for c in s: f(c)
+def _cs_onEach(s, f):
+    for c in s: f(c)
+    return s
+def _cs_associate(s, f):     return KtMap(f(c) for c in s)
+def _cs_associateWith(s, f): return KtMap((c, f(c)) for c in s)
+def _cs_associateBy(s, f):   return KtMap((f(c), c) for c in s)
+def _cs_groupBy(s, f):
+    out = {}
+    for c in s:
+        out.setdefault(f(c), []).append(c)
+    return KtMap((k, KtList(v)) for k, v in out.items())
+def _cs_partition(s, p):
+    a, b = [], []
+    for c in s:
+        (a if p(c) else b).append(c)
+    return Pair("".join(a), "".join(b))
+def _cs_sumOf(s, f):         return sum(f(c) for c in s)
+def _cs_maxOfOrNull(s, f):   return max((f(c) for c in s), default=None)
+def _cs_minOfOrNull(s, f):   return min((f(c) for c in s), default=None)
+def _cs_single(s, p=None):
+    xs = [c for c in s if p(c)] if p else list(s)
+    if len(xs) != 1:
+        raise IllegalArgumentException("Expected a single element")
+    return xs[0]
+def _cs_singleOrNull(s, p=None):
+    xs = [c for c in s if p(c)] if p else list(s)
+    return xs[0] if len(xs) == 1 else None
+
+_CHARSEQ_EXT = {
+    "filter": _cs_filter, "filterNot": _cs_filterNot, "filterIndexed": _cs_filterIndexed,
+    "takeWhile": _cs_takeWhile, "takeLastWhile": _cs_takeLastWhile,
+    "dropWhile": _cs_dropWhile, "dropLastWhile": _cs_dropLastWhile,
+    "count": _cs_count, "map": _cs_map, "mapNotNull": _cs_mapNotNull, "mapIndexed": _cs_mapIndexed,
+    "flatMap": _cs_flatMap, "any": _cs_any, "all": _cs_all, "none": _cs_none,
+    "forEach": _cs_forEach, "onEach": _cs_onEach,
+    "associate": _cs_associate, "associateWith": _cs_associateWith, "associateBy": _cs_associateBy,
+    "groupBy": _cs_groupBy, "partition": _cs_partition, "sumOf": _cs_sumOf,
+    "maxOfOrNull": _cs_maxOfOrNull, "minOfOrNull": _cs_minOfOrNull,
+    "single": _cs_single, "singleOrNull": _cs_singleOrNull,
+}
+
+
+def kstrext(receiver, name, *args):
+    """Kotlin CharSequence-extension dispatch. On a bare `str` receiver, apply the Kotlin semantics
+    (Python str either lacks the method or gives it a different meaning). On anything else the real
+    MEMBER wins (a KtList/KtSet/KtMap keeps its own filter/map/count/…), matching Kotlin resolution."""
+    if isinstance(receiver, str):
+        impl = _CHARSEQ_EXT.get(name)
+        if impl is not None:
+            return impl(receiver, *args)
+    member = getattr(receiver, name, None)
+    if callable(member):
+        return member(*args)
+    # last resort: a raw python list/tuple with no member -> apply the char/element impl generically
+    impl = _CHARSEQ_EXT.get(name)
+    if impl is not None:
+        return impl(receiver, *args)
+    raise AttributeError(f"{type(receiver).__name__!r} object has no attribute {name!r}")

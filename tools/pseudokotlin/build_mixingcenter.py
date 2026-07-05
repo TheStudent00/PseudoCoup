@@ -44,6 +44,25 @@ def scan_extensions(kt_files):
                 by_name.setdefault(name, set()).add(recv.split(".")[-1])
     return {n for n, recvs in by_name.items() if recvs <= _PRIMITIVE_RECVRS}
 
+
+def scan_last_params(kt_files):
+    """Pre-pass: project-wide `fn name -> its LAST parameter name`. Kotlin binds a trailing lambda to the
+    callee's last parameter (whatever it is called); a same-file callee is known from self._last_param,
+    but a cross-file callee whose last param is (say) `extra` -- invoked with a trailing lambda -- would
+    otherwise default to `content=` and blow up as an unexpected kwarg. Reuses the transpiler's own
+    tree-sitter param scan (robust to multi-line signatures/defaults), so no fragile regex."""
+    from parse import parse
+    out = {}
+    for kt in kt_files:
+        try:
+            with open(kt, "rb") as f:
+                t = KtToPy()
+                t._scan_top_level(parse(f.read()).root_node)
+                out.update(t._last_param)
+        except Exception:                                      # noqa: BLE001 -- a bad file just contributes nothing
+            continue
+    return out
+
 DEFAULT_APP = os.path.expanduser(
     "~/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife")
 DEFAULT_OUT = os.path.expanduser("~/Programming/WFL_MixingCenter")
@@ -59,6 +78,9 @@ def main():
 
     expressions.EXTENSION_FNS.update(scan_extensions(kt_files))
     print(f"extension registry: {len(expressions.EXTENSION_FNS)} names")
+
+    expressions.GLOBAL_LAST_PARAM.update(scan_last_params(kt_files))
+    print(f"trailing-lambda slot registry: {len(expressions.GLOBAL_LAST_PARAM)} fns")
 
     total = written = compile_ok = transpile_err = compile_err = 0
     t_fails, c_fails = [], []

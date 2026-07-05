@@ -53,6 +53,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._implicit_recv = []      # stack of apply/run/with receiver temps -> bare member calls bind here
         self._top_level = set()       # this file's top-level decl names -> never an implicit-receiver member
         self._last_param = {}         # this file's fn name -> LAST param name (trailing-lambda slot)
+        self._ext_self = 0            # >0 while rendering a top-level extension body (implicit `this` = self)
         self._GLOBALS = _global_names()
 
     def transpile(self, source: bytes) -> str:
