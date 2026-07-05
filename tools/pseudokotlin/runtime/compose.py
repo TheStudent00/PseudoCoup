@@ -130,6 +130,8 @@ def _composable(kind):
                     node.text = v                # an input widget DISPLAYS its value -- record it
                 elif k == "value" and type(v).__name__ == "TextFieldValue":
                     node.text = v.text           # a TextFieldValue carries the string inside it
+                    node.props[k] = v            # keep the typed value too -- a value-change handler
+                                                 # expects the same type back (interaction oracle)
                 else:
                     node.props[k] = v            # a VALUE kwarg (modifier/fontSize/arrangement/...) --
                                                  # recorded for the kit to apply
@@ -410,6 +412,15 @@ def stickyHeader(*args, **kwargs):
 _COMPOSITION = None     # the composition currently running -- remember() reads its slot table
 
 
+def _call_site():
+    """The nearest frame OUTSIDE this module -- the transpiled screen's remember/effect call site. Used
+    as a slot's identity so a slot is remembered per source location, not per raw ordinal position."""
+    f = sys._getframe(2)
+    while f is not None and f.f_code.co_filename == __file__:
+        f = f.f_back
+    return (f.f_code.co_filename, f.f_lineno) if f is not None else None
+
+
 class Composition:
     """One live composition: the composable + args, plus a positional slot table so `remember` keeps the
     same value across recompositions (Compose's slot table). Slots are SCOPED -- the navigation host pushes
@@ -417,8 +428,8 @@ class Composition:
     positions when the rendered destination changes."""
     def __init__(self, fn, args=(), kwargs=None):
         self.fn, self.args, self.kwargs = fn, args, (kwargs or {})
-        self.slots = {}                      # scope -> [(keys, value)] by call position within the scope
-        self._i = {}                         # scope -> next position (reset each compose)
+        self.slots = {}                      # scope -> {(site, occ): (keys, value)} -- keyed by CALL SITE
+        self._i = {}                         # scope -> {site: next occurrence} (reset each compose)
         self._scopes = [None]
         self.root = None
 
@@ -439,18 +450,25 @@ class Composition:
         return self.root
 
     def slot(self, calc, keys):
+        # Keyed by CALL SITE (source file+line of the remember/effect call), not raw ordinal: Compose's
+        # positional memoization is per call-site, so conditional content (a dialog that appears mid-tree)
+        # can't shift a later remember onto an earlier slot and read back a stale, wrong-typed value.
+        # Repeated firings of the SAME site (a loop) get successive occurrence indices, as Compose does.
         sc = self._scopes[-1]
-        lst = self.slots.setdefault(sc, [])
-        i = self._i.get(sc, 0)
-        self._i[sc] = i + 1
-        if i < len(lst):
-            okeys, val = lst[i]
+        site = _call_site()
+        counters = self._i.setdefault(sc, {})
+        occ = counters.get(site, 0)
+        counters[site] = occ + 1
+        key = (site, occ)
+        table = self.slots.setdefault(sc, {})
+        if key in table:
+            okeys, val = table[key]
             if okeys != keys:                # a key changed -> recompute this slot
                 val = calc()
-                lst[i] = (keys, val)
+                table[key] = (keys, val)
         else:
             val = calc()
-            lst.append((keys, val))
+            table[key] = (keys, val)
         return val
 
 

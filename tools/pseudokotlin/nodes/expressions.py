@@ -28,6 +28,24 @@ _NUMBER_KINDS = {"number_literal", "float_literal"}
 # else the hoisted free function), mirroring Kotlin's own resolution rule.
 EXTENSION_FNS = set()
 
+# PROJECT-WIDE fn name -> its LAST parameter name (the trailing-lambda slot). Filled by the build's
+# pre-pass (build_mixingcenter) so a trailing lambda passed to a fn declared in ANOTHER file binds to
+# the callee's real last-param name (e.g. `extra=`), not the `content=` default. Same-file callees are
+# resolved directly from self._last_param; this is the cross-file fallback.
+GLOBAL_LAST_PARAM = {}
+
+# Kotlin CharSequence/String stdlib extensions (filter/map/count/takeWhile/…). A bare python `str`
+# carries none of them (and .count/.index EXIST with a different meaning), so `s.filter { … }` would
+# crash or misbehave. Route these names through the runtime kstrext dispatcher: on a str it applies the
+# Kotlin CharSequence semantics; on any collection the real member wins (Kotlin resolution rule), so
+# a KtList/KtMap keeps its own -- no behaviour change for collection receivers.
+_CHARSEQ_EXT_FNS = {
+    "filter", "filterNot", "filterIndexed", "takeWhile", "takeLastWhile", "dropWhile", "dropLastWhile",
+    "count", "map", "mapNotNull", "mapIndexed", "flatMap", "any", "all", "none", "forEach", "onEach",
+    "associate", "associateWith", "associateBy", "groupBy", "partition", "sumOf", "maxOfOrNull",
+    "minOfOrNull", "single", "singleOrNull",
+}
+
 # Kotlin stdlib methods with no Python builtin -> rewritten at the CALL site (Python
 # builtins can't carry them). recv + positional arg strings -> a Python expression.
 # Scalar/string Kotlin stdlib methods with no Python builtin. Collection methods are
@@ -72,6 +90,16 @@ _STDLIB_METHODS = {
     # ---- Kotlin String methods (names differ from Python's str) ---- #
     "lowercase":     lambda r, a: f"{r}.lower()",
     "uppercase":     lambda r, a: f"{r}.upper()",
+    # Kotlin Char predicates/transforms (a Char is a 1-char str; the Python names differ)
+    "isDigit":          lambda r, a: f"{r}.isdigit()",
+    "isLetter":         lambda r, a: f"{r}.isalpha()",
+    "isLetterOrDigit":  lambda r, a: f"{r}.isalnum()",
+    "isWhitespace":     lambda r, a: f"{r}.isspace()",
+    "isUpperCase":      lambda r, a: f"{r}.isupper()",
+    "isLowerCase":      lambda r, a: f"{r}.islower()",
+    "uppercaseChar":    lambda r, a: f"{r}.upper()",
+    "lowercaseChar":    lambda r, a: f"{r}.lower()",
+    "digitToInt":       lambda r, a: f"int({r})",
     "trim":          lambda r, a: f"{r}.strip()",
     "trimStart":     lambda r, a: f"{r}.lstrip()",
     "trimEnd":       lambda r, a: f"{r}.rstrip()",
@@ -511,9 +539,20 @@ class Expressions:
                 # a primitive receiver (Double/String) can't carry the attr, so the plain
                 # `recv.sel(args)` emission would AttributeError.
                 call = f"ktext({recv}, {sel!r}, {sel}" + (f", {args})" if args else ")")
+            elif sel in _CHARSEQ_EXT_FNS:
+                # a CharSequence stdlib extension: on a str the runtime applies Kotlin semantics; on a
+                # collection its own member wins -- so `recv.filter { … }` works for BOTH.
+                call = f"kstrext({recv}, {sel!r}" + (f", {args})" if args else ")")
             else:
                 call = f"{recv}.{self._safe(sel)}({args})"
             return _wrap(f"({call} if {recv} is not None else None)" if safe else call)
+        if (self._ext_self and callee.type in ("identifier", "simple_identifier")):
+            cname = self.text(callee)
+            # inside a top-level extension body a bare `toLong()` is `this.toLong()` on self -- route it
+            # through the same stdlib rewrite an explicit `recv.toLong()` gets (else `toLong` is undefined).
+            if (cname in _STDLIB_METHODS and not any(cname in s for s in self._scopes)
+                    and cname not in self._members and cname not in self._top_level):
+                return _STDLIB_METHODS[cname]("self", self._arg_values(node))
         fn = self.visit(callee)
         if callee.type in ("identifier", "simple_identifier"):   # bare call inside apply/run/with that is
             r = self._implicit_member(self.text(callee))         # a receiver method -> recv.method(...)
@@ -883,7 +922,8 @@ class Expressions:
         # wrong few fail LOUDLY (unexpected-keyword), never silently. Only kicks in when a named argument
         # actually precedes the lambda.
         if self._has_named_arg(args_node):
-            slot = self._last_param.get(callee, "content")
+            slot = (self._last_param.get(callee)
+                    or GLOBAL_LAST_PARAM.get(callee) or "content")
             return f"{args_str}, {slot}={lam}" if args_str else f"{slot}={lam}"
         return f"{args_str}, {lam}" if args_str else lam
 
