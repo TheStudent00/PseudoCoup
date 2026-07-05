@@ -38,12 +38,17 @@ render/inspect_layout.py), never from mixed app screens.
   combine(collection) overload, debounce/firstNotNullOfOrNull, IntrinsicSize non-numeric wrapper).
   All committed and pushed.
 
-## State update (2026-07-04, later session)
+## State update (2026-07-04 night session)
 
-The mid-diagnosis section that used to be here is RESOLVED: the "unmounted twin" was the dump's fixed
-2.6s settle reading geometry mid-flight under xvfb — inspect_layout now uses settle detection. Gauge is
-305/322 (25/28 screens at 100%). Current queue and per-screen diagnoses live in PROGRESS_ondeck.md —
-start there, not here.
+Geometry COMPLETE: 377/377 across all 28 measurable screens (DebugPanel = sole intentional skip,
+verified exhaustive). Paint layer underway via delegated Opus slices (pattern in memory:
+delegate-to-opus-tight-briefs): slice 1 = kit paint mechanism (stub-guarded), slice 2 = real runtime
+color table (Color/shapes/colorScheme through the app theme). Both committed+pushed. Current slice
+(may be uncommitted if the session hit the usage ceiling — check git status + DevComms/*_report.md
+for the latest agent report): paint pass 2 = text contrast roles, top-bar surface tint,
+button/chip container colors. Gate for EVERY paint slice: fidelity.py must stay exactly 377/377.
+Remaining board: popups hidden until opened, Scaffold innerPadding/modifier-order minor, .kt line map,
+domain oracle breadth.
 
 ## Command crib
 
