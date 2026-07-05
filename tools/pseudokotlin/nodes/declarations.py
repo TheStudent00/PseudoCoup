@@ -176,7 +176,14 @@ class Declarations:
         self._scopes.append(own)
         _saved_deleg = self._delegated                  # `by` delegates are function-local; inherit
         self._delegated = set(self._delegated)          # enclosing ones (closures), drop local on exit
+        # top-level extension body: a bare stdlib-method call (`toLong()`) is `this.toLong()` on self.
+        _ext_body = recv is not None and not (node.parent is not None
+                    and node.parent.type in ("class_body", "enum_class_body"))
+        if _ext_body:
+            self._ext_self += 1
         body = self._render_function_body(body_node, prefix=nonlocals + guards + coercions)
+        if _ext_body:
+            self._ext_self -= 1
         self._delegated = _saved_deleg
         self._scopes.pop()
         self._members = prev_m
