@@ -86,7 +86,7 @@ class Declarations:
                     simple = self._strip_pkg(self.text(ut).split("<")[0].strip()).split(".")[-1]
                     self._ext_members.setdefault(simple, set()).add(self._safe(nm))
         is_const = lambda c: c.type == "property_declaration" and self._is_const(c)   # noqa: E731
-        parts = [self.visit(c) for c in
+        parts = [self._kt_tag(self.visit(c), c) for c in
                  [d for d in decls if is_const(d)] + [d for d in decls if not is_const(d)]]
         body = "\n\n\n".join(p for p in parts if p)
         # flush AFTER all decls so the referenced classes exist: nested-type aliases
@@ -866,6 +866,7 @@ class Declarations:
                     return _block(pre or [])
                 before = len(self._hoist)
                 line = self._distribute(kids[0], "return ")   # when/if -> distributed
+                line = self._kt_tag(line, kids[0])            # expression-body composable -> its one line
                 hoist = self._hoist[before:]
                 del self._hoist[before:]
                 return _block(pre + hoist + [line])

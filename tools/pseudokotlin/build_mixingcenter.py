@@ -12,6 +12,7 @@ Usage:
 """
 import ast
 import glob
+import json
 import os
 import re
 import sys
@@ -20,6 +21,24 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 from transpiler import KtToPy  # noqa: E402
 from nodes import expressions  # noqa: E402
+
+# a py-line -> kt-line marker the transpiler appends to each statement's first line (KtToPy._kt_tag).
+# We scan the FINAL module text for these (line numbers are exact here), record the map, and strip
+# the markers so the written .py is clean. Stripping a trailing comment never removes a line, so the
+# recorded py line numbers stay valid against the written file (which is what the runtime execs).
+_MARK_RE = re.compile(r"[ \t]*#@@KTSRC (\d+)[ \t]*$")
+
+
+def extract_linemap(code):
+    """Return (clean_code, {py_line: kt_line}) by pulling the #@@KTSRC markers out of `code`."""
+    out_lines, mp = [], {}
+    for i, ln in enumerate(code.split("\n"), 1):
+        m = _MARK_RE.search(ln)
+        if m:
+            mp[str(i)] = int(m.group(1))
+            ln = ln[:m.start()]
+        out_lines.append(ln)
+    return "\n".join(out_lines), mp
 
 # a TOP-LEVEL (column-0) extension declaration: `fun Recv.name(` with optional modifiers/generics
 _EXT_RE = re.compile(
@@ -89,8 +108,11 @@ def main():
         rel = os.path.relpath(kt, app_root)[:-3] + ".py"      # mirror pkg tree, .kt -> .py
         out = os.path.join(out_dir, rel)
         try:
+            t = KtToPy()
+            t._srcmap = True                                   # emit the py->kt line markers
             with open(kt, "rb") as f:
-                code = KtToPy().transpile(f.read())
+                code = t.transpile(f.read())
+            code, linemap = extract_linemap(code)              # strip markers, keep the map
         except Exception as e:                                 # noqa: BLE001 -- transpiler blew up on this file
             transpile_err += 1
             t_fails.append((rel, f"{type(e).__name__}: {e}"))
@@ -98,6 +120,10 @@ def main():
         os.makedirs(os.path.dirname(out), exist_ok=True)
         with open(out, "w") as f:
             f.write(code)
+        # sidecar: py-line -> kt-line map for the layout inspector's deep links. "kt" is the mirrored
+        # Kotlin path relative to the app root, the same tree the inspector reconstructs.
+        with open(out + ".linemap.json", "w") as f:
+            json.dump({"kt": rel[:-3] + ".kt", "map": linemap}, f)
         written += 1
         try:
             ast.parse(code)
