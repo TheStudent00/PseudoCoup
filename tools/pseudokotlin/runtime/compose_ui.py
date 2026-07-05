@@ -74,7 +74,7 @@ KeyboardArrowUp KeyboardOptions KeyboardType Link ListItemDefaults LocalConfigur
 MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset Path PathEffect Person
 PlayArrow ReadOnlyComposable Remove RepeatMode RoundedCornerShape Route Search
 SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
-Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextFieldValue TextOverflow
+Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextOverflow
 TextRange TooltipDefaults TopAppBarDefaults WindowInsets alpha animateFloat animateFloatAsState
 background border clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
 drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
@@ -88,6 +88,27 @@ LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
 
 for _n in _NAMES:
     globals()[_n] = _UI
+
+
+class TextFieldValue:
+    """A text-input's value object. Was an inert _UI stub, which DESTROYED the string at construction --
+    every BasicTextField(value = TextFieldValue(...)) rendered empty (the WorkoutExecution ValueAdjusters).
+    Keeps the text; the recorder unwraps it into node.text like a plain string."""
+    def __init__(self, text="", selection=None, *a, **k):
+        self.text = "" if text is None else str(text)
+        self.selection = selection
+
+    def copy(self, text=None, **k):
+        return TextFieldValue(self.text if text is None else text, self.selection)
+
+    def __str__(self):
+        return self.text
+
+    def __eq__(self, other):
+        return isinstance(other, TextFieldValue) and other.text == self.text
+
+    def __hash__(self):
+        return hash(self.text)
 
 
 class AnnotatedStringBuilder:

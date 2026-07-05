@@ -43,6 +43,9 @@ EXCEPTIONS = {
         # waitForIdle alone can dump the stateIn() INITIAL state before the Room flow emits --
         # anchor on a text only the loaded state renders (seeded ids are deterministic)
         "ProgramDayEditorScreen": "Full Body A — Squat",
+        "ProgramEditorScreen": "Join",   # read-only branch anchor: the initial stateIn() value renders
+                                          # the editable branch until the Room combine emits
+
         "SessionDetailScreen": "Full Body A — Squat",
         "WorkoutExecutionScreen": "Full Body A — Squat",
     },

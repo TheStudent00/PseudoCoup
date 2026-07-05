@@ -128,6 +128,8 @@ def _composable(kind):
                     continue                             # field's `label` gets M3 label geometry)
                 elif k in ("text", "value") and isinstance(v, str):
                     node.text = v                # an input widget DISPLAYS its value -- record it
+                elif k == "value" and type(v).__name__ == "TextFieldValue":
+                    node.text = v.text           # a TextFieldValue carries the string inside it
                 else:
                     node.props[k] = v            # a VALUE kwarg (modifier/fontSize/arrangement/...) --
                                                  # recorded for the kit to apply
