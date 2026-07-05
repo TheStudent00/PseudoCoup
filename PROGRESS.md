@@ -43,8 +43,8 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 1. [fidelity] Sanctioned non-general bridges (user-approved as engine/font-specific, all specimen-pinned): shaper width calibration by size/weight band, and emoji advance = 1.28 x fontSize. Everything else remains general.
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
   - never infer from mixed app screens.
-1. **[ui]** Paint layer
-  - colors/cards/icons are not drawn yet (geometry first, then paint). Even perfect geometry looks unlike the original until this lands.
+1. **[ui]** Paint layer STARTED (two delegated slices): (1) kit paint mechanism
+  - canvas.before fill/border from recorded background/clip/border ops + M3 surface roles + text color, all resolvers stub-guarded (unresolved = no paint, never invented). (2) Runtime color table real: Color (packed Int32 masked to unsigned), RoundedCornerShape/CircleShape radii, light/darkColorScheme, MaterialTheme.colorScheme resolving through the app's installed theme; Color.Unspecified stays an unresolvable sentinel. Geometry gate held 377/377 both times. Shots in layout_inspect/shots/. NEXT paint gaps (from eyeball pass): text contrast too pale (check which role lands on Labels vs compose's onSurface/onBackground), top app bar surface not tinted, button/chip container colors.
 1. **[ui]** Popups render inline
   - DropdownMenu items should be hidden until opened (Settings overlaps).
 1. **[ui]** Scaffold innerPadding inset + Modifier order (padding-before-size vs after)
