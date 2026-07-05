@@ -64,7 +64,7 @@ class _UIChain:
 _UI = _UIChain()
 
 _NAMES = """Add Alignment Arrangement ArrowBack ArrowDownward ArrowDropDown ArrowUpward AssistChipDefaults
-BarChart Bedtime BorderStroke Brush ButtonDefaults Canvas CardDefaults Check CheckCircle CircleShape Close Color
+BarChart Bedtime BorderStroke Brush ButtonDefaults Canvas CardDefaults Check CheckCircle Close
 LaunchedEffect
 ColumnScope DatePicker DatePickerDialog DateRange Dp Edit EmojiEvents ExpandLess ExpandMore ExperimentalLayoutApi
 ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite FavoriteBorder FilterChipDefaults
@@ -76,9 +76,9 @@ PlayArrow ReadOnlyComposable Remove RepeatMode RoundedCornerShape Route Search
 SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
 Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextOverflow
 TextRange TooltipDefaults TopAppBarDefaults WindowInsets alpha animateFloat animateFloatAsState
-background border clickable clip clipToBounds darkColorScheme detectHorizontalDragGestures
+background border clickable clip clipToBounds detectHorizontalDragGestures
 drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
-heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp lightColorScheme navigationBarsPadding
+heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp navigationBarsPadding
 offset onFocusChanged onGloballyPositioned padding pointerInput positionInParent rememberDatePickerState
 rememberInfiniteTransition rememberLazyListState rememberModalBottomSheetState rememberPagerState rememberScrollState
 rememberSwipeToDismissBoxState rememberTooltipState rotate scale setValue size slideInHorizontally slideInVertically
@@ -88,6 +88,135 @@ LocalDensity LocalLifecycleOwner LocalSoftwareKeyboardController""".split()
 
 for _n in _NAMES:
     globals()[_n] = _UI
+
+
+# ---- the COLOR TABLE: real colors + shapes + schemes (was inert, so the paint layer stayed dark) ---- #
+class Color:
+    """A real Compose Color. The transpiled theme builds these as Color(Int32(0xFF6650A4)) (a packed
+    0xAARRGGBB long -- Int32 wraps it to a SIGNED 32-bit int, so mask back to unsigned before unpacking)
+    or Color(red, green, blue[, alpha]) with 0..1 floats. Exposes .red/.green/.blue/.alpha as 0..1 floats
+    for the kit's _channels resolver; .copy(...) returns a new Color for chains the kit doesn't model."""
+    __slots__ = ("red", "green", "blue", "alpha", "value")
+
+    def __init__(self, *a, **k):
+        def f(x, d=0.0):
+            try:
+                return float(x)
+            except (TypeError, ValueError):
+                return d
+        if "red" in k or "green" in k or "blue" in k:      # channel kwargs
+            self.red, self.green, self.blue = f(k.get("red")), f(k.get("green")), f(k.get("blue"))
+            self.alpha = f(k.get("alpha", 1.0), 1.0)
+            self.value = None
+            return
+        if len(a) == 1 and isinstance(a[0], int) and not isinstance(a[0], bool):
+            v = int(a[0]) & 0xFFFFFFFF                      # Int32 delivers this signed; mask to unsigned
+            self.value = v
+            alpha = ((v >> 24) & 0xFF) / 255.0
+            self.alpha = 1.0 if (alpha == 0.0 and v <= 0xFFFFFF) else alpha
+            self.red = ((v >> 16) & 0xFF) / 255.0
+            self.green = ((v >> 8) & 0xFF) / 255.0
+            self.blue = (v & 0xFF) / 255.0
+            return
+        if len(a) >= 3:                                    # Color(r, g, b[, a]) floats
+            self.red, self.green, self.blue = f(a[0]), f(a[1]), f(a[2])
+            self.alpha = f(a[3], 1.0) if len(a) > 3 else 1.0
+            self.value = None
+            return
+        # unknown form: an opaque black, still a real Color so paint resolves rather than crashing
+        self.red = self.green = self.blue = 0.0
+        self.alpha = 1.0
+        self.value = None
+
+    def copy(self, **k):
+        c = Color(red=k.get("red", self.red), green=k.get("green", self.green),
+                  blue=k.get("blue", self.blue), alpha=k.get("alpha", self.alpha))
+        return c
+
+    def toArgb(self):
+        if self.value is not None:
+            return self.value
+        def b(x):
+            return max(0, min(255, int(round(x * 255))))
+        return (b(self.alpha) << 24) | (b(self.red) << 16) | (b(self.green) << 8) | b(self.blue)
+
+    def __getattr__(self, _n):                             # permissive tail for chains the kit ignores
+        return _UI
+
+    def __repr__(self):
+        return f"Color({self.red:.3f}, {self.green:.3f}, {self.blue:.3f}, {self.alpha:.3f})"
+
+
+# companions the app reads. Unspecified is DELIBERATELY the inert sentinel (type _UIChain), which the kit's
+# _channels rejects by name -- so a WflColors default of Color.Unspecified paints nothing (correct) rather
+# than resolving to a stray black.
+Color.Transparent = Color(red=0.0, green=0.0, blue=0.0, alpha=0.0)
+Color.White = Color(0xFFFFFFFF)
+Color.Black = Color(0xFF000000)
+Color.Red = Color(0xFFFF0000)
+Color.Green = Color(0xFF00FF00)
+Color.Blue = Color(0xFF0000FF)
+Color.Gray = Color(0xFF888888)
+Color.LightGray = Color(0xFFCCCCCC)
+Color.DarkGray = Color(0xFF444444)
+Color.Yellow = Color(0xFFFFFF00)
+Color.Cyan = Color(0xFF00FFFF)
+Color.Magenta = Color(0xFFFF00FF)
+Color.Unspecified = _UI
+
+
+class RoundedCornerShape:
+    """A real corner shape exposing a numeric .radius for the kit's _radius resolver. Forms:
+    RoundedCornerShape(8) (uniform dp) and RoundedCornerShape(topStart=, topEnd=, bottomEnd=, bottomStart=)
+    (per-corner -- .topStart is what the kit reads for the rounded rect it draws)."""
+    __slots__ = ("radius", "topStart", "topEnd", "bottomEnd", "bottomStart")
+
+    def __init__(self, *a, **k):
+        def num(v, d=0.0):
+            try:
+                return float(v)
+            except (TypeError, ValueError):
+                return d
+        if a:
+            r = num(a[0])
+            self.radius = self.topStart = self.topEnd = self.bottomEnd = self.bottomStart = r
+        else:
+            self.topStart = num(k.get("topStart", k.get("topStartPercent")))
+            self.topEnd = num(k.get("topEnd", k.get("topEndPercent")))
+            self.bottomEnd = num(k.get("bottomEnd", k.get("bottomEndPercent")))
+            self.bottomStart = num(k.get("bottomStart", k.get("bottomStartPercent")))
+            self.radius = self.topStart
+
+
+class _CircleShape:
+    """CircleShape: a fully-rounded shape. Exposes a very large radius; the kit clamps it to half the
+    widget's size, giving a pill / circle."""
+    radius = 9999.0
+
+
+CircleShape = _CircleShape()
+
+
+class _ColorScheme:
+    """An M3 color scheme: the role kwargs (primary/surface/background/onSurface/outline/...) become
+    attributes, each a real Color. Roles the app omits are simply absent (getattr -> None), so the kit
+    falls back rather than the runtime inventing a palette."""
+    def __init__(self, **roles):
+        for name, col in roles.items():
+            setattr(self, name, col)
+
+    def copy(self, **changes):
+        d = dict(self.__dict__)
+        d.update(changes)
+        return _ColorScheme(**d)
+
+
+def lightColorScheme(**roles):
+    return _ColorScheme(**roles)
+
+
+def darkColorScheme(**roles):
+    return _ColorScheme(**roles)
 
 
 class TextFieldValue:
@@ -286,6 +415,9 @@ class _MaterialTheme:
         t = kwargs.get("typography")
         if isinstance(t, _M3Typography):
             self.typography = t                  # the app theme's scale: every later style read sees it
+        cs = kwargs.get("colorScheme")
+        if isinstance(cs, _ColorScheme):
+            self.colorScheme = cs                # the app theme's scheme: every _theme_color read sees it
         content = kwargs.get("content") or next((a for a in args if callable(a)), None)
         if callable(content):
             try:
