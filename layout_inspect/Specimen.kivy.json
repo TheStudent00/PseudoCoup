@@ -27,7 +27,7 @@
    "x": 0.0,
    "y": 0.0,
    "w": 411.0,
-   "h": 640.0,
+   "h": 684.0,
    "kind": "Column"
   },
   {
@@ -205,33 +205,60 @@
    "path": "0/0/0/19",
    "x": 0.0,
    "y": 416.0,
+   "w": 181.15844,
+   "h": 15,
+   "text": "MACROCYCLE 1 \u00b7 Foundations",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/20",
+   "x": 0.0,
+   "y": 431.0,
+   "w": 180.14,
+   "h": 15,
+   "text": "MACROCYCLE 1 \u00b7 Foundations",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/21",
+   "x": 0.0,
+   "y": 446.0,
+   "w": 168.14029,
+   "h": 14,
+   "text": "MACROCYCLE 1 \u00b7 Foundations",
+   "kind": "Text"
+  },
+  {
+   "path": "0/0/0/22",
+   "x": 0.0,
+   "y": 460.0,
    "w": 411.0,
    "h": 64,
    "text": "",
    "kind": "OutlinedTextField"
   },
   {
-   "path": "0/0/0/19/0",
+   "path": "0/0/0/22/0",
    "x": 16.0,
-   "y": 440.0,
+   "y": 484.0,
    "w": 83.47999999999999,
    "h": 20,
    "text": "Single label",
    "kind": "Text"
   },
   {
-   "path": "0/0/0/20",
+   "path": "0/0/0/23",
    "x": 0.0,
-   "y": 480.0,
+   "y": 524.0,
    "w": 411.0,
    "h": 160.0,
    "text": "",
    "kind": "OutlinedTextField"
   },
   {
-   "path": "0/0/0/20/0",
+   "path": "0/0/0/23/0",
    "x": 16.0,
-   "y": 504.0,
+   "y": 548.0,
    "w": 74.141,
    "h": 20,
    "text": "Multi label",
