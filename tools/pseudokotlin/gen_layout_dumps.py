@@ -191,6 +191,7 @@ import androidx.test.core.app.ApplicationProvider
 import com.sara.workoutforlife.data.db.WorkoutDatabase
 import com.sara.workoutforlife.data.db.entity.GymProfileEntity
 import com.sara.workoutforlife.ui.theme.WorkoutforlifeTheme
+import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.runBlocking
 import org.json.JSONArray
 import org.json.JSONObject
@@ -220,7 +221,17 @@ class LayoutDumpAllTest {
      *  produce the same rows by construction (see EXCEPTIONS["seed"] in the generator). */
     private fun assembler(navArgs: Map<String, Any?> = emptyMap(), seed: String? = null): Assembler {
         val ctx = ApplicationProvider.getApplicationContext<Context>()
+        // Give every test its OWN Room executors. Room otherwise falls back to the JVM-static
+        // ArchTaskExecutor IO pool, which is shared across the whole test class: the WhileSubscribed /
+        // init{} flow collectors that earlier tests' ViewModels leak (viewModelScope is never
+        // cancelled here) stay parked on that shared pool and contend its threads, so a later screen's
+        // first Room-flow emission can arrive after the dump. That is exactly how ProgramEditorScreen
+        // gets captured in its stateIn INITIAL state (ProgramEditorUiState(isReadOnly=false) -> the
+        // editable branch) instead of the loaded read-only branch. A per-test executor isolates each
+        // test's DB traffic, restoring hermeticity for the whole class in one place.
+        val dbExecutor = java.util.concurrent.Executors.newFixedThreadPool(4)
         val db = Room.inMemoryDatabaseBuilder(ctx, WorkoutDatabase::class.java)
+            .setQueryExecutor(dbExecutor).setTransactionExecutor(dbExecutor)
             .allowMainThreadQueries().build()
         var args = navArgs
         runBlocking {
@@ -245,6 +256,15 @@ class LayoutDumpAllTest {
                         com.sara.workoutforlife.data.repository.WorkoutExecutionRepository::class.java)
                     val sid = exec.startSessionFromProgramDay("day_gup_3d_beg_w1_d1")
                     if (seed == "sessionDone") exec.completeSession(sid)
+                    // Pin the live session's wall-clock timestamps to the SAME fixed instant the
+                    // python half uses (inspect_layout.seed_fixtures), so the date/time header text
+                    // is deterministic across engines instead of reflecting each run's clock.
+                    db.workoutSessionDao().getById(sid).first()?.let { row ->
+                        db.workoutSessionDao().update(row.copy(
+                            startedAt = 1718438400000L,
+                            completedAt = row.completedAt?.let { 1718438400000L },
+                        ))
+                    }
                     args = mapOf("sessionId" to sid)
                 }
             }
