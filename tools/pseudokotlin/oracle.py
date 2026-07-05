@@ -178,8 +178,10 @@ def run_python(engine_py, test_py, dep_pys=()):
     setups = [n for n, v in members if getattr(v, "_is_setup", False)]
     results = {}
     for name in tests:
-        inst = test_cls()
         try:
+            inst = test_cls()               # construct INSIDE the try: a class whose ctor
+            # touches an unshimmed name (e.g. java.util.TimeZone) yields an ERROR row for
+            # this test, not an aborted whole-corpus run.
             for s in setups:
                 getattr(inst, s)()
             getattr(inst, name)()
