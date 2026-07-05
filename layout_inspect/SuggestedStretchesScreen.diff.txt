@@ -4,13 +4,13 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Suggested stretches                  compose x= 13.6 y=  2.0 w= 49.4 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 49.2 h= 2.8  |  worst Δ  2.0%
   PASS  Stretches for what you trained       compose x=  3.9 y=  7.4 w= 82.0 h= 3.2  |  kivy x=  3.9 y=  7.4 w= 83.6 h= 3.2  |  worst Δ  1.6%
   PASS  Hold each for 30–60 seconds while    compose x=  3.9 y= 11.0 w= 92.2 h= 4.0  |  kivy x=  3.9 y= 11.0 w= 92.2 h= 4.0  |  worst Δ  0.0%
-  XTRA  Chest                                in kivy only (not in compose ground truth)
   XTRA  Quadriceps                           in kivy only (not in compose ground truth)
-  XTRA  Lats                                 in kivy only (not in compose ground truth)
-  XTRA  Side Delts                           in kivy only (not in compose ground truth)
+  XTRA  Chest                                in kivy only (not in compose ground truth)
   XTRA  Upper Back                           in kivy only (not in compose ground truth)
-  XTRA  Core                                 in kivy only (not in compose ground truth)
+  XTRA  Side Delts                           in kivy only (not in compose ground truth)
   XTRA  Glutes                               in kivy only (not in compose ground truth)
+  XTRA  Core                                 in kivy only (not in compose ground truth)
+  XTRA  Lats                                 in kivy only (not in compose ground truth)
   XTRA  Camel Pose                           in kivy only (not in compose ground truth)
   XTRA  For your chest, quadriceps           in kivy only (not in compose ground truth)
   XTRA  Kneeling tall, press the hips forw   in kivy only (not in compose ground truth)
