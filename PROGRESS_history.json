@@ -124,8 +124,8 @@
       "extern": 0,
       "unrouted": 0,
       "fidelity": [
-        305,
-        322
+        373,
+        377
       ],
       "gates": {
         "parse": false,
