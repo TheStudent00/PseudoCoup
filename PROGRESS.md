@@ -45,8 +45,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
   - never infer from mixed app screens.
 1. **[ui]** Paint layer STARTED (two delegated slices): (1) kit paint mechanism
   - canvas.before fill/border from recorded background/clip/border ops + M3 surface roles + text color, all resolvers stub-guarded (unresolved = no paint, never invented). (2) Runtime color table real: Color (packed Int32 masked to unsigned), RoundedCornerShape/CircleShape radii, light/darkColorScheme, MaterialTheme.colorScheme resolving through the app's installed theme; Color.Unspecified stays an unresolvable sentinel. Geometry gate held 377/377 both times. Shots in layout_inspect/shots/. Pass 2 done: top-bar surface role, M3 button/chip role map, selected-chip rule; text contrast was a stale-shot artifact (already live). Pass 3 candidates: icons (glyphs unpainted), elevation-tint for the white-on-white top bar (mechanism decision), text-field notch/focus tint, chip elevation.
-1. **[ui]** Popups render inline
-  - DropdownMenu items should be hidden until opened (Settings overlaps).
+1. [ui] Popups DONE: excluded from layout (closed) + real overlays in the running app (open): presence=open for dialogs/sheets, expanded-flag for menus, tap-outside dismisses through the recorded handler; measurement path isolated (OVERLAYS_ENABLED, run_app-only). Proof shot: layout_inspect/shots/popup_proof.png.
 1. **[ui]** Scaffold innerPadding inset + Modifier order (padding-before-size vs after)
   - minor, after the big rows.
 1. **[transpiler]** .kt line map
