@@ -20,8 +20,11 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Take a few minutes                   compose x=  0.0 y= 35.4 w= 51.3 h= 3.2  |  kivy x=  0.0 y= 36.0 w= 52.0 h= 3.2  |  worst Δ  0.7%
   PASS  Take a few minutes to come down.     compose x=  0.0 y= 38.6 w= 92.5 h= 3.2  |  kivy x=  0.0 y= 39.1 w= 94.5 h= 3.2  |  worst Δ  2.0%
   PASS  🫁                                    compose x=  0.0 y= 41.7 w=  4.1 h= 3.2  |  kivy x=  0.0 y= 42.3 w=  4.1 h= 3.2  |  worst Δ  0.5%
-  PASS  Single label                         compose x=  3.9 y= 47.5 w= 20.9 h= 2.6  |  kivy x=  3.9 y= 48.1 w= 20.3 h= 2.2  |  worst Δ  0.6%
-  PASS  Multi label                          compose x=  3.9 y= 54.5 w= 19.0 h= 2.6  |  kivy x=  3.9 y= 55.1 w= 18.0 h= 2.2  |  worst Δ  0.9%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 44.9 w= 43.8 h= 1.5  |  kivy x=  0.0 y= 45.5 w= 44.1 h= 1.6  |  worst Δ  0.5%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 46.4 w= 43.6 h= 1.5  |  kivy x=  0.0 y= 47.1 w= 43.8 h= 1.6  |  worst Δ  0.7%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 48.0 w= 40.9 h= 1.4  |  kivy x=  0.0 y= 48.7 w= 40.9 h= 1.5  |  worst Δ  0.8%
+  PASS  Single label                         compose x=  3.9 y= 52.0 w= 20.9 h= 2.6  |  kivy x=  3.9 y= 52.9 w= 20.3 h= 2.2  |  worst Δ  0.9%
+  PASS  Multi label                          compose x=  3.9 y= 59.0 w= 19.0 h= 2.6  |  kivy x=  3.9 y= 59.9 w= 18.0 h= 2.2  |  worst Δ  0.9%
 
-matched 21/21 compose components; 21 within ±3.0%
-LAYOUT FIDELITY: 100%  (21/21)
+matched 24/24 compose components; 24 within ±3.0%
+LAYOUT FIDELITY: 100%  (24/24)

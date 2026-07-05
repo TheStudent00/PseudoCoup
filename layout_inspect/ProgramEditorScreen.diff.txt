@@ -5,7 +5,7 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Join                                 compose x= 88.6 y=  2.4 w=  6.8 h= 2.2  |  kivy x= 89.8 y=  1.7 w=  6.3 h= 1.9  |  worst Δ  1.2%
   PASS  3-Day Full Body — Ground Up          compose x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  kivy x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  worst Δ  0.0%
   PASS  Three macrocycles that walk a true   compose x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  worst Δ  0.0%
-  FAIL  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 81.6 h= 1.6  |  worst Δ  3.5%
+  PASS  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 79.0 h= 1.6  |  worst Δ  0.9%
   PASS  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y= 26.4 w= 18.5 h= 1.5  |  worst Δ  0.3%
   PASS  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y= 29.9 w= 45.5 h= 1.9  |  worst Δ  1.2%
   PASS  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y= 31.8 w= 18.0 h= 1.6  |  worst Δ  0.2%
@@ -357,5 +357,5 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   OFF   Rest                                 not visible in EITHER engine
   OFF   Rest                                 not visible in EITHER engine
 
-matched 355/32 compose components; 31 within ±3.0%
-LAYOUT FIDELITY: 97%  (31/32)
+matched 355/32 compose components; 32 within ±3.0%
+LAYOUT FIDELITY: 100%  (32/32)
