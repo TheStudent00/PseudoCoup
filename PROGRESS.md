@@ -48,6 +48,10 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 1. [ui] Popups DONE: excluded from layout (closed) + real overlays in the running app (open): presence=open for dialogs/sheets, expanded-flag for menus, tap-outside dismisses through the recorded handler; measurement path isolated (OVERLAYS_ENABLED, run_app-only). Proof shot: layout_inspect/shots/popup_proof.png.
 1. **[ui]** Scaffold innerPadding inset + Modifier order (padding-before-size vs after)
   - minor, after the big rows.
+1. **[behavior]** KOTLIN TEST SUITE PASSES IN PYTHON: 160/160 across all 11 app test classes (9 engines + PathDefinition + SampleProgramData) via new `run_kotlin_tests.py`
+  - method counts match Kotlin @Test counts exactly, zero new transpiler fixes needed (rendering-round fixes carried the domain). Named limitation: oracle.py --all still aborts on an unrelated corpus test (java.util.TimeZone unshimmed). Report: DevComms/kotlin_tests_oracle.md.
+1. **[behavior]** Interaction oracle LIVE (`render/interact.py`): fires every recorded handler on every destination from a fresh seeded DB + fresh compose per handler. First sweep: 513 fired, 498 ok, 15 failures across 27 screens (OnboardingScreen declared-excluded; walk.py covers it). 15 crashes = 10 root-cause groups
+  - next fix slice: (1) trailing-lambda `content` slot param missing on composable defs (WorkoutCooldown, 5 hits); (2) String.filter on bare str (LogCardioViewModel, 3); (3) bare `toLong()` dropped extension receiver (PlateCalculator); (4) KtMap.maxByOrNull missing; (5) remembered State.value reads back bool (ExerciseManagementDialogs, 2); plus instrument-side: TextFieldValue-typed onValueChange needs a typed probe value (2). Report: DevComms/interaction_oracle.md.
 1. **[transpiler]** .kt line map
   - emit a py-line→kt-line sidecar during generation so the layout inspector links each component to its exact Kotlin line (it has file-level links today).
 1. **[domain]** Broaden runnable coverage
