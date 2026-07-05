@@ -54,7 +54,31 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         self._top_level = set()       # this file's top-level decl names -> never an implicit-receiver member
         self._last_param = {}         # this file's fn name -> LAST param name (trailing-lambda slot)
         self._ext_self = 0            # >0 while rendering a top-level extension body (implicit `this` = self)
+        self._srcmap = False          # when True, tag each emitted statement's first line with `#@@KTSRC <ktline>`
         self._GLOBALS = _global_names()
+
+    # A py-line -> kt-line SIDE CHANNEL for the layout inspector. Handlers already return
+    # strings (losing node positions), so we tag the first physical line of every rendered
+    # statement/decl with a trailing comment carrying its Kotlin source line. build_mixingcenter
+    # scans the FINAL module text for these markers (where py line numbers are exact, after all
+    # joins + indentation -- indentation prepends, never adds lines, so the marker stays on its
+    # own physical line), records {py_line: kt_line}, then strips the markers before writing.
+    # Off by default: transpile() output stays byte-identical for the oracle / kotlin-test / fidelity
+    # gates; only the build turns it on to emit the sidecar. Statement granularity (no sub-expression):
+    # since each transpiled component is one statement line, that is exactly per-component.
+    _KT_MARK = "  #@@KTSRC "
+
+    def _kt_tag(self, text, node):
+        """Append the Kotlin-source-line marker to the FIRST physical line of `text`."""
+        if not text or not self._srcmap:
+            return text
+        head, sep, rest = text.partition("\n")
+        # never inject into a line that opens a triple-quoted string -- the marker would land
+        # INSIDE the string data. Such lines just fall back to file-level linking.
+        if '"""' in head or "'''" in head:
+            return text
+        line = node.start_point[0] + 1
+        return f"{head}{self._KT_MARK}{line}{sep}{rest}"
 
     def transpile(self, source: bytes) -> str:
         tree = parse(source)
@@ -119,7 +143,7 @@ class KtToPy(Expressions, Statements, Declarations, Visitor):
         out = self._hoist[before:]
         del self._hoist[before:]
         if s:
-            out.append(s)
+            out.append(self._kt_tag(s, node))
         return out
 
     def _maybe_increment(self, node):
