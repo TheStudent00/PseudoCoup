@@ -3,20 +3,20 @@
 Measured by re-running the gates (`tools/pseudokotlin/track.py`) — never hand-typed. A 🔴 gate or a falling
 sparkline is a real regression, not a stale doc. (Browser version with trend charts: `PROGRESS.html`.)
 
-As of 2026-07-04.
+As of 2026-07-05.
 
 ## Gates + momentum (measured)
 
 | metric | now | trend | gate |
 |---|---|---|---|
-| Parse — all .kt transpile + compile | **280/281** | `▁▁▅█` | 🔴 |
-| Load — non-UI domain imports clean | **167/167** | `▁███` | 🟢 |
-| UI — files load (inert via autostub) | **87/87** | `▄▄▄` | 🟢 |
-| Logic — engine methods match Kotlin | **86/86** | `███▁` | 🔴 |
-| Data — instrumented DB tests green | **4/4** | `▄▄▄▄` | 🟢 |
-| External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄` | 🟢 |
-| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄` |  |
-| Layout fidelity — matches real Compose (±3% of display) | **377/377** | `▁█` |  |
+| Parse — all .kt transpile + compile | **280/281** | `▁▁▅██` | 🔴 |
+| Load — non-UI domain imports clean | **167/167** | `▁████` | 🟢 |
+| UI — files load (inert via autostub) | **87/87** | `▄▄▄▄` | 🟢 |
+| Logic — engine methods match Kotlin | **86/86** | `███▁▁` | 🔴 |
+| Data — instrumented DB tests green | **4/4** | `▄▄▄▄▄` | 🟢 |
+| External gaps — used but unwrapped | **0** ↓better | `▄▄▄▄▄` | 🟢 |
+| Grammar kinds unrouted — the worklist | **0** ↓better | `▄▄▄▄▄` |  |
+| Layout fidelity — matches real Compose (±3% of display) | **377/377** | `▁██` |  |
 
 ## Major objectives — estimated completion (chronological)
 
@@ -44,7 +44,7 @@ Estimates (judgment, anchored to the measured gates above), traced across the pr
 1. **[fidelity]** SPECIMEN gate is live in fidelity.py (synthetic, not counted, fail-loud): the text-metric rules (natural single-line stacking; letterSpacing widths) are DERIVED from dumpSpecimen. Extend it when a new metric question appears
   - never infer from mixed app screens.
 1. **[ui]** Paint layer STARTED (two delegated slices): (1) kit paint mechanism
-  - canvas.before fill/border from recorded background/clip/border ops + M3 surface roles + text color, all resolvers stub-guarded (unresolved = no paint, never invented). (2) Runtime color table real: Color (packed Int32 masked to unsigned), RoundedCornerShape/CircleShape radii, light/darkColorScheme, MaterialTheme.colorScheme resolving through the app's installed theme; Color.Unspecified stays an unresolvable sentinel. Geometry gate held 377/377 both times. Shots in layout_inspect/shots/. Pass 2 done: top-bar surface role, M3 button/chip role map, selected-chip rule; text contrast was a stale-shot artifact (already live). Pass 3 candidates: icons (glyphs unpainted), elevation-tint for the white-on-white top bar (mechanism decision), text-field notch/focus tint, chip elevation.
+  - canvas.before fill/border from recorded background/clip/border ops + M3 surface roles + text color, all resolvers stub-guarded (unresolved = no paint, never invented). (2) Runtime color table real: Color (packed Int32 masked to unsigned), RoundedCornerShape/CircleShape radii, light/darkColorScheme, MaterialTheme.colorScheme resolving through the app's installed theme; Color.Unspecified stays an unresolvable sentinel. Geometry gate held 377/377 both times. Shots in layout_inspect/shots/. Pass 2 done: top-bar surface role, M3 button/chip role map, selected-chip rule; text contrast was a stale-shot artifact (already live). Pass 3: icons DONE — real MaterialIcons TTF + shipped codepoints from the OS package (36/36 app icon names; unmapped stays empty, never a wrong glyph). Remaining paint polish: elevation-tint for the white-on-white top bar (mechanism decision for the user), text-field notch/focus tint, chip elevation. NOTE for next session: system icon font is an OS package dependency (fonts-material-design-icons-iconfont) — consider vendoring into render/assets with user approval for portability.
 1. [ui] Popups DONE: excluded from layout (closed) + real overlays in the running app (open): presence=open for dialogs/sheets, expanded-flag for menus, tap-outside dismisses through the recorded handler; measurement path isolated (OVERLAYS_ENABLED, run_app-only). Proof shot: layout_inspect/shots/popup_proof.png.
 1. **[ui]** Scaffold innerPadding inset + Modifier order (padding-before-size vs after)
   - minor, after the big rows.

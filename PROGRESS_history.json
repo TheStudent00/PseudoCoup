@@ -1,5 +1,5 @@
 {
-  "generated": "2026-07-04",
+  "generated": "2026-07-05",
   "samples": [
     {
       "date": "2026-06-29",
@@ -101,6 +101,43 @@
     },
     {
       "date": "2026-07-04",
+      "parse": [
+        280,
+        281
+      ],
+      "load": [
+        167,
+        167
+      ],
+      "ui": [
+        87,
+        87
+      ],
+      "logic": [
+        86,
+        86
+      ],
+      "data": [
+        4,
+        4
+      ],
+      "extern": 0,
+      "unrouted": 0,
+      "fidelity": [
+        377,
+        377
+      ],
+      "gates": {
+        "parse": false,
+        "load": true,
+        "ui": true,
+        "extern": true,
+        "logic": false,
+        "data": true
+      }
+    },
+    {
+      "date": "2026-07-05",
       "parse": [
         280,
         281
