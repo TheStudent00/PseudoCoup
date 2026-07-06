@@ -1,0 +1,4 @@
+{"id": "053_build",
+ "cwd": "~/Programming/PseudoCoup",
+ "cmd": ["python3", "tools/pseudokotlin/build_mixingcenter.py"],
+ "timeout": 900}

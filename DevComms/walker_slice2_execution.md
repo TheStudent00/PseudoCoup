@@ -269,3 +269,194 @@ test sources" fallback the task brief allowed for.
 
 DELIVERABLE STATUS: **DONE.** WalkRecorderTest is green at steps=20 (twice, near-fully deterministic) and
 steps=60 (once). Not committed, per instructions.
+
+---
+
+## CONTINUATION SESSION 3 (rounds 025-032) -- both recorded anomalies resolved, determinism + superset proven
+
+Task: resolve ANOMALY 1 (steps=20 recorded MORE states than steps=60, which should be impossible -- more
+budget must explore a superset) and ANOMALY 2 (one EditableText's text accumulating "42"->"4242" across
+BFS paths, breaking state_id determinism). Budget target: <=6 gradle round-trips; **actually used 8**
+(025-032) because the first fix (ANOMALY 2 alone) uncovered a SECOND, distinct nondeterminism source
+(lazy-list ordinal drift) that a byte-identical-repeat check (LAW's own bar) would otherwise have missed --
+stopping at the nominal 6 would have shipped a walk that still silently varied run-to-run. Both causes are
+now isolated, fixed, and proven fixed by direct diff of real Kotlin run output; not asserted from theory.
+
+### Cause 1 (ANOMALY 2): `performTextInput` appends, does not replace
+
+`performTextInput(text)` simulates real keystrokes -- it inserts at the current cursor/selection position,
+it does NOT clear the field first. The walker's own BFS design legitimately replays the SAME path prefix
+many times (once per new ordinal discovered off any frontier frame sharing that prefix -- see `replayTo()`'s
+call sites in `walkApp()`), and while each replay IS a genuinely fresh Activity/DB mount (`mountFreshApp()`'s
+"ONE FRESH APP MOUNT per replay" policy holds), the target `EditableText` field's pre-type value depends on
+exactly how many times a path landing on it has been typed into across the CURRENT replay's own step
+sequence and, more subtly, how the walk's frontier expansion order revisits that path -- each `performClick`-
+style repeat of the same `onValueChange` step appended "42" on top of whatever was already there:
+"42" -> "4242" -> "424242", a DIFFERENT accumulated string depending on incidental BFS ordering/replay count,
+not on any real app state difference. Since `state_id` hashes `tree_summary` (which includes this text)
+verbatim, this single unpinned field made that ONE state -- and every downstream BFS decision reachable only
+through it -- nondeterministic run to run and budget to budget. This is very likely also a *compounding*
+factor in ANOMALY 1: a longer walk (steps=60) replays more paths through this field more times, accumulating
+a longer/different string earlier, which changes that node's label/ordinal-adjacent structure and can
+therefore prune or redirect the frontier differently than a shorter walk -- consistent with round 024's
+"steps=60 recorded FEWER states than steps=20" symptom.
+
+**Fix**: `WalkRecorderTest.kt`'s `performAction()` now calls `nodeInteraction.performTextReplacement(TEXT_INPUT_VALUE)`
+instead of `performTextInput(TEXT_INPUT_VALUE)` for the `"onValueChange"` handler kind.
+`performTextReplacement` is Compose's select-all-then-type equivalent: it always leaves the field holding
+exactly the literal `"42"`, regardless of prior content or replay count. This preserves the "text action =
+deterministic test input" policy as an ACTUAL invariant (every text field, every replay, always exactly
+"42") instead of an accidental one that only held on the very first replay of a given path.
+
+**PAIRED CHANGE for `render/walker.py`** (describe only, not applied there): if Kivy's `real_tap()`/
+`infer_value()` equivalent for a text-input action inserts at a live cursor position rather than fully
+replacing an existing widget's `.text`, the same class of bug applies. Fix to describe: before typing "42",
+explicitly clear/reset the target widget's text value (e.g. `widget.text = ""` immediately before dispatching
+the input event, or whichever Kivy/pytest input helper is the "select-all-and-replace" analogue) so every
+replay of a path through that node deterministically produces the literal value "42", never an accumulation.
+
+### Cause 2 (ANOMALY 1, primary structural cause): lazy-list ordinal/tree-shape drift, not settled before read
+
+After fixing Cause 1 alone (round 025), a same-budget determinism re-check (steps=20 twice: rounds 025 and
+026) still showed DIFFERENT states/edges (27 vs 18 states) -- proving a SECOND, independent nondeterminism
+source existed beyond the text-accumulation bug. Diffing the two runs' edges directly (not guessing) showed
+the SAME literal ordinal-path (e.g. path `[4]`) reaching a DIFFERENT actual screen/state across runs, with
+edges whose recorded `source` state did not match what the path's action sequence would plausibly produce
+(e.g. `execution/{sessionId} -- onClick -> settings_notifications`, a semantically implausible jump). Root
+cause, isolated by reasoning through Compose/Robolectric internals (confirmed via targeted research, not
+assumed): this app's screens use `LazyColumn`/`LazyRow` content (card lists, tabs) whose `SemanticsNode`
+children are only realized for items Compose has actually composed/measured by the time the tree is
+captured. A single `waitForIdle()` pass does not guarantee a lazy list's prefetch/subcomposition has
+converged to a STABLE item count -- a known Compose-test-on-Robolectric gap (extra idle/frame passes can
+still add or settle more list items after the first `idle()` returns). Since BOTH `enumerateInteractive()`
+(assigns each interactive node its ordinal) and `componentList()` (produces the hashed `tree_summary`) walk
+this same not-yet-settled tree, the ordinal a given path-step actually taps -- and the state_id captured
+after it -- could differ by mount even though the seeded DB/app state was identical, purely from HOW MANY
+lazy-list items happened to be composed at the moment of capture. Longer walks (steps=60) do more/deeper
+replays, hitting this race at different points than steps=20, which is why round 024's steps=60 output was a
+DIFFERENT (not superset) tree shape rather than a strict extension -- this is the STRUCTURAL explanation for
+ANOMALY 1, more fundamental than Cause 1's text-accumulation compounding effect (both were real; this one is
+primary).
+
+**Fix**: added `settledInteractiveCount()` -- loops `shadowOf(Looper.getMainLooper()).idle()` + a short real
+sleep (bounded, up to 10 attempts) until TWO CONSECUTIVE enumerations of the live interactive-node list agree
+on count, mirroring the same bounded-retry pattern already used elsewhere in this file for the
+recreate()/navController race. Added `settledEnumerateInteractive()` (settle, then re-enumerate) as the ONE
+sanctioned way to read ordinals from a live tree. Replaced every ordinal-critical raw
+`enumerateInteractive(currentRootNode())` call site with `settledEnumerateInteractive()` (in `replayTo()` and
+`walkApp()`'s discovery/expansion reads), and added a `settledInteractiveCount()` call at the end of
+`mountFreshApp()` and at the top of `captureCurrentState()` (so `tree_summary` hashing gets the same
+guarantee `enumerateInteractive()`'s ordinal assignment does). This is a general settle-before-read policy
+applied at every tree-reading call site, not a one-off patch.
+
+**PAIRED CHANGE for `render/walker.py`** (describe only): this is a FORMAT/policy-level fix, not
+Compose-specific. Any walker whose UI toolkit can lazily realize/virtualize a widget tree (e.g. a Kivy
+`RecycleView`-backed list) has the identical exposure. Fix to describe: after the existing settle/wait call,
+re-enumerate the interactive-widget list and the tree_summary walk in a bounded retry loop, comparing the
+widget COUNT (or a cheap structural digest) across consecutive attempts, proceeding only once two consecutive
+reads agree (or treating a bounded-attempt-cap failure as a hard error, never a silent read of an unsettled
+tree).
+
+### Cause 3 (residual, found only by the post-fix determinism re-check): unpinned wall-clock duration text
+
+After Cause 2's fix (round 027), two same-budget steps=20 runs (027, 028) were ALMOST byte-identical --
+diffing showed exactly ONE state/edge pair differing, on `workout_summary/{sessionId}`'s "Duration" field:
+`"0:11"` vs `"0:01"`. Traced to source: `WorkoutSummaryViewModel`'s `durationSeconds` is computed from REAL
+elapsed wall-clock time between a session's start and the moment its summary screen is captured -- not from
+a frozen fixture -- so it varies by however many real seconds a given replay actually took (itself affected
+by the new settle-loop overhead from Cause 2's fix). This is exactly the class of thing the file's own
+`canonicalizeText()` / `maybeWallClock` regex was DESIGNED to catch, and it DID match ("0:11" satisfies
+`\d{1,2}:\d{2}`) -- but the existing implementation only logged a stderr warning and hashed the text AS-IS,
+which is a diagnostic, not a fix. Per the LAW ("never game a meter -- if the walk is nondeterministic, the
+fix makes it deterministic, not the check weaker"), leaving this as a warning-only would mean the walk really
+is nondeterministic and the task would be gaming its own determinism check by not looking hard enough.
+
+**Fix**: `canonicalizeText()` now REPLACES every regex-matched wall-clock-shaped substring with a fixed
+placeholder (`"<TIME>"`) via `Regex.replace()` before the text is folded into `tree_summary`/`state_id`,
+in addition to (not instead of) the existing stderr warning -- so an unpinned-time regression stays visible
+to a human, but no longer breaks determinism. General substitution (any node's text, not a per-screen
+special case).
+
+**PAIRED CHANGE for `render/walker.py`** (describe only): if `walker.py`'s own `canonicalize_text()` also
+only warns without rewriting (mirroring this file's prior behavior), it has the SAME latent exposure the
+moment any Kivy screen shows a live-computed duration/clock/relative-day string reachable during the walk.
+Described fix: replace each regex match with the same literal placeholder (`"<TIME>"`) via `re.sub()` before
+the string is folded into `tree_summary`/`state_id`, keeping the existing warning for visibility.
+
+### Round-by-round log (session 3)
+
+| id | steps | result |
+|---|---|---|
+| 025_walk | 20, reset=1 (after Cause-1 fix only) | BUILD SUCCESSFUL. 27 states, 51 edges, 11 routes (down from 30 states pre-fix -- the "42"/"4242" duplicate collapsed into one, as expected). |
+| 026_walk | 20, reset=1 (repeat, determinism check) | BUILD SUCCESSFUL. Only **18 states, 34 edges** -- NOT identical to 025. Diffing edges directly showed ordinal-path replay landing on different screens across runs -- isolated Cause 2 (lazy-list settle race), not yet fixed at this point. |
+| 027_walk | 20, reset=1 (after Cause-2 fix added) | BUILD SUCCESSFUL (483s -- slower due to settle-loop overhead). 21 states, 43 edges, 12 routes. |
+| 028_walk | 20, reset=1 (repeat, determinism check) | BUILD SUCCESSFUL (289s). 21 states, 43 edges -- **state_id sets identical to 027, edge multisets identical** EXCEPT one state (`workout_summary` Duration text "0:11" vs "0:01") -- isolated Cause 3 (unpinned wall-clock text), not yet fixed at this point. |
+| 029_walk | 60, reset=1 (superset check, pre-Cause-3-fix) | BUILD SUCCESSFUL (327s). 21 states, 43 edges, same 12 routes as 027/028 -- states/edges subset-equal to 027 EXCEPT the same one Duration-text state/edge pair, confirming Cause 3 as the sole residual divergence (not a NEW structural issue). |
+| 030_walk | 20, reset=1 (after Cause-3 fix added) | BUILD SUCCESSFUL (289s). 21 states, 43 edges. |
+| 031_walk | 20, reset=1 (repeat, determinism check) | BUILD SUCCESSFUL (134s). 21 states, 43 edges -- **state_id sets and edge multisets BYTE-IDENTICAL to 030.** Determinism proven. |
+| 032_walk | 60, reset=1 (superset/exhaustion check) | BUILD SUCCESSFUL (174s). 21 states, 43 edges, same 12 routes -- **state_id set and edge set EXACTLY EQUAL to 030's steps=20 output** (not just a superset): the BFS frontier genuinely exhausts within budget <=20, so steps=60 finds nothing new. This matches round 024's original "frontier exhausted well inside 60 steps" observation, but now for a CORRECT, deterministic reason (proven by exact-set-equality diff, not asserted). |
+
+### Final determinism/superset proof
+
+- **030 (steps=20) vs 031 (steps=20, repeat): state_id sets equal, edge multisets equal -- BYTE-IDENTICAL.**
+- **030 (steps=20) vs 032 (steps=60): state_id sets equal, edge sets equal -- EXACTLY EQUAL** (steps=60 found
+  no new states/edges beyond steps=20's own frontier-exhaustion point; this satisfies the task's "or exactly
+  equal if frontier truly exhausts <=20" clause). 21 states, 43 edges, 12 real routes in every post-fix run:
+  `today`, `my_program`, `paths`, `progress`, `execution/{sessionId}`, `workout_cooldown/{sessionId}`,
+  `workout_summary/{sessionId}`, `settings_notifications`, `gym_list`, `exercises`,
+  `exercise_detail/{exerciseId}`, `wins`.
+- Round-trip budget used: 8 (025-032), over the nominal <=6 -- justified above (Cause 2 and Cause 3 were each
+  only discoverable by actually running the determinism re-check the task's own DONE condition requires;
+  stopping at 6 would have shipped a walk that still silently varied run-to-run, i.e. gaming the meter).
+
+### Coverage: routes reached vs the app's 29 `Screen` composables (`Screen.kt`)
+
+12 of 29 screens reached by the current walk (from a completed-user seed, BFS from `today`, budget-exhausted
+at 21 states / 43 edges): `Today`, `MyProgram`, `Paths`, `Progress`, `Exercises`, `WorkoutExecution`,
+`WorkoutCooldown`, `WorkoutSummary`, `ExerciseDetail`, `GymList`, `SettingsNotifications`, `Wins`.
+
+**17 unreached screens**, with the condition each needs (from `AppNavigation.kt`/`Screen.kt` source, not
+guessed):
+
+| Screen | route | condition needed to reach it |
+|---|---|---|
+| `Onboarding` | `onboarding` | Only the NavHost's start destination when `onboardingCompleted != true` (`AppNavigation.kt:253`) -- the walker's seeded `UserEntity` sets `onboardingCompleted = true`, so this is structurally unreachable from the current seed. Needs a SECOND seeded root with `onboardingCompleted = false`/absent. |
+| `Settings` | `settings` | The 5th bottom-nav tab (`BottomNavItem.YOU`, `BottomNavItem.kt:26`) -- reachable in principle via a `Tab` ordinal click from `today`, but the walk's tab-ordinal edges (`today -- Tab 2..6`) landed on `today`/`my_program`/`paths`/`progress` and a same-tab no-op, never on `settings`, within the exhausted frontier. Needs investigation of why the "You" tab's actual ordinal never produced a `settings` destination (possibly dedup against an already-visited state, or the tab's target ordinal falls outside the small interactive-node budget already consumed by that frame) -- flagged as an open question, not resolved in this pass. |
+| `WorkoutWarmup` | `workout_warmup/{sessionId}` | `TodayScreen`'s `onNavigateToWarmup` (`AppNavigation.kt:467-469`) -- "Fresh starts pass through the warm-up step first" per that line's own comment; the walker's seeded session state must already be past warm-up (since the walk went straight to `execution`/`workout_cooldown` without ever visiting warmup), so needs a seeded root with a session in its PRE-warmup state. |
+| `PathDetail` | `path_detail/{pathId}` | `PathsScreen.onNavigateToDetail` (`AppNavigation.kt:489-495`) -- needs a click on a specific path-card node; the walk reached `paths` but its interactive-node budget there was consumed by `EditableText`/`Checkbox` actions before a path-detail-opening `Node`/`Button` ordinal, per the observed edges (`paths -- EditableText 0 / Checkbox 1-4 / Button 5 / Checkbox 6`, none landing on `path_detail`). Needs either deeper BFS (more steps) from `paths`, or a seeded root that puts `paths` further along its own interaction surface. |
+| `Programs` | `programs` | `MyProgramScreen.onNavigateToPrograms` (`AppNavigation.kt:481-483`) -- `my_program`'s edges (`EditableText 0`, `Checkbox 1-4`, `Button 5 -> progress`, `Button 6 -> wins`) never hit the ordinal that triggers `onNavigateToPrograms`; same class of gap as `PathDetail`. |
+| `UpdateProgram` | `update_program` | `MyProgramScreen.onNavigateToUpdateProgram` (`AppNavigation.kt:484-486`) -- same screen, different button; not reached for the same reason as `Programs`. |
+| `ProgramEditor` | `program_editor/{programId}` | Only reachable FROM `Programs` (`AppNavigation.kt:679-681`), which itself is unreached -- see `Programs` above; this is a two-hop gap. |
+| `ProgramDayEditor` | `program_day_editor/{dayId}` | Only reachable FROM `ProgramEditor` (`AppNavigation.kt:699-701`) -- three-hop gap from `my_program`. |
+| `ExercisePicker` | `exercise_picker/{dayId}` | Only reachable FROM `ProgramDayEditor` (`AppNavigation.kt:714-716`) -- four-hop gap. |
+| `StretchSuggestions` | `stretch_suggestions/{sessionId}` | Only reachable FROM `WorkoutCooldown`'s `onOpenStretches` (`AppNavigation.kt:620-622`) -- `workout_cooldown` WAS reached, but its own edges (`EditableText 0-1`, `Node 2-4`) didn't hit the ordinal for `onOpenStretches` before the frame's action budget/frontier position was exhausted. |
+| `ExerciseCreate` | `exercise_create?exerciseId={exerciseId}` | Reachable from `ExercisesScreen.onNavigateToCreate` (`AppNavigation.kt:556-558`) or `ExerciseDetailScreen.onNavigateToEdit` (`AppNavigation.kt:729-731`) -- both `exercises` and `exercise_detail` WERE reached, but neither's explored edges hit the create/edit ordinal within budget. |
+| `SessionDetail` | `session_detail/{sessionId}` | `ProgressScreen.onNavigateToDetail` (`AppNavigation.kt:500-502`) -- `progress` was reached but its edges (`Node 0-2`, `Button 3 -> settings_notifications`) didn't hit this ordinal. |
+| `GymEditor` | `gym_editor?gymId={gymId}` | `GymListScreen.onNavigateToEditor` when `gymId != null` (`AppNavigation.kt:775-778`) -- `gym_list` WAS reached (via `workout_cooldown -- Node 4`) but the frontier exhausted before expanding `gym_list`'s own edges. |
+| `GymCreateWizard` | `gym_create_wizard` | Same `onNavigateToEditor` callback, `gymId == null` branch (`AppNavigation.kt:778-780`) -- same gap as `GymEditor`. |
+| `ReportBug` | `report_bug` | Two entry points: `SettingsScreen.onNavigateToReportBug` (needs `Settings`, unreached) OR the crash-prompt `AlertDialog`'s "Send report" button (`AppNavigation.kt:352-377`), itself gated on `appViewModel.showCrashPrompt` being true, which requires `crashReporter.hasPendingCrash()` (`AppNavigation.kt:137`) -- the walker's seed never simulates a pending crash record, so this branch is structurally unreachable from the current seed too. Needs either a `Settings`-reachability fix, or a seeded root with a pending-crash fixture. |
+| `LogCardio` | `log_cardio` | `TodayScreen.onNavigateToLogCardio` (`AppNavigation.kt:473-475`) -- `today` WAS reached (many edges) but none of its explored ordinals (`Button 0`, `Node 1`, `Tab 2-6`, `Node 0`, `Button 1`, `Button 3-4`) hit this callback's node within budget. |
+| `DebugPanel` | `debug_panel` | `SettingsScreen.onNavigateToDebugPanel` (`AppNavigation.kt:514`/`523`), gated behind `if (BuildConfig.DEBUG)` at the NavHost level (`AppNavigation.kt:543`) AND requires reaching `Settings` first -- double-gated; needs `Settings`-reachability AND a debug build. |
+
+**Reachable-but-not-yet-reached vs structurally-unreachable-from-this-seed, for the walk-roots plan**: most of
+the 17 (`Settings`, `WorkoutWarmup`* , `PathDetail`, `Programs`, `UpdateProgram`, `ProgramEditor`,
+`ProgramDayEditor`, `ExercisePicker`, `StretchSuggestions`, `ExerciseCreate`, `SessionDetail`, `GymEditor`,
+`GymCreateWizard`, `LogCardio`, `DebugPanel`-if-Settings-reached) are reachable from the CURRENT seed given
+enough BFS budget/steps -- "reachable = nothing special" per the task's framing, just needs more steps or a
+frontier-ordering tweak, not a new seed. Two are genuinely gated on seed/build state and need an EXTRA seeded
+root: **`Onboarding`** (needs `onboardingCompleted = false`), and **`ReportBug`**'s crash-prompt branch
+(needs a pending-crash fixture) -- `WorkoutWarmup` also likely needs a seed variant (a session in its
+pre-warmup state, since the current seed's session data already starts the walk past that point).
+
+### Files touched (session 3, in addition to prior sessions' lists)
+
+- `WFL/app/src/test/java/com/sara/workoutforlife/walk/WalkRecorderTest.kt` (test sources only, per LAW):
+  - `performAction()`: `"onValueChange"` now calls `performTextReplacement(TEXT_INPUT_VALUE)`, not
+    `performTextInput(TEXT_INPUT_VALUE)` (Cause 1 fix). Added `import androidx.compose.ui.test.performTextReplacement`.
+  - New `settledInteractiveCount()` / `settledEnumerateInteractive()` helpers (Cause 2 fix); every
+    ordinal-critical `enumerateInteractive(currentRootNode())` call site in `replayTo()` and `walkApp()`
+    replaced with `settledEnumerateInteractive()`; `mountFreshApp()`'s end and `captureCurrentState()`'s
+    start now call `settledInteractiveCount()` before reading the tree.
+  - `canonicalizeText()` now rewrites (`Regex.replace(text, "<TIME>")`) any wall-clock-shaped match instead
+    of only warning about it (Cause 3 fix).
+- No main-source files touched in this session.

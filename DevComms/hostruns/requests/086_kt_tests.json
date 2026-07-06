@@ -1,0 +1,4 @@
+{"id": "086_kt_tests",
+ "cwd": "~/Programming/PseudoCoup/tools/pseudokotlin",
+ "cmd": ["python3", "run_kotlin_tests.py"],
+ "timeout": 1200}

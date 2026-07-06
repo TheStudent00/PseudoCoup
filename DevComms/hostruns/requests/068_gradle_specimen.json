@@ -1,0 +1,5 @@
+{"id": "068_gradle_specimen",
+ "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.layout.LayoutDumpTest"],
+ "timeout": 900,
+ "env": {"JAVA_HOME": "/usr/lib/jvm/java-25-openjdk-amd64"}}
