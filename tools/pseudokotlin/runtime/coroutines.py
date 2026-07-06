@@ -79,32 +79,86 @@ def supervisorScope(block=None):
 
 
 class Flow:
-    """Synchronous Flow: the list of values it would emit. Operators transform eagerly."""
+    """Synchronous Flow: the list of values it would emit. Operators transform eagerly.
+
+    Liveness (`_add_listener`/`_remove_listener`/`_push`) is the SAME shared mechanism used by
+    `combine()`'s `_link_live()` below and by `runtime/room.py`'s `_LiveMixin` (duck-typed, so this
+    module never imports room.py): any Flow -- plain or Room-backed -- can register listeners and
+    relay re-emissions. `flatMapLatest` is the one operator that both CONSUMES upstream liveness
+    (subscribes to `self`) and PRODUCES it (the returned Flow relays the current inner flow's
+    emissions), so it needs the full add/remove/push surface, not just `_link_live`'s one-way
+    "recompute and push" helper.
+    """
     def __init__(self, values=()):
         self._values = list(values)
+        self._listeners = []
+
+    def _add_listener(self, cb):
+        self._listeners.append(cb)
+
+    def _remove_listener(self, cb):
+        try:
+            self._listeners.remove(cb)
+        except ValueError:
+            pass
+
+    def _push(self, value):
+        self._values = [value]
+        for cb in list(self._listeners):
+            cb(value)
 
     def collect(self, action):
         for v in self._values:
             action(v)
+        add = getattr(self, "_add_listener", None)   # stay subscribed: re-run the collector on re-emission
+        if callable(add):
+            add(action)
         return None
 
     def collectLatest(self, action):    # synchronous model: only the LATEST value is ever delivered
         if self._values:
             action(self._values[-1])
+        add = getattr(self, "_add_listener", None)
+        if callable(add):
+            add(action)
         return None
 
     def map(self, fn):
-        return Flow(fn(v) for v in self._values)
+        out = Flow(fn(v) for v in self._values)
+        add = getattr(self, "_add_listener", None)
+        if callable(add):
+            add(lambda v: out._push(fn(v)))
+        return out
 
     def mapNotNull(self, fn):
-        return Flow(y for y in (fn(v) for v in self._values) if y is not None)
+        out = Flow(y for y in (fn(v) for v in self._values) if y is not None)
+
+        def _relay(v):
+            y = fn(v)
+            if y is not None:
+                out._push(y)
+        add = getattr(self, "_add_listener", None)
+        if callable(add):
+            add(_relay)
+        return out
 
     def filter(self, p):
-        return Flow(v for v in self._values if p(v))
+        out = Flow(v for v in self._values if p(v))
+
+        def _relay(v):
+            if p(v):
+                out._push(v)
+        add = getattr(self, "_add_listener", None)
+        if callable(add):
+            add(_relay)
+        return out
 
     def onEach(self, action):
         for v in self._values:
             action(v)
+        add = getattr(self, "_add_listener", None)
+        if callable(add):
+            add(action)
         return self
 
     def first(self, p=None):
@@ -136,13 +190,55 @@ class Flow:
         return self
 
     def flatMapLatest(self, fn):
-        return fn(self._values[-1]) if self._values else Flow()
+        """Kotlin semantics: re-run `fn` against the LATEST upstream value every time `self` re-emits
+        (duck-typed via `self._add_listener`, the same mechanism `combine()`'s `_link_live()` uses),
+        cancel the subscription to the PREVIOUS inner flow before subscribing to the new one (so a
+        stale inner can never leak a value through after the switch -- real cancel, not a stale-value
+        guard), and relay the current inner flow's own re-emissions (if it is itself live) onward."""
+        inner = fn(self._values[-1]) if self._values else Flow()
+        out = Flow(list(getattr(inner, "_values", [])))
+        current = {"inner": inner}
+
+        def _make_relay(for_inner):
+            def _relay(value):
+                if current["inner"] is for_inner:   # guards a callback already mid-flight when swapped
+                    out._push(value)
+            return _relay
+
+        def _subscribe(new_inner):
+            relay = _make_relay(new_inner)
+            add = getattr(new_inner, "_add_listener", None)
+            if callable(add):
+                add(relay)
+            return relay
+
+        relay = _subscribe(inner)
+
+        def _on_new(value):
+            nonlocal relay
+            old_inner, old_relay = current["inner"], relay
+            remove = getattr(old_inner, "_remove_listener", None)   # cancel the OLD inner's subscription
+            if callable(remove):
+                remove(old_relay)
+            new_inner = fn(value)               # a NEW upstream value -> re-derive the inner flow
+            current["inner"] = new_inner
+            out._push(new_inner._values[-1] if getattr(new_inner, "_values", None) else None)
+            relay = _subscribe(new_inner)
+
+        add_self = getattr(self, "_add_listener", None)
+        if callable(add_self):
+            add_self(_on_new)
+        return out
 
     def combine(self, other, transform):
         return combine(self, other, transform)
 
     def stateIn(self, scope=None, started=None, initialValue=None):
-        return StateFlow(self._values[-1] if self._values else initialValue)
+        sf = MutableStateFlow(self._values[-1] if self._values else initialValue)
+        add = getattr(self, "_add_listener", None)   # stay live: upstream re-emission updates sf.value
+        if callable(add):
+            add(lambda v: setattr(sf, "value", v))
+        return sf.asStateFlow()
 
     def asStateFlow(self):
         return self
@@ -180,7 +276,7 @@ class MutableStateFlow(StateFlow):
     @value.setter
     def value(self, v):
         self._value = v
-        self._values = [v]
+        self._push(v)                                # updates self._values AND notifies any listeners
         try:
             import runtime.reactive as _reactive     # a VM state write -> one recompose (bridge to the kit)
             _reactive.recompose.invalidate()
