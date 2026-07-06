@@ -1,0 +1,4 @@
+{"id": "075_rsync",
+ "cwd": "~",
+ "cmd": ["rsync", "-a", "--delete", "Programming/PseudoCoup/", "/tmp/gh/Programming/PseudoCoup/"],
+ "timeout": 300}

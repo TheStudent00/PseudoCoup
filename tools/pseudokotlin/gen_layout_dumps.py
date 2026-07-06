@@ -43,8 +43,11 @@ EXCEPTIONS = {
         # waitForIdle alone can dump the stateIn() INITIAL state before the Room flow emits --
         # anchor on a text only the loaded state renders (seeded ids are deterministic)
         "ProgramDayEditorScreen": "Full Body A — Squat",
-        "ProgramEditorScreen": "Join",   # read-only branch anchor: the initial stateIn() value renders
-                                          # the editable branch until the Room combine emits
+        # "Join" alone was too WEAK: it can also appear in the initial stateIn() editable-branch stub,
+        # so waitUntil could resolve on the pre-load frame under executor contention. Anchor on the
+        # roadmap's macrocycle header instead -- it renders ONLY once uiState.roadmap is non-null, i.e.
+        # only after the real program has loaded through Room.
+        "ProgramEditorScreen": "MACROCYCLE 1",
 
         "SessionDetailScreen": "Full Body A — Squat",
         "WorkoutExecutionScreen": "Full Body A — Squat",
@@ -279,8 +282,10 @@ class LayoutDumpAllTest {
         rule.setContent { WorkoutforlifeTheme(darkTheme = false) { content() } }
         rule.waitForIdle()
         if (waitFor != null) {
+            // substring = true: some anchors are prefixes of a count-suffixed label (e.g. "Push · 39"),
+            // and the count itself isn't the stable part -- the label text is.
             rule.waitUntil(timeoutMillis = 10_000) {
-                rule.onAllNodes(hasText(waitFor), useUnmergedTree = true)
+                rule.onAllNodes(hasText(waitFor, substring = true), useUnmergedTree = true)
                     .fetchSemanticsNodes().isNotEmpty()
             }
         }
