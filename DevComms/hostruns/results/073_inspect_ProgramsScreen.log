@@ -1,0 +1,70 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-06_63.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc861400>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc9fa580>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc984fa0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc999ef0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc9051d0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fc912120>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fca96350>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcbfd630>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fca16580>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fca274d0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcb79860>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcb8a7b0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fccbfb60>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcce4b40>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fccf5a90>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcb069e0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcc2ee40>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcc43d90>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcc64d70>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcda3070>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcdcc050>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x79d5fcd4c1a0>>>
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+
+=== ProgramsScreen  (display 411x915)  DECLARED (Compose)  vs  LIVE (Kivy), document-space ===
+  Text 'Programs'                 live: x=52 y=0 96x26
+    code [ui/programs/ProgramsScreen.py:46]: Scaffold(topBar=(lambda it=None: TopAppBar(title=(lambda it=it: Text("Programs")), navigationIco
+  Text 'Active'                   live: x=16 y=72 40x16
+    code [ui/programs/ProgramsScreen.py:42]: return Text(label, style=MaterialTheme.typography.labelLarge, fontWeight=FontWeight.SemiBold, co
+  Text '3-Day Full Body — Groun   live: x=32 y=110 255x22
+    code [ui/programs/ProgramsScreen.py:65]: Text(program.name, style=MaterialTheme.typography.titleMedium, fontWeight=FontWeight.SemiBold)
+  Text 'Ground Up'                live: x=40 y=142 57x11
+    code [ui/programs/ProgramsScreen.py:120]: Surface(shape=RoundedCornerShape(Int32(50)), color=Color.Transparent, border=BorderStroke(dp(Int
+  Text 'Three macrocycles that    live: x=32 y=167 347x97
+    code [ui/programs/ProgramsScreen.py:110]: return Text(text=desc, style=MaterialTheme.typography.bodyMedium, color=MaterialTheme.colorSchem
+  Text '3-Day Hypertrophy'        live: x=32 y=358 162x22
+    code [ui/programs/ProgramsScreen.py:65]: Text(program.name, style=MaterialTheme.typography.titleMedium, fontWeight=FontWeight.SemiBold)
+  Text 'Brain Builders'           live: x=40 y=390 69x11
+    code [ui/programs/ProgramsScreen.py:120]: Surface(shape=RoundedCornerShape(Int32(50)), color=Color.Transparent, border=BorderStroke(dp(Int
+  Text 'On my own journey'        live: x=129 y=390 101x12
+    code [ui/programs/ProgramsScreen.py:120]: Surface(shape=RoundedCornerShape(Int32(50)), color=Color.Transparent, border=BorderStroke(dp(Int
+  ... 198/211 components paired -> /home/lucas/Programming/PseudoCoup/layout_inspect/ProgramsScreen.html
+

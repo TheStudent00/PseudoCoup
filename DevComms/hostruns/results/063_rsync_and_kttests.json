@@ -1,0 +1,5 @@
+{
+  "id": "063_rsync_and_kttests",
+  "returncode": null,
+  "refused": "cwd escapes ~/Programming: /home/lucas"
+}

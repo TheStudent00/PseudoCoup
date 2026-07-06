@@ -1,0 +1,47 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-06_98.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+
+=== ExercisesScreen  (display 411x915)  DECLARED (Compose)  vs  LIVE (Kivy), document-space ===
+  Text 'Exercises'                live: x=4 y=0 95x26
+    code [ui/exercises/ExercisesScreen.py:56]: return Scaffold(topBar=(lambda it=it: TopAppBar(title=(lambda it=it: Text("Exercises")), actions
+  Text 'Search exercises…'        live: x=32 y=142 134x19
+    code [ui/exercises/ExercisesScreen.py:27]: return SearchBarDefaults.InputField(query=query.value, onQueryChange=viewModel.onQueryChange, on
+  Text 'Push  ·  39'              live: x=16 y=208 68x16
+    code [ui/exercises/ExercisesScreen.py:63]: Text(f"{label}  ·  {count}", style=MaterialTheme.typography.titleSmall, fontWeight=FontWeight.Se
+  Text 'Arnold Press'             live: x=16 y=248 90x19
+    code [ui/exercises/ExercisesScreen.py:71]: Text(exercise.name, style=MaterialTheme.typography.bodyLarge, fontWeight=FontWeight.Medium)
+  Text 'Front Delts · Side Delt   live: x=16 y=267 203x14
+    code [ui/exercises/ExercisesScreen.py:73]: return Text(f"{muscles}  ·  {exercise.equipmentType.displayName()}", style=MaterialTheme.typogra
+  Text 'Band Tricep Overhead Pr   live: x=16 y=297 205x19
+    code [ui/exercises/ExercisesScreen.py:71]: Text(exercise.name, style=MaterialTheme.typography.bodyLarge, fontWeight=FontWeight.Medium)
+  Text 'Triceps  ·  Resistance    live: x=16 y=316 152x14
+    code [ui/exercises/ExercisesScreen.py:73]: return Text(f"{muscles}  ·  {exercise.equipmentType.displayName()}", style=MaterialTheme.typogra
+  Text 'Band Tricep Push Down'    live: x=16 y=346 173x19
+    code [ui/exercises/ExercisesScreen.py:71]: Text(exercise.name, style=MaterialTheme.typography.bodyLarge, fontWeight=FontWeight.Medium)
+  ... 1129/1134 components paired -> /home/lucas/Programming/PseudoCoup/layout_inspect/ExercisesScreen.html
+

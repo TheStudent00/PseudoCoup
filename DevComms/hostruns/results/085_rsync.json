@@ -1,0 +1,5 @@
+{
+  "id": "085_rsync",
+  "returncode": null,
+  "refused": "cwd escapes ~/Programming: /home/lucas"
+}

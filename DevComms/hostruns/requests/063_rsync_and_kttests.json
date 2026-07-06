@@ -1,0 +1,4 @@
+{"id": "063_rsync_and_kttests",
+ "cwd": "~",
+ "cmd": ["bash", "-c", "rsync -a --delete ~/Programming/PseudoCoup/ /tmp/gh/Programming/PseudoCoup/ && cd /tmp/gh/Programming/PseudoCoup/tools/pseudokotlin && python3 run_kotlin_tests.py"],
+ "timeout": 1200}

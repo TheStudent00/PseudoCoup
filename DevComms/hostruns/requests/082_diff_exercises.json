@@ -1,0 +1,4 @@
+{"id": "082_diff_exercises",
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "layout_diff.py", "ExercisesScreen"],
+ "timeout": 300}

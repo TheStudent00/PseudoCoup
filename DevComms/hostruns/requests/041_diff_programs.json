@@ -1,0 +1,4 @@
+{"id": "041_diff_programs",
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "layout_diff.py", "ProgramsScreen"],
+ "timeout": 300}

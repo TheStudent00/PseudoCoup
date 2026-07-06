@@ -1,0 +1,5 @@
+{"id": "081_inspect_exercises",
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "inspect_layout.py", "ExercisesScreen"],
+ "timeout": 600,
+ "env": {"DISPLAY_SIZE": "411x915"}}

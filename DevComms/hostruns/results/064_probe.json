@@ -1,0 +1,5 @@
+{
+  "id": "064_probe",
+  "returncode": null,
+  "refused": "cwd escapes ~/Programming: /home/lucas"
+}

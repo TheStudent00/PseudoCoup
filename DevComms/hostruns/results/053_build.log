@@ -1,0 +1,10 @@
+extension registry: 3 names
+trailing-lambda slot registry: 268 fns
+app:  /home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife
+out:  /home/lucas/Programming/WFL_MixingCenter
+
+255 .kt files (advanced transpiler = KtToPy)
+  written .py        : 255
+  py-compile OK      : 255/255
+  transpiler errored : 0
+  emitted-but-invalid: 0

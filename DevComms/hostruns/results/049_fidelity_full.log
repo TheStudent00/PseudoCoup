@@ -1,0 +1,31 @@
+  Specimen gate: 24/24 (not counted)
+  SpecimenList gate: 5/5 (not counted)
+  ExerciseDetailScreen: 16/16 within tolerance
+  ExercisesScreen: 27/35 within tolerance
+  GymListScreen: 7/7 within tolerance
+  HistoryScreen: 7/7 within tolerance
+  LogCardioScreen: 25/25 within tolerance
+  ProgramsScreen: 18/21 within tolerance
+  ProgressScreen: 9/9 within tolerance
+  SettingsScreen: 41/41 within tolerance
+  TodayScreen: 3/3 within tolerance
+  WinsListScreen: 10/10 within tolerance
+  OnboardingScreen: 3/3 within tolerance
+  SessionDetailScreen: 14/14 within tolerance
+  ReportBugScreen: 10/10 within tolerance
+  ExerciseCreateScreen: 18/18 within tolerance
+  GymCreateWizardScreen: 13/13 within tolerance
+  GymEditorScreen: 5/5 within tolerance
+  PathDetailScreen: 1/1 within tolerance
+  PathsScreen: 3/3 within tolerance
+  SuggestedStretchesScreen: 3/3 within tolerance
+  WorkoutCooldownScreen: 25/25 within tolerance
+  WorkoutExecutionScreen: 31/31 within tolerance
+  WorkoutSummaryScreen: 2/2 within tolerance
+  WorkoutWarmupScreen: 32/32 within tolerance
+  ExercisePickerScreen: 26/26 within tolerance
+  MyProgramScreen: 3/3 within tolerance
+  ProgramDayEditorScreen: 13/13 within tolerance
+  ProgramEditorScreen: 32/32 within tolerance
+  UpdateProgramWizardScreen: 15/15 within tolerance
+FIDELITY ALL: 412/423 components within tolerance (28 screens)

@@ -1,0 +1,4 @@
+{"id": "066_diff_cooldown",
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "layout_diff.py", "WorkoutCooldownScreen"],
+ "timeout": 300}

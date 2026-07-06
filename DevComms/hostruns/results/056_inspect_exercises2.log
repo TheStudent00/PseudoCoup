@@ -1,0 +1,63 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-06_25.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/inspect_layout.py", line 643, in <module>
+     Inspector(screen, build(screen)).run()
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 956, in run
+     runTouchApp()
+     ~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 574, in runTouchApp
+     EventLoop.mainloop()
+     ~~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 339, in mainloop
+     self.idle()
+     ~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 391, in idle
+     Clock.tick_draw()
+     ~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/clock.py", line 783, in tick_draw
+     self._process_events_before_frame()
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+   File "kivy/_clock.pyx", line 662, in kivy._clock.CyClockBase._process_events_before_frame
+   File "kivy/_clock.pyx", line 708, in kivy._clock.CyClockBase._process_events_before_frame
+   File "kivy/_clock.pyx", line 704, in kivy._clock.CyClockBase._process_events_before_frame
+   File "kivy/_clock.pyx", line 218, in kivy._clock.ClockEvent.tick
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/uix/label.py", line 440, in texture_update
+     self.texture_size = list(self.texture.size)
+     ^^^^^^^^^^^^^^^^^
+   File "kivy/properties.pyx", line 520, in kivy.properties.Property.__set__
+   File "kivy/properties.pyx", line 939, in kivy.properties.ListProperty.set
+   File "kivy/properties.pyx", line 567, in kivy.properties.Property.set
+   File "kivy/properties.pyx", line 606, in kivy.properties.Property._dispatch
+   File "kivy/_event.pyx", line 1307, in kivy._event.EventObservers.dispatch
+   File "kivy/_event.pyx", line 1213, in kivy._event.EventObservers._dispatch
+   File "/home/lucas/Programming/WFL_MixingCenter/render/kivy_kit.py", line 1366, in _line_h
+     w.height = ts[1] / lines + (lines - 1) * _lh
+                                ~~~~~~~~~~~~^~~~~
+ TypeError: unsupported operand type(s) for *: 'int' and 'NoneType'
