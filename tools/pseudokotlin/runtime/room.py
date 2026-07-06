@@ -16,7 +16,7 @@ import json as _json
 import sys
 import os
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
-from runtime.coroutines import Flow      # noqa: E402  -- DAO query methods return a Flow
+from runtime.coroutines import Flow, MutableStateFlow  # noqa: E402  -- DAO query methods return a Flow
 from runtime.kotlin_rt import KtList      # noqa: E402  -- query results carry Kotlin collection methods
 
 # Room's exported schema JSON (one file per version), used by MigrationTestHelper to recreate an old
@@ -79,9 +79,21 @@ class Entity:
         self.table, self.columns, self.factory = table, columns, factory
 
 
+def _tables_in_sql(sql):
+    """Parse every FROM/JOIN table name referenced by a @Query string -- Room's InvalidationTracker
+    derives a query's observed tables the same way (via the generated SQL, not per-DAO metadata). This
+    is intentionally general: no per-DAO/per-screen table lists anywhere, just the SQL text itself."""
+    return set(m.group(1) for m in _re.finditer(r"\b(?:FROM|JOIN|INTO|UPDATE)\s+(\w+)", sql, _re.IGNORECASE))
+
+
 class Database:
     """The sqlite3-backed database. register(EntityClass) each entity (it carries cls._room), then DAOs
-    run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes)."""
+    run SQL -- the table is derived from the SQL's FROM (reads) or the entity class (writes).
+
+    Also implements Room's InvalidationTracker, table-granular: `_subs` maps table name -> the set of
+    live query-flows (`_LiveFlow`) that read it. A write commit (insert/update/delete/execute, or the
+    outermost `withTransaction`) notifies every subscriber of every table it touched, which re-runs its
+    own SQL and re-emits -- a rollback (an exception inside withTransaction) notifies nobody."""
     def __init__(self, version=1, conn=None):
         self._version = int(version)
         if conn is not None:                # bind to an existing conn (MigrationTestHelper's named DB)
@@ -91,16 +103,57 @@ class Database:
             self._conn.row_factory = sqlite3.Row
             self._conn.execute(f"PRAGMA user_version = {int(version)}")      # @Database(version=N) -> db.version
         self._entities = {}                 # table name -> Entity
+        self._subs = {}                      # table name -> list of _LiveFlow (weak-ish: pruned as they die)
+        self._txn_depth = 0                  # nested withTransaction ref count
+        self._pending_invalidate = set()     # tables touched inside the current outermost transaction
+
+    # ---- InvalidationTracker -------------------------------------------------------------------- #
+    def _subscribe(self, live_flow, tables):
+        for t in tables:
+            self._subs.setdefault(t, []).append(live_flow)
+
+    def _unsubscribe(self, live_flow, tables):
+        for t in tables:
+            lst = self._subs.get(t)
+            if lst and live_flow in lst:
+                lst.remove(live_flow)
+
+    def invalidate(self, tables):
+        """Notify every live query-flow subscribed to any of `tables`: it re-runs its SQL and re-emits."""
+        if not tables:
+            return
+        if self._txn_depth > 0:              # inside withTransaction -- defer until the outermost commits
+            self._pending_invalidate.update(tables)
+            return
+        seen = set()
+        for t in tables:
+            for lf in list(self._subs.get(t, ())):
+                if lf not in seen:
+                    seen.add(lf)
+                    lf._rerun()
 
     def withTransaction(self, block):
-        """Room's db.withTransaction { } -> run block in a transaction; roll back on any exception."""
-        self._conn.execute("BEGIN")
+        """Room's db.withTransaction { } -> run block in a transaction; roll back on any exception.
+        Invalidation for every write inside is deferred and fired ONCE, only on a successful commit --
+        never on rollback (matches Room: InvalidationTracker observes the commit, not each statement)."""
+        outermost = self._txn_depth == 0
+        if outermost:
+            self._conn.execute("BEGIN")
+        self._txn_depth += 1
         try:
             result = block()
-            self._conn.execute("COMMIT")
+            if outermost:
+                self._conn.execute("COMMIT")
+            self._txn_depth -= 1
+            if outermost:
+                pending, self._pending_invalidate = self._pending_invalidate, set()
+                self.invalidate(pending)
             return result
-        except BaseException:               # noqa: BLE001 -- rollback then re-raise
-            self._conn.execute("ROLLBACK")
+        except BaseException:               # noqa: BLE001 -- rollback then re-raise, no invalidation
+            self._txn_depth -= 1
+            if outermost:
+                self._conn.execute("ROLLBACK")
+                self._pending_invalidate = set()
             raise
 
     def register(self, cls):
@@ -119,6 +172,7 @@ class Database:
         """Room's RoomDatabase.clearAllTables() -- wipe every registered table (the reinstall/reset path)."""
         for table in self._entities:
             self._conn.execute(f"DELETE FROM {table}")
+        self.invalidate(set(self._entities))
 
     def query(self, sql, params=None, single=False, pojo=None):
         """Run a @Query. `SELECT *` from a known entity table maps rows -> entity objects (one/None when
@@ -168,6 +222,7 @@ class Database:
         verb = "INSERT OR REPLACE" if replace else "INSERT OR IGNORE"
         vals = {c.name: c.to_db(getattr(obj, c.name)) for c in ent.columns}
         self._conn.execute(f"{verb} INTO {ent.table} ({names}) VALUES ({holes})", vals)
+        self.invalidate({ent.table})
 
     def update(self, obj):
         """@Update -> UPDATE every non-pk column WHERE pk = the object's pk (built from its schema)."""
@@ -178,6 +233,7 @@ class Database:
         sets = ", ".join(f"{c.name} = :{c.name}" for c in ent.columns if not c.pk)
         vals = {c.name: c.to_db(getattr(obj, c.name)) for c in ent.columns}
         self._conn.execute(f"UPDATE {ent.table} SET {sets} WHERE {pk.name} = :{pk.name}", vals)
+        self.invalidate({ent.table})
 
     def delete(self, obj):
         """@Delete -> DELETE the row WHERE pk = the object's pk."""
@@ -187,11 +243,14 @@ class Database:
             return
         self._conn.execute(f"DELETE FROM {ent.table} WHERE {pk.name} = :_pk",
                            {"_pk": pk.to_db(getattr(obj, pk.name))})
+        self.invalidate({ent.table})
 
     def execute(self, sql, params=None):
         """A raw @Query that isn't a row->entity SELECT (UPDATE/DELETE, or a scalar)."""
         cur = self._conn.execute(sql, _bind(params))
         self._conn.commit()
+        if _re.match(r"\s*(?:UPDATE|DELETE|INSERT)\b", sql, _re.IGNORECASE):
+            self.invalidate(_tables_in_sql(sql))
         return cur
 
     @property
@@ -208,17 +267,104 @@ class RoomDatabase:
         pass
 
 
+class _LiveMixin:
+    """Shared "stays live" behaviour for a Flow whose single emitted value can change later: a list of
+    listener callables, notified with the new value on re-emission. `_LiveFlow` (a live @Query) drives
+    this from Database invalidation; derived flows (.map/.flatMapLatest of a live flow) drive it by
+    relaying their upstream's notifications -- so liveness composes through a chain of operators exactly
+    like real Flow re-collection would, without a real event loop."""
+    def _init_live(self):
+        self._listeners = []
+
+    def _add_listener(self, cb):
+        self._listeners.append(cb)
+
+    def _push(self, value):
+        self._values = [value]
+        for cb in list(self._listeners):
+            cb(value)
+
+    # ---- terminal / linking operators: keep the result live, mirroring real Flow re-collection ---- #
+    def collect(self, action):
+        action(self._values[-1])
+        self._add_listener(action)
+        return None
+
+    def collectLatest(self, action):
+        action(self._values[-1])
+        self._add_listener(action)
+        return None
+
+    def stateIn(self, scope=None, started=None, initialValue=None):
+        sf = MutableStateFlow(self._values[-1] if self._values else initialValue)
+        self._add_listener(lambda value: setattr(sf, "value", value))
+        return sf
+
+    def map(self, fn):
+        out = _DerivedLiveFlow([fn(v) for v in self._values])
+        self._add_listener(lambda value: out._push(fn(value)))
+        return out
+
+    def onEach(self, action):
+        for v in self._values:
+            action(v)
+        self._add_listener(action)
+        return self
+
+    def flatMapLatest(self, fn):
+        inner = fn(self._values[-1]) if self._values else Flow()
+        out = _DerivedLiveFlow(list(getattr(inner, "_values", [])))
+
+        def _relay(value):
+            out._push(value)
+        inner_add = getattr(inner, "_add_listener", None)
+        if callable(inner_add):
+            inner_add(_relay)
+
+        def _on_new(value):
+            new_inner = fn(value)             # a NEW upstream value -> re-derive the inner flow (Room's
+            out._push(new_inner._values[-1] if getattr(new_inner, "_values", None) else None)
+            new_add = getattr(new_inner, "_add_listener", None)
+            if callable(new_add):
+                new_add(_relay)
+        self._add_listener(_on_new)
+        return out
+
+
+class _DerivedLiveFlow(_LiveMixin, Flow):
+    """The live Flow returned by `.map`/`.flatMapLatest` on a live flow -- same _LiveMixin surface, but its
+    value changes only because its upstream pushed a new one (no Database subscription of its own)."""
+    def __init__(self, values):
+        Flow.__init__(self, values)
+        self._init_live()
+
+
+class _LiveFlow(_LiveMixin, Flow):
+    """A Flow backed by a live @Query: re-runs `run_query()` and re-emits whenever the Database
+    invalidates a table this SQL reads (Room's InvalidationTracker). Matches the existing synchronous
+    Flow API exactly (same .collect/.map/.stateIn/... surface) via `_LiveMixin`."""
+    def __init__(self, db, run_query, tables):
+        Flow.__init__(self, [run_query()])
+        self._init_live()
+        self._db, self._run_query, self._tables = db, run_query, set(tables)
+        db._subscribe(self, self._tables)
+
+    def _rerun(self):
+        self._push(self._run_query())
+
+
 class Dao:
     """Base for a generated DAO -- holds the database; query helpers wrap results the way Room's return
     types do (Flow<List> / Flow<one> / suspend one)."""
     def __init__(self, db):
         self._db = db
 
-    def _flow(self, sql, params=None, pojo=None):    # Flow<List<X>> -- emits the whole list as ONE value
-        return Flow([self._db.query(sql, params, pojo=pojo)])
+    def _flow(self, sql, params=None, pojo=None):    # Flow<List<X>> -- re-runs on any write to its table(s)
+        return _LiveFlow(self._db, lambda: self._db.query(sql, params, pojo=pojo), _tables_in_sql(sql))
 
-    def _flowOne(self, sql, params=None, pojo=None):  # Flow<X?> -- the single row (or None) as one value
-        return Flow([self._db.query(sql, params, single=True, pojo=pojo)])
+    def _flowOne(self, sql, params=None, pojo=None):  # Flow<X?> -- ditto, single row (or None)
+        return _LiveFlow(self._db, lambda: self._db.query(sql, params, single=True, pojo=pojo),
+                          _tables_in_sql(sql))
 
     def _one(self, sql, params=None, pojo=None):      # suspend X?
         return self._db.query(sql, params, single=True, pojo=pojo)
@@ -230,17 +376,23 @@ class Dao:
                   parent_col, entity_col, rel_is_list, as_list=True):
         """A @Transaction @Query returning a @Relation POJO. Run the base query for the @Embedded rows, then
         for each stitch its related rows (SELECT * FROM <rel table> WHERE <entityColumn> = row.<parentColumn>)
-        -- exactly Room's relation assembly. Returns Flow<List<POJO>> / Flow<POJO?>."""
+        -- exactly Room's relation assembly. Returns Flow<List<POJO>> / Flow<POJO?>. Live: re-stitches and
+        re-emits whenever either the parent query's table or the related table is invalidated."""
         table = rel_entity._room.table
-        parents = self._db.query(sql, params)
 
-        def stitch(p):
-            kids = KtList(self._db.query(f"SELECT * FROM {table} WHERE {entity_col} = :_pk",
-                                         {"_pk": getattr(p, parent_col)}))
-            return pojo(**{emb_field: p, rel_field: (kids if rel_is_list else (kids[0] if kids else None))})
+        def run():
+            parents = self._db.query(sql, params)
 
-        out = KtList(stitch(p) for p in parents)   # Kotlin collection methods (mapNotNull/...) dispatch on it
-        return Flow([out if as_list else (out[0] if out else None)])
+            def stitch(p):
+                kids = KtList(self._db.query(f"SELECT * FROM {table} WHERE {entity_col} = :_pk",
+                                             {"_pk": getattr(p, parent_col)}))
+                return pojo(**{emb_field: p, rel_field: (kids if rel_is_list else (kids[0] if kids else None))})
+
+            out = KtList(stitch(p) for p in parents)  # Kotlin collection methods (mapNotNull/...) dispatch
+            return out if as_list else (out[0] if out else None)
+
+        tables = _tables_in_sql(sql) | {table}
+        return _LiveFlow(self._db, run, tables)
 
     def _insert(self, obj, replace=True):       # @Insert one or a list
         for e in (obj if isinstance(obj, list) else [obj]):
