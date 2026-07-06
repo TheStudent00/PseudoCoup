@@ -258,16 +258,38 @@ def _current(f):
     return f
 
 
+def _link_live(flows, recompute, sink):
+    """If any input Flow is a live Room query (`_LiveFlow`, duck-typed via `_add_listener` so this module
+    doesn't need to import room.py), re-run `recompute()` and push the new value into `sink` whenever any
+    of them re-emits -- lets combine()/stateIn() chains built on top of a Room Flow stay live too."""
+    for f in flows:
+        add = getattr(f, "_add_listener", None)
+        if callable(add):
+            add(lambda _v: sink(recompute()))
+
+
 def combine(*args):
     """combine(f1, f2, …, transform) -> StateFlow(transform(current(f1), current(f2), …)). A DAO-backed
-    flow with no data contributes None (the data-layer gap)."""
+    flow with no data contributes None (the data-layer gap). Stays live: if any input is a live Room
+    query Flow, a table invalidation re-runs `transform` and updates the returned StateFlow's .value."""
     *flows, transform = args
     if len(flows) == 1 and isinstance(flows[0], (list, tuple)):
         # Kotlin's collection overload `combine(flows) { arr -> ... }`: the transform receives the
         # current values as ONE array argument, not spread varargs.
         from .kotlin_rt import KtList
-        return StateFlow(transform(KtList(_current(f) for f in flows[0])))
-    return StateFlow(transform(*[_current(f) for f in flows]))
+        inputs = flows[0]
+
+        def recompute():
+            return transform(KtList(_current(f) for f in inputs))
+        result = MutableStateFlow(recompute())
+        _link_live(inputs, recompute, lambda v: setattr(result, "value", v))
+        return result.asStateFlow()
+
+    def recompute():
+        return transform(*[_current(f) for f in flows])
+    result = MutableStateFlow(recompute())
+    _link_live(flows, recompute, lambda v: setattr(result, "value", v))
+    return result.asStateFlow()
 
 
 def asStateFlow(f):
