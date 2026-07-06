@@ -1,0 +1,79 @@
+
+> Configure project :app
+WARNING: The option setting 'android.disallowKotlinSourceSets=false' is experimental.
+The current default is 'true'.
+
+> Task :app:clean
+> Task :wear:clean UP-TO-DATE
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig
+> Task :app:generateDebugResources
+> Task :app:packageDebugResources
+> Task :app:processDebugNavigationResources
+> Task :app:parseDebugLocalResources
+> Task :app:generateDebugRFile
+> Task :app:kspDebugKotlin
+
+> Task :app:compileDebugKotlin
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/navigation/AppNavigation.kt:903:44 'fun rememberSwipeToDismissBoxState(initialValue: SwipeToDismissBoxValue = ..., confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = ..., positionalThreshold: (@ParameterName(...) Float) -> Float = ...): SwipeToDismissBoxState' is deprecated. confirmValueChange is deprecated without replacement. Rather than relying on a callback to veto state changes, the anchor set should not include disallowed anchors. See androidx.compose.foundation.samples.AnchoredDraggableDynamicAnchorsSample for an example of using dynamic anchors over confirmValueChange.
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/execution/WorkoutExecutionScreen.kt:1340:24 'fun rememberSwipeToDismissBoxState(initialValue: SwipeToDismissBoxValue = ..., confirmValueChange: (SwipeToDismissBoxValue) -> Boolean = ..., positionalThreshold: (@ParameterName(...) Float) -> Float = ...): SwipeToDismissBoxState' is deprecated. confirmValueChange is deprecated without replacement. Rather than relying on a callback to veto state changes, the anchor set should not include disallowed anchors. See androidx.compose.foundation.samples.AnchoredDraggableDynamicAnchorsSample for an example of using dynamic anchors over confirmValueChange.
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/execution/WorkoutExecutionViewModel.kt:100:43 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/programs/UpdateProgramWizardScreen.kt:864:44 'fun rememberRichTooltipPositionProvider(spacingBetweenTooltipAndAnchor: Dp = ...): PopupPositionProvider' is deprecated. Deprecated in favor of rememberTooltipPositionProvider API.
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/programs/UpdateProgramWizardScreen.kt:869:42 'val Icons.Outlined.HelpOutline: ImageVector' is deprecated. Use the AutoMirrored version at Icons.AutoMirrored.Outlined.HelpOutline.
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:69:9 'fun TabRow(selectedTabIndex: Int, modifier: Modifier = ..., containerColor: Color = ..., contentColor: Color = ..., indicator: @Composable() ComposableFunction1<@ParameterName(...) List<TabPosition>, Unit> = ..., divider: @Composable() ComposableFunction0<Unit> = ..., tabs: @Composable() ComposableFunction0<Unit>): Unit' is deprecated. Replaced with PrimaryTabRow and SecondaryTabRow.
+w: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayViewModel.kt:301:61 This declaration needs opt-in. Its usage should be marked with '@kotlinx.coroutines.ExperimentalCoroutinesApi' or '@OptIn(kotlinx.coroutines.ExperimentalCoroutinesApi::class)'
+
+> Task :app:javaPreCompileDebug
+> Task :app:compileDebugJavaWithJavac
+> Task :app:hiltSyncDebug
+> Task :app:hiltAggregateDepsDebug
+> Task :app:hiltJavaCompileDebug
+> Task :app:checkDebugAarMetadata
+> Task :app:mapDebugSourceSetPaths
+> Task :app:compileDebugNavigationResources
+> Task :app:mergeDebugResources
+> Task :app:createDebugCompatibleScreenManifests
+> Task :app:extractDeepLinksDebug
+> Task :app:processDebugMainManifest
+> Task :app:processDebugManifest
+> Task :app:processDebugManifestForPackage
+> Task :app:processDebugResources
+> Task :app:transformDebugClassesWithAsm
+> Task :app:bundleDebugClassesToRuntimeJar
+> Task :app:generateDebugAssets UP-TO-DATE
+> Task :app:mergeDebugAssets
+> Task :app:preDebugUnitTestBuild UP-TO-DATE
+> Task :app:packageDebugUnitTestForUnitTest
+> Task :app:processDebugUnitTestManifest
+> Task :app:generateDebugUnitTestConfig
+> Task :app:processDebugJavaRes
+> Task :app:bundleDebugClassesToCompileJar
+> Task :app:kspDebugUnitTestKotlin
+> Task :app:compileDebugUnitTestKotlin
+> Task :app:processDebugUnitTestJavaRes
+> Task :app:javaPreCompileDebugUnitTest
+> Task :app:compileDebugUnitTestJavaWithJavac
+> Task :app:hiltSyncDebugUnitTest
+> Task :app:hiltAggregateDepsDebugUnitTest
+> Task :app:hiltJavaCompileDebugUnitTest
+> Task :app:transformDebugUnitTestClassesWithAsm
+
+> Task :app:testDebugUnitTest FAILED
+
+WalkRecorderTest > walkApp FAILED
+    java.lang.RuntimeException at RoboMonitoringInstrumentation.java:102
+
+1 test completed, 1 failed
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:testDebugUnitTest'.
+> There were failing tests. See the report at: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/build/reports/tests/testDebugUnitTest/index.html
+
+* Try:
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+
+BUILD FAILED in 38s
+41 actionable tasks: 40 executed, 1 up-to-date

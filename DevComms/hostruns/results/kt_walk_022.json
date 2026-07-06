@@ -1,0 +1,8556 @@
+{
+ "meta": {
+  "format": "wfl-decision-tree-walk\/v1",
+  "generator": "kt_walker",
+  "steps_this_run": 60
+ },
+ "states": {
+  "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2": {
+   "state_id": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "This week's workouts",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Set up a program to see your week here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No program enrolled yet. Head to Paths to get started.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33": {
+   "state_id": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "This week's workouts",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Set up a program to see your week here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No program enrolled yet. Head to Paths to get started.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "New mobility session",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a Win",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log other exercise",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd": {
+   "state_id": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Settings",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You're all caught up.",
+     "interactive": false
+    }
+   ]
+  },
+  "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c": {
+   "state_id": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "route": "my_program",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No program yet",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Join a program to see your training roadmap here.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Browse programs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53": {
+   "state_id": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "route": "paths",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Start with your why.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Find your path",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343": {
+   "state_id": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "route": "progress",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Analytics",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bests",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "History",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Your wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "0",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "More than the numbers — the real-life wins training makes possible.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Log a win",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log your first workout to see strength, volume and training-time analytics here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775": {
+   "state_id": "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775",
+   "route": "execution\/{sessionId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "PLATE CALCULATOR",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "TARGET WEIGHT",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "0 kg",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "BAR",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "15 kg",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "20 kg",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "25 kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "PER SIDE — 0.00 kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Target must exceed bar weight",
+     "interactive": false
+    }
+   ]
+  },
+  "cdfb6feaf92a0e23f96321e18cfb7b3f2c58aad5cb1593c5963e726b2470dc5c": {
+   "state_id": "cdfb6feaf92a0e23f96321e18cfb7b3f2c58aad5cb1593c5963e726b2470dc5c",
+   "route": "execution\/{sessionId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "This workout has no exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Go back",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mobility session",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Finish",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659": {
+   "state_id": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "route": "workout_cooldown\/{sessionId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "🚶",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Nicely done",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Take a breath — you're all wrapped up.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How are you feeling?",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Compared to when you started",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Worse",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Same",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Better",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Great",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Finish",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Slow walk",
+     "interactive": false
+    }
+   ]
+  },
+  "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790": {
+   "state_id": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "route": "workout_summary\/{sessionId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout complete",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Done",
+     "interactive": false
+    }
+   ]
+  },
+  "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1": {
+   "state_id": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "route": "progress",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Analytics",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bests",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "History",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How you feel after training",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "On 1 training days this month, your mood improved after 0% of sessions.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Your wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "0",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "More than the numbers — the real-life wins training makes possible.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Log a win",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log your first workout to see strength, volume and training-time analytics here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Monday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2": {
+   "state_id": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "route": "wins",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "All",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Pain Relief",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Everyday Strength",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Endurance & Energy",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No wins match your filters.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Your wins",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "ee5ca87799a750beb7e8eae9881378e6fa7866e5d67391a9a6bce1808a59b6a2": {
+   "state_id": "ee5ca87799a750beb7e8eae9881378e6fa7866e5d67391a9a6bce1808a59b6a2",
+   "route": "wins",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a win",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Something happened in real life that training made possible — what was it?",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Tag",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Pain Relief",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Everyday Strength",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Endurance & Energy",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Coordination & Reaction",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Mood & Mind",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Connection & Life",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "e.g. carried all the groceries in one trip",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save win",
+     "interactive": false
+    }
+   ]
+  },
+  "4b80b146fbef1d57e8cc72e952135d073a4d51777b6151118fa08e48429e5964": {
+   "state_id": "4b80b146fbef1d57e8cc72e952135d073a4d51777b6151118fa08e48429e5964",
+   "route": "progress",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a win",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Something happened in real life that training made possible — what was it?",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Tag",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Pain Relief",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Everyday Strength",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Endurance & Energy",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Coordination & Reaction",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Mood & Mind",
+     "interactive": false
+    },
+    {
+     "kind": "Checkbox",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Connection & Life",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "e.g. carried all the groceries in one trip",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save win",
+     "interactive": false
+    }
+   ]
+  },
+  "053df5bc889d0193e86c801bd272f7ceb134a85ecfb899a2d25c832cb02304da": {
+   "state_id": "053df5bc889d0193e86c801bd272f7ceb134a85ecfb899a2d25c832cb02304da",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RPE",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "27f58720746f2e4599de0b2cc4c9b47c9af78266727ef1e815afe2cf28ce2259": {
+   "state_id": "27f58720746f2e4599de0b2cc4c9b47c9af78266727ef1e815afe2cf28ce2259",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "4242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "No lingo",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "6ec00afe6117268069c94d8844af3daf9ed5d6ca3cda26f84f888e64b9bd3f32": {
+   "state_id": "6ec00afe6117268069c94d8844af3daf9ed5d6ca3cda26f84f888e64b9bd3f32",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RPE",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "0ef945a1992febb05a57244157a89f092452232af3dc67afba0ec9194bc1c5d3": {
+   "state_id": "0ef945a1992febb05a57244157a89f092452232af3dc67afba0ec9194bc1c5d3",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "040c4935801b6ed4b6c0efec9880ff3ca073b55e6259a76280d289dbfa374bbb": {
+   "state_id": "040c4935801b6ed4b6c0efec9880ff3ca073b55e6259a76280d289dbfa374bbb",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "424242424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "kg",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "2f364474fdbff72329d984d80c93618db9b9769ae66af9fa23de9308a7f9ae04": {
+   "state_id": "2f364474fdbff72329d984d80c93618db9b9769ae66af9fa23de9308a7f9ae04",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42424242424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "lb",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "LB",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "4239ec6a20efdbf3170d40e1ce862437342ad9bc891add7051dd95794889b80d": {
+   "state_id": "4239ec6a20efdbf3170d40e1ce862437342ad9bc891add7051dd95794889b80d",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "424242424242424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "4242.0",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "lb",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "LB",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "441306d4d6424332eee37d2d6a8e1de36159283fd02a1331e4fbbc407a2d17ce": {
+   "state_id": "441306d4d6424332eee37d2d6a8e1de36159283fd02a1331e4fbbc407a2d17ce",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Profile",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display name",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How the app addresses you",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42424242424242424242User",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Body weight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Used for relative strength",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42424241.1",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "lb",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Display preferences",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Effort scale",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "How effort is recorded each set",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Weight unit",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Summaries and plate calculator",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "LB",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gyms & exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Manage gyms and equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Browse, favourite, and create exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Workout reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Remind you when it's time to log your next session",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Microcycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Only 1 more workout left to hit your weekly target",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Mesocycle reminders",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Peak week push and upcoming deload previews",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log a victory",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Prompts to record qualitative wins and personal highs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Push",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "None",
+     "interactive": false
+    },
+    {
+     "kind": "RadioButton",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "In-app",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Back up my data",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Save workouts, progress & custom programs to a file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Restore from backup",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Replace current data with a backup file",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Help & feedback",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Report a bug",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Send us a problem with diagnostic logs attached",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Developer",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Debug panel",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Time travel + seed test state",
+     "interactive": false
+    }
+   ]
+  },
+  "f4eba27394e469ca38b7b31e581c8c9e9a39b689bc3d5868ce8d39e8d4f51b92": {
+   "state_id": "f4eba27394e469ca38b7b31e581c8c9e9a39b689bc3d5868ce8d39e8d4f51b92",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "No lingo",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RPE",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "RIR",
+     "interactive": false
+    }
+   ]
+  },
+  "5b951dd720b36a11b6a74c759bfd2870d043c2d2e550fc4752727ebf4a8cae07": {
+   "state_id": "5b951dd720b36a11b6a74c759bfd2870d043c2d2e550fc4752727ebf4a8cae07",
+   "route": "settings_notifications",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "KG",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "LB",
+     "interactive": false
+    }
+   ]
+  },
+  "a6f3402cb4cc2210a2229db5b0ef67fbaa8bcf066c92c0e1dfa49ed6bc295799": {
+   "state_id": "a6f3402cb4cc2210a2229db5b0ef67fbaa8bcf066c92c0e1dfa49ed6bc295799",
+   "route": "gym_list",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No gyms yet. Tap + to add one.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gym profiles",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "a2e6f84496bc274d6639ec4a4ac9a579296e94bc8e0d70f0f79b245aae7b0093": {
+   "state_id": "a2e6f84496bc274d6639ec4a4ac9a579296e94bc8e0d70f0f79b245aae7b0093",
+   "route": "gym_editor?gymId={gymId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Edit gym",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "685241040a8279b77a96ce23ace49845d39762c5cf95c18b78d9f494103713bb": {
+   "state_id": "685241040a8279b77a96ce23ace49845d39762c5cf95c18b78d9f494103713bb",
+   "route": "gym_editor?gymId={gymId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gym name",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Barbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "45 lb Olympic Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Barbell · 20.412 lb · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bench",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Flat \/ Adjustable Bench",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Bench · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "5 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 2.26796 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "10 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 4.53592 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "15 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 6.8038799999999995 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "20 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 9.07184 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Edit gym",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "569a8b10c230eee0ac5d1d27d3b8568c07f91c78127c9b2709868986a71f0592": {
+   "state_id": "569a8b10c230eee0ac5d1d27d3b8568c07f91c78127c9b2709868986a71f0592",
+   "route": "gym_editor?gymId={gymId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gym name",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Barbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bench",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "5 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 2.26796 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "10 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 4.53592 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "15 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 6.8038799999999995 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "20 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 9.07184 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "25 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 11.3398 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "30 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 13.607759999999999 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Edit gym",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "edd6c086cbb578f50c07d0fff3342ce58c1434ae30ca2b562e398a28275be689": {
+   "state_id": "edd6c086cbb578f50c07d0fff3342ce58c1434ae30ca2b562e398a28275be689",
+   "route": "gym_editor?gymId={gymId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gym name",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Barbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "5 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 2.26796 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "10 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 4.53592 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "15 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 6.8038799999999995 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "20 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 9.07184 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "25 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 11.3398 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "30 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 13.607759999999999 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Edit gym",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  },
+  "be83d32d6e910bc9e652b94cfa9aeefa45b7faebf089838f977e488f04fd6161": {
+   "state_id": "be83d32d6e910bc9e652b94cfa9aeefa45b7faebf089838f977e488f04fd6161",
+   "route": "gym_editor?gymId={gymId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Gym name",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "42",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Equipment",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Barbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Bodyweight · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dip Bar · qty 1",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "5 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 2.26796 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "10 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 4.53592 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "15 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 6.8038799999999995 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "20 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 9.07184 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "25 lb Dumbbell",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Dumbbell · 11.3398 lb · qty 2",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Edit gym",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Save",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Image",
+     "text": "",
+     "interactive": false
+    }
+   ]
+  }
+ },
+ "edges": [
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 5
+   },
+   "destination": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 6
+   },
+   "destination": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "bd7a58d120478179373b9a23ab240ad7f00b8f3ca8d53f6c63e0e475e0204df2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4976c20f084e5725a1e64b72a0f2cd0c59b5b0d785152e18d8a243d7a5c88c33",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "cdfb6feaf92a0e23f96321e18cfb7b3f2c58aad5cb1593c5963e726b2470dc5c",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "aa2e07643a98c9c4b5d759f1a3f0a8c0949bd5834770d48386367507b60a03fd",
+   "action": {
+    "kind": "Tab",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 5
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "EditableText",
+    "label": "",
+    "handler_kind": "onValueChange",
+    "ordinal": 0
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 5
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "76761a20181886dd86737563b86b6e4955a842e537dfccd3ba0baf8bb68cee9c",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 6
+   },
+   "destination": "ee5ca87799a750beb7e8eae9881378e6fa7866e5d67391a9a6bce1808a59b6a2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "EditableText",
+    "label": "",
+    "handler_kind": "onValueChange",
+    "ordinal": 0
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "0b7ef4b9dc315cd6b444c5478aacc8c5ceb71df959893837b6fd41e38942dde2",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 5
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "0829c31f19ad59219edc51c3cc360578c17698e660adee360a8fa94780557e53",
+   "action": {
+    "kind": "Checkbox",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 6
+   },
+   "destination": "4b80b146fbef1d57e8cc72e952135d073a4d51777b6151118fa08e48429e5964",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onLongClick",
+    "ordinal": 1
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "93aaae5f96702a3d15277f80c0661b216ee7b3878fd55bb08cb35748e3ae9ff1",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4db354630dd56ecbfc6cd732e125659c6b39099511931721418e14b5a3067343",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "053df5bc889d0193e86c801bd272f7ceb134a85ecfb899a2d25c832cb02304da",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "27f58720746f2e4599de0b2cc4c9b47c9af78266727ef1e815afe2cf28ce2259",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "6ec00afe6117268069c94d8844af3daf9ed5d6ca3cda26f84f888e64b9bd3f32",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "52c164a8bedbecb404fdb3ed0dd7e2a479929b87ee7a153d5ff04a18eb5ef775",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "0ef945a1992febb05a57244157a89f092452232af3dc67afba0ec9194bc1c5d3",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "cdfb6feaf92a0e23f96321e18cfb7b3f2c58aad5cb1593c5963e726b2470dc5c",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "040c4935801b6ed4b6c0efec9880ff3ca073b55e6259a76280d289dbfa374bbb",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "cdfb6feaf92a0e23f96321e18cfb7b3f2c58aad5cb1593c5963e726b2470dc5c",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "2f364474fdbff72329d984d80c93618db9b9769ae66af9fa23de9308a7f9ae04",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "action": {
+    "kind": "EditableText",
+    "label": "424242424242424242User",
+    "handler_kind": "onValueChange",
+    "ordinal": 0
+   },
+   "destination": "4239ec6a20efdbf3170d40e1ce862437342ad9bc891add7051dd95794889b80d",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "action": {
+    "kind": "EditableText",
+    "label": "424241.1",
+    "handler_kind": "onValueChange",
+    "ordinal": 1
+   },
+   "destination": "441306d4d6424332eee37d2d6a8e1de36159283fd02a1331e4fbbc407a2d17ce",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "f4eba27394e469ca38b7b31e581c8c9e9a39b689bc3d5868ce8d39e8d4f51b92",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "5b951dd720b36a11b6a74c759bfd2870d043c2d2e550fc4752727ebf4a8cae07",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "d6e44ad443ef8d958136a437fe9bb67f70318acc4c2cb4b7aa1cdb01afcb4659",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "a6f3402cb4cc2210a2229db5b0ef67fbaa8bcf066c92c0e1dfa49ed6bc295799",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": null,
+   "action": null,
+   "destination": null,
+   "error": {
+    "type": "ReplayError",
+    "message": "replay failed for path [1, 0]"
+   },
+   "unsettled": false
+  },
+  {
+   "source": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "a2e6f84496bc274d6639ec4a4ac9a579296e94bc8e0d70f0f79b245aae7b0093",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "685241040a8279b77a96ce23ace49845d39762c5cf95c18b78d9f494103713bb",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "569a8b10c230eee0ac5d1d27d3b8568c07f91c78127c9b2709868986a71f0592",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "action": {
+    "kind": "Button",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "edd6c086cbb578f50c07d0fff3342ce58c1434ae30ca2b562e398a28275be689",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "4ac8c4e589e539b3b050de4c5efc479496d37de14af76173bad0aa773296b790",
+   "action": {
+    "kind": "Node",
+    "label": "",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "be83d32d6e910bc9e652b94cfa9aeefa45b7faebf089838f977e488f04fd6161",
+   "error": null,
+   "unsettled": false
+  }
+ ]
+}
