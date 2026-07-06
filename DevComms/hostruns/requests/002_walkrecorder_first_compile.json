@@ -1,0 +1,7 @@
+{"id": "002_walkrecorder_first_compile",
+ "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1",
+         "-Dorg.gradle.jvmargs=-Xmx2g",
+         "--tests", "com.sara.workoutforlife.walk.WalkRecorderTest",
+         "--rerun", "-Dwalk.steps=20", "-Dwalk.reset=1"],
+ "timeout": 3600}
