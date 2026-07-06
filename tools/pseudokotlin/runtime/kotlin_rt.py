@@ -650,6 +650,14 @@ class KtMap(dict):
     def entries(self):
         return KtList(KtEntry(k, v) for k, v in self.items())
 
+    @property
+    def keys(self):                  # Kotlin Map.keys : Set<K> -- must chain like any KtSet
+        return KtSet(dict.keys(self))
+
+    @property
+    def values(self):                # Kotlin Map.values : Collection<V> -- chains like a KtList
+        return KtList(dict.values(self))
+
     def isEmpty(self):
         return len(self) == 0
 

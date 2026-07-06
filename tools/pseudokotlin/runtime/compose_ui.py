@@ -63,11 +63,11 @@ class _UIChain:
 
 _UI = _UIChain()
 
-_NAMES = """Add Alignment Arrangement ArrowBack ArrowDownward ArrowDropDown ArrowUpward AssistChipDefaults
-BarChart Bedtime BorderStroke Brush ButtonDefaults Canvas CardDefaults Check CheckCircle Close
+_NAMES = """Add Alignment Arrangement ArrowBack ArrowDownward ArrowDropDown ArrowUpward
+BarChart Bedtime Brush Canvas Check CheckCircle Close
 LaunchedEffect
 ColumnScope DatePicker DatePickerDialog DateRange Dp Edit EmojiEvents ExpandLess ExpandMore ExperimentalLayoutApi
-ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite FavoriteBorder FilterChipDefaults
+ExperimentalMaterial3Api ExperimentalTextApi FastOutSlowInEasing Favorite FavoriteBorder
 FitnessCenter FocusRequester FontStyle FontVariation FontWeight HelpOutline Home
 Icons ImageVector ImeAction Immutable Info IntrinsicSize KeyboardActions KeyboardArrowDown KeyboardArrowRight
 KeyboardArrowUp KeyboardOptions KeyboardType Link ListItemDefaults LocalConfiguration LocalFocusManager Modifier
@@ -75,7 +75,7 @@ MoreHoriz MoreVert MutableInteractionSource NavigationBarItemDefaults Offset Pat
 PlayArrow ReadOnlyComposable Remove RepeatMode RoundedCornerShape Route Search
 SegmentedButtonDefaults SelectableDates SelfImprovement Size SolidColor Spring Star
 Stroke StrokeCap StrokeJoin SwapVert SwipeToDismissBoxValue TextAlign TextDecoration TextOverflow
-TextRange TooltipDefaults TopAppBarDefaults WindowInsets alpha animateFloat animateFloatAsState
+TextRange TooltipDefaults WindowInsets alpha animateFloat animateFloatAsState
 background border clickable clip clipToBounds detectHorizontalDragGestures
 drawBehind fadeIn fadeOut fillMaxHeight fillMaxSize fillMaxWidth focusRequester getValue graphicsLayer height
 heightIn horizontalScroll infiniteRepeatable isSystemInDarkTheme key lerp navigationBarsPadding
@@ -217,6 +217,215 @@ def lightColorScheme(**roles):
 
 def darkColorScheme(**roles):
     return _ColorScheme(**roles)
+
+
+def _scheme_role(role):
+    """The current MaterialTheme.colorScheme's role Color, or None while the scheme is unresolved (the
+    theme composable hasn't run yet) or the role is absent. Looked up lazily (MaterialTheme is defined
+    further down this module) so *Defaults factories below can resolve an omitted color argument to the
+    same theme the kit's _theme_color() reads later -- one shared source of truth, never a second table."""
+    cs = getattr(MaterialTheme, "colorScheme", None)
+    if cs is None or type(cs).__name__ == "_UIChain":
+        return None
+    v = getattr(cs, role, None)
+    return v if isinstance(v, Color) else None
+
+
+class ColorsSpec:
+    """A REAL, value-retaining result for every M3 `*Defaults.xColors(...)` factory (CardDefaults.cardColors,
+    ButtonDefaults.buttonColors/textButtonColors, TopAppBarDefaults.topAppBarColors, FilterChipDefaults.
+    filterChipColors, AssistChipDefaults.assistChipColors, ...). Was previously the inert `_UIChain` autostub,
+    which silently discarded every containerColor/contentColor/... argument -- this is the fix.
+
+    Each named role kwarg passed explicitly is kept AS-IS (including `Color.Unspecified`, which must stay the
+    inert marker -- never resolved to a default, per the "unresolved color = no paint" law). Any role kwarg
+    OMITTED entirely resolves to the matching MaterialTheme.colorScheme role via `_scheme_role`, the exact
+    mechanism `_ColorScheme`/`MaterialTheme` already provide elsewhere in this file -- no second table, no
+    invented palette. Roles that have no natural colorScheme counterpart (e.g. disabled* variants) are left
+    `None` when omitted, which the paint layer treats as "unresolved" (skip), exactly like every other gap."""
+    __slots__ = ("roles",)
+
+    # factory kwarg name -> (default colorScheme role name to resolve when omitted, else None -> stays None)
+    _DEFAULTS = {
+        "containerColor": "surface", "contentColor": "onSurface",
+        "selectedContainerColor": "secondaryContainer", "selectedContentColor": "onSecondaryContainer",
+        "selectedLabelColor": "onSecondaryContainer", "labelColor": "onSurfaceVariant",
+        "leadingIconContentColor": "onSurfaceVariant", "trailingIconContentColor": "onSurfaceVariant",
+        "disabledContainerColor": None, "disabledContentColor": None, "disabledLabelColor": None,
+        "disabledLeadingIconContentColor": None, "disabledTrailingIconContentColor": None,
+        "scrolledContainerColor": None, "titleContentColor": "onSurface",
+        "navigationIconContentColor": "onSurfaceVariant", "actionIconContentColor": "onSurfaceVariant",
+        "disabledContentColor_button": None,
+    }
+
+    def __init__(self, **kwargs):
+        roles = {}
+        for k, v in kwargs.items():
+            if v is not None:
+                roles[k] = v                       # explicit value (incl. Color.Unspecified): kept as-is
+            else:
+                roles[k] = None
+        for k in kwargs:
+            if kwargs[k] is None:
+                default_role = self._DEFAULTS.get(k)
+                roles[k] = _scheme_role(default_role) if default_role else None
+        object.__setattr__(self, "roles", roles)
+
+    def __getattr__(self, name):
+        roles = object.__getattribute__(self, "roles")
+        if name in roles:
+            return roles[name]
+        return _UI                                  # an unasked-for role: permissive tail, never invented
+
+    def containerColorFor(self, selected=False, disabled=False):
+        """The role a kit paint routine should use for a container fill, honoring selected/disabled state
+        the same way M3's ColorScheme-derived defaults do -- selected wins over the plain containerColor,
+        disabled wins over both (Kotlin's own precedence for these factories)."""
+        r = self.roles
+        if disabled and r.get("disabledContainerColor") is not None:
+            return r["disabledContainerColor"]
+        if selected and r.get("selectedContainerColor") is not None:
+            return r["selectedContainerColor"]
+        return r.get("containerColor")
+
+    def contentColorFor(self, selected=False, disabled=False):
+        r = self.roles
+        if disabled and r.get("disabledContentColor") is not None:
+            return r["disabledContentColor"]
+        if selected:
+            for k in ("selectedContentColor", "selectedLabelColor"):
+                if r.get(k) is not None:
+                    return r[k]
+        for k in ("contentColor", "labelColor"):
+            if r.get(k) is not None:
+                return r[k]
+        return None
+
+
+class _CardDefaults:
+    """CardDefaults.cardColors/elevatedCardColors/outlinedCardColors: all three build the same ColorsSpec
+    shape (containerColor/contentColor[/disabledContainerColor/disabledContentColor]); M3 differs them only
+    by which theme role backs an OMITTED containerColor (filled/elevated = surface[Variant]; outlined =
+    surface) -- irrelevant here since every real call site in this app (WflCard.kt:47) passes containerColor
+    explicitly. cardElevation is left as the harmless inert stub (elevation is drawn from _ELEVATION_LEVEL,
+    a spec table, not from this factory's dp argument)."""
+    @staticmethod
+    def cardColors(containerColor=None, contentColor=None, disabledContainerColor=None,
+                    disabledContentColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, contentColor=contentColor,
+                           disabledContainerColor=disabledContainerColor,
+                           disabledContentColor=disabledContentColor)
+
+    elevatedCardColors = cardColors
+    outlinedCardColors = cardColors
+
+    def __getattr__(self, name):                    # cardElevation / any other factory: permissive tail
+        return _UI
+
+
+CardDefaults = _CardDefaults()
+
+
+class _ButtonDefaults:
+    """ButtonDefaults.buttonColors/textButtonColors/... : real ColorsSpec, replacing the inert autostub that
+    discarded Button(colors = ButtonDefaults.buttonColors(containerColor = ..., contentColor = ...))."""
+    @staticmethod
+    def buttonColors(containerColor=None, contentColor=None, disabledContainerColor=None,
+                      disabledContentColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, contentColor=contentColor,
+                           disabledContainerColor=disabledContainerColor,
+                           disabledContentColor=disabledContentColor)
+
+    @staticmethod
+    def textButtonColors(containerColor=None, contentColor=None, disabledContainerColor=None,
+                          disabledContentColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, contentColor=contentColor,
+                           disabledContainerColor=disabledContainerColor,
+                           disabledContentColor=disabledContentColor)
+
+    outlinedButtonColors = elevatedButtonColors = filledTonalButtonColors = buttonColors
+
+    def __getattr__(self, name):
+        return _UI
+
+
+ButtonDefaults = _ButtonDefaults()
+
+
+class _FilterChipDefaults:
+    """FilterChipDefaults.filterChipColors: real ColorsSpec carrying selected/disabled variants (the
+    selected-state kwargs a FilterChip actually uses to differ its look when checked)."""
+    @staticmethod
+    def filterChipColors(containerColor=None, labelColor=None, selectedContainerColor=None,
+                          selectedLabelColor=None, disabledContainerColor=None, disabledLabelColor=None,
+                          leadingIconContentColor=None, trailingIconContentColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, labelColor=labelColor,
+                           selectedContainerColor=selectedContainerColor,
+                           selectedLabelColor=selectedLabelColor,
+                           disabledContainerColor=disabledContainerColor,
+                           disabledLabelColor=disabledLabelColor,
+                           leadingIconContentColor=leadingIconContentColor,
+                           trailingIconContentColor=trailingIconContentColor)
+
+    def __getattr__(self, name):
+        return _UI
+
+
+FilterChipDefaults = _FilterChipDefaults()
+
+
+class _AssistChipDefaults:
+    """AssistChipDefaults.assistChipColors: real ColorsSpec (GymListScreen.kt:152 passes containerColor/
+    labelColor/leadingIconContentColor explicitly)."""
+    @staticmethod
+    def assistChipColors(containerColor=None, labelColor=None, leadingIconContentColor=None,
+                          trailingIconContentColor=None, disabledContainerColor=None,
+                          disabledLabelColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, labelColor=labelColor,
+                           leadingIconContentColor=leadingIconContentColor,
+                           trailingIconContentColor=trailingIconContentColor,
+                           disabledContainerColor=disabledContainerColor,
+                           disabledLabelColor=disabledLabelColor)
+
+    def __getattr__(self, name):
+        return _UI
+
+
+AssistChipDefaults = _AssistChipDefaults()
+
+
+class _TopAppBarDefaults:
+    """TopAppBarDefaults.topAppBarColors: real ColorsSpec (WorkoutExecutionScreen.kt:211 passes
+    containerColor explicitly)."""
+    @staticmethod
+    def topAppBarColors(containerColor=None, scrolledContainerColor=None, navigationIconContentColor=None,
+                         titleContentColor=None, actionIconContentColor=None, *a, **k):
+        return ColorsSpec(containerColor=containerColor, scrolledContainerColor=scrolledContainerColor,
+                           navigationIconContentColor=navigationIconContentColor,
+                           titleContentColor=titleContentColor,
+                           actionIconContentColor=actionIconContentColor)
+
+    def __getattr__(self, name):
+        return _UI
+
+
+TopAppBarDefaults = _TopAppBarDefaults()
+
+
+class BorderStroke:
+    """A REAL BorderStroke(width, color): retains .width/.color so the kit's _paint_spec can read a Card's
+    (or any component's) `border=` constructor kwarg. Was previously the inert autostub, which discarded
+    both arguments -- WflCard.kt:46's BorderStroke(borderWidth, borderColor) built nothing usable.
+    `color` may be `Color.Unspecified` (kept as-is, unresolved -- never invented) or omitted (resolves to
+    MaterialTheme.colorScheme.outline, M3's own BorderStroke default when a caller doesn't specify one)."""
+    __slots__ = ("width", "color")
+
+    def __init__(self, width=1.0, color=None, *a, **k):
+        try:
+            self.width = float(width)
+        except (TypeError, ValueError):
+            self.width = 1.0
+        self.color = color if color is not None else _scheme_role("outline")
 
 
 class TextFieldValue:
