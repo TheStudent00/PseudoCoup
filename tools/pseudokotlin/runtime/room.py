@@ -279,6 +279,16 @@ class _LiveMixin:
     def _add_listener(self, cb):
         self._listeners.append(cb)
 
+    def _remove_listener(self, cb):
+        """Undo `_add_listener(cb)` -- lets a derived flow (e.g. flatMapLatest's downstream) stop
+        relaying a PREVIOUS upstream's re-emissions once it has switched to a new one, so a stale
+        inner flow can never leak a value through after the switch (real Kotlin 'Latest' cancel
+        semantics, not just a stale-value check)."""
+        try:
+            self._listeners.remove(cb)
+        except ValueError:
+            pass
+
     def _push(self, value):
         self._values = [value]
         for cb in list(self._listeners):
@@ -314,19 +324,35 @@ class _LiveMixin:
     def flatMapLatest(self, fn):
         inner = fn(self._values[-1]) if self._values else Flow()
         out = _DerivedLiveFlow(list(getattr(inner, "_values", [])))
+        current = {"inner": inner}
 
-        def _relay(value):
-            out._push(value)
-        inner_add = getattr(inner, "_add_listener", None)
-        if callable(inner_add):
-            inner_add(_relay)
+        def _make_relay(for_inner):
+            # Only relays while `for_inner` is still the CURRENT inner flow -- once superseded, this
+            # flow's listener is actively removed (below), so a stale inner can never push through.
+            def _relay(value):
+                if current["inner"] is for_inner:
+                    out._push(value)
+            return _relay
+
+        def _subscribe(new_inner):
+            relay = _make_relay(new_inner)
+            add = getattr(new_inner, "_add_listener", None)
+            if callable(add):
+                add(relay)
+            return relay
+
+        relay = _subscribe(inner)
 
         def _on_new(value):
+            nonlocal relay
+            old_inner, old_relay = current["inner"], relay
+            remove = getattr(old_inner, "_remove_listener", None)   # cancel the OLD inner's subscription
+            if callable(remove):
+                remove(old_relay)
             new_inner = fn(value)             # a NEW upstream value -> re-derive the inner flow (Room's
+            current["inner"] = new_inner
             out._push(new_inner._values[-1] if getattr(new_inner, "_values", None) else None)
-            new_add = getattr(new_inner, "_add_listener", None)
-            if callable(new_add):
-                new_add(_relay)
+            relay = _subscribe(new_inner)
         self._add_listener(_on_new)
         return out
 
