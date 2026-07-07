@@ -81,11 +81,35 @@ def run_request(path):
     env = dict(os.environ, **{k: str(v) for k, v in req.get("env", {}).items()})
     with open(logfile, "w") as lf:
         try:
-            rc = subprocess.run(cmd, cwd=cwd, env=env, stdout=lf, stderr=subprocess.STDOUT,
-                                timeout=timeout).returncode
-        except subprocess.TimeoutExpired:
-            rc = -9
-            lf.write(f"\nwalk_service: TIMEOUT after {timeout}s\n")
+            # Popen + poll loop (not subprocess.run) so the terminal shows a HEARTBEAT while a long
+            # run is in flight: every ~20s, print the log's size and its last non-blank line -- the
+            # user can see at a glance that the child is producing output, not hanging.
+            proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=lf, stderr=subprocess.STDOUT)
+            last_beat = time.time()
+            while True:
+                try:
+                    rc = proc.wait(timeout=2)
+                    break
+                except subprocess.TimeoutExpired:
+                    pass
+                if time.time() - t0 > timeout:
+                    proc.kill()
+                    proc.wait()
+                    rc = -9
+                    lf.write(f"\nwalk_service: TIMEOUT after {timeout}s\n")
+                    break
+                if time.time() - last_beat >= 20:
+                    last_beat = time.time()
+                    tail = ""
+                    try:
+                        with open(logfile, "rb") as rf:
+                            rf.seek(max(0, os.path.getsize(logfile) - 4096))
+                            lines = [l for l in rf.read().decode("utf-8", "replace").splitlines()
+                                     if l.strip()]
+                            tail = lines[-1][:110] if lines else "(no output yet)"
+                    except Exception:                             # noqa: BLE001 -- heartbeat must never kill the run
+                        tail = "(log unreadable)"
+                    log(f"  … {req_id} {int(time.time() - t0)}s  {os.path.getsize(logfile)}B  | {tail}")
         except Exception as e:                                    # noqa: BLE001
             rc = -1
             lf.write(f"\nwalk_service: LAUNCH FAILED: {type(e).__name__}: {e}\n")
