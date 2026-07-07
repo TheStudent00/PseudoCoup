@@ -56,9 +56,16 @@ def refuse(req_id, reason):
 
 
 def run_request(path):
-    with open(path) as f:
-        req = json.load(f)
-    req_id = req["id"]
+    req_id = os.path.basename(path)[:-len(".json")]   # filename IS the identity; the "id" field, when
+    try:                                              # present, must agree (results are keyed by it)
+        with open(path) as f:
+            req = json.load(f)
+    except Exception as e:                            # noqa: BLE001 -- malformed request: refuse, don't die
+        return refuse(req_id, f"unparseable request JSON: {type(e).__name__}: {e}")
+    if not isinstance(req, dict) or "cwd" not in req or "cmd" not in req:
+        return refuse(req_id, "request must be a JSON object with at least cwd and cmd")
+    if req.get("id", req_id) != req_id:
+        return refuse(req_id, f"id field {req.get('id')!r} disagrees with filename -- rename one")
     cwd = os.path.realpath(os.path.expanduser(req["cwd"]))
     cmd = req["cmd"]
     timeout = int(req.get("timeout", 1800))

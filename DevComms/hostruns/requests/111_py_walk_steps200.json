@@ -1,1 +1,14 @@
-{"cwd":"~/Programming/WFL_MixingCenter/render","cmd":["xvfb-run","-a","python3","walker.py","--steps","200","--reset"],"timeout":5400}
+{
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": [
+  "xvfb-run",
+  "-a",
+  "python3",
+  "walker.py",
+  "--steps",
+  "200",
+  "--reset"
+ ],
+ "timeout": 5400,
+ "id": "111_py_walk_steps200"
+}
