@@ -1,0 +1,3 @@
+{"id": "078_py_determinism", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "-c", "import hashlib; a=open('walks/py_walk_v2_runA.json','rb').read(); b=open('walks/py_walk.json','rb').read(); print('PY V2 DETERMINISM:', 'IDENTICAL' if hashlib.sha256(a).hexdigest()==hashlib.sha256(b).hexdigest() else 'DIVERGED')"],
+ "timeout": 60}

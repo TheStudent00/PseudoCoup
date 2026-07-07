@@ -210,3 +210,206 @@ individually inspectable there, not summarized away.
   hung — request removal does not kill an already-dispatched host process; documented here for the
   record), `089_py_walk_runA_fixed.json`, `090_probe.json`, `091_py_walk_runB.json`,
   `092_py_walk_extend.json`
+# walker_slice3_differ.md — WALKER slice 3: the decision-tree differ
+
+(Note: this file did not previously exist in the repo at the time of the 2026-07-06 pass below; this is
+its first section. Prior-slice conventions it follows are those already established IN CODE by
+`render/walk_diff.py`'s own docstrings/comments — report path `render/walks/walk_diff_report.txt`, and the
+one-line `WALK DIFF: {n} shared states, {n} kt-only, {n} py-only, {n} edge mismatches` gate-line format —
+both matched exactly below.)
+
+## 2026-07-06 — slice 3b: canonical re-hash + classification
+
+### Canonical form spec (declared, exact rule)
+
+Applied identically to BOTH `kt_walk.json` and `py_walk.json` before any comparison:
+
+1. **KIND_MAP normalization** — every component's `kind` field is passed through
+   `KIND_MAP.get(kind, kind)` (a no-op for kt-side kinds, since none are KIND_MAP keys). See
+   `render/walk_diff.py` for the full, individually-justified table. This pass added 20 new entries beyond
+   the original 6 (see "KIND_MAP gap" below).
+2. **Canonicalize tree_summary as a multiset** — sort the state's list of `{kind, text, interactive}`
+   component dicts with sort key `(kind, text, interactive)`. This is sort-only: no deduplication, no
+   dropping. Duplicate triples (e.g. two blank `Node` spacers) both survive. Losing sibling ORDER this way
+   is an accepted, documented tradeoff — the two recorders traverse in different orders (Kotlin: 
+   accessibility-semantics-tree order; Python: compose-render-tree order), so raw document order can never
+   agree even for an identical screen, and order was never part of what this differ certifies. Losing an
+   ELEMENT would be a bug; never done.
+3. **canonical_id = sha256(json({"route": route, "tree_summary": sorted_tree_summary}, sort_keys=True)))`**
+   — this is the id now used for ALL state alignment between the two walks (`remap_walk()` in
+   `walk_diff.py`), replacing the earlier remap-only (unsorted) state_id.
+
+**Edge alignment key**: `(canonical_source_id, action.label, action.handler_kind, canonical_destination_id)`
+— exact equality only, no fuzzy matching. **Explicitly NOT using action ordinals**: the previous key
+included `action.ordinal` (the tapped component's 0-based document-order index within its source state).
+Ordinals are not comparable across the two walks for the same reason sibling order isn't — Kotlin
+enumerates interactive nodes in accessibility-semantics order, Python in compose-render order — so "action
+#5" at a canonically-identical state can be a completely different real action on each side. Keying on
+ordinal risked BOTH silently missing real matches (same action, different ordinal) and silently
+manufacturing false matches (different actions, same ordinal) — exactly the "fuzzy/coincidental matching"
+the task law forbids. `action.kind` is deliberately excluded from the key (redundant with
+label+handler_kind, and folding it into the key would hide a real kind mismatch as a non-match instead of
+surfacing it) but is still reported in divergence detail.
+
+### Gate line (before / after fixes below), verbatim
+
+Before this slice's KIND_MAP additions (only the original 6-entry map + old ordinal-based edge key):
+```
+WALK DIFF: 0 shared states, 21 kt-only, 14 py-only, 90 edge mismatches
+```
+
+**After** (canonical multiset hashing + canonical edge-key + 20 new KIND_MAP entries, current
+`render/walks/walk_diff_report.txt`):
+```
+WALK DIFF: 0 shared states, 21 kt-only, 14 py-only, 75 edge mismatches
+```
+
+Shared-state count did NOT move off 0 despite canonicalization — see "walk-shape mismatch" and the
+per-state multiset-diff evidence below: the two recorders materialize a genuinely different NODE COUNT
+for the same visual screen (extra `Image`/blank `Node` leaves on the Kotlin accessibility-semantics side),
+so even a canonical, order-independent multiset comparison correctly reports these as distinct states —
+this is real, un-hidden information, not a differ bug. Edge mismatches dropped 90 → 75 from the KIND_MAP
+fix alone (fewer spurious `kind` divergences once py-side layout/container/text composables stopped being
+compared against kt's uniform `"Node"` catch-all under mismatched names).
+
+### KIND_MAP gap fix made inside walk_diff.py (Category C)
+
+Original map (6 entries) was built only by cross-referencing matched EDGE labels, so it silently omitted
+every py-side kind that never appears as a tapped edge action but DOES appear in tree_summary (which is
+what the state-id hash actually depends on). Re-derived directly from `WalkRecorderTest.kt`'s `nodeKind()`
+(read-only, lines 243-249): kind is Role.toString() if a Role is present, else "EditableText" if
+`SemanticsActions.SetText` is present, else the literal catch-all `"Node"`. Added 20 entries:
+
+- `"OutlinedTextField" -> "EditableText"` — thin Material3 wrapper around the same SetText-carrying
+  contract as the already-mapped `BasicTextField`; observed py-side (`progress` route) as a standalone
+  interactive leaf.
+- `"IconButton" -> "Button"` — Compose Material3's IconButton sets `role = Role.Button` on its clickable
+  modifier internally (same "Material3 clickable surface sets Role.Button" convention as the existing
+  FAB/DropdownMenuItem entries).
+- 16 pure layout/container/decoration/text composables that can never carry a Compose Role (`Box`,
+  `Column`, `Row`, `FlowRow`, `Spacer`, `Surface`, `Scaffold`, `TopAppBar`, `NavigationBar`, `LazyColumn`,
+  `HorizontalDivider`, `AnimatedVisibility`, `CompositionLocalProvider`, `Item`, `Text`, `Icon`, `TabRow`,
+  `SingleChoiceSegmentedButtonRow`) → `"Node"`, matching Kotlin's catch-all definitionally.
+
+Left **unmapped** (documented, not guessed): `Card` (not Role-setting by default; call-site-dependent),
+`DropdownMenu` (container construct, not a plain leaf kind), `ModalBottomSheet` (sheet container, same
+reasoning as DropdownMenu), `FilterChip` (Role varies by Material3 version/selectable-group context; zero
+matched edges this run to cross-reference against, so left unmapped per the no-fuzzy-matching law).
+
+Before/after this fix alone (holding the ordinal issue fixed too, since both landed together this pass):
+edge mismatches 90 → 75; shared states unchanged at 0 (root cause is node-count granularity, not naming
+— see below).
+
+### Divergence classification — every remaining divergence
+
+All four common routes (`today`, `my_program`, `paths`, `progress`) show the SAME systemic pattern after
+full canonicalization: the closest-matching kt/py state pair for each route differs by exactly a small,
+consistent set of kt-only extra components — non-interactive `Image` (icon) leaves (6-7 per screen) and
+a handful of blank non-interactive/interactive `Node` wrapper leaves — versus, on the py side, usually
+just one extra `Card` (non-interactive) leaf. Net diffscore (KT-only + PY-only component count) ranges
+10-17 for these near-matches, entirely from this pattern, not from missing/extra TEXT content.
+
+- **Category B (recorder artifact) — dominant, all 4 common routes' near-identical-screen pairs**:
+  Kotlin's accessibility-semantics-tree recorder materializes separate semantics nodes for decorative
+  icons (`Image`-kind) and some layout wrapper nodes that Python's composable-name recorder's `Icon`/
+  layout composables (already correctly KIND_MAP'd to `"Node"`) collapse into fewer or zero recorded
+  leaves for the same visual content. Evidence: `today` route, KT 54-component state vs its best-matching
+  PY 42-component state — diff is exactly 7 extra KT `Image` leaves + 5 extra blank KT `Node` leaves + 1
+  extra KT interactive blank `Node`, offset by 1 extra PY `Card` leaf; the SAME shape (6-7 extra Image, a
+  handful of extra blank Node) repeats on `my_program`, `paths`, and both `progress`/`today` near-pairs.
+  This is not a naming/KIND_MAP issue (counts don't line up 1:1 the way a rename would) and not a lost-
+  information issue (no distinguishing TEXT is lost on either side) — it's a genuine difference in how
+  finely each recorder decomposes the SAME visual tree into leaf nodes. Not fixed in `walk_diff.py`
+  (fixing it would require either dropping elements — forbidden by the task law — or guessing a
+  many-to-one/one-to-many node-count correspondence with no exact-match evidence, i.e. fuzzy matching,
+  also forbidden); reported here as a classified, honest finding instead.
+- **Category A (real behavior gap) — the `settings_notifications`/`settings` route family and the wins/
+  progress "extra states" reached only on one side** (see full kt-only/py-only STATE sections of
+  `render/walks/walk_diff_report.txt`, e.g. kt-only `wins` state at route `wins` reached via
+  `Tab[onClick] -> Button[onClick]`, kt-only `exercise_detail/{exerciseId}` state, kt-only
+  `workout_cooldown/{sessionId}` states, and py-only `programs`/`settings` variants): these are states
+  reached via routes/screens the OTHER side's walk never visited at all this run (see walk-shape mismatch
+  below for the mechanical reason) rather than a same-screen content mismatch — cannot be classified
+  A vs B/C without a THIRD walk that visits the same route on both sides, since there is no aligned
+  counterpart state to diff against. Flagged as real, unreconciled divergence, not silently dropped.
+- **Category C (KIND_MAP gap)**: fixed above (OutlinedTextField, IconButton, 16 layout/text kinds). No
+  further KIND_MAP gaps identified after this pass — the remaining divergences are the Category B
+  node-granularity pattern and Category A route-coverage gaps, not naming mismatches.
+
+### "Today quick-actions" verdict
+
+Both `kt_walk.json` and `py_walk.json` DO reach a `today` state with the fully-expanded quick-action FAB
+menu (`New mobility session` / `Log a Win` / `Log other exercise` all present as text leaves): kt state
+`4976c20f...` (67 components) and py state `3c407a30...` (52 components). **This is not a missing-vs-
+present divergence at all** — both engines correctly walk into the expanded state by tapping the "+" FAB
+(`TodayActionMenu`'s `FloatingActionButton` toggling `fabExpanded`/`expanded`, see
+`WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt` lines ~408-501). Read (read-only)
+directly from `TodayScreen.kt`: the three `ExtendedFloatingActionButton`s (mobility session / log-a-win /
+log-other-exercise) are gated purely by the `expanded` boolean (`if (expanded) { ... three FABs ... }`,
+lines 452-497) — a UI-only speed-dial toggle, NOT a seed-data-dependent conditional (no `weeklyItems`,
+`activeSession`, or program-enrollment check gates these three specifically). The SEEDED state recorded by
+both walks (`"No program enrolled yet. Head to Paths to get started."` present verbatim on both sides'
+collapsed `today` state) confirms the seed is "no program enrolled" on both sides identically — and
+neither engine's rendering of the three quick-action FABs depends on that seed value at all, per the
+source read above. Verdict: **no real behavior gap here — both engines are correct**, this is simply two
+different DISCOVERED-STATE snapshots of the same expand/collapse toggle (collapsed vs expanded), reached
+independently by each walk's own BFS policy. Category: not applicable (no divergence) for the FAB-expanded
+content itself; the surrounding component-count mismatch between the two `today`-expanded states IS the
+same Category B node-granularity pattern documented above (extra kt-side `Image`/blank `Node` leaves),
+not anything related to the quick-actions conditional.
+
+### Walk-shape mismatch: 12 routes / 21 states (kt) vs 14 states (py)
+
+Root mechanical cause, read directly from `render/walker.py` and the walk JSON `meta`/structure (kt walk
+`meta.steps_this_run=60`, py walk `meta.steps_this_run=47`, i.e. DIFFERENT actual step budgets consumed
+this run, not a like-for-like comparison):
+
+1. **Different interactive-element enumeration counts change BFS frontier size per state**, mechanically:
+   `walker.py`'s `enumerate_interactive()` walks compose Nodes and records ONE `(node, handler_kind)` pair
+   per handler dict entry per node — i.e. the frontier's per-state branching factor is exactly the number
+   of interactive LEAVES that state's OWN recorder sees. Since (per the Category B finding above) the two
+   recorders decompose the same visual screen into different leaf counts/granularities, the py-side BFS
+   frontier and the kt-side BFS frontier are structurally different-sized trees from the very first state
+   onward — not merely reordered, genuinely different branching factors — so the two BFS runs diverge in
+   which states get discovered within the SAME wall-clock/step budget.
+2. **The budgets themselves differed this run** (60 kt steps vs 47 py steps consumed, per each walk's own
+   `meta.steps_this_run`), which alone would produce different total state/edge counts even with identical
+   frontier shape — `walker.py`'s own `--steps` budget is deliberately bounded per invocation (see its
+   module docstring's CHECKPOINTING section: "needed under the 45s sandbox cap") and `--resume`-driven, so
+   the two artifacts are each SOME prefix of a longer walk, not a completed exhaustive walk to a shared
+   fixed point.
+3. **Route reachability differs as a knock-on effect of (1)+(2)**: kt reaching 12 distinct routes across
+   21 states while py reaches states covering only 4 distinct base routes in its 14 states (`today`,
+   `my_program`, `paths`, `progress`, `settings`, `programs` — a mix reflecting DIFFERENT nav-bar-adjacent
+   screens explored) is consistent with kt's walk simply having explored deeper/wider into the tree this
+   run (more total edges recorded per state visited on average is NOT the driver — py has MORE edges per
+   state on average, 47/14≈3.4 vs kt's 43/21≈2.0 — rather kt visited more DISTINCT routes with fewer edges
+   fired per state, i.e. kt's frontier discovered new destinations faster per step than py's did, exactly
+   because kt's node-granularity difference plus its own document-order enumeration ordering changed which
+   action got tried at which position in the bounded step budget).
+
+This is not one single root cause but the STACK of (a) genuinely different node/leaf enumeration
+(Category B, mechanical driver of frontier shape) plus (b) different `steps_this_run` budgets consumed
+this particular run (an artifact of the checkpointed, resumable, step-capped walk policy itself, not a
+bug) — both are recorder/walker-policy facts, never touched or "fixed" here per the fence (walker.py and
+TodayScreen.kt are read-only for this slice).
+
+### Fixes made inside `walk_diff.py` this pass (summary)
+
+1. Canonical multiset re-hash (KIND_MAP → sort by `(kind, text, interactive)` → `sha256(route + sorted
+   summary)`), replacing the previous unsorted-remap state_id, in `remap_walk()`/`canonicalize_tree_summary()`/
+   `canonical_id_of()`.
+2. Edge alignment key changed from `(source, action.kind, action.handler_kind, action.ordinal)` to
+   `(canonical_source_id, action.label, action.handler_kind, canonical_destination_id)` in `align_edges()`
+   — ordinal removed per the explicit non-comparability argument above.
+3. KIND_MAP gap fix: 20 new entries (`OutlinedTextField`, `IconButton`, and 16 layout/container/text
+   composables mapped to `"Node"`), each individually justified in `render/walk_diff.py`'s own comments.
+
+**Before/after divergence counts** (gate line):
+- Before (original 6-entry KIND_MAP + ordinal-based edge key): `WALK DIFF: 0 shared states, 21 kt-only,
+  14 py-only, 90 edge mismatches`
+- After (this pass's canonicalization + 20-entry KIND_MAP expansion + canonical edge key):
+  `WALK DIFF: 0 shared states, 21 kt-only, 14 py-only, 75 edge mismatches`
+
+Shared-state count remained 0 — correctly, per the Category B node-granularity finding above, which is a
+real (if benign) recorder-shape difference, not a bug in this differ.

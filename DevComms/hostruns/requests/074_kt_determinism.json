@@ -1,0 +1,3 @@
+{"id": "074_kt_determinism", "cwd": "~/Programming/WFL_MixingCenter",
+ "cmd": ["python3", "-c", "import json,hashlib; a=open('WFL/app/build/walks/kt_walk_v2_runA.json','rb').read(); b=open('WFL/app/build/walks/kt_walk.json','rb').read(); print('KT V2 DETERMINISM:', 'IDENTICAL' if hashlib.sha256(a).hexdigest()==hashlib.sha256(b).hexdigest() else 'DIVERGED')"],
+ "timeout": 60}

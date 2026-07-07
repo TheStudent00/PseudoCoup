@@ -1,0 +1,3 @@
+{"id": "076_archive_py_a", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "-c", "import shutil; shutil.copy('walks/py_walk.json', 'walks/py_walk_v2_runA.json')"],
+ "timeout": 60}

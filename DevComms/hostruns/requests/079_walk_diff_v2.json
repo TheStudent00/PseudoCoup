@@ -1,0 +1,2 @@
+{"id": "079_walk_diff_v2", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "walk_diff.py"], "timeout": 300}

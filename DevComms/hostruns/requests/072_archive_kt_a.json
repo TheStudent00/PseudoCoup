@@ -1,0 +1,3 @@
+{"id": "072_archive_kt_a", "cwd": "~/Programming/WFL_MixingCenter",
+ "cmd": ["python3", "-c", "import shutil; shutil.copy('WFL/app/build/walks/kt_walk.json', 'WFL/app/build/walks/kt_walk_v2_runA.json')"],
+ "timeout": 60}
