@@ -1,0 +1,2 @@
+{"id": "087_regen", "cwd": "~/Programming/PseudoCoup",
+ "cmd": ["python3", "tools/pseudokotlin/build_mixingcenter.py"], "timeout": 900}
