@@ -77,6 +77,35 @@ def _call(fn):
             return None
 
 
+def _promote_modifier_handlers(node, mod):
+    """Modifier-chain event handlers -> node.handlers. Compose's Modifier.clickable{...} (and its
+    keyword form clickable(onClick=...)) makes ANY node tappable -- but until this promotion existed,
+    only composable-level `onClick=` kwargs ever reached node.handlers, so every node interactive
+    ONLY via Modifier.clickable was silently touch-dead AND invisible to the interaction/walk
+    instruments (found by the Kotlin walk: GlitterBurstStar's clickable star was interactive on the
+    Kotlin side, inert here -- one instance of the whole group this fix moves). Splices `then` chains
+    like every other ops reader. Handler-name rules:
+      * any callable kwarg named on* on any op -> handlers[that name]  (clickable(onClick=f) etc.)
+      * clickable/combinedClickable with a bare positional callable (Kotlin trailing lambda,
+        `.clickable { ... }`) -> handlers["onClick"]
+    Composable-kwarg handlers keep priority (setdefault -- never clobber)."""
+    def ops_of(m):
+        for op in (getattr(m, "_ops", ()) or ()):
+            if op[0] == "then" and op[1] and hasattr(op[1][0], "_ops"):
+                yield from ops_of(op[1][0])
+            else:
+                yield op
+    for name, a, k in ops_of(mod):
+        for kw, v in k.items():
+            if kw.startswith("on") and callable(v):
+                node.handlers.setdefault(kw, v)
+        if name in ("clickable", "combinedClickable"):
+            for v in a:
+                if callable(v) and not hasattr(v, "_ops"):
+                    node.handlers.setdefault("onClick", v)
+                    break
+
+
 def _composable(kind):
     def make(*args, **kwargs):
         node = Node(kind)
@@ -90,6 +119,7 @@ def _composable(kind):
                     node.text = a
                 elif hasattr(a, "_ops"):         # a positional Modifier chain: `Spacer(Modifier.height(8))`
                     node.props.setdefault("modifier", a)
+                    _promote_modifier_handlers(node, a)
             # Compose places SLOTS by NAME, not by call-site order: a chip's leadingIcon draws before its
             # label even when the source writes `label=` first. Emit callable slots in M3 slot order so the
             # recorded child order matches the drawn order (the dump counts leading icons from child order).
@@ -135,6 +165,8 @@ def _composable(kind):
                 else:
                     node.props[k] = v            # a VALUE kwarg (modifier/fontSize/arrangement/...) --
                                                  # recorded for the kit to apply
+                    if k == "modifier" and hasattr(v, "_ops"):
+                        _promote_modifier_handlers(node, v)   # Modifier.clickable et al -- see above
         finally:
             _STACK.pop()
         return node

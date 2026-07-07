@@ -1,0 +1,2 @@
+{"id": "090_interact", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "interact.py"], "timeout": 3600}
