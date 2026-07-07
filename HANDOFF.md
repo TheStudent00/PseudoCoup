@@ -1,4 +1,22 @@
-# Session handoff — 2026-07-05 (for continuation in Claude Desktop Cowork)
+# Session handoff — 2026-07-07 update (walker era; read PROGRESS_ondeck.md top entries for full detail)
+
+CURRENT STATE: acceptance-drive bugs fixed (Room invalidation, live flow operators, fail-loud DI, M3
+Defaults colors, density scaling via WFL_SCALE). The DECISION-TREE WALKER is live: render/walker.py
+(Python side, real taps), WalkRecorderTest.kt (Kotlin side, Robolectric + Hilt, FixedTimeModule clock
+pin), render/walk_diff.py (differ, format v2 = meaning-bearing nodes only, KIND collapse table).
+It already found+we fixed: Modifier.clickable never promoted to handlers (whole class touch-dead),
+touch z-order (bars must outrank content; Kivy Window is its own parent — cycle guard load-bearing).
+GATES (all green, re-baselined): fidelity 423/423 (28 screens), interact 1410/1410 + shell 6,
+realtap GREEN (5 case groups), kotlin tests 160/160, datalayer ALL GREEN.
+WALK DIFF: 4 shared / 17 kt-only / 3 py-only / 37 edge mismatches — next work: kt empty edge labels
+(unmerged semantics), deeper py coverage, extra seeded walk roots (Onboarding etc.), emulator walk
+(dry-built, unexecuted: render/emu_walker.py + CommandReceiver.kt ported, debug-only manifest).
+HOST LOOP: user runs `python3 tools/walk_service.py` on their machine; I write request JSONs to
+DevComms/hostruns/requests/, read results/ — this is how ALL gradle/xvfb verification runs. The
+Cowork sandbox caps every bash call at 45s; staging copy at /tmp/gh/Programming (beware rsyncing
+the repos' self-symlinks into it — they hang recursive globs and parent walks).
+
+# Original handoff — 2026-07-05 (for continuation in Claude Desktop Cowork)
 
 You are continuing an ongoing engineering loop with Lucas. Read this file, then `PROGRESS_ondeck.md`
 (top = newest state), then the memory files (they load automatically and carry the standing rules).

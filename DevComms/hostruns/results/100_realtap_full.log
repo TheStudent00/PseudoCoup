@@ -1,0 +1,215 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-07_39.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+=== running case: all (22 steps) ===
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+DEBUG entering step: _s_progress
+start route: today
+Progress center px: (70, 40) size: (20, 80)
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74cac15d8900>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.036s
+DEBUG step returned: _s_progress
+DEBUG entering step: _s_you
+after tap Progress -> route: progress
+You center px: (371, 40)
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74cac0403380>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.137s
+DEBUG step returned: _s_you
+DEBUG entering step: _s_home
+after tap You -> route: settings
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74cac0108860>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.007s
+DEBUG step returned: _s_home
+DEBUG entering step: _s_drag
+dragging clickable Surface at (378, 897) (route before: today)
+route after drag: today
+DEBUG step returned: _s_drag
+DEBUG entering step: _s_paths_precondition
+route before Paths nav: today
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74ca9163e980>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.009s
+DEBUG step returned: _s_paths_precondition
+DEBUG entering step: _s_paths_precondition_retry
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74ca9144ee80>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+DEBUG step returned: _s_paths_precondition_retry
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG entering step: _s_paths_empty_check
+after tap Paths -> route: paths
+Paths screen texts (before enroll): ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User', 'Tuesday', 'Find your path', 'A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.', 'Start with your why.']
+DEBUG about to find_button_widget
+DEBUG find_button_widget took 0.000s, w=<kivy.uix.button.Button object at 0x74ca9138b4d0>
+DEBUG widget_window_center took 0.000s -> (206.0, 629.0)
+DEBUG _fire begin <bound method PathsViewModel.startPicker of <ui.paths.PathsViewModel.PathsViewModel object at 0x74cac04d6cf0>>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.018s
+DEBUG tap() took 0.019s
+DEBUG step returned: _s_paths_empty_check
+DEBUG entering step: _s_paths_select
+picker screen texts: ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User']
+DEBUG step returned: _s_paths_select
+DEBUG _fire begin <function PathSelectionSheet.<locals>._lam8.<locals>._lam9.<locals>._lam10.<locals>._lam13.<locals>._lam14.<locals>._lam15.<locals>.<lambda> at 0x74ca913cb240>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.025s
+DEBUG entering step: _s_paths_start
+DEBUG _fire begin <bound method PathsViewModel.enrollAndFinish of <ui.paths.PathsViewModel.PathsViewModel object at 0x74cac04d6cf0>>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.008s
+DEBUG step returned: _s_paths_start
+DEBUG entering step: _s_paths_reactivity_check
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74ca90825940>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+DEBUG step returned: _s_paths_reactivity_check
+DEBUG entering step: _s_paths_reactivity_check2
+Paths screen texts (after enroll + re-nav): ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User', 'Tuesday', 'Add a second path', 'Adherence is the strongest independent predictor of long-term fitness outcomes across every population studied. The dose-response curve for exercise is steepest at the low end — moving from zero to 2–3 sessions/week produces the largest per-session return, and real mortality benefit exists BELOW the 150 min/week guideline (HR ≈ 0.80 for sub-guideline activity). There is no minimum intensity threshold for adherence-driven health benefits (walking-cadence intensity is not independently tied to mortality). For muscle-strengthening specifically, mortality benefit follows a J-curve peaking at ~30–60 min/week (≈10–17% lower all-cause mortality) — more is not necessarily better. Protocol target: 3 sessions/week, 25–40 min, RPE 5–7 (moderate effort). 3 sets × 10–15 reps per exercise, rest 60–90 s. Progressive overload: add 1 rep per session before increasing load.', 'The evidence', '30 min', 'Target', '2–7/week', 'Sessions', 'Any workout beats no workout.', 'Leave path', 'Just Show Up', 'Paths are the why. Programs are the how.']
+DEBUG step returned: _s_paths_reactivity_check2
+DEBUG entering step: _s_programs_enroll_self_directed
+route before Paths nav (overlay case): paths
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74ca90825940>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+DEBUG step returned: _s_programs_enroll_self_directed
+DEBUG entering step: _s_programs_open_picker
+DEBUG _fire begin <function PathsScreen.<locals>._lam1.<locals>._lam2.<locals>._lam6.<locals>._lam8.<locals>.<lambda> at 0x74ca90db6700>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG step returned: _s_programs_open_picker
+DEBUG entering step: _s_programs_scroll_to_self_directed
+DEBUG step returned: _s_programs_scroll_to_self_directed
+DEBUG entering step: _s_programs_select_self_directed
+DEBUG step returned: _s_programs_select_self_directed
+DEBUG _fire begin <function PathSelectionSheet.<locals>._lam8.<locals>._lam9.<locals>._lam10.<locals>._lam13.<locals>._lam14.<locals>._lam15.<locals>.<lambda> at 0x74ca90568fe0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.220s
+DEBUG entering step: _s_programs_finish_enroll
+DEBUG _fire begin <bound method PathsViewModel.enrollAndFinish of <ui.paths.PathsViewModel.PathsViewModel object at 0x74cac04d6cf0>>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.011s
+DEBUG step returned: _s_programs_finish_enroll
+DEBUG entering step: _s_programs_settle_after_enroll
+DEBUG step returned: _s_programs_settle_after_enroll
+DEBUG entering step: _s_programs_nav
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x74ca91536340>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.007s
+DEBUG step returned: _s_programs_nav
+DEBUG entering step: _s_programs_browse
+after tap Program -> route: my_program
+DEBUG _fire begin <function AppNavigation.<locals>._lam122.<locals>._lam123.<locals>.<lambda>.<locals>.<lambda> at 0x74ca91534a40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 2.155s
+DEBUG step returned: _s_programs_browse
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74cac0563e00>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74cac05ad860>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74ca90ee34d0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca912323c0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74cac041aac0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca93fcca60>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca9173e3c0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74cac06f4830>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca9160d0f0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca917cd7f0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca915954e0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca9153b150>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca9130c8a0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca913e9ef0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca91427c40>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca913b7540>>>
+DEBUG entering step: _s_overlay_open
+after tap browse -> route: programs
+AlertDialog overlays BEFORE add-program tap: 0
+DEBUG _fire begin <bound method ProgramsViewModel.openCreateDialog of <ui.programs.ProgramsViewModel.ProgramsViewModel object at 0x74cac04d7230>>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.296s
+DEBUG step returned: _s_overlay_open
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74ca8bbba190>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8bbe3f50>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74cac03fee40>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74cac02cfbd0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8ba47b60>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8ba7be00>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8bb0fe00>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8bb6d080>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8bc6ff50>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8bcb8280>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74cb131e2200>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8bc303d0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca90dbd400>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74cb131925f0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca907a9550>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca907297f0>>>
+DEBUG entering step: _s_overlay_assert_one
+AlertDialog overlays AFTER add-program tap: 1
+DEBUG _fire begin <bound method ProgramsViewModel.dismissCreateDialog of <ui.programs.ProgramsViewModel.ProgramsViewModel object at 0x74cac04d7230>>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.037s
+DEBUG step returned: _s_overlay_assert_one
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74ca906b6430>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca90676890>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x74cb13189e80>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74cb1312c280>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca90610de0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca907b34d0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8be18ad0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca9050a820>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8bfd5d30>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca903ca0b0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca902e11d0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca902925f0>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca901f6270>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca90183c40>>>
+<ClockEvent (-1.0) callback=<bound method StackLayout.do_layout of <kivy.uix.stacklayout.StackLayout object at 0x74ca8bec91d0>>>
+<ClockEvent (-1.0) callback=<bound method FloatLayout.do_layout of <kivy.uix.floatlayout.FloatLayout object at 0x74ca8bf916a0>>>
+DEBUG entering step: _s_overlay_assert_dismissed
+AlertDialog overlays AFTER Cancel tap: 0
+route still: programs
+DEBUG step returned: _s_overlay_assert_dismissed
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+
+=== REAL-TAP GATE RESULTS ===
+  [PASS] tap Progress -> progress
+  [PASS] tap You -> settings
+  [PASS] scroll-drag over clickable does NOT navigate
+  [PASS] tap Paths -> paths
+  [PASS] Paths screen shows empty-state "Find your path" before enroll
+  [PASS] path picker opened (shows "Find your Path" title)
+  [PASS] Paths screen shows enrolled path info (NOT empty state) after Start my Path
+  [PASS] path picker opened for self-directed enrollment
+  [PASS] tap Program -> my_program
+  [PASS] tap browse/view programs -> programs
+  [PASS] Programs screen has 0 AlertDialog overlays before any action
+  [PASS] exactly ONE AlertDialog overlay present after add-program tap
+  [PASS] overlay gone (0 AlertDialog overlays) after Cancel
+  [PASS] Programs screen still functional: route unchanged at 'programs' post-dismiss
+GATE: GREEN

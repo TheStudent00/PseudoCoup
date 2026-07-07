@@ -1,0 +1,103 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-07_1.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+BOOT state=3b1d3614a2 n_actions=6 unsettled=False 5.35s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=0 action={'kind': 'NavigationBarItem', 'label': 'Home', 'handler_kind': 'onClick', 'ordinal': 0} dest=['3b1d3614a2'] error=None unsettled=False 4.75s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=1 action={'kind': 'NavigationBarItem', 'label': 'Program', 'handler_kind': 'onClick', 'ordinal': 1} dest=['46bc3d8638'] error=None unsettled=False 5.14s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=2 action={'kind': 'NavigationBarItem', 'label': 'Paths', 'handler_kind': 'onClick', 'ordinal': 2} dest=['0deeebf493'] error=None unsettled=False 5.44s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=3 action={'kind': 'NavigationBarItem', 'label': 'Progress', 'handler_kind': 'onClick', 'ordinal': 3} dest=['e37347cabf'] error=None unsettled=False 5.90s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=4 action={'kind': 'NavigationBarItem', 'label': 'You', 'handler_kind': 'onClick', 'ordinal': 4} dest=['1324e6a280'] error=None unsettled=False 7.26s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[] ordinal=5 action={'kind': 'FloatingActionButton', 'label': 'FloatingActionButton', 'handler_kind': 'onClick', 'ordinal': 5} dest=['41e634254f'] error=None unsettled=False 7.50s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[1] action=<count-actions-for-new-frontier-frame> result=n_actions=6 7.84s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[2] action=<count-actions-for-new-frontier-frame> result=n_actions=6 8.12s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[3] action=<count-actions-for-new-frontier-frame> result=n_actions=10 8.42s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[4] action=<count-actions-for-new-frontier-frame> result=n_actions=26 9.95s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] action=<count-actions-for-new-frontier-frame> result=n_actions=9 10.26s
+# py_walk summary
+states: 6
+edges:  6
+crashed edges: 0
+nav-bar destinations reached: ['my_program', 'paths', 'progress', 'settings', 'today'] (5/5)
+distinct routes/screens reached: ['my_program', 'paths', 'progress', 'settings', 'today'] (5/27 known Screen.kt routes)
+frontier remaining: 5
+done: False

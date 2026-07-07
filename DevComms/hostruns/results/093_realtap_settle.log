@@ -1,0 +1,77 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-07_36.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+=== running case: all (22 steps) ===
+start route: today
+Progress center px: (288, 40) size: (82, 80)
+after tap Progress -> route: progress
+You center px: (371, 40)
+after tap You -> route: settings
+dragging clickable Surface at (378, 897) (route before: today)
+route after drag: today
+route before Paths nav: today
+after tap Paths -> route: paths
+Paths screen texts (before enroll): ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User', 'Tuesday', 'Find your path', 'A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.', 'Start with your why.']
+picker screen texts: ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User']
+Paths screen texts (after enroll + re-nav): ['You', 'Progress', 'Paths', 'Program', 'Home', 'Hey, User', 'Tuesday', 'Add a second path', 'Adherence is the strongest independent predictor of long-term fitness outcomes across every population studied. The dose-response curve for exercise is steepest at the low end — moving from zero to 2–3 sessions/week produces the largest per-session return, and real mortality benefit exists BELOW the 150 min/week guideline (HR ≈ 0.80 for sub-guideline activity). There is no minimum intensity threshold for adherence-driven health benefits (walking-cadence intensity is not independently tied to mortality). For muscle-strengthening specifically, mortality benefit follows a J-curve peaking at ~30–60 min/week (≈10–17% lower all-cause mortality) — more is not necessarily better. Protocol target: 3 sessions/week, 25–40 min, RPE 5–7 (moderate effort). 3 sets × 10–15 reps per exercise, rest 60–90 s. Progressive overload: add 1 rep per session before increasing load.', 'The evidence', '30 min', 'Target', '2–7/week', 'Sessions', 'Any workout beats no workout.', 'Leave path', 'Just Show Up', 'Paths are the why. Programs are the how.']
+route before Paths nav (overlay case): paths
+after tap Program -> route: path_detail/path_self_directed
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/realtap_gate.py", line 513, in <module>
+     app.run()
+     ~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 956, in run
+     runTouchApp()
+     ~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 574, in runTouchApp
+     EventLoop.mainloop()
+     ~~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 339, in mainloop
+     self.idle()
+     ~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/base.py", line 379, in idle
+     Clock.tick()
+     ~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/clock.py", line 733, in tick
+     self.post_idle(ts, self.idle())
+     ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/clock.py", line 776, in post_idle
+     self._process_events()
+     ~~~~~~~~~~~~~~~~~~~~^^
+   File "kivy/_clock.pyx", line 620, in kivy._clock.CyClockBase._process_events
+   File "kivy/_clock.pyx", line 653, in kivy._clock.CyClockBase._process_events
+   File "kivy/_clock.pyx", line 649, in kivy._clock.CyClockBase._process_events
+   File "kivy/_clock.pyx", line 218, in kivy._clock.ClockEvent.tick
+   File "/home/lucas/Programming/WFL_MixingCenter/render/realtap_gate.py", line 226, in _next
+     step()
+     ~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/realtap_gate.py", line 444, in _s_programs_browse
+     assert w is not None, "Neither 'View other programs' nor 'Browse programs' button found"
+            ^^^^^^^^^^^^^
+ AssertionError: Neither 'View other programs' nor 'Browse programs' button found
+xvfb-run: error: problem while cleaning up temporary directory
