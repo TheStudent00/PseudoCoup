@@ -1,0 +1,2 @@
+{"id": "100_realtap_full", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "-u", "realtap_gate.py"], "timeout": 900}

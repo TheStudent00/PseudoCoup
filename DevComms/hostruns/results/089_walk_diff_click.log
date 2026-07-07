@@ -1,0 +1,942 @@
+WALK DIFF: 4 shared states, 17 kt-only, 3 py-only, 37 edge mismatches
+WALK DIFF: 4 shared states, 17 kt-only, 3 py-only, 37 edge mismatches
+
+## kt-only states (reached in Kotlin walk, never reached/matched in Python walk)
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> EditableText[onValueChange] '42'
+  state_id(remapped)=00c15cb15fe23956 state_id(original)=0bbc88be5d08e152
+route=settings_notifications
+  - kind='EditableText' text='42' interactive=True
+  - kind='EditableText' text='42' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Back up my data' interactive=False
+  - kind='Node' text='Body weight' interactive=False
+  ... (60 more components)
+
+[KT-ONLY STATE] tap path: Tab[onClick] -> Checkbox[onClick]
+  state_id(remapped)=18bae4b06b0079b5 state_id(original)=4618b4bf9e20a64f
+route=progress
+  - kind='Button' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='EditableText' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Connection & Life' interactive=False
+  ... (10 more components)
+
+[KT-ONLY STATE] tap path: Node[onClick] -> Tab[onClick]
+  state_id(remapped)=32739ce235b5b549 state_id(original)=aaaebd1214f06417
+route=progress
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='0' interactive=False
+  - kind='Node' text='Analytics' interactive=False
+  - kind='Node' text='Bests' interactive=False
+  - kind='Node' text='Hey, User' interactive=False
+  - kind='Node' text='History' interactive=False
+  - kind='Node' text='Home' interactive=False
+  - kind='Node' text='How you feel after training' interactive=False
+  - kind='Node' text='Log a win' interactive=False
+  - kind='Node' text='Log your first workout to see strength, volume and training-time analytics here.' interactive=False
+  ... (17 more components)
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> Node[onClick]
+  state_id(remapped)=3c87ff8787df429e state_id(original)=a1fad3ed8196986c
+route=settings_notifications
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='KG' interactive=False
+  - kind='Node' text='LB' interactive=False
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> Node[onClick]
+  state_id(remapped)=4b9fab3c2b8c9a9e state_id(original)=9789266463a32a16
+route=settings_notifications
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='No lingo' interactive=False
+  - kind='Node' text='RIR' interactive=False
+  - kind='Node' text='RPE' interactive=False
+
+[KT-ONLY STATE] tap path: Tab[onClick] -> Button[onClick]
+  state_id(remapped)=69d6d90fe480d637 state_id(original)=eeeffeeb5cd7ae8b
+route=wins
+  - kind='Button' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='EditableText' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Connection & Life' interactive=False
+  ... (10 more components)
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick]
+  state_id(remapped)=75ff36669674ccce state_id(original)=d7c4f9562475e397
+route=execution/{sessionId}
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='Finish' interactive=False
+  - kind='Node' text='Go back' interactive=False
+  - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+  - kind='Node' text='Mobility session' interactive=False
+  - kind='Node' text='This workout has no exercises' interactive=False
+
+[KT-ONLY STATE] tap path: Node[onClick]
+  state_id(remapped)=87e525ab638d76a7 state_id(original)=ed8c74ce7ae503c5
+route=today
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Notifications' interactive=False
+  - kind='Node' text='Settings' interactive=False
+  - kind='Node' text="You're all caught up." interactive=False
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> Node[onClick]
+  state_id(remapped)=8a0b2bdcb8424f85 state_id(original)=7868be71af10ea84
+route=exercises
+  - kind='Button' text='' interactive=True
+  - kind='EditableText' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  - kind='Image' text='' interactive=True
+  ... (58 more components)
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick]
+  state_id(remapped)=8acdd6ce2b9f7c4b state_id(original)=181c0de5abaac2d1
+route=workout_cooldown/{sessionId}
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='4 min' interactive=False
+  - kind='Node' text='4 min' interactive=False
+  - kind='Node' text='4 min' interactive=False
+  ... (22 more components)
+
+[KT-ONLY STATE] tap path: Tab[onClick] -> EditableText[onValueChange]
+  state_id(remapped)=a05e1ee0e7b49619 state_id(original)=4920d60a7d0a47e5
+route=wins
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='Checkbox' text='' interactive=True
+  - kind='EditableText' text='42' interactive=True
+  - kind='Node' text='All' interactive=False
+  - kind='Node' text='Endurance & Energy' interactive=False
+  - kind='Node' text='Everyday Strength' interactive=False
+  - kind='Node' text='No wins match your filters.' interactive=False
+  - kind='Node' text='Pain Relief' interactive=False
+  ... (1 more components)
+
+[KT-ONLY STATE] tap path: Tab[onClick]
+  state_id(remapped)=a276b8d69883fb1a state_id(original)=18ad4b621fa93638
+route=progress
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='0' interactive=False
+  - kind='Node' text='Analytics' interactive=False
+  - kind='Node' text='Bests' interactive=False
+  - kind='Node' text='Hey, User' interactive=False
+  - kind='Node' text='History' interactive=False
+  - kind='Node' text='Home' interactive=False
+  - kind='Node' text='Log a win' interactive=False
+  - kind='Node' text='Log your first workout to see strength, volume and training-time analytics here.' interactive=False
+  - kind='Node' text='More than the numbers — the real-life wins training makes possible.' interactive=False
+  ... (15 more components)
+
+[KT-ONLY STATE] tap path: Node[onClick] -> Node[onClick]
+  state_id(remapped)=da853968c7a57a6a state_id(original)=391e4f8b3bff6fec
+route=workout_cooldown/{sessionId}
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Better' interactive=False
+  - kind='Node' text='Compared to when you started' interactive=False
+  - kind='Node' text='Finish' interactive=False
+  - kind='Node' text='Great' interactive=False
+  - kind='Node' text='How are you feeling?' interactive=False
+  - kind='Node' text='Nicely done' interactive=False
+  ... (5 more components)
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> Node[onClick]
+  state_id(remapped)=dc61c7adbaec8d29 state_id(original)=4b3ad1f2f891468a
+route=gym_list
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='Gym profiles' interactive=False
+  - kind='Node' text='No gyms yet. Tap + to add one.' interactive=False
+
+[KT-ONLY STATE] tap path: Tab[onClick] -> Button[onClick]
+  state_id(remapped)=dd06a6300e0225ac state_id(original)=10b865836b19ef89
+route=settings_notifications
+  - kind='EditableText' text='' interactive=True
+  - kind='EditableText' text='User' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Back up my data' interactive=False
+  - kind='Node' text='Body weight' interactive=False
+  ... (60 more components)
+
+[KT-ONLY STATE] tap path: Button[onClick] -> Button[onClick] -> Node[onClick]
+  state_id(remapped)=e3de1d16378b984d state_id(original)=0222784083c8f8c5
+route=exercise_detail/{exerciseId}
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='Band Tricep Overhead Press' interactive=False
+  - kind='Node' text='Bilateral' interactive=False
+  - kind='Node' text='Built-in' interactive=False
+  - kind='Node' text='Extend a band overhead from behind the head to full lockout, targeting the long head of the triceps through a stretched position.' interactive=False
+  - kind='Node' text='Form notes' interactive=False
+  ... (7 more components)
+
+[KT-ONLY STATE] tap path: Node[onClick] -> Button[onClick]
+  state_id(remapped)=f506d763fe104fc0 state_id(original)=f7b788ae9cb4f6d4
+route=workout_summary/{sessionId}
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Node' text='0' interactive=False
+  - kind='Node' text='0 kg' interactive=False
+  - kind='Node' text='<TIME>' interactive=False
+  - kind='Node' text='Done' interactive=False
+  - kind='Node' text='Duration' interactive=False
+  - kind='Node' text='Exercise summary' interactive=False
+  - kind='Node' text='Exercises' interactive=False
+  - kind='Node' text='Volume' interactive=False
+  - kind='Node' text='Workout complete' interactive=False
+
+## py-only states (reached in Python walk, never reached/matched in Kotlin walk)
+[PY-ONLY STATE] tap path: <root>
+  state_id(remapped)=0f9df7c41a001f48 state_id(original)=42e7e342b7175565
+route=settings
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='Button' text='' interactive=True
+  - kind='DropdownMenu' text='' interactive=True
+  - kind='DropdownMenu' text='' interactive=True
+  - kind='EditableText' text='80.0' interactive=True
+  - kind='EditableText' text='User' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  ... (87 more components)
+
+[PY-ONLY STATE] tap path: <root>
+  state_id(remapped)=6a41af5bc5c9d084 state_id(original)=f3d8f879676dcdda
+route=today
+  - kind='Button' text='' interactive=True
+  - kind='ModalBottomSheet' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='Hey, User' interactive=False
+  - kind='Node' text='Home' interactive=False
+  - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+  - kind='Node' text='Notifications' interactive=False
+  - kind='Node' text='Paths' interactive=False
+  - kind='Node' text='Program' interactive=False
+  - kind='Node' text='Progress' interactive=False
+  - kind='Node' text='Set up a program to see your week here.' interactive=False
+  - kind='Node' text='Settings' interactive=False
+  ... (10 more components)
+
+[PY-ONLY STATE] tap path: <root>
+  state_id(remapped)=e21c884c66cb0f99 state_id(original)=600141839b0dbf3b
+route=progress
+  - kind='Button' text='' interactive=True
+  - kind='Card' text='' interactive=True
+  - kind='Node' text='' interactive=True
+  - kind='Node' text='0' interactive=False
+  - kind='Node' text='30 min' interactive=False
+  - kind='Node' text='30 min' interactive=False
+  - kind='Node' text='Analytics' interactive=False
+  - kind='Node' text='Bests' interactive=False
+  - kind='Node' text='Hey, User' interactive=False
+  - kind='Node' text='History' interactive=False
+  - kind='Node' text='Home' interactive=False
+  - kind='Node' text='Last 30 days' interactive=False
+  ... (20 more components)
+
+## edge divergences (kt-only actions -- action fired in Kotlin walk, no counterpart at the aligned Python state)
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Tab', 'label': '', 'handler_kind': 'onClick', 'ordinal': 6} dest=1a9ea0e8fe04ef6ce9c00d2a0109fedd4fb8f2d00e13876c86a036e95ed614dd
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Tab', 'label': '', 'handler_kind': 'onClick', 'ordinal': 3} dest=83882dc596965388f3b2b2c715457e6b6d153e75164f67d51b06c1b0dd5e3aa3
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 1} dest=87e525ab638d76a7ded3f5820ba445f60ed3dfb6bd2f10f177b5bc3b2b9f4a01
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Tab', 'label': '', 'handler_kind': 'onClick', 'ordinal': 4} dest=8a464a8889f6fd281c6bd24ead0d8234589ed28fa071fdd339b9c603c1c30915
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Tab', 'label': '', 'handler_kind': 'onClick', 'ordinal': 5} dest=a276b8d69883fb1a4df63c2e5838d42629a25238005ac95ed29643e6487173c8
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: <root>
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 0} dest=e6d0b62911b4bed9c83c70c9d306cbba55e5ce115094aafb06068e476e29863a
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 3} dest=3c87ff8787df429e150f70e6c85ebe5aa2b3ad2ad0c0c29aed4fc853ede51991
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 2} dest=4b9fab3c2b8c9a9e68d78840524c8fb8098de47a4e409c4f1838e9c06d1e87bb
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'Image', 'label': '', 'handler_kind': 'onClick', 'ordinal': 6} dest=8a0b2bdcb8424f85da77802d74e9ec21f2e786a610276738212ac3a54eaf049f
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 4} dest=dc61c7adbaec8d293859f58bcc2bb19077fa5b8b4c21da69d0beab6278df6aa3
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 7} dest=e3de1d16378b984d924d1ad1daec32465fb0a93e4c94ea1db5142b7fb8d35f74
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Button[onClick] -> Button[onClick]
+    action={'kind': 'EditableText', 'label': '42', 'handler_kind': 'onValueChange', 'ordinal': 1} dest=00c15cb15fe239567e535a819496f1aa9799e306526f89daf28daad32f2743ee
+    kt source state summary:
+    route=execution/{sessionId}
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='Finish' interactive=False
+      - kind='Node' text='Go back' interactive=False
+      - kind='Node' text='Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.' interactive=False
+      - kind='Node' text='Mobility session' interactive=False
+      - kind='Node' text='This workout has no exercises' interactive=False
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 5} dest=32739ce235b5b549dd178ef55d5cd14d42570301415208763e9143462e39828e
+    kt source state summary:
+    route=my_program
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Browse programs' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Join a program to see your training roadmap here.' interactive=False
+      - kind='Node' text='No program yet' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 6} dest=69d6d90fe480d6377c8da6ab133f4db25dcb7ebc4690becd1727d11d44f73a9d
+    kt source state summary:
+    route=my_program
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Browse programs' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Join a program to see your training roadmap here.' interactive=False
+      - kind='Node' text='No program yet' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Checkbox', 'label': '', 'handler_kind': 'onClick', 'ordinal': 4} dest=a05e1ee0e7b49619945a32f873f6a742c92798eafe763a5344cc0e014240ea52
+    kt source state summary:
+    route=my_program
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Browse programs' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Join a program to see your training roadmap here.' interactive=False
+      - kind='Node' text='No program yet' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'EditableText', 'label': '', 'handler_kind': 'onValueChange', 'ordinal': 0} dest=a05e1ee0e7b49619945a32f873f6a742c92798eafe763a5344cc0e014240ea52
+    kt source state summary:
+    route=my_program
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Browse programs' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Join a program to see your training roadmap here.' interactive=False
+      - kind='Node' text='No program yet' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Node[onClick]
+    action={'kind': 'Tab', 'label': '', 'handler_kind': 'onClick', 'ordinal': 5} dest=32739ce235b5b549dd178ef55d5cd14d42570301415208763e9143462e39828e
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Notifications' interactive=False
+      - kind='Node' text='Settings' interactive=False
+      - kind='Node' text="You're all caught up." interactive=False
+
+  KT-ONLY EDGE: tap path to source: Node[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 3} dest=da853968c7a57a6a4c925a3a837d5a0bb6e181c13cdff8b06f76e6287e8bafe1
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Notifications' interactive=False
+      - kind='Node' text='Settings' interactive=False
+      - kind='Node' text="You're all caught up." interactive=False
+
+  KT-ONLY EDGE: tap path to source: Node[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 4} dest=f506d763fe104fc0ce4764b0ce54827cb307c0a50a28ad9063253b0fe3ab04e9
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Notifications' interactive=False
+      - kind='Node' text='Settings' interactive=False
+      - kind='Node' text="You're all caught up." interactive=False
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Checkbox', 'label': '', 'handler_kind': 'onClick', 'ordinal': 6} dest=18bae4b06b0079b502f808f58b3c99373102dc3fdbed35e47f96a414546b491d
+    kt source state summary:
+    route=paths
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.' interactive=False
+      - kind='Node' text='Find your path' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Start with your why.' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 5} dest=32739ce235b5b549dd178ef55d5cd14d42570301415208763e9143462e39828e
+    kt source state summary:
+    route=paths
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.' interactive=False
+      - kind='Node' text='Find your path' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Start with your why.' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Checkbox', 'label': '', 'handler_kind': 'onClick', 'ordinal': 4} dest=a05e1ee0e7b49619945a32f873f6a742c92798eafe763a5344cc0e014240ea52
+    kt source state summary:
+    route=paths
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.' interactive=False
+      - kind='Node' text='Find your path' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Start with your why.' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'EditableText', 'label': '', 'handler_kind': 'onValueChange', 'ordinal': 0} dest=a05e1ee0e7b49619945a32f873f6a742c92798eafe763a5344cc0e014240ea52
+    kt source state summary:
+    route=paths
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.' interactive=False
+      - kind='Node' text='Find your path' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Start with your why.' interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 2} dest=32739ce235b5b549dd178ef55d5cd14d42570301415208763e9143462e39828e
+    kt source state summary:
+    route=progress
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='0' interactive=False
+      - kind='Node' text='Analytics' interactive=False
+      - kind='Node' text='Bests' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='History' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a win' interactive=False
+      - kind='Node' text='Log your first workout to see strength, volume and training-time analytics here.' interactive=False
+      - kind='Node' text='More than the numbers — the real-life wins training makes possible.' interactive=False
+      ... (15 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 3} dest=dd06a6300e0225acf1e724398870bbb33b832a1c02cf9c570879136daa5d9de3
+    kt source state summary:
+    route=progress
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='0' interactive=False
+      - kind='Node' text='Analytics' interactive=False
+      - kind='Node' text='Bests' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='History' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a win' interactive=False
+      - kind='Node' text='Log your first workout to see strength, volume and training-time analytics here.' interactive=False
+      - kind='Node' text='More than the numbers — the real-life wins training makes possible.' interactive=False
+      ... (15 more components)
+
+  KT-ONLY EDGE: tap path to source: Tab[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onLongClick', 'ordinal': 1} dest=32739ce235b5b549dd178ef55d5cd14d42570301415208763e9143462e39828e
+    kt source state summary:
+    route=progress
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='0' interactive=False
+      - kind='Node' text='Analytics' interactive=False
+      - kind='Node' text='Bests' interactive=False
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='History' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a win' interactive=False
+      - kind='Node' text='Log your first workout to see strength, volume and training-time analytics here.' interactive=False
+      - kind='Node' text='More than the numbers — the real-life wins training makes possible.' interactive=False
+      ... (15 more components)
+
+  KT-ONLY EDGE: tap path to source: Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 0} dest=1a9ea0e8fe04ef6ce9c00d2a0109fedd4fb8f2d00e13876c86a036e95ed614dd
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a Win' interactive=False
+      - kind='Node' text='Log other exercise' interactive=False
+      - kind='Node' text='New mobility session' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      ... (12 more components)
+
+  KT-ONLY EDGE: tap path to source: Button[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 1} dest=75ff36669674ccce0f44c0f10f228f9c7ad51a913687579ca2ed5f08d518487c
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a Win' interactive=False
+      - kind='Node' text='Log other exercise' interactive=False
+      - kind='Node' text='New mobility session' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      ... (12 more components)
+
+  KT-ONLY EDGE: tap path to source: Button[onClick]
+    action={'kind': 'Node', 'label': '', 'handler_kind': 'onClick', 'ordinal': 2} dest=87e525ab638d76a7ded3f5820ba445f60ed3dfb6bd2f10f177b5bc3b2b9f4a01
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a Win' interactive=False
+      - kind='Node' text='Log other exercise' interactive=False
+      - kind='Node' text='New mobility session' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      ... (12 more components)
+
+  KT-ONLY EDGE: tap path to source: Button[onClick]
+    action={'kind': 'Button', 'label': '', 'handler_kind': 'onClick', 'ordinal': 3} dest=8acdd6ce2b9f7c4b6c02d921284d962eff2422a5792edbfe465056592786f362
+    kt source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='Log a Win' interactive=False
+      - kind='Node' text='Log other exercise' interactive=False
+      - kind='Node' text='New mobility session' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      ... (12 more components)
+
+## edge divergences (py-only actions -- action fired in Python walk, no counterpart at the aligned Kotlin state)
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Button', 'label': 'FloatingActionButton', 'ordinal': 6} dest=e6d0b62911b4bed9c83c70c9d306cbba55e5ce115094aafb06068e476e29863a
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Tab', 'label': 'Home', 'ordinal': 1} dest=1a9ea0e8fe04ef6ce9c00d2a0109fedd4fb8f2d00e13876c86a036e95ed614dd
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Tab', 'label': 'Paths', 'ordinal': 3} dest=8a464a8889f6fd281c6bd24ead0d8234589ed28fa071fdd339b9c603c1c30915
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Tab', 'label': 'Program', 'ordinal': 2} dest=83882dc596965388f3b2b2c715457e6b6d153e75164f67d51b06c1b0dd5e3aa3
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Tab', 'label': 'Progress', 'ordinal': 4} dest=e21c884c66cb0f99af67fe03bb2f96edaebf3d9d77c203dd4b9384e8df1ef681
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Node', 'label': 'Surface', 'ordinal': 0} dest=6a41af5bc5c9d0849ee1ac9f28e3271ba4aecb1926f8fbbde98d0b94e5feb7ac
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+  PY-ONLY EDGE: tap path to source: <root>
+    action={'handler_kind': 'onClick', 'kind': 'Tab', 'label': 'You', 'ordinal': 5} dest=0f9df7c41a001f48c3dade244a46faad430c2d8fb2017a002ed74319daf804ad
+    py source state summary:
+    route=today
+      - kind='Button' text='' interactive=True
+      - kind='Node' text='' interactive=True
+      - kind='Node' text='Hey, User' interactive=False
+      - kind='Node' text='Home' interactive=False
+      - kind='Node' text='No program enrolled yet. Head to Paths to get started.' interactive=False
+      - kind='Node' text='Paths' interactive=False
+      - kind='Node' text='Program' interactive=False
+      - kind='Node' text='Progress' interactive=False
+      - kind='Node' text='Set up a program to see your week here.' interactive=False
+      - kind='Node' text="This week's workouts" interactive=False
+      - kind='Node' text='Tuesday' interactive=False
+      - kind='Node' text='You' interactive=False
+      ... (5 more components)
+
+## edge divergences (same action, source state matched, but destination differs)

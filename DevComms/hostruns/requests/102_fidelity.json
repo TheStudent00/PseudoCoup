@@ -1,0 +1,2 @@
+{"id": "102_fidelity", "cwd": "~/Programming/PseudoCoup/tools/pseudokotlin",
+ "cmd": ["python3", "fidelity.py"], "timeout": 3600}
