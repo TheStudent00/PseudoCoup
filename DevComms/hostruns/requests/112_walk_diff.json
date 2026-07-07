@@ -1,1 +1,9 @@
-{"cwd":"~/Programming/WFL_MixingCenter/render","cmd":["python3","walk_diff.py"],"timeout":300}
+{
+ "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": [
+  "python3",
+  "walk_diff.py"
+ ],
+ "timeout": 300,
+ "id": "112_walk_diff"
+}
