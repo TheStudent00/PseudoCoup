@@ -65,3 +65,12 @@ STEP path=[] ordinal=4 action={'kind': 'NavigationBarItem', 'label': 'You', 'han
 STEP path=[] ordinal=5 action={'kind': 'FloatingActionButton', 'label': 'FloatingActionButton', 'handler_kind': 'onClick', 'ordinal': 5} dest=['3c407a30f5'] error=None unsettled=False 8.42s
 
 walk_service: TIMEOUT after 3600s
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 741, in <module>
+     prog, spent = walk(args.steps, args.out)
+     ^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 731, in main
+     ap.add_argument("--out", default=FINAL_PATH)
+                   ^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 592, in walk
+ KeyboardInterrupt

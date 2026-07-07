@@ -369,3 +369,112 @@ STEP path=[4] ordinal=22 action={'kind': 'SegmentedButton', 'label': 'None', 'ha
 [[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
 [[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
 STEP path=[4] ordinal=23 action={'kind': 'SegmentedButton', 'label': 'Push', 'handler_kind': 'onClick', 'ordinal': 23} dest=['7dfc3aedf0'] error=None unsettled=False 37.95s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[4] ordinal=24 action={'kind': 'SegmentedButton', 'label': 'In-app', 'handler_kind': 'onClick', 'ordinal': 24} dest=['414da16a7b'] error=None unsettled=False 37.35s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[4] ordinal=25 action={'kind': 'SegmentedButton', 'label': 'None', 'handler_kind': 'onClick', 'ordinal': 25} dest=['4485eb17f1'] error=None unsettled=False 37.51s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] ordinal=0 action={'kind': 'NavigationBarItem', 'label': 'Home', 'handler_kind': 'onClick', 'ordinal': 0} dest=['3c407a30f5'] error=None unsettled=False 38.90s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] ordinal=1 action={'kind': 'NavigationBarItem', 'label': 'Program', 'handler_kind': 'onClick', 'ordinal': 1} dest=['87aa4a8dc1'] error=None unsettled=False 37.97s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] ordinal=2 action={'kind': 'NavigationBarItem', 'label': 'Paths', 'handler_kind': 'onClick', 'ordinal': 2} dest=['414da16a7b'] error=None unsettled=False 38.57s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] ordinal=3 action={'kind': 'NavigationBarItem', 'label': 'Progress', 'handler_kind': 'onClick', 'ordinal': 3} dest=['4877dde84c'] error=None unsettled=False 38.58s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[5] ordinal=4 action={'kind': 'NavigationBarItem', 'label': 'You', 'handler_kind': 'onClick', 'ordinal': 4} dest=['4485eb17f1'] error=None unsettled=False 41.04s
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 751, in <module>
+     main()
+     ~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 741, in main
+     prog, spent = walk(args.steps, args.out)
+                   ~~~~^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 617, in walk
+     result = replay_and_step(path, ordinal)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 517, in replay_and_step
+     result, crash = run_in_session(body)
+                     ~~~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in run_in_session
+     app.run()
+     ~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 955, in run
+     self._run_prepare()
+     ~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 925, in _run_prepare
+     root = self.build()
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 295, in build
+     self.comp = run_app.build_app_composition(self.ns)
+                 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/run_app.py", line 123, in build_app_composition
+     ns["ExerciseRepository"](db.exerciseDao()).seedIfNeeded()       # the exercise catalogue
+     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/data/repository/ExerciseRepository.py", line 52, in seedIfNeeded
+     self.dao.insertAllIgnore(ExerciseSeedData.ALL)
+     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/data/db/dao/ExerciseDao.py", line 31, in insertAllIgnore
+     return self._insert(exercises)
+            ~~~~~~~~~~~~^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 425, in _insert
+     self._db.insert(e, replace)
+     ~~~~~~~~~~~~~~~^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 225, in insert
+     self.invalidate({ent.table})
+     ~~~~~~~~~~~~~~~^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 133, in invalidate
+     lf._rerun()
+     ~~~~~~~~~^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 379, in _rerun
+     self._push(self._run_query())
+                ~~~~~~~~~~~~~~~^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 389, in <lambda>
+     return _LiveFlow(self._db, lambda: self._db.query(sql, params, pojo=pojo), _tables_in_sql(sql))
+                                        ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 197, in query
+     out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 197, in <genexpr>
+     out = KtList(ent.factory({c.name: c.from_db(row[c.name]) for c in ent.columns}) for row in rows)
+                                       ~~~~~~~~~^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 54, in from_db
+     return KtList() if not v else KtList(self.enum.valueOf(t.strip()) for t in v.split(","))
+                                   ~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/runtime/room.py", line 54, in <genexpr>
+     return KtList() if not v else KtList(self.enum.valueOf(t.strip()) for t in v.split(","))
+                                          ~~~~~~~~~~~~~~~~~^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/data/model/MuscleGroup.py", line 78, in <lambda>
+     MuscleGroup.valueOf = staticmethod(lambda s: next(e for e in MuscleGroup._entries if e.name == s))
+                                                  ^^^^
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/loader.py", line 52, in __missing__
+     v = self._loader.resolve(self._key, k)       # KeyError here surfaces as NameError at the use site
+   File "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin/loader.py", line 91, in resolve
+     raise KeyError(name)
+           ~~~~~~~~^^^^^^
+ KeyboardInterrupt

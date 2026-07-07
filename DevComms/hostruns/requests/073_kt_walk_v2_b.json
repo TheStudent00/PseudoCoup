@@ -1,0 +1,4 @@
+{"id": "073_kt_walk_v2_b", "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g",
+         "--tests", "com.sara.workoutforlife.walk.WalkRecorderTest", "--rerun", "-Dwalk.steps=60", "-Dwalk.reset=1"],
+ "timeout": 3600}

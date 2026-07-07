@@ -1,0 +1,1 @@
+{"id": "070_ping", "cwd": "~/Programming/PseudoCoup", "cmd": ["python3", "-c", "print(1)"], "timeout": 30}
