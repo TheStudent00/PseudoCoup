@@ -1,0 +1,5 @@
+{
+  "id": "090_probe",
+  "returncode": null,
+  "refused": "cmd[0] not on the allowed list: ['echo']"
+}
