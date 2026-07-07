@@ -413,3 +413,117 @@ TodayScreen.kt are read-only for this slice).
 
 Shared-state count remained 0 — correctly, per the Category B node-granularity finding above, which is a
 real (if benign) recorder-shape difference, not a bug in this differ.
+
+## 2026-07-07 — slice 3c: Kotlin edge labels fixed, deeper coverage queued, re-diff plan
+
+### Label rule spec (THE SAME rule, both sides — verbatim as documented in-code)
+
+Bug found exactly where the task pointed: `WalkRecorderTest.kt`'s `enumerateInteractive()` (pre-fix,
+line ~331) set `label = nodeText(n)` — the TAPPED node's own text only. `nodeText()` reads only
+`SemanticsProperties.Text`/`EditableText` on that one node. Any interactive node that is itself a plain
+container with no text of its own — the overwhelmingly common shape for "tap a whole row/card" handlers,
+where the visible text lives on a CHILD `Text` node — recorded `label = ""` for every such edge. This
+silently broke `walk_diff.py`'s `align_edges()` join key (`label + handler_kind`), which depends on label
+being "the human-readable `_subtext`-style owner text/description" (its own docstring, quoted verbatim)
+for the WHOLE class of container-owned handlers on the Kotlin side only — the Python side never had this
+bug, since `interact.py`'s `_subtext()` always walks the full subtree.
+
+**The rule (now identical on both sides, each file documents it in full):**
+1. Walk the interactive node's OWN SUBTREE — the node itself plus every descendant — in document
+   (pre)order.
+2. Collect every non-blank text value encountered (own node's text counts too, same as every descendant's).
+3. De-duplicate while preserving first-seen order.
+4. Join the surviving list with `" / "`.
+5. Collapse internal whitespace runs to a single space.
+6. Truncate to 40 characters, appending `"…"` if truncated.
+7. If the subtree carried no text at all, fall back to the node's `kind` string.
+
+- Python reference (unchanged, already correct): `render/interact.py`'s `_subtext(node, limit=40)`
+  (lines 117-132).
+- Kotlin fix: `WalkRecorderTest.kt` gained a new `subtreeText(node, limit=40)` function (test sources
+  only, mirrors `_subtext()` step-for-step) placed directly after `nodeText()`; `enumerateInteractive()`'s
+  `label` assignment (was `nodeText(n)`) is now `subtreeText(n)`. `nodeText()` itself is UNCHANGED and
+  still used elsewhere (canonicalized single-node text for `componentList()`/tree_summary) — only the
+  EDGE LABEL derivation changed, which is the only place the rule applies.
+- `render/walker.py`'s module-docstring EDGE format section (the shared WALK FORMAT spec) was expanded
+  from a one-line pointer ("the SAME human label convention interact.py already uses") to the full 7-step
+  rule above, cross-referencing `WalkRecorderTest.kt`'s `subtreeText()` by name, so the rule is legible
+  from either file without needing to diff the other side's source.
+- No format-version bump: label values were always documented as living on edges (`action.label`); this
+  is a same-field CORRECTNESS fix (empty→populated for the affected node class), not a schema change.
+  `state_id`/`canonical_id` hashing is untouched (labels never fed into either state hash).
+
+Files touched this pass: `WFL_MixingCenter/WFL/app/src/test/java/com/sara/workoutforlife/walk/WalkRecorderTest.kt`
+(test sources only, per fence), `WFL_MixingCenter/render/walker.py` (docstring only, no logic change —
+verified via `py_compile` in the `/tmp/gh` sandbox both before and after the edit).
+
+### Deeper coverage (task 2) — QUEUED, not yet executed
+
+Host loop (`tools/walk_service.py`) was confirmed OFF: `DevComms/hostruns/results/` has no entries past
+`102_fidelity.json`/`.log` (most recent prior artifact), and 10 polls (~40s apart) after queuing produced
+no new result files. Per the task's own contingency ("queue everything regardless; the user restarts it"),
+three request files were written and left in place:
+
+- `DevComms/hostruns/requests/110_kt_walk_steps200.json` — kt walk, `-Dwalk.steps=200 -Dwalk.reset=1`,
+  timeout 5400s.
+- `DevComms/hostruns/requests/111_py_walk_steps200.json` — py walk, `--steps 200 --reset` under
+  `xvfb-run`, timeout 5400s.
+- `DevComms/hostruns/requests/112_walk_diff.json` — `python3 walk_diff.py`, timeout 300s (to run AFTER
+  both walks land — the service processes requests in id order, so 112 naturally waits behind 110/111).
+
+**Coverage numbers cannot be reported yet** — no execution occurred this session. The most recent
+executed baseline remains the one already in this file: kt 21 states/43 edges (steps=60 exhausted-ish
+frontier) vs. py 14 states/47 edges (steps=60, `--resume`-extended, hit its own 900s bound). The 29-screen
+total (referenced in the task) is not yet cross-checked against either walk's distinct-route count in this
+pass; that comparison is deferred to whoever picks up 110/111/112's results.
+
+### Gate line — UNCHANGED this pass (no new diff run executed)
+
+```
+WALK DIFF: 0 shared states, 21 kt-only, 14 py-only, 75 edge mismatches
+```
+
+(This is the slice-3b gate line, carried forward — still the last ACTUALLY-RUN diff. It predates the
+label fix above, so its edge-mismatch classification does not yet reflect fixed labels; re-running
+`walk_diff.py` after 110/111 land is required before the label fix's effect on edge alignment can be
+measured. Do not read the 75 number as post-fix.)
+
+### Divergence classification / punch list — carried forward, NOT re-derived this pass
+
+Since no fresh walk or diff ran this session, the classification is unchanged from slice 3b above
+(Category A real route-coverage gaps, Category B recorder node-granularity, Category C KIND_MAP gaps —
+all fully enumerated in the slice-3b section). Restating the standing punch-list candidates for whoever
+runs 110/111/112 to completion:
+
+1. **`settings`/`settings_notifications` route family + `wins`, `exercise_detail/{exerciseId}`,
+   `workout_cooldown/{sessionId}` states** — reached on only one side this run (Category A). Re-diff after
+   the 200-step walks to see whether BOTH sides now reach these (steps=60 was likely just too shallow/
+   narrow a frontier on at least one side — see walk-shape mismatch §, "budgets themselves differed").
+2. **Node-granularity gap (Category B)** — kt-side extra `Image`/blank `Node` leaves (6-7 per screen) vs.
+   py-side occasional extra `Card` leaf, present on every one of the 4 common routes checked
+   (`today`, `my_program`, `paths`, `progress`). Not a new finding, but now that edge LABELS are fixed,
+   re-diffing may surface previously-invisible shared EDGES on these near-matching state pairs (edge
+   alignment no longer forced to "no match" by every kt edge label being empty) — this is the single
+   biggest expected effect of today's fix and the main reason task 3's re-diff matters.
+3. **`Card` / `DropdownMenu` / `ModalBottomSheet` / `FilterChip`** — still deliberately unmapped in
+   KIND_MAP (§4, §"KIND_MAP gap fix"); re-check after the 200-step walks whether any of these now have
+   matched edges to cross-reference against (previously zero matched edges for `FilterChip` specifically,
+   per the "left unmapped" note — a larger walk may finally produce evidence one way or the other).
+4. **Kotlin's `Image`-vs-Python's-collapsed-`Icon` residue (Category C-adjacent, §6(c))** — still an
+   honest, intentionally-unmapped vocabulary gap; not expected to change with more steps, listed here only
+   so it isn't silently dropped from the running punch list.
+
+None of these were fixed in this pass (stop-rule: punch-list items, not to be fixed under this task's
+fence). All are candidates to re-classify (confirmed-real vs. resolved-by-fix vs. still-recorder-shape)
+once 110/111/112 actually execute.
+
+### Honest execution status
+
+Code work (label-rule fix + doc updates) is COMPLETE and verified as far as this sandbox allows (Kotlin
+change is UNEXECUTED — no Gradle/JVM in this sandbox, consistent with this file's existing candor about
+`WalkRecorderTest.kt`'s status; `walker.py` was `py_compile`-checked before and after its docstring edit
+in `/tmp/gh`, syntax-clean, logic unchanged). Host-loop execution (200-step kt walk, 200-step py walk,
+re-diff) is QUEUED but NOT run — the service was off for the whole of this session (confirmed by polling
+`DevComms/hostruns/results/` ten times at ~40s intervals with no new artifacts appearing). Coverage
+numbers, the post-fix gate line, and a real re-classification of edge mismatches all require the user to
+start `tools/walk_service.py` and let requests 110→111→112 run to completion.
