@@ -1,0 +1,1 @@
+{"cwd":"~/Programming/WFL_MixingCenter/render","cmd":["xvfb-run","-a","python3","walker.py","--steps","200","--reset"],"timeout":5400}
