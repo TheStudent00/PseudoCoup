@@ -75,6 +75,9 @@ class Compiler:
         elif source_lang == "ruby":
             from .core.ruby_flattener import RubyFlattener
             flattener = RubyFlattener(builder)
+        elif source_lang == "php":
+            from .core.php_flattener import PhpFlattener
+            flattener = PhpFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -152,6 +155,10 @@ class Compiler:
         elif target_lang == "ruby":
             from .egress.ruby import RubyGenerator
             gen = RubyGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "php":
+            from .egress.php import PhpGenerator
+            gen = PhpGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")

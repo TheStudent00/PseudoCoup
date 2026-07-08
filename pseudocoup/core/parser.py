@@ -40,6 +40,9 @@ def build_parser(lang: str = "python") -> Parser:
     elif lang == "ruby":
         import tree_sitter_ruby
         p.language = Language(tree_sitter_ruby.language())
+    elif lang == "php":
+        import tree_sitter_php
+        p.language = Language(tree_sitter_php.language_php())
     else:
         raise ValueError(f"Unsupported Ingress language: {lang}")
         
