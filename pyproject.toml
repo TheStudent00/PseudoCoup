@@ -1,0 +1,28 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pseudocoup"
+version = "2.0.0"
+authors = [
+  { name="PseudoCoup Contributors" },
+]
+description = "A universal intentful architecture transpiler."
+readme = "README.md"
+requires-python = ">=3.10"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "tree-sitter",
+    "tree-sitter-python",
+    "tree-sitter-kotlin",
+    "tree-sitter-go",
+    "tree-sitter-typescript",
+    "tree-sitter-dart",
+]
+
+[project.scripts]
+pseudocoup = "pseudocoup.cli:main"
