@@ -16,6 +16,9 @@ def build_parser(lang: str = "python") -> Parser:
     elif lang == "rust":
         import tree_sitter_rust
         p.language = Language(tree_sitter_rust.language())
+    elif lang == "go":
+        import tree_sitter_go
+        p.language = Language(tree_sitter_go.language())
     else:
         raise ValueError(f"Unsupported Ingress language: {lang}")
         
