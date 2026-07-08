@@ -5,7 +5,6 @@ import os
 from .core.parser import build_parser
 from .core.builder import IRBuilder
 from .core.extractor import ContextExtractor
-from .core.flattener import ASTFlattener
 from .graph.cfg_builder import CFGBuilder
 from .graph.ssa import SSABuilder
 from .semantic.type_prop import TypePropagator
@@ -41,42 +40,43 @@ class Compiler:
         # 3. Flatten AST to Linear IR
         builder = IRBuilder()
         if source_lang == "python":
-            flattener = ASTFlattener(builder)
+            from .ingress.python import PythonFlattener
+            flattener = PythonFlattener(builder)
         elif source_lang == "dart":
-            from .core.dart_flattener import DartFlattener
+            from .ingress.dart import DartFlattener
             flattener = DartFlattener(builder)
         elif source_lang == "kotlin":
-            from .core.kotlin_flattener import KotlinFlattener
+            from .ingress.kotlin import KotlinFlattener
             flattener = KotlinFlattener(builder)
         elif source_lang == "rust":
-            from .core.rust_flattener import RustFlattener
+            from .ingress.rust import RustFlattener
             flattener = RustFlattener(builder)
         elif source_lang == "go":
-            from .core.go_flattener import GoFlattener
+            from .ingress.go import GoFlattener
             flattener = GoFlattener(builder)
         elif source_lang == "typescript":
-            from .core.typescript_flattener import TypeScriptFlattener
+            from .ingress.typescript import TypeScriptFlattener
             flattener = TypeScriptFlattener(builder)
         elif source_lang == "c_sharp":
-            from .core.c_sharp_flattener import CSharpFlattener
+            from .ingress.c_sharp import CSharpFlattener
             flattener = CSharpFlattener(builder)
         elif source_lang == "cpp":
-            from .core.cpp_flattener import CppFlattener
+            from .ingress.cpp import CppFlattener
             flattener = CppFlattener(builder)
         elif source_lang == "c":
-            from .core.c_flattener import CFlattener
+            from .ingress.c import CFlattener
             flattener = CFlattener(builder)
         elif source_lang == "java":
-            from .core.java_flattener import JavaFlattener
+            from .ingress.java import JavaFlattener
             flattener = JavaFlattener(builder)
         elif source_lang == "swift":
-            from .core.swift_flattener import SwiftFlattener
+            from .ingress.swift import SwiftFlattener
             flattener = SwiftFlattener(builder)
         elif source_lang == "ruby":
-            from .core.ruby_flattener import RubyFlattener
+            from .ingress.ruby import RubyFlattener
             flattener = RubyFlattener(builder)
         elif source_lang == "php":
-            from .core.php_flattener import PhpFlattener
+            from .ingress.php import PhpFlattener
             flattener = PhpFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")

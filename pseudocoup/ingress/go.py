@@ -1,42 +1,39 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
-class RustFlattener:
+class GoFlattener:
     """
-    Flattens Rust Tree-Sitter AST nodes into the Universal Linear IR.
+    Flattens Go Tree-Sitter AST nodes into the Universal Linear IR.
     """
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 
     def flatten(self, root_node: Node):
-        """Walks the Rust AST and emits linear IR instructions."""
+        """Walks the Go AST and emits linear IR instructions."""
         self._visit(root_node)
 
     def _visit(self, node: Node) -> str:
-        """Visits a Rust node, emits instructions, and returns the temp variable holding its value."""
+        """Visits a Go node, emits instructions, and returns the temp variable holding its value."""
         if not node:
             return ""
             
-        if node.type in ("let_declaration", "assignment_expression"):
-            left = None
-            right = None
+        if node.type in ("short_var_declaration", "assignment_statement"):
+            left = node.child_by_field_name("left")
+            right = node.child_by_field_name("right")
             
-            if node.type == "let_declaration":
-                left = node.child_by_field_name("pattern")
-                right = node.child_by_field_name("value")
-                if not left:
-                    # Fallback for older tree-sitter-rust
-                    for child in node.named_children:
-                        if child.type == "identifier":
-                            left = child
-                        elif child.type != "mutable_specifier":
-                            right = child
-            elif node.type == "assignment_expression":
-                left = node.child_by_field_name("left") or node.named_children[0]
-                right = node.child_by_field_name("right") or node.named_children[1]
+            # fallback to expression_list position
+            if not left and len(node.named_children) >= 2:
+                left = node.named_children[0]
+                right = node.named_children[1]
                 
             if left and right:
+                # Go usually wraps left/right in an expression_list, so we must unwrap it
+                if left.type == "expression_list" and len(left.named_children) > 0:
+                    left = left.named_children[0]
+                if right.type == "expression_list" and len(right.named_children) > 0:
+                    right = right.named_children[0]
+                    
                 dest = left.text.decode('utf8')
                 val = self._visit(right)
                 self.builder.emit_assign(dest, [val])
@@ -47,60 +44,45 @@ class RustFlattener:
             args_node = node.child_by_field_name("arguments") or node.named_children[1]
             
             func_name = self._visit(func_node) if func_node else ""
-            args = []
             
+            if func_name == "fmt.Println" or func_name == "fmt.Print" or func_name == "fmt.Printf":
+                func_name = "print"
+                
+            args = []
             if args_node:
                 for arg in args_node.named_children:
                     args.append(self._visit(arg))
             
             return self.builder.emit_temp_call(func_name, args)
             
-        elif node.type == "macro_invocation":
-            # identifier! ( token_tree )
-            macro_name_node = node.child_by_field_name("macro")
-            if not macro_name_node and len(node.named_children) > 0:
-                macro_name_node = node.named_children[0]
-                
-            token_tree = node.child_by_field_name("tokens")
-            if not token_tree and len(node.named_children) > 1:
-                token_tree = node.named_children[1]
-                
-            func_name = macro_name_node.text.decode('utf8') if macro_name_node else ""
-            
-            # Map common macros to universal built-ins
-            if func_name in ("println", "print", "format"):
-                func_name = "print"
-                
-            args = []
-            if token_tree and token_tree.type == "token_tree":
-                # token_tree contains all the arguments
-                for child in token_tree.named_children:
-                    args.append(self._visit(child))
-                    
-            return self.builder.emit_temp_call(func_name, args)
-            
-        elif node.type == "field_expression":
+        elif node.type == "selector_expression":
             # object.property
-            obj = node.child_by_field_name("value") or node.named_children[0]
+            obj = node.child_by_field_name("operand") or node.named_children[0]
             attr = node.child_by_field_name("field") or node.named_children[1]
             
             obj_val = self._visit(obj) if obj else ""
             attr_name = attr.text.decode('utf8') if attr else ""
             
+            # For fmt.Println, it's easier to just return the full name since Go doesn't usually treat packages as dynamic objects in IR
+            if obj_val == "fmt" and attr_name in ("Println", "Print", "Printf"):
+                return f"{obj_val}.{attr_name}"
+            
             dest = self.builder._next_temp()
             self.builder.emit(Instruction(OpCode.ATTR, dest=dest, args=[obj_val, attr_name]))
             return dest
             
-        elif node.type == "identifier":
+        elif node.type in ("identifier", "package_identifier", "field_identifier"):
             return node.text.decode('utf8')
             
-        elif node.type in ("integer_literal", "float_literal", "string_literal", "boolean_literal"):
+        elif node.type in ("int_literal", "float_literal", "interpreted_string_literal", "raw_string_literal", "rune_literal", "true", "false"):
             val = node.text.decode('utf8')
-            if node.type == "boolean_literal":
-                val = val.capitalize() # true -> True
+            if node.type == "true":
+                val = "True"
+            elif node.type == "false":
+                val = "False"
             return self.builder.emit_temp_assign([val])
             
-        elif node.type == "if_expression":
+        elif node.type == "if_statement":
             cond_node = node.child_by_field_name("condition")
             if not cond_node and len(node.named_children) > 0:
                 cond_node = node.named_children[0]
@@ -141,17 +123,18 @@ class RustFlattener:
             
             return ""
             
-        elif node.type in ("while_expression", "loop_expression"):
+        elif node.type == "for_statement":
             loop_header_idx = len(self.builder.instructions)
             
+            cond_node = node.child_by_field_name("condition")
+            if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "block":
+                cond_node = node.named_children[0]
+                
             cond_var = ""
-            if node.type == "while_expression":
-                cond_node = node.child_by_field_name("condition")
-                if not cond_node and len(node.named_children) > 0:
-                    cond_node = node.named_children[0]
-                cond_var = self._visit(cond_node) if cond_node else ""
+            if cond_node:
+                cond_var = self._visit(cond_node)
             else:
-                # infinite loop
+                # infinite loop `for {`
                 cond_var = self.builder.emit_temp_assign(["True"])
                 
             branch_instr = Instruction(OpCode.BRANCH, args=[cond_var, -1, -1])
@@ -159,11 +142,12 @@ class RustFlattener:
             
             body_idx = len(self.builder.instructions)
             body = node.child_by_field_name("body")
-            if not body and node.type == "while_expression" and len(node.named_children) > 1:
-                body = node.named_children[1]
-            elif not body and node.type == "loop_expression" and len(node.named_children) > 0:
-                body = node.named_children[0]
-                
+            if not body:
+                for child in node.named_children:
+                    if child.type == "block":
+                        body = child
+                        break
+                        
             if body:
                 self._visit(body)
                 
@@ -174,8 +158,10 @@ class RustFlattener:
             branch_instr.args[2] = exit_idx
             return ""
             
-        elif node.type == "expression_statement":
-            return self._visit(node.named_children[0]) if node.named_children else ""
+        elif node.type in ("expression_statement", "statement_list", "block", "function_declaration", "source_file"):
+            for child in node.named_children:
+                self._visit(child)
+            return ""
             
         else:
             for child in node.named_children:

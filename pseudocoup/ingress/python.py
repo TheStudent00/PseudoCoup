@@ -1,14 +1,14 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
-from .constants import (
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
+from ..core.constants import (
     NODE_EXPRESSION_STATEMENT, NODE_ASSIGNMENT, NODE_CALL, 
     NODE_ATTRIBUTE, NODE_IDENTIFIER, NODE_INTEGER, NODE_STRING,
     NODE_IF_STATEMENT, NODE_WHILE_STATEMENT, NODE_FOR_STATEMENT,
     NODE_TRY_STATEMENT
 )
 
-class ASTFlattener:
+class PythonFlattener:
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 

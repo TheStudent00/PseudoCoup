@@ -1,83 +1,75 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
-class PhpFlattener:
+class CFlattener:
     """
-    Flattens PHP Tree-Sitter AST nodes into the Universal Linear IR.
+    Flattens C Tree-Sitter AST nodes into the Universal Linear IR.
     """
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 
     def flatten(self, root_node: Node):
-        """Walks the PHP AST and emits linear IR instructions."""
+        """Walks the C AST and emits linear IR instructions."""
         self._visit(root_node)
 
     def _visit(self, node: Node) -> str:
-        """Visits a PHP node, emits instructions, and returns the temp variable holding its value."""
+        """Visits a C node, emits instructions, and returns the temp variable holding its value."""
         if not node:
             return ""
             
-        if node.type == "assignment_expression":
-            left = node.child_by_field_name("left") or node.named_children[0]
-            right = node.child_by_field_name("right") or node.named_children[1]
+        if node.type in ("declaration", "assignment_expression"):
+            left = None
+            right = None
             
-            dest = self._visit(left)
-            val = self._visit(right)
-            self.builder.emit_assign(dest, [val])
-            return dest
-            
-        elif node.type in ("function_call_expression", "print_intrinsic", "echo_statement"):
-            if node.type == "function_call_expression":
-                func_node = node.child_by_field_name("function") or node.named_children[0]
-                args_node = node.child_by_field_name("arguments") or node.named_children[1]
-                func_name = self._visit(func_node) if func_node else ""
-            else:
-                func_name = "print"
-                args_node = node.named_children[0] if node.named_children else None
+            if node.type == "declaration":
+                declarator = None
+                for child in node.named_children:
+                    if child.type == "init_declarator":
+                        declarator = child
+                        break
                 
-            if func_name in ("echo", "print"):
+                if declarator:
+                    left = declarator.child_by_field_name("declarator") or declarator.named_children[0]
+                    right = declarator.child_by_field_name("value") or declarator.named_children[1]
+            elif node.type == "assignment_expression":
+                left = node.child_by_field_name("left") or node.named_children[0]
+                right = node.child_by_field_name("right") or node.named_children[1]
+                
+            if left and right:
+                dest = left.text.decode('utf8')
+                val = self._visit(right)
+                self.builder.emit_assign(dest, [val])
+                return dest
+                
+        elif node.type == "call_expression":
+            func_node = node.child_by_field_name("function") or node.named_children[0]
+            args_node = node.child_by_field_name("arguments") or node.named_children[1]
+            
+            func_name = self._visit(func_node) if func_node else ""
+            
+            if func_name == "printf":
                 func_name = "print"
                 
             args = []
-            if args_node:
-                if args_node.type == "arguments":
-                    for arg in args_node.named_children:
-                        args.append(self._visit(arg))
-                elif args_node.type == "parenthesized_expression":
-                    args.append(self._visit(args_node.named_children[0]))
-                else:
-                    args.append(self._visit(args_node))
+            if args_node and args_node.type == "argument_list":
+                for arg in args_node.named_children:
+                    args.append(self._visit(arg))
+                    
+            if func_name == "print" and args and len(args) == 1:
+                # Basic string format un-packing could go here if we had more complex printf("%s", x)
+                pass
             
             return self.builder.emit_temp_call(func_name, args)
             
-        elif node.type == "binary_expression":
-            left = node.child_by_field_name("left") or node.named_children[0]
-            right = node.child_by_field_name("right") or node.named_children[1]
-            op = node.child_by_field_name("operator")
-            op_text = op.text.decode('utf8') if op else "-"
-            l_val = self._visit(left)
-            r_val = self._visit(right)
-            return self.builder.emit_temp_assign([f"{l_val} {op_text} {r_val}"])
+        elif node.type == "identifier":
+            return node.text.decode('utf8')
             
-        elif node.type in ("variable_name", "name"):
+        elif node.type in ("number_literal", "string_literal", "true", "false", "char_literal"):
             val = node.text.decode('utf8')
-            if val.startswith("$"):
-                return val[1:]
-            return val
-            
-        elif node.type in ("integer", "float", "string", "boolean", "string_content", "encapsed_string"):
-            if node.type == "encapsed_string":
-                val = node.named_children[0].text.decode('utf8') if node.named_children else node.text.decode('utf8')
-                return self.builder.emit_temp_assign([f'"{val}"'])
-            elif node.type == "string":
-                val = node.named_children[0].text.decode('utf8') if node.named_children else node.text.decode('utf8')
-                return self.builder.emit_temp_assign([f'"{val}"'])
-            
-            val = node.text.decode('utf8')
-            if val == "true":
+            if node.type == "true":
                 val = "True"
-            elif val == "false":
+            elif node.type == "false":
                 val = "False"
             return self.builder.emit_temp_assign([val])
             
@@ -96,12 +88,9 @@ class PhpFlattener:
             
             true_idx = len(self.builder.instructions)
             consequence = node.child_by_field_name("consequence")
-            if not consequence:
-                for child in node.named_children:
-                    if child.type == "compound_statement":
-                        consequence = child
-                        break
-                        
+            if not consequence and len(node.named_children) > 1:
+                consequence = node.named_children[1]
+                
             if consequence:
                 self._visit(consequence)
                 
@@ -110,6 +99,9 @@ class PhpFlattener:
             
             false_idx = len(self.builder.instructions)
             alternative = node.child_by_field_name("alternative")
+            if not alternative and len(node.named_children) > 2:
+                alternative = node.named_children[2]
+                
             if alternative:
                 self._visit(alternative)
                 
@@ -125,11 +117,11 @@ class PhpFlattener:
             
             return ""
             
-        elif node.type == "while_statement":
+        elif node.type in ("while_statement", "for_statement"):
             loop_header_idx = len(self.builder.instructions)
             
             cond_node = node.child_by_field_name("condition")
-            if not cond_node and len(node.named_children) > 0:
+            if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "compound_statement":
                 cond_node = node.named_children[0]
                 
             if cond_node and cond_node.type == "parenthesized_expression":
@@ -162,10 +154,9 @@ class PhpFlattener:
             branch_instr.args[2] = exit_idx
             return ""
             
-        elif node.type in ("program", "expression_statement", "compound_statement", "parenthesized_expression"):
+        elif node.type in ("expression_statement", "compound_statement", "function_definition", "translation_unit", "parenthesized_expression"):
             for child in node.named_children:
-                if child.type != "php_tag":
-                    self._visit(child)
+                self._visit(child)
             return ""
             
         else:
