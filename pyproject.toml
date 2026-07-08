@@ -16,7 +16,7 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "tree-sitter",
+    "tree-sitter==0.21.3",
     "tree-sitter-python",
     "tree-sitter-kotlin",
     "tree-sitter-go",
