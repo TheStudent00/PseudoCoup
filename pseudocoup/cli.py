@@ -57,6 +57,9 @@ class Compiler:
         elif source_lang == "typescript":
             from .core.typescript_flattener import TypeScriptFlattener
             flattener = TypeScriptFlattener(builder)
+        elif source_lang == "c_sharp":
+            from .core.c_sharp_flattener import CSharpFlattener
+            flattener = CSharpFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -110,6 +113,10 @@ class Compiler:
         elif target_lang == "typescript":
             from .egress.typescript import TypeScriptGenerator
             gen = TypeScriptGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "c_sharp":
+            from .egress.c_sharp import CSharpGenerator
+            gen = CSharpGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
