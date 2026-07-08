@@ -45,6 +45,9 @@ class Compiler:
         elif source_lang == "dart":
             from .core.dart_flattener import DartFlattener
             flattener = DartFlattener(builder)
+        elif source_lang == "kotlin":
+            from .core.kotlin_flattener import KotlinFlattener
+            flattener = KotlinFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -82,6 +85,10 @@ class Compiler:
             output_code = gen.generate(ast_output)
         elif target_lang == "dart":
             gen = DartGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "kotlin":
+            from .egress.kotlin import KotlinGenerator
+            gen = KotlinGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
