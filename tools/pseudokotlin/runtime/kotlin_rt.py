@@ -1242,12 +1242,25 @@ class Date:                             # java.util.Date -- Date() is now; Date(
         self._dt = _datetime.now() if millis is None else _datetime.fromtimestamp(millis / 1000)
 
 
-class Locale:                           # java.util.Locale -- only passed through to a formatter here
-    US = "en_US"
+class Locale:                           # java.util.Locale -- a distinct TYPE (not a bare string), so
+    """Formatter shims can recognize and skip a leading locale argument (ktformat's static
+    String.format(Locale, pattern, ...) form) without mistaking it for the pattern. This runtime always
+    formats English/period-decimal, so US and ENGLISH render identically here -- the constants exist
+    because main-source discipline T2 pins call sites to explicit locales (SettingsScreen String.format,
+    WinsListScreen date formatter + lowercase sort key, AppNavigation day name)."""
+    def __init__(self, tag):
+        self.tag = tag
+
+    def __repr__(self):
+        return f"Locale({self.tag})"
 
     @staticmethod
     def getDefault():
         return Locale.US
+
+
+Locale.US = Locale("en_US")
+Locale.ENGLISH = Locale("en")
 
 
 _JAVA_DATE_TOKENS = (("yyyy", "%Y"), ("MM", "%m"), ("dd", "%d"),
@@ -1406,6 +1419,8 @@ def ktformat(receiver, *args):
     """Kotlin `.format(...)`: printf-style on String ("%.1f".format(x) -> "5.0"). The STATIC form
     String.format(pattern, ...) arrives with the String TYPE as receiver -- the pattern is args[0].
     Any other receiver (DateTimeFormatter, LocalDate) keeps its own format method."""
+    if args and isinstance(args[0], Locale):     # String.format(Locale.US, pattern, ...) -- T2's pinned
+        args = tuple(args[1:])                   # form; this runtime is single-locale, so just skip it
     if isinstance(receiver, str):
         return _printf(receiver, args)
     if args and isinstance(args[0], str):
