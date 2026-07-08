@@ -59,7 +59,11 @@ CompositionLocalProvider; verified directly against ComposerImpl.startRoot() run
 bridge ui-tooling's own Inspectable uses. WalkRecorderTest's emitMountLog/emitGroupDump now walk root data
 plus every registered table (deduped by identity, "TABLE k/N" headers); GROUPDUMP cap raised 3000->6000.
 STATUS: subcomposition capture VERIFIED on host (242 tables, T1exact 0->67); mount_diff refined (vocabulary
-filter, per-route counts).
+filter, per-route counts). GRANULARITY PARITY (commits 231bf79/153f03d): py now dumps its mount set ONCE
+per settled state under a STATE header (per-creation lines behind IDENTITY_LOG_VERBOSE) -- recompose churn
+had inflated py counts ~35-40x; oracle_registry is coordinate->[names] (518/1658 coordinates carry multiple
+same-line composables; flat dict had silently dropped primitives). Hostruns 159 (py walk, new format) + 160
+(mount_diff) queued -- first directly-comparable count run.
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
