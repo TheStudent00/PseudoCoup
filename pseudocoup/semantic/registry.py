@@ -13,6 +13,21 @@ class WrapperRegistry:
         for fqn, methods in data.items():
             self.registry[fqn] = methods
 
+    def load_defaults(self, source_lang: str, target_lang: str):
+        """Loads canonical stdlib fallbacks between core languages."""
+        if source_lang == "python" and target_lang == "dart":
+            self.register("builtins", "print", "Void", "print")
+            self.register("builtins", "len", "Int", "length")
+            self.register("builtins", "str", "String", "toString")
+            self.register("List", "append", "Void", "add")
+            self.register("Dict", "keys", "List", "keys")
+            
+        elif source_lang == "python" and target_lang == "kotlin":
+            self.register("builtins", "print", "Void", "println")
+            self.register("builtins", "len", "Int", "size")
+            self.register("builtins", "str", "String", "toString")
+            self.register("List", "append", "Void", "add")
+
     def register(self, fqn: str, method: str, return_type: str, map_to: str):
         """Manually registers a single external method mapping."""
         if fqn not in self.registry:

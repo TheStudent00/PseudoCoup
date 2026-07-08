@@ -47,6 +47,7 @@ class CFGBuilder:
             block.instructions = self.instructions[leader_start:end_idx]
             blocks.append(block)
             self.cfg.blocks[block.id] = block
+            self.cfg.leader_to_block_id[leader_start] = block.id
             
             if idx == 0:
                 self.cfg.entry = block
