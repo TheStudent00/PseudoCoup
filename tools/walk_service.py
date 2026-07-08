@@ -25,7 +25,7 @@ SAFETY RAILS:
     it does not administrate the machine.
   * A request id is processed at most once (results/<id>.json is the marker).
 
-Usage:  python3 ~/Programming/PseudoCoup/tools/walk_service.py
+Usage:  python3 ~/Programming/PseudoCoup_v0/tools/walk_service.py
 Stop:   ctrl-C  (or create DevComms/hostruns/STOP -- checked between runs)
 """
 import json

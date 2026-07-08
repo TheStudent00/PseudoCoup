@@ -4,7 +4,7 @@ Run from PseudoCoup/tools/pseudokotlin."""
 import os
 import sys
 
-HERE = "/home/lucas/Programming/PseudoCoup/tools/pseudokotlin"
+HERE = "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin"
 sys.path.insert(0, HERE)
 import oracle as O                            # noqa: E402
 import pseudoui_run as R                      # noqa: E402
