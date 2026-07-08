@@ -25,6 +25,11 @@ dependencies = [
     "tree-sitter-c-sharp",
     "tree-sitter-cpp",
     "tree-sitter-c",
+    "tree-sitter-java",
+    "tree-sitter-swift",
+    "tree-sitter-rust",
+    "tree-sitter-ruby",
+    "tree-sitter-php",
 ]
 
 [project.scripts]
