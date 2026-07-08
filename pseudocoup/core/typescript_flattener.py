@@ -163,9 +163,14 @@ class TypeScriptFlattener:
             branch_instr.args[2] = exit_idx
             return ""
             
-        elif node.type in ("expression_statement", "statement_block", "function_declaration", "program", "parenthesized_expression"):
+        elif node.type in ("expression_statement", "statement_block", "function_declaration", "program"):
             for child in node.named_children:
                 self._visit(child)
+            return ""
+            
+        elif node.type == "parenthesized_expression":
+            if node.named_children:
+                return self._visit(node.named_children[0])
             return ""
             
         else:

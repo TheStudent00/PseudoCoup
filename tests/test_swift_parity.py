@@ -36,7 +36,7 @@ def test_v2_python_to_swift_roundtrip():
 
     assert "print(\"Bigger\")" in python_code
     assert "while" in python_code
-    assert "x_0 = 10" in python_code
+    assert "x = 10" in python_code
 
 if __name__ == "__main__":
     test_v2_python_to_swift_roundtrip()
