@@ -1,3 +1,35 @@
+# Session handoff — 2026-07-08 update (discipline slice + walker hermeticity; details in PROGRESS_ondeck.md)
+
+REPO RENAMED: PseudoCoup -> PseudoCoup_v0 (user freed the name for a new public repo). All hardcoded
+~/Programming/PseudoCoup path constants updated (render/ tooling, vendor scripts, walk_service usage
+line). If the GitHub repo is also renamed: `git remote set-url origin .../PseudoCoup_v0.git`.
+
+MAIN-SOURCE DISCIPLINE SLICE (DevComms/main_source_discipline.md; user-approved Tiers 1+2+3, all
+landed + verified): T1a merged semantics on 26 container clickables (walker labels carry child text
+natively); T1b AppTopBar day-name + TodayScreen week read TimeProvider (closes the AppNavigation.kt:994
+open decision); T2 explicit locales (String.format weight, wins formatter/sort); T3 transpiler emits
+raise (not None) for the synthetic exhaustive-when else, gated to value-consumed whens only. Runtime
+grew Locale.US/ENGLISH as a real class + ktformat skips a leading Locale arg. Gates after: kotlin
+green, fidelity 423/423, interact 1410/1410 + shell 6.
+
+WALKER HERMETICITY (the big correction): di._DB was process-global while Session.build re-ran
+load_ns() per episode -> later episodes read rows hydrated through the PREVIOUS namespace's enum
+classes (identity mismatch -> synthetic when-else None). The "first real app bugs" note is REVISED:
+Resume/WorkoutExecutionViewModel float*NoneType and the phantom "Workout in progress" states were
+walker leakage, NOT app bugs (ModalBottomSheet dismiss LookupError remains open/real). Fix:
+di.reset() per Session boot, closes old sqlite conn (a 100-episode walk otherwise OOMs — hostrun 119
+died SIGKILL at 99/100). Crash tracebacks now print to walk logs (di.py + walker.py, log-only).
+Second clock gap found+fixed: WalkRecorderTest bypasses Hilt, so FixedTimeModule never reached
+Assembler-built ViewModels — Assembler gained an optional TimeProvider override (default unchanged).
+
+WALK DIFF (hostrun 142, both walks clock-pinned, hermetic): 4 shared / 17 kt-only / 19 py-only /
+122 edge mismatches (was 4/17/29/170). Bucket teardown (agent, 2026-07-08): unmapped overlay/container
+kinds (py records DropdownMenu/ModalBottomSheet/Card; kt semantics tree has no such kinds) = 17/36
+unshared states + 72/122 edge mismatches — DOMINANT remaining lever, currently deliberate KIND_MAP
+policy, needs a user design decision; BFS reachability = 13 states + 21 edges; "42" vs "42.0" display
+drift = downstream formatting, differ-canonicalization decision pending; kt 'Button' vs py
+'FloatingActionButton' labels = 14 edges.
+
 # Session handoff — 2026-07-07 update (walker era; read PROGRESS_ondeck.md top entries for full detail)
 
 CURRENT STATE: acceptance-drive bugs fixed (Room invalidation, live flow operators, fail-loud DI, M3
