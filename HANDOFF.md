@@ -1,3 +1,75 @@
+# Session handoff — 2026-07-08 LATE update (COMPONENT IDENTITY SYSTEM; successor model: read this block fully)
+
+OWNER'S STANDING SPEC (verbatim intent, non-negotiable): zero opaqueness. Every UI component and every
+activator carries an identity tag; a live runtime log announces what is what (mounts, activations); every
+entry cross-checks against the Oracle ledger AT RUNTIME, so a one-sided "empty" entry is impossible to
+assert — the system itself names what is at each position on both engines or names the ledger entry that
+failed to appear. Also: communication per the owner's saved protocol (direct answer first, keep their
+words, anchor every abstraction, no jargon, ask before ontology/naming choices), delegate heavy work to
+Sonnet subagents, commit small and often (high-resolution chronology; sandbox commits, owner pushes).
+
+THE IDENTITY SYSTEM AS BUILT (all committed, WFL_MixingCenter master):
+- Shared identity key: Kotlin source coordinate (File.kt:line) of the composable call that produced a
+  component. Python gets it via the transpiler's linemaps (<file>.py.linemap.json, generated line -> kt
+  line); Kotlin gets it via Compose's composition source information.
+- render/identity.py: hooks Node construction (di.install pattern), stack-walks to the transpiled call
+  site, linemap-translates to kt coordinate, stores node.origin. NOTE: found compose.py defines
+  _call_site() twice (late-binding bug, node.src untrustworthy) — identity.py does its own walk.
+- render/oracle_registry.py: the Oracle — 1658 composable call sites scanned from 253 transpiled files;
+  {kt_coordinate: composable_name}. Walker verifies every mounted widget against it live: "ORACLE OK" /
+  "ORACLE UNKNOWN origin=..." lines. PROVEN: full 50-step walk (hostrun 150) = 0 UNKNOWN.
+- kivy_kit.py MOUNT/UNMOUNT + walker.py ACTIVATE lines all carry origin=<kt coord> (IDENTITY_LOG flag,
+  on for walker runs, off for fidelity/interact to keep their parsed stdout clean).
+- Kotlin half: WFL/app/src/test/.../walk/SourceProbe.kt wraps AppNavigation in the walk test, reads
+  currentComposer.compositionData (public API reproduction of Layout Inspector's Inspectable; the
+  currentComposer read must stay OUTSIDE try/catch — Compose compiler rule, cost us hostrun 149).
+  WalkRecorderTest emitMountLog() dumps "MOUNT engine=kt origin=File.kt:line kind=..." per settled state
+  + origin= on ACTIVATE lines, all into WFL/app/build/walks/kt_activations.log (gradle swallows test
+  stdout — the file IS the nothing-hidden log). CHANNELS lines = per-node semantics action/property dump.
+- render/mount_diff.py: the coordinate-join instrument. Parses both identity logs, normalizes kt bare
+  filenames -> registry paths (unique-basename index; ambiguity reported never guessed), filters non-app
+  frames, reports per-route and global: both / py-only / kt-only coordinates, each named with registry
+  entry + log evidence. Output: render/walks/mount_diff_report.txt.
+
+CURRENT DEFECT = THE IMMEDIATE NEXT TASK (agent may already be on it — check git log): kt Group.location
+frequently reports the ENCLOSING composable's location, not the actual call site (kind=Scaffold
+origin=AppNavigation.kt:249; real call at :385). First mount_diff run: "0 both / 118 py-only / 1 kt-only
+(kt non-app frames filtered: 1527)" — py side joins cleanly, kt side needs its Group-tree traversal to
+take each UI-emitting group's OWN location (Layout Inspector proves accurate locations exist in this
+data; the emitter likely reads location one level too high). Fix in WalkRecorderTest.kt emitMountLog/
+SourceProbe usage, then re-run kt walk + mount_diff — "both" column becomes the primary agreement gauge.
+
+WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
+COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
+wins, cooldown, summary] (13 states), py-only [programs, settings] (3). Owner-approved policy: coverage
+gaps are never counted as mismatches. Dismiss parity done (kt recorder ranks Dismiss above OnClick; differ
+aligns onDismissRequest on handler alone — labels structurally can't match). Numeric text canonicalized
+('42'=='42.0'). Ledger-join reporting: every one-sided state resolves to nearest counterpart with overlap
+ratio + RESOLVED PAIRs; UNRESOLVED is loud. Max overlap 0.83 -> remaining unshared states differ by real
+content, mostly reachability.
+
+NEXT STEPS QUEUE (after the kt location fix): (a) frontier/BFS alignment so both walkers spend budgets on
+the same territory (owner approved scoped-diff-first, then alignment); (b) named seed roots for
+unreachable screens (Onboarding, ReportBug-crash, WorkoutWarmup) — same seed both engines; (c) make
+mount_diff a tracked gate once kt locations are line-exact; (d) owner decision pending: ~61 pre-existing
+uncommitted WFL files (mostly regenerated py twins from the T3 transpiler fix — build output awaiting
+gate acceptance) — commit or hold; (e) PseudoDart phase per original HANDOFF (discipline-checker gauge
+first — note the identity/type discussion: transpiler preserves type ANNOTATIONS/wrappers (Int32/Float32
+on values) but variables are unenforced names; owner is aware and parked local-variable annotations until
+it bites).
+
+OPERATIONAL (successor model, learn from this session's scars): hostrun loop = write request JSON to
+DevComms/hostruns/requests/NNN_name.json {"id","cwd","cmd","timeout"}, owner runs tools/walk_service.py,
+read results/NNN.log+.json. A request with NO result file gets re-run on service restart — never leave a
+--reset walk request dangling (it wiped 99 steps of progress once; delete/park request files after
+failures). Sandbox bash: 45s hard cap per call, background processes are reaped, host paths differ from
+Read/Edit paths (see Shell access mapping). Git in mounted repos: stale .lock files appear when a call is
+killed mid-git — rm -f .git/*.lock and retry; NEVER bypass with write-tree/commit-tree (an agent's manual
+ref writes desynced the index and silently reverted 11 files in a later commit — always `git status` +
+`git diff HEAD --stat` after agent commits). Kivy runs in-sandbox (pip install kivy --break-system-packages,
+xvfb-run -a, apt libmtdev1); loader needs ~/Programming symlinks (ln -s /sessions/<s>/mnt/X ~/Programming/X).
+Repo renamed PseudoCoup->PseudoCoup_v0 2026-07-08; if GitHub repo renamed too: git remote set-url.
+
 # Session handoff — 2026-07-08 update (discipline slice + walker hermeticity; details in PROGRESS_ondeck.md)
 
 REPO RENAMED: PseudoCoup -> PseudoCoup_v0 (user freed the name for a new public repo). All hardcoded
