@@ -47,6 +47,19 @@ MULTISET COUNT of mount occurrences is compared between engines (per route where
 data, else globally), reported as AGREE / COUNT MISMATCH / py-only / kt-only, with a registry distinct-
 call-site count alongside as context (not an equality target). Tier 1 line-exact join is kept in the report,
 labeled, and stays the aspirational (currently ~0, by the parked defect) finer-grained measure.
+STATUS UPDATE (2026-07-08, WFL_MixingCenter commit fa11c79): kt mount undercount (~1/100th of py's per
+mount_diff's count tier; 138-group GROUPDUMP hostrun 156 mostly childCount=1 wrapper chains) root-caused
+separately from the line-attribution defect above — SourceProbe.kt only ever read the ROOT composition's
+CompositionData, and anything mounted via SubcomposeLayout (Scaffold's own internal slots, LazyColumn/
+LazyRow item subcompositions, etc.) composes into its OWN CompositionData with no edge from the root's
+Group tree. Fix implemented: SourceProbe now also provides androidx.compose.runtime.tooling.
+LocalInspectionTables (a synchronized MutableSet<CompositionData>) around content() via
+CompositionLocalProvider; verified directly against ComposerImpl.startRoot() runtime source that every
+(sub)composition unconditionally registers its own compositionData into that set when non-null, the same
+bridge ui-tooling's own Inspectable uses. WalkRecorderTest's emitMountLog/emitGroupDump now walk root data
+plus every registered table (deduped by identity, "TABLE k/N" headers); GROUPDUMP cap raised 3000->6000.
+PENDING HOST VERIFICATION — not yet compiled/run on a real Gradle host; next step is a walk run to confirm
+the mount-count tier closes toward py's and no new NOLOC/regression appears.
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
