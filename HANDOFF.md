@@ -39,6 +39,16 @@ take each UI-emitting group's OWN location (Layout Inspector proves accurate loc
 data; the emitter likely reads location one level too high). Fix in WalkRecorderTest.kt emitMountLog/
 SourceProbe usage, then re-run kt walk + mount_diff — "both" column becomes the primary agreement gauge.
 
+STATUS UPDATE (2026-07-08, WFL_MixingCenter commits d0bb46f/7169517): commit c6270c2 (ownCallSiteLocation)
+did NOT resolve this defect — mass NOLOC still occurs (re-run: "0 both / 118 py-only / 1 kt-only, kt
+non-app frames filtered: 1569"). GROUPDUMP evidence mode (raw, unfiltered per-group name/loc/box/children
+dump, capped 3000 lines) was added to WalkRecorderTest.kt to gather real tree evidence instead of guessing
+further; collectParameterInformation's call order relative to AppNavigation was investigated and found
+already correct (documented in place, SourceProbe.kt, no functional change needed there). render/
+mount_diff.py now does a TIERED join (Tier1 line-exact / Tier2 file+composable-name, line unverified) so
+there is usable agreement data (Tier2 found 1 incremental file+kind match: AppNavigation.kt Scaffold) while
+kt line-exactness itself remains unrepaired.
+
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
 wins, cooldown, summary] (13 states), py-only [programs, settings] (3). Owner-approved policy: coverage
