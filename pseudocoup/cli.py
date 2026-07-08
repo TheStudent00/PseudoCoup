@@ -51,6 +51,9 @@ class Compiler:
         elif source_lang == "rust":
             from .core.rust_flattener import RustFlattener
             flattener = RustFlattener(builder)
+        elif source_lang == "go":
+            from .core.go_flattener import GoFlattener
+            flattener = GoFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -96,6 +99,10 @@ class Compiler:
         elif target_lang == "rust":
             from .egress.rust import RustGenerator
             gen = RustGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "go":
+            from .egress.go import GoGenerator
+            gen = GoGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
