@@ -52,6 +52,8 @@ To prove this, PseudoCoup runs an infinite daisy-chain parity test on `examples/
 
 `Python -> Dart -> Kotlin -> Rust -> Go -> TypeScript -> C# -> C++ -> C -> Java -> Swift -> Ruby -> PHP -> Python`
 
+You can view the actual output files from this exact 13-language transpilation loop in the **`examples/emitted_fox/`** directory.
+
 The final output Python code returns **perfectly identically formatted and pristine**, with no SSA bloat, no dropped blocks, and perfect structural integrity. PseudoCoup proves that lossless, cross-platform Universal Translation is definitively possible.
 
 ## License
