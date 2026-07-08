@@ -58,8 +58,8 @@ CompositionLocalProvider; verified directly against ComposerImpl.startRoot() run
 (sub)composition unconditionally registers its own compositionData into that set when non-null, the same
 bridge ui-tooling's own Inspectable uses. WalkRecorderTest's emitMountLog/emitGroupDump now walk root data
 plus every registered table (deduped by identity, "TABLE k/N" headers); GROUPDUMP cap raised 3000->6000.
-PENDING HOST VERIFICATION — not yet compiled/run on a real Gradle host; next step is a walk run to confirm
-the mount-count tier closes toward py's and no new NOLOC/regression appears.
+STATUS: subcomposition capture VERIFIED on host (242 tables, T1exact 0->67); mount_diff refined (vocabulary
+filter, per-route counts).
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
