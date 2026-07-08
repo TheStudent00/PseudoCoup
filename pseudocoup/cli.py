@@ -72,6 +72,9 @@ class Compiler:
         elif source_lang == "swift":
             from .core.swift_flattener import SwiftFlattener
             flattener = SwiftFlattener(builder)
+        elif source_lang == "ruby":
+            from .core.ruby_flattener import RubyFlattener
+            flattener = RubyFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -145,6 +148,10 @@ class Compiler:
         elif target_lang == "swift":
             from .egress.swift import SwiftGenerator
             gen = SwiftGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "ruby":
+            from .egress.ruby import RubyGenerator
+            gen = RubyGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
