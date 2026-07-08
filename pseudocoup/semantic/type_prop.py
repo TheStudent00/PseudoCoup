@@ -11,9 +11,10 @@ VoidType = TypeTag("Void")
 UnknownType = TypeTag("Unknown")
 
 class TypePropagator:
-    def __init__(self, cfg: ControlFlowGraph, symbol_table: GlobalSymbolTable):
+    def __init__(self, cfg: ControlFlowGraph, symbol_table: GlobalSymbolTable, registry=None):
         self.cfg = cfg
         self.symbol_table = symbol_table
+        self.registry = registry
         self.type_env: Dict[str, TypeTag] = {}
         
     def propagate(self):
@@ -92,16 +93,30 @@ class TypePropagator:
                 ret = self.symbol_table.functions[func_name].return_type
                 new_type = TypeTag(ret) if ret else UnknownType
             else:
-                # Placeholder for Wrapper Registry intercept logic 
-                # (to be expanded in Part 6)
-                new_type = UnknownType
+                # Builtins and standard library wrappers
+                if self.registry:
+                    ret_type = self.registry.get_return_type("builtins", func_name)
+                    if ret_type:
+                        new_type = ret_type
+                        self.registry.intercept_and_rewrite(instr, TypeTag("builtins"), func_name)
+                    else:
+                        new_type = UnknownType
+                else:
+                    new_type = UnknownType
                 
         elif instr.op == OpCode.ATTR:
             obj_name = instr.args[0]
             attr_name = instr.args[1]
             obj_type = self.type_env.get(obj_name, UnknownType)
-            # Placeholder for Wrapper Registry attribute resolution
-            new_type = UnknownType
+            if self.registry and obj_type != UnknownType:
+                ret_type = self.registry.get_return_type(obj_type.name, attr_name)
+                if ret_type:
+                    new_type = ret_type
+                    self.registry.intercept_and_rewrite(instr, obj_type, attr_name)
+                else:
+                    new_type = UnknownType
+            else:
+                new_type = UnknownType
             
         elif instr.op == OpCode.PHI:
             new_type = self._validate_and_merge_phi(instr)

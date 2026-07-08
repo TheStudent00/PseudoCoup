@@ -54,7 +54,7 @@ class ASTFlattener:
         elif node.type == NODE_IDENTIFIER:
             return node.text.decode('utf8')
             
-        elif node.type in (NODE_INTEGER, NODE_STRING):
+        elif node.type in (NODE_INTEGER, NODE_STRING, 'true', 'false'):
             # For literals, emit an assignment to a temp
             return self.builder.emit_temp_assign([node.text.decode('utf8')])
             

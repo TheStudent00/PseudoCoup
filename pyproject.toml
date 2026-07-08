@@ -18,6 +18,7 @@ classifiers = [
 dependencies = [
     "tree-sitter==0.21.3",
     "tree-sitter-python",
+    "tree-sitter-dart",
     "tree-sitter-kotlin",
     "tree-sitter-go",
     "tree-sitter-typescript",

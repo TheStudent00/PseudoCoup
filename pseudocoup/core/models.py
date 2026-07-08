@@ -21,6 +21,9 @@ class TypeTag:
     def __eq__(self, other):
         return isinstance(other, TypeTag) and self.name == other.name
 
+    def __hash__(self):
+        return hash(self.name)
+
 class Instruction:
     def __init__(self, op: OpCode, dest: Optional[str] = None, args: List[Any] = None):
         self.op = op
@@ -48,6 +51,7 @@ class ControlFlowGraph:
     def __init__(self):
         self.entry: Optional[BasicBlock] = None
         self.blocks: Dict[int, BasicBlock] = {}
+        self.leader_to_block_id: Dict[int, int] = {}
         self._next_id = 0
         
     def get_next_id(self) -> int:

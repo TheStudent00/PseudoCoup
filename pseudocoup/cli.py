@@ -11,22 +11,26 @@ from .graph.ssa import SSABuilder
 from .semantic.type_prop import TypePropagator
 from .semantic.registry import WrapperRegistry
 from .egress.emitter import GraphEmitter
+from .egress.python import PythonGenerator
+from .egress.dart import DartGenerator
 from .core.diagnostics import GraphVizExporter
 
 class Compiler:
     def __init__(self):
         self.registry = WrapperRegistry()
 
-    def compile(self, file_path: str, target_lang: str, emit_dot: bool = False):
+    def compile(self, file_path: str, source_lang: str, target_lang: str, emit_dot: bool = False):
         if not os.path.exists(file_path):
             print(f"Error: Source file '{file_path}' not found.")
             sys.exit(1)
+            
+        self.registry.load_defaults(source_lang, target_lang)
             
         with open(file_path, "rb") as f:
             src_bytes = f.read()
 
         # 1. Parse AST
-        parser = build_parser()
+        parser = build_parser(source_lang)
         tree = parser.parse(src_bytes)
         root_node = tree.root_node
 
@@ -36,7 +40,15 @@ class Compiler:
 
         # 3. Flatten AST to Linear IR
         builder = IRBuilder()
-        flattener = ASTFlattener(builder)
+        if source_lang == "python":
+            flattener = ASTFlattener(builder)
+        elif source_lang == "dart":
+            from .core.dart_flattener import DartFlattener
+            flattener = DartFlattener(builder)
+        else:
+            print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
+            sys.exit(1)
+            
         flattener.flatten(root_node)
 
         # 4. Construct CFG
@@ -48,7 +60,7 @@ class Compiler:
         ssa_builder.transform()
 
         # 6. Type Propagation and Registry Intercept
-        type_prop = TypePropagator(cfg, sym_table) # We'll wire the registry in properly soon
+        type_prop = TypePropagator(cfg, sym_table, registry=self.registry)
         type_prop.propagate()
 
         # Output diagnostics if requested
@@ -62,25 +74,32 @@ class Compiler:
 
         # 7. Egress Emission (Deconstruct SSA and reconstruct AST)
         emitter = GraphEmitter(cfg)
-        linear_stream = emitter.emit()
+        emitter.emit()
+        ast_output = emitter.export_decorated_ast()
         
-        # Placeholder for final egress code generation
-        # ast_output = emitter.export_decorated_ast()
-        # output_code = dispatch(ast_output, target_lang)
-        
-        print(f"Successfully compiled {file_path} to IR.")
-        # print(output_code)
+        if target_lang == "python":
+            gen = PythonGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "dart":
+            gen = DartGenerator()
+            output_code = gen.generate(ast_output)
+        else:
+            print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
+            sys.exit(1)
+            
+        print(output_code)
 
 def main():
     parser = argparse.ArgumentParser(description="PseudoCoup V2 True Compiler")
-    parser.add_argument("--source", required=True, help="Path to the source python file")
+    parser.add_argument("--source", required=True, help="Path to the source file")
+    parser.add_argument("--source-lang", default="python", help="Source language (default: python)")
     parser.add_argument("--target-lang", required=True, help="Target language (e.g. kotlin, go, rust)")
     parser.add_argument("--emit-dot", action="store_true", help="Generate a GraphViz .dot file and PNG of the CFG")
 
     args = parser.parse_args()
 
     compiler = Compiler()
-    compiler.compile(args.source, args.target_lang, args.emit_dot)
+    compiler.compile(args.source, args.source_lang, args.target_lang, args.emit_dot)
 
 if __name__ == "__main__":
     main()
