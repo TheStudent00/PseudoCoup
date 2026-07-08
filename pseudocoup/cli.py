@@ -63,6 +63,9 @@ class Compiler:
         elif source_lang == "cpp":
             from .core.cpp_flattener import CppFlattener
             flattener = CppFlattener(builder)
+        elif source_lang == "c":
+            from .core.c_flattener import CFlattener
+            flattener = CFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -124,6 +127,10 @@ class Compiler:
         elif target_lang == "cpp":
             from .egress.cpp import CppGenerator
             gen = CppGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "c":
+            from .egress.c import CGenerator
+            gen = CGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
