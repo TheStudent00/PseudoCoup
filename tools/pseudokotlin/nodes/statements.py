@@ -97,17 +97,33 @@ class Statements:
                 out += [f"{'if' if first else 'elif'} {' or '.join(cs)}:",
                         self._branch(body, lead)]
                 first = False
-        # a `when` USED AS A VALUE (lead = `x = ` / `return `) is exhaustive in Kotlin (the compiler checks
-        # it), so it always binds. Lowered to if/elif it would NOT bind if no arm matches at runtime -> a
-        # later closure over `x` then hits `cannot access free variable`. Emit a SYNTHETIC else so it
-        # always binds (the arm is dead in correct code, exactly as the omitted Kotlin `else` is). Raise
-        # loudly instead of silently binding None -- an unreachable arm actually firing means the Python
-        # enum/type set has drifted from the Kotlin source, and a bare None would otherwise surface far
-        # from the real bug site (e.g. anonymous `float * NoneType` arithmetic downstream).
+        # a `when` USED AS A VALUE (lead = `x = `) is exhaustive in Kotlin (the compiler checks it), so it
+        # always binds. Lowered to if/elif it would NOT bind if no arm matches at runtime -> a later closure
+        # over `x` then hits `cannot access free variable`. Emit a SYNTHETIC else so it always binds (the
+        # arm is dead in correct code, exactly as the omitted Kotlin `else` is). Raise loudly instead of
+        # silently binding None -- an unreachable arm actually firing means the Python enum/type set has
+        # drifted from the Kotlin source, and a bare None would otherwise surface far from the real bug
+        # site (e.g. anonymous `float * NoneType` arithmetic downstream).
+        #
+        # BUT: `lead` also gets set to "return " for the trailing statement of ANY multi-statement lambda
+        # (v_lambda always calls `_distribute(last, "return ")`), even when that lambda's return value is
+        # never consumed by its caller (e.g. `viewModelScope.launch { ... when { ... } }` -- a Unit-typed
+        # lambda run purely for side effects). A subject-less STATEMENT `when` with no `else` is perfectly
+        # legal Kotlin there (it just falls through) and must NOT raise. We can't see the call site from
+        # here, so only treat `lead` as genuine value-consumption when it's an assignment-style lead
+        # (`"name = "`) -- that only ever comes from an actual `val`/var binding or a real hoisted temp
+        # assignment, never from the blanket lambda-return case. A bare `"return "` lead falls back to the
+        # old harmless behavior (bind None) since we can't prove the value is consumed.
+        is_assignment_lead = bool(re.match(r"^[A-Za-z_][A-Za-z0-9_.\[\]]*\s=\s$", lead)) if lead else False
         if lead and not has_else:
-            ctx = subj if subj else "when"
-            out += ["else:", _block(
-                [f'raise RuntimeError(f"unreachable when-branch: subject={ctx!r}")'])]
+            if is_assignment_lead:
+                if subj is not None:
+                    msg = f"unreachable when-branch: subject={subj!r}"
+                else:
+                    msg = "unreachable when-branch (no subject)"
+                out += ["else:", _block([f"raise RuntimeError({msg!r})"])]
+            else:
+                out += ["else:", _block([f"{lead}None"])]
         return "\n".join(out)
 
     def _when_cond(self, c, subj):
