@@ -31,23 +31,22 @@ THE IDENTITY SYSTEM AS BUILT (all committed, WFL_MixingCenter master):
   frames, reports per-route and global: both / py-only / kt-only coordinates, each named with registry
   entry + log evidence. Output: render/walks/mount_diff_report.txt.
 
-CURRENT DEFECT = THE IMMEDIATE NEXT TASK (agent may already be on it — check git log): kt Group.location
-frequently reports the ENCLOSING composable's location, not the actual call site (kind=Scaffold
-origin=AppNavigation.kt:249; real call at :385). First mount_diff run: "0 both / 118 py-only / 1 kt-only
-(kt non-app frames filtered: 1527)" — py side joins cleanly, kt side needs its Group-tree traversal to
-take each UI-emitting group's OWN location (Layout Inspector proves accurate locations exist in this
-data; the emitter likely reads location one level too high). Fix in WalkRecorderTest.kt emitMountLog/
-SourceProbe usage, then re-run kt walk + mount_diff — "both" column becomes the primary agreement gauge.
-
-STATUS UPDATE (2026-07-08, WFL_MixingCenter commits d0bb46f/7169517): commit c6270c2 (ownCallSiteLocation)
-did NOT resolve this defect — mass NOLOC still occurs (re-run: "0 both / 118 py-only / 1 kt-only, kt
-non-app frames filtered: 1569"). GROUPDUMP evidence mode (raw, unfiltered per-group name/loc/box/children
-dump, capped 3000 lines) was added to WalkRecorderTest.kt to gather real tree evidence instead of guessing
-further; collectParameterInformation's call order relative to AppNavigation was investigated and found
-already correct (documented in place, SourceProbe.kt, no functional change needed there). render/
-mount_diff.py now does a TIERED join (Tier1 line-exact / Tier2 file+composable-name, line unverified) so
-there is usable agreement data (Tier2 found 1 incremental file+kind match: AppNavigation.kt Scaffold) while
-kt line-exactness itself remains unrepaired.
+KT LINE-NUMBER DEFECT = DIAGNOSED AND PARKED (2026-07-08, WFL_MixingCenter commits through c688f54): kt
+Group.location systematically misattributes app-level conditional/nested composable call groups to the
+nearest ANCESTOR group that carries a source location, rather than the call's own frame — this is Compose's
+own ui-tooling-data SourceInformation parser/slot-walk behavior, not a bug in this repo's traversal or in
+WalkRecorderTest.kt's print format (confirmed, not guessed, via GROUPDUMP hostrun 156: a raw, unfiltered
+per-group name/loc/box/children dump showed `name=Scaffold loc=AppNavigation.kt:249` while the file's only
+real `Scaffold(...)` call is at line 385 — line 249 is the enclosing function body's first executable
+region; library-internal frames are unaffected and resolve correctly, e.g. `Surface@Scaffold.kt:96`; test-
+harness caller frames are also correct, e.g. `AppNavigation@WalkRecorderTest.kt:765`). Reimplementing
+Compose's own slot-walk to fix this is out of scope — kt line-exact coordinates are PARKED as unattainable.
+What both engines DO prove correctly without exception: FILE and COMPOSABLE NAME. The agreement gauge is
+therefore render/mount_diff.py's TIER 2, now COUNT-BASED: for every (file, composable-name) pair, the
+MULTISET COUNT of mount occurrences is compared between engines (per route where both engines have route
+data, else globally), reported as AGREE / COUNT MISMATCH / py-only / kt-only, with a registry distinct-
+call-site count alongside as context (not an equality target). Tier 1 line-exact join is kept in the report,
+labeled, and stays the aspirational (currently ~0, by the parked defect) finer-grained measure.
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
