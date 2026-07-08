@@ -22,6 +22,9 @@ def build_parser(lang: str = "python") -> Parser:
     elif lang == "typescript":
         import tree_sitter_typescript
         p.language = Language(tree_sitter_typescript.language_typescript())
+    elif lang == "c_sharp":
+        import tree_sitter_c_sharp
+        p.language = Language(tree_sitter_c_sharp.language())
     else:
         raise ValueError(f"Unsupported Ingress language: {lang}")
         
