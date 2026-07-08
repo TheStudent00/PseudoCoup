@@ -22,6 +22,9 @@ dependencies = [
     "tree-sitter-go",
     "tree-sitter-typescript",
     "tree-sitter-dart",
+    "tree-sitter-c-sharp",
+    "tree-sitter-cpp",
+    "tree-sitter-c",
 ]
 
 [project.scripts]
