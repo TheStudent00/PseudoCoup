@@ -8,7 +8,7 @@ PseudoCoup is the umbrella: a coup against un-portable, un-intentful design. It
 owns nothing technical itself; it is the altitude above all targets. You write
 *disciplined Python* (one notation, platform-agnostic, using the Universal Discipline); each target is a transpiler powered by `tree-sitter` AST evaluation + a UI kit underneath.
 
-This repo contains the unified **Universal Hub (pseudohub)** — the core Egress and Ingress engines capable of parsing and compiling down to Kotlin, Go, TypeScript, and Dart dynamically.
+This repo contains the unified **Universal Hub (pseudohub)** — the core Egress and Ingress engines capable of parsing and compiling down to Kotlin, Go, TypeScript, Dart, C#, C++, C, Java, Swift, Rust, Ruby, and PHP dynamically.
 
 ## The map
 
@@ -20,12 +20,28 @@ PseudoCoup                  the umbrella (this repo): thesis + decisions + engin
   |     +-- go.py
   |     +-- typescript.py
   |     +-- dart.py
+  |     +-- csharp.py
+  |     +-- cpp.py
+  |     +-- c.py
+  |     +-- java.py
+  |     +-- swift.py
+  |     +-- rust.py
+  |     +-- ruby.py
+  |     +-- php.py
   |
   +-- pseudocoup/ingress    Target Language AST -> Python Source
   |     +-- kotlin.py
   |     +-- go.py
   |     +-- typescript.py
   |     +-- dart.py
+  |     +-- csharp.py
+  |     +-- cpp.py
+  |     +-- c.py
+  |     +-- java.py
+  |     +-- swift.py
+  |     +-- rust.py
+  |     +-- ruby.py
+  |     +-- php.py
 ```
 
 ## The two ideas that carry the project

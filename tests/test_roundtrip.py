@@ -9,7 +9,7 @@ STATION_PY = os.path.join(EXAMPLES_DIR, "space_station.py")
 def canonical_output():
     return subprocess.check_output(["python3", STATION_PY], text=True)
 
-@pytest.mark.parametrize("lang", ["kotlin", "go", "typescript", "dart", "csharp", "cpp", "c"])
+@pytest.mark.parametrize("lang", ["kotlin", "go", "typescript", "dart", "csharp", "cpp", "c", "java", "swift", "rust", "ruby", "php"])
 def test_roundtrip_oracle(lang, canonical_output):
     # Egress
     egress_code = subprocess.check_output([
