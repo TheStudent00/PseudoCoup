@@ -1,20 +1,20 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
-class CFlattener:
+class CppFlattener:
     """
-    Flattens C Tree-Sitter AST nodes into the Universal Linear IR.
+    Flattens C++ Tree-Sitter AST nodes into the Universal Linear IR.
     """
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 
     def flatten(self, root_node: Node):
-        """Walks the C AST and emits linear IR instructions."""
+        """Walks the C++ AST and emits linear IR instructions."""
         self._visit(root_node)
 
     def _visit(self, node: Node) -> str:
-        """Visits a C node, emits instructions, and returns the temp variable holding its value."""
+        """Visits a C++ node, emits instructions, and returns the temp variable holding its value."""
         if not node:
             return ""
             
@@ -47,25 +47,66 @@ class CFlattener:
             args_node = node.child_by_field_name("arguments") or node.named_children[1]
             
             func_name = self._visit(func_node) if func_node else ""
-            
-            if func_name == "printf":
-                func_name = "print"
                 
             args = []
             if args_node and args_node.type == "argument_list":
                 for arg in args_node.named_children:
                     args.append(self._visit(arg))
-                    
-            if func_name == "print" and args and len(args) == 1:
-                # Basic string format un-packing could go here if we had more complex printf("%s", x)
-                pass
             
             return self.builder.emit_temp_call(func_name, args)
+            
+        elif node.type == "binary_expression":
+            # Check if this is a std::cout << operation
+            is_cout = False
+            curr = node
+            operands = []
+            
+            # C++ shift operators are left-associative, so std::cout << "a" << "b" is nested (cout << "a") << "b"
+            # We will flatten this sequence to see if the leftmost is std::cout
+            def extract_cout(n):
+                if n.type == "binary_expression" and n.child_by_field_name("operator") and n.child_by_field_name("operator").text.decode('utf8') == "<<":
+                    left = n.child_by_field_name("left") or n.named_children[0]
+                    right = n.child_by_field_name("right") or n.named_children[1]
+                    res, is_cout_chain = extract_cout(left)
+                    if is_cout_chain:
+                        res.append(right)
+                        return res, True
+                else:
+                    val = self._visit(n)
+                    if val == "std::cout":
+                        return [], True
+                return [], False
+                
+            operator_node = node.child_by_field_name("operator")
+            op_text = operator_node.text.decode('utf8') if operator_node else ""
+            
+            if op_text == "<<":
+                extracted_args, is_cout = extract_cout(node)
+                if is_cout:
+                    # It is a std::cout chain!
+                    # Filter out std::endl
+                    args = []
+                    for arg_node in extracted_args:
+                        val = self._visit(arg_node)
+                        if val != "std::endl":
+                            args.append(val)
+                    return self.builder.emit_temp_call("print", args)
+                    
+            # If not cout, standard binary expression
+            left = node.child_by_field_name("left") or node.named_children[0]
+            right = node.child_by_field_name("right") or node.named_children[1]
+            l_val = self._visit(left)
+            r_val = self._visit(right)
+            # Dummy generic handling for now
+            return self.builder.emit_temp_assign([f"{l_val} {op_text} {r_val}"])
+            
+        elif node.type in ("qualified_identifier", "scoped_identifier"):
+            return node.text.decode('utf8')
             
         elif node.type == "identifier":
             return node.text.decode('utf8')
             
-        elif node.type in ("number_literal", "string_literal", "true", "false", "char_literal"):
+        elif node.type in ("number_literal", "string_literal", "true", "false"):
             val = node.text.decode('utf8')
             if node.type == "true":
                 val = "True"
@@ -78,7 +119,7 @@ class CFlattener:
             if not cond_node and len(node.named_children) > 0:
                 cond_node = node.named_children[0]
                 
-            if cond_node and cond_node.type == "parenthesized_expression":
+            if cond_node and cond_node.type == "condition_clause":
                 cond_node = cond_node.named_children[0]
                 
             cond_var = self._visit(cond_node) if cond_node else ""
@@ -124,7 +165,7 @@ class CFlattener:
             if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "compound_statement":
                 cond_node = node.named_children[0]
                 
-            if cond_node and cond_node.type == "parenthesized_expression":
+            if cond_node and cond_node.type == "condition_clause":
                 cond_node = cond_node.named_children[0]
                 
             cond_var = ""
@@ -154,7 +195,7 @@ class CFlattener:
             branch_instr.args[2] = exit_idx
             return ""
             
-        elif node.type in ("expression_statement", "compound_statement", "function_definition", "translation_unit", "parenthesized_expression"):
+        elif node.type in ("expression_statement", "compound_statement", "function_definition", "translation_unit"):
             for child in node.named_children:
                 self._visit(child)
             return ""

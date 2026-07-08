@@ -1,41 +1,44 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
-class TypeScriptFlattener:
+class KotlinFlattener:
     """
-    Flattens TypeScript Tree-Sitter AST nodes into the Universal Linear IR.
+    Flattens Kotlin Tree-Sitter AST nodes into the Universal Linear IR.
     """
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 
     def flatten(self, root_node: Node):
-        """Walks the TypeScript AST and emits linear IR instructions."""
+        """Walks the Kotlin AST and emits linear IR instructions."""
         self._visit(root_node)
 
     def _visit(self, node: Node) -> str:
-        """Visits a TypeScript node, emits instructions, and returns the temp variable holding its value."""
+        """Visits a Kotlin node, emits instructions, and returns the temp variable holding its value."""
         if not node:
             return ""
             
-        if node.type in ("lexical_declaration", "variable_declaration", "assignment_expression"):
+        if node.type in ("property_declaration", "assignment"):
+            # 'var x = 10' -> property_declaration
+            # 'x = 10' -> assignment
+            
             left = None
             right = None
             
-            if node.type in ("lexical_declaration", "variable_declaration"):
-                # Usually has a variable_declarator child
-                declarator = None
+            if node.type == "property_declaration":
+                # Find variable_declaration and the value
+                var_decl = None
                 for child in node.named_children:
-                    if child.type == "variable_declarator":
-                        declarator = child
-                        break
-                
-                if declarator:
-                    left = declarator.child_by_field_name("name") or declarator.named_children[0]
-                    right = declarator.child_by_field_name("value")
-                    if not right and len(declarator.named_children) > 1:
-                        right = declarator.named_children[1]
-            elif node.type == "assignment_expression":
+                    if child.type == "variable_declaration":
+                        var_decl = child
+                    else:
+                        # The RHS is usually the next named child after variable_declaration
+                        # Or it could be a type_identifier. We'll just grab the last named child if it's not the var_decl itself
+                        right = child
+                        
+                if var_decl and var_decl.named_children:
+                    left = var_decl.named_children[0] # The identifier
+            elif node.type == "assignment":
                 left = node.child_by_field_name("left") or node.named_children[0]
                 right = node.child_by_field_name("right") or node.named_children[1]
                 
@@ -46,49 +49,52 @@ class TypeScriptFlattener:
                 return dest
                 
         elif node.type == "call_expression":
-            func_node = node.child_by_field_name("function") or node.named_children[0]
-            args_node = node.child_by_field_name("arguments") or node.named_children[1]
-            
+            func_node = node.child_by_field_name("function")
+            if not func_node and len(node.named_children) > 0:
+                func_node = node.named_children[0]
+                
+            args_node = node.child_by_field_name("arguments")
+            if not args_node and len(node.named_children) > 1:
+                args_node = node.named_children[1] # value_arguments
+                
             func_name = self._visit(func_node) if func_node else ""
             
-            # Map TypeScript specific built-ins back to Universal IR
-            if func_name == "console.log":
+            # Map Kotlin specific built-ins back to Universal IR
+            if func_name == "println":
                 func_name = "print"
                 
             args = []
-            if args_node and args_node.type == "arguments":
+            
+            if args_node and args_node.type == "value_arguments":
                 for arg in args_node.named_children:
-                    args.append(self._visit(arg))
+                    # value_argument wrapper
+                    val_node = arg.named_children[0] if arg.named_children else arg
+                    args.append(self._visit(val_node))
             
             return self.builder.emit_temp_call(func_name, args)
             
-        elif node.type == "member_expression":
+        elif node.type == "navigation_expression":
             # object.property
-            obj = node.child_by_field_name("object") or node.named_children[0]
-            attr = node.child_by_field_name("property") or node.named_children[1]
+            obj = node.named_children[0] if len(node.named_children) > 0 else None
+            attr = node.named_children[1] if len(node.named_children) > 1 else None
             
             obj_val = self._visit(obj) if obj else ""
             attr_name = attr.text.decode('utf8') if attr else ""
-            
-            if obj_val == "console" and attr_name == "log":
-                return f"{obj_val}.{attr_name}"
             
             dest = self.builder._next_temp()
             self.builder.emit(Instruction(OpCode.ATTR, dest=dest, args=[obj_val, attr_name]))
             return dest
             
-        elif node.type in ("identifier", "property_identifier"):
+        elif node.type == "identifier":
             return node.text.decode('utf8')
             
-        elif node.type in ("number", "string", "true", "false"):
+        elif node.type in ("integer_literal", "number_literal", "string_literal", "boolean_literal"):
             val = node.text.decode('utf8')
-            if node.type == "true":
-                val = "True"
-            elif node.type == "false":
-                val = "False"
+            if node.type == "boolean_literal":
+                val = val.capitalize() # True / False for IR
             return self.builder.emit_temp_assign([val])
             
-        elif node.type == "if_statement":
+        elif node.type == "if_expression":
             cond_node = node.child_by_field_name("condition")
             if not cond_node and len(node.named_children) > 0:
                 cond_node = node.named_children[0]
@@ -132,13 +138,12 @@ class TypeScriptFlattener:
         elif node.type in ("while_statement", "for_statement"):
             loop_header_idx = len(self.builder.instructions)
             
-            cond_node = node.child_by_field_name("condition")
-            if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "statement_block":
-                cond_node = node.named_children[0]
-                
             cond_var = ""
-            if cond_node:
-                cond_var = self._visit(cond_node)
+            if node.type == "while_statement":
+                cond_node = node.child_by_field_name("condition")
+                if not cond_node and len(node.named_children) > 0:
+                    cond_node = node.named_children[0]
+                cond_var = self._visit(cond_node) if cond_node else ""
             else:
                 cond_var = self.builder.emit_temp_assign(["True"])
                 
@@ -147,12 +152,9 @@ class TypeScriptFlattener:
             
             body_idx = len(self.builder.instructions)
             body = node.child_by_field_name("body")
-            if not body:
-                for child in node.named_children:
-                    if child.type == "statement_block":
-                        body = child
-                        break
-                        
+            if not body and node.type == "while_statement" and len(node.named_children) > 1:
+                body = node.named_children[1]
+                
             if body:
                 self._visit(body)
                 
@@ -161,16 +163,6 @@ class TypeScriptFlattener:
             exit_idx = len(self.builder.instructions)
             branch_instr.args[1] = body_idx
             branch_instr.args[2] = exit_idx
-            return ""
-            
-        elif node.type in ("expression_statement", "statement_block", "function_declaration", "program"):
-            for child in node.named_children:
-                self._visit(child)
-            return ""
-            
-        elif node.type == "parenthesized_expression":
-            if node.named_children:
-                return self._visit(node.named_children[0])
             return ""
             
         else:

@@ -1,43 +1,39 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
-class CSharpFlattener:
+class TypeScriptFlattener:
     """
-    Flattens C# Tree-Sitter AST nodes into the Universal Linear IR.
+    Flattens TypeScript Tree-Sitter AST nodes into the Universal Linear IR.
     """
     def __init__(self, builder: IRBuilder):
         self.builder = builder
 
     def flatten(self, root_node: Node):
-        """Walks the C# AST and emits linear IR instructions."""
+        """Walks the TypeScript AST and emits linear IR instructions."""
         self._visit(root_node)
 
     def _visit(self, node: Node) -> str:
-        """Visits a C# node, emits instructions, and returns the temp variable holding its value."""
+        """Visits a TypeScript node, emits instructions, and returns the temp variable holding its value."""
         if not node:
             return ""
             
-        if node.type in ("local_declaration_statement", "assignment_expression"):
+        if node.type in ("lexical_declaration", "variable_declaration", "assignment_expression"):
             left = None
             right = None
             
-            if node.type == "local_declaration_statement":
-                decl = None
+            if node.type in ("lexical_declaration", "variable_declaration"):
+                # Usually has a variable_declarator child
+                declarator = None
                 for child in node.named_children:
-                    if child.type == "variable_declaration":
-                        decl = child
+                    if child.type == "variable_declarator":
+                        declarator = child
                         break
                 
-                if decl:
-                    declarator = None
-                    for child in decl.named_children:
-                        if child.type == "variable_declarator":
-                            declarator = child
-                            break
-                            
-                    if declarator and len(declarator.named_children) >= 2:
-                        left = declarator.named_children[0]
+                if declarator:
+                    left = declarator.child_by_field_name("name") or declarator.named_children[0]
+                    right = declarator.child_by_field_name("value")
+                    if not right and len(declarator.named_children) > 1:
                         right = declarator.named_children[1]
             elif node.type == "assignment_expression":
                 left = node.child_by_field_name("left") or node.named_children[0]
@@ -49,46 +45,47 @@ class CSharpFlattener:
                 self.builder.emit_assign(dest, [val])
                 return dest
                 
-        elif node.type == "invocation_expression":
+        elif node.type == "call_expression":
             func_node = node.child_by_field_name("function") or node.named_children[0]
             args_node = node.child_by_field_name("arguments") or node.named_children[1]
             
             func_name = self._visit(func_node) if func_node else ""
             
-            if func_name == "Console.WriteLine" or func_name == "Console.Write":
+            # Map TypeScript specific built-ins back to Universal IR
+            if func_name == "console.log":
                 func_name = "print"
                 
             args = []
-            if args_node and args_node.type == "argument_list":
+            if args_node and args_node.type == "arguments":
                 for arg in args_node.named_children:
-                    # In C#, an argument is usually wrapped in an 'argument' node
-                    val_node = arg.named_children[0] if arg.type == "argument" and arg.named_children else arg
-                    args.append(self._visit(val_node))
+                    args.append(self._visit(arg))
             
             return self.builder.emit_temp_call(func_name, args)
             
-        elif node.type == "member_access_expression":
+        elif node.type == "member_expression":
             # object.property
-            obj = node.child_by_field_name("expression") or node.named_children[0]
-            attr = node.child_by_field_name("name") or node.named_children[1]
+            obj = node.child_by_field_name("object") or node.named_children[0]
+            attr = node.child_by_field_name("property") or node.named_children[1]
             
             obj_val = self._visit(obj) if obj else ""
             attr_name = attr.text.decode('utf8') if attr else ""
             
-            if obj_val == "Console" and attr_name in ("WriteLine", "Write"):
+            if obj_val == "console" and attr_name == "log":
                 return f"{obj_val}.{attr_name}"
             
             dest = self.builder._next_temp()
             self.builder.emit(Instruction(OpCode.ATTR, dest=dest, args=[obj_val, attr_name]))
             return dest
             
-        elif node.type == "identifier":
+        elif node.type in ("identifier", "property_identifier"):
             return node.text.decode('utf8')
             
-        elif node.type in ("integer_literal", "real_literal", "string_literal", "boolean_literal"):
+        elif node.type in ("number", "string", "true", "false"):
             val = node.text.decode('utf8')
-            if node.type == "boolean_literal":
-                val = val.capitalize() # true -> True
+            if node.type == "true":
+                val = "True"
+            elif node.type == "false":
+                val = "False"
             return self.builder.emit_temp_assign([val])
             
         elif node.type == "if_statement":
@@ -136,7 +133,7 @@ class CSharpFlattener:
             loop_header_idx = len(self.builder.instructions)
             
             cond_node = node.child_by_field_name("condition")
-            if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "block":
+            if not cond_node and len(node.named_children) > 0 and node.named_children[0].type != "statement_block":
                 cond_node = node.named_children[0]
                 
             cond_var = ""
@@ -152,7 +149,7 @@ class CSharpFlattener:
             body = node.child_by_field_name("body")
             if not body:
                 for child in node.named_children:
-                    if child.type == "block":
+                    if child.type == "statement_block":
                         body = child
                         break
                         
@@ -166,9 +163,14 @@ class CSharpFlattener:
             branch_instr.args[2] = exit_idx
             return ""
             
-        elif node.type in ("expression_statement", "block", "method_declaration", "class_declaration", "declaration_list", "compilation_unit"):
+        elif node.type in ("expression_statement", "statement_block", "function_declaration", "program"):
             for child in node.named_children:
                 self._visit(child)
+            return ""
+            
+        elif node.type == "parenthesized_expression":
+            if node.named_children:
+                return self._visit(node.named_children[0])
             return ""
             
         else:

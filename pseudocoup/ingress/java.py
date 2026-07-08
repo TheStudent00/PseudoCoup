@@ -1,6 +1,6 @@
 from tree_sitter import Node
-from .builder import IRBuilder
-from .models import Instruction, OpCode
+from ..core.builder import IRBuilder
+from ..core.models import Instruction, OpCode
 
 class JavaFlattener:
     """
