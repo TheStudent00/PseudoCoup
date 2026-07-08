@@ -99,10 +99,15 @@ class Statements:
                 first = False
         # a `when` USED AS A VALUE (lead = `x = ` / `return `) is exhaustive in Kotlin (the compiler checks
         # it), so it always binds. Lowered to if/elif it would NOT bind if no arm matches at runtime -> a
-        # later closure over `x` then hits `cannot access free variable`. Emit a vacuous else so it always
-        # binds (the arm is dead in correct code, exactly as the omitted Kotlin `else` is).
+        # later closure over `x` then hits `cannot access free variable`. Emit a SYNTHETIC else so it
+        # always binds (the arm is dead in correct code, exactly as the omitted Kotlin `else` is). Raise
+        # loudly instead of silently binding None -- an unreachable arm actually firing means the Python
+        # enum/type set has drifted from the Kotlin source, and a bare None would otherwise surface far
+        # from the real bug site (e.g. anonymous `float * NoneType` arithmetic downstream).
         if lead and not has_else:
-            out += ["else:", _block([f"{lead}None"])]
+            ctx = subj if subj else "when"
+            out += ["else:", _block(
+                [f'raise RuntimeError(f"unreachable when-branch: subject={ctx!r}")'])]
         return "\n".join(out)
 
     def _when_cond(self, c, subj):
