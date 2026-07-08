@@ -38,4 +38,4 @@ def test_v2_python_to_dart():
     
     assert "print(\"Bigger\")" in python_code
     assert "while" in python_code
-    assert "x_0 = 10" in python_code
+    assert "x = 10" in python_code

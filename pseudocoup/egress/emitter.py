@@ -174,7 +174,17 @@ class GraphEmitter:
                 
             else:
                 node = self._instr_to_node(instr, temp_map)
-                if node:
+                
+                # Check for identity assignment (x = x) and prune it
+                is_identity = False
+                if node and node.type == NODE_ASSIGNMENT:
+                    lhs = node.child_by_field_name('left')
+                    rhs = node.child_by_field_name('right')
+                    if lhs and rhs and lhs.type == NODE_IDENTIFIER and rhs.type == NODE_IDENTIFIER:
+                        if lhs.text.decode('utf8') == rhs.text.decode('utf8'):
+                            is_identity = True
+                            
+                if node and not is_identity:
                     if instr.dest and instr.dest.startswith("t") and instr.op in (OpCode.ASSIGN, OpCode.CALL, OpCode.ATTR):
                         temp_map[instr.dest] = node
                         if self.use_counts.get(instr.dest, 0) == 0:
@@ -197,8 +207,12 @@ class GraphEmitter:
                 
             if instr.dest and not instr.dest.startswith("t"):
                 # Real assignment statement
+                # Map back to original name
+                var_map = getattr(self.cfg, "var_map", {})
+                orig_dest = var_map.get(instr.dest, instr.dest)
+                
                 assign_node = PseudoNode(NODE_ASSIGNMENT)
-                lhs_node = PseudoNode(NODE_IDENTIFIER, text=instr.dest)
+                lhs_node = PseudoNode(NODE_IDENTIFIER, text=orig_dest)
                 assign_node.fields['left'] = lhs_node
                 assign_node.fields['right'] = rhs_node
                 assign_node._semantic_type = instr.type_tag
@@ -234,5 +248,8 @@ class GraphEmitter:
             elif val.isdigit():
                 return PseudoNode(NODE_INTEGER, text=val)
             else:
-                return PseudoNode(NODE_IDENTIFIER, text=val)
+                # Map back to original name if var_map is present
+                var_map = getattr(self.cfg, "var_map", {})
+                orig_name = var_map.get(val, val)
+                return PseudoNode(NODE_IDENTIFIER, text=orig_name)
         return PseudoNode(NODE_IDENTIFIER, text=str(val))

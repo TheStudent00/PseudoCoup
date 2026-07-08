@@ -14,6 +14,7 @@ class SSABuilder:
         
         self.var_counts: DefaultDict[str, int] = defaultdict(int)
         self.var_stacks: DefaultDict[str, List[str]] = defaultdict(list)
+        self.var_map: Dict[str, str] = {}
         
     def transform(self):
         """Transforms the given CFG into Static Single Assignment form."""
@@ -25,6 +26,7 @@ class SSABuilder:
         self._map_def_uses()
         self._insert_phi_nodes()
         self._rename_variables()
+        self.cfg.var_map = self.var_map
 
     def _compute_dominators(self):
         """Computes Immediate Dominators using a simple iterative approach."""
@@ -150,6 +152,7 @@ class SSABuilder:
                 new_v = f"{orig_v}_{count}"
                 instr.dest = new_v
                 self.var_stacks[orig_v].append(new_v)
+                self.var_map[new_v] = orig_v
                 pushed_vars[orig_v] += 1
 
         # Populate PHI nodes in successor blocks
