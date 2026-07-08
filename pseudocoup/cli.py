@@ -69,6 +69,9 @@ class Compiler:
         elif source_lang == "java":
             from .core.java_flattener import JavaFlattener
             flattener = JavaFlattener(builder)
+        elif source_lang == "swift":
+            from .core.swift_flattener import SwiftFlattener
+            flattener = SwiftFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -138,6 +141,10 @@ class Compiler:
         elif target_lang == "java":
             from .egress.java import JavaGenerator
             gen = JavaGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "swift":
+            from .egress.swift import SwiftGenerator
+            gen = SwiftGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
