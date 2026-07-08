@@ -66,6 +66,9 @@ class Compiler:
         elif source_lang == "c":
             from .core.c_flattener import CFlattener
             flattener = CFlattener(builder)
+        elif source_lang == "java":
+            from .core.java_flattener import JavaFlattener
+            flattener = JavaFlattener(builder)
         else:
             print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
             sys.exit(1)
@@ -131,6 +134,10 @@ class Compiler:
         elif target_lang == "c":
             from .egress.c import CGenerator
             gen = CGenerator()
+            output_code = gen.generate(ast_output)
+        elif target_lang == "java":
+            from .egress.java import JavaGenerator
+            gen = JavaGenerator()
             output_code = gen.generate(ast_output)
         else:
             print(f"Error: Target language '{target_lang}' is not yet supported in V2.")

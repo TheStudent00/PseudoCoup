@@ -31,6 +31,9 @@ def build_parser(lang: str = "python") -> Parser:
     elif lang == "c":
         import tree_sitter_c
         p.language = Language(tree_sitter_c.language())
+    elif lang == "java":
+        import tree_sitter_java
+        p.language = Language(tree_sitter_java.language())
     else:
         raise ValueError(f"Unsupported Ingress language: {lang}")
         
