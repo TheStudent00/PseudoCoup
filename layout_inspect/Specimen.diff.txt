@@ -1,30 +1,32 @@
 Specimen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Alpha one                            compose x=  0.0 y=  0.0 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  0.0 w= 15.7 h= 1.9  |  worst Δ  0.2%
-  PASS  Alpha two                            compose x=  0.0 y=  1.9 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  1.9 w= 15.4 h= 1.9  |  worst Δ  0.4%
-  PASS  Beta one                             compose x=  0.0 y=  3.7 w= 11.9 h= 1.4  |  kivy x=  0.0 y=  3.7 w= 12.1 h= 1.5  |  worst Δ  0.1%
-  PASS  Beta two                             compose x=  0.0 y=  5.1 w= 12.2 h= 1.4  |  kivy x=  0.0 y=  5.2 w= 11.8 h= 1.5  |  worst Δ  0.4%
-  PASS  Gamma one                            compose x=  0.0 y=  6.6 w= 23.8 h= 2.4  |  kivy x=  0.0 y=  6.8 w= 24.3 h= 2.4  |  worst Δ  0.5%
-  PASS  Gamma two                            compose x=  0.0 y=  9.0 w= 24.1 h= 2.4  |  kivy x=  0.0 y=  9.2 w= 24.3 h= 2.4  |  worst Δ  0.2%
-  PASS  Remind you when it's time to log y   compose x=  0.0 y= 11.4 w= 64.5 h= 1.5  |  kivy x=  0.0 y= 11.6 w= 65.1 h= 1.6  |  worst Δ  0.7%
-  PASS  abcdefghijklmnopqrstuvwxyz 0123456   compose x=  0.0 y= 12.9 w= 67.2 h= 1.9  |  kivy x=  0.0 y= 13.2 w= 66.6 h= 2.0  |  worst Δ  0.6%
-  PASS  🕺                                    compose x=  0.0 y= 14.8 w=  4.6 h= 1.9  |  kivy x=  0.0 y= 15.2 w=  4.4 h= 1.9  |  worst Δ  0.4%
-  PASS  🕺                                    compose x=  0.0 y= 16.6 w=  7.3 h= 3.2  |  kivy x=  0.0 y= 17.0 w=  7.5 h= 3.2  |  worst Δ  0.4%
-  PASS  ☀️                                   compose x=  0.0 y= 19.8 w=  7.3 h= 3.2  |  kivy x=  0.0 y= 20.2 w=  7.5 h= 3.2  |  worst Δ  0.4%
-  PASS  🕺🤸                                   compose x=  0.0 y= 23.0 w=  9.0 h= 1.9  |  kivy x=  0.0 y= 23.4 w=  8.7 h= 1.9  |  worst Δ  0.4%
-  PASS  Start with your why.                 compose x=  0.0 y= 24.8 w= 54.7 h= 3.2  |  kivy x=  0.0 y= 25.2 w= 54.4 h= 3.2  |  worst Δ  0.4%
-  PASS  Start with your why.                 compose x=  0.0 y= 28.0 w= 48.2 h= 3.0  |  kivy x=  0.0 y= 28.4 w= 48.2 h= 3.0  |  worst Δ  0.4%
-  PASS  Start with your why.                 compose x=  0.0 y= 30.9 w= 39.9 h= 2.4  |  kivy x=  0.0 y= 31.4 w= 40.2 h= 2.4  |  worst Δ  0.4%
-  PASS  Start with your why.                 compose x=  0.0 y= 33.3 w= 35.8 h= 2.1  |  kivy x=  0.0 y= 33.8 w= 35.5 h= 2.2  |  worst Δ  0.4%
-  PASS  Take a few minutes                   compose x=  0.0 y= 35.4 w= 51.3 h= 3.2  |  kivy x=  0.0 y= 36.0 w= 52.0 h= 3.2  |  worst Δ  0.7%
-  PASS  Take a few minutes to come down.     compose x=  0.0 y= 38.6 w= 92.5 h= 3.2  |  kivy x=  0.0 y= 39.1 w= 94.5 h= 3.2  |  worst Δ  2.0%
-  PASS  🫁                                    compose x=  0.0 y= 41.7 w=  4.1 h= 3.2  |  kivy x=  0.0 y= 42.3 w=  4.1 h= 3.2  |  worst Δ  0.5%
-  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 44.9 w= 43.8 h= 1.5  |  kivy x=  0.0 y= 45.5 w= 44.1 h= 1.6  |  worst Δ  0.5%
-  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 46.4 w= 43.6 h= 1.5  |  kivy x=  0.0 y= 47.1 w= 43.8 h= 1.6  |  worst Δ  0.7%
-  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 48.0 w= 40.9 h= 1.4  |  kivy x=  0.0 y= 48.7 w= 40.9 h= 1.5  |  worst Δ  0.8%
-  PASS  Single label                         compose x=  3.9 y= 52.0 w= 20.9 h= 2.6  |  kivy x=  3.9 y= 52.9 w= 20.3 h= 2.2  |  worst Δ  0.9%
-  PASS  Multi label                          compose x=  3.9 y= 59.0 w= 19.0 h= 2.6  |  kivy x=  3.9 y= 59.9 w= 18.0 h= 2.2  |  worst Δ  0.9%
+  PASS  Alpha one                            compose x=  0.0 y=  0.0 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  0.0 w= 15.7 h= 1.7  |  worst Δ  0.2%
+  PASS  Alpha two                            compose x=  0.0 y=  1.9 w= 15.8 h= 1.9  |  kivy x=  0.0 y=  1.7 w= 15.4 h= 1.7  |  worst Δ  0.4%
+  PASS  Beta one                             compose x=  0.0 y=  3.7 w= 11.9 h= 1.4  |  kivy x=  0.0 y=  3.5 w= 12.1 h= 1.4  |  worst Δ  0.2%
+  PASS  Beta two                             compose x=  0.0 y=  5.1 w= 12.2 h= 1.4  |  kivy x=  0.0 y=  4.9 w= 11.8 h= 1.4  |  worst Δ  0.4%
+  PASS  Gamma one                            compose x=  0.0 y=  6.6 w= 23.8 h= 2.4  |  kivy x=  0.0 y=  6.3 w= 24.3 h= 2.4  |  worst Δ  0.5%
+  PASS  Gamma two                            compose x=  0.0 y=  9.0 w= 24.1 h= 2.4  |  kivy x=  0.0 y=  8.7 w= 24.3 h= 2.4  |  worst Δ  0.2%
+  PASS  Remind you when it's time to log y   compose x=  0.0 y= 11.4 w= 64.5 h= 1.5  |  kivy x=  0.0 y= 11.1 w= 65.1 h= 1.5  |  worst Δ  0.7%
+  PASS  abcdefghijklmnopqrstuvwxyz 0123456   compose x=  0.0 y= 12.9 w= 67.2 h= 1.9  |  kivy x=  0.0 y= 12.7 w= 66.6 h= 1.9  |  worst Δ  0.6%
+  PASS  🕺                                    compose x=  0.0 y= 14.8 w=  4.6 h= 1.9  |  kivy x=  0.0 y= 14.5 w=  4.4 h= 1.7  |  worst Δ  0.3%
+  PASS  🕺                                    compose x=  0.0 y= 16.6 w=  7.3 h= 3.2  |  kivy x=  0.0 y= 16.3 w=  7.5 h= 3.2  |  worst Δ  0.3%
+  PASS  ☀️                                   compose x=  0.0 y= 19.8 w=  7.3 h= 3.2  |  kivy x=  0.0 y= 19.5 w=  7.5 h= 3.2  |  worst Δ  0.3%
+  PASS  🕺🤸                                   compose x=  0.0 y= 23.0 w=  9.0 h= 1.9  |  kivy x=  0.0 y= 22.6 w=  8.7 h= 1.7  |  worst Δ  0.3%
+  PASS  Start with your why.                 compose x=  0.0 y= 24.8 w= 54.7 h= 3.2  |  kivy x=  0.0 y= 24.4 w= 54.4 h= 3.2  |  worst Δ  0.4%
+  PASS  Start with your why.                 compose x=  0.0 y= 28.0 w= 48.2 h= 3.0  |  kivy x=  0.0 y= 27.5 w= 48.2 h= 3.0  |  worst Δ  0.4%
+  PASS  Start with your why.                 compose x=  0.0 y= 30.9 w= 39.9 h= 2.4  |  kivy x=  0.0 y= 30.5 w= 40.2 h= 2.4  |  worst Δ  0.4%
+  PASS  Start with your why.                 compose x=  0.0 y= 33.3 w= 35.8 h= 2.1  |  kivy x=  0.0 y= 32.9 w= 35.5 h= 2.1  |  worst Δ  0.4%
+  PASS  Take a few minutes                   compose x=  0.0 y= 35.4 w= 51.3 h= 3.2  |  kivy x=  0.0 y= 35.0 w= 52.0 h= 3.2  |  worst Δ  0.7%
+  PASS  Take a few minutes to come down.     compose x=  0.0 y= 38.6 w= 92.5 h= 3.2  |  kivy x=  0.0 y= 38.1 w= 94.5 h= 3.2  |  worst Δ  2.0%
+  PASS  🫁                                    compose x=  0.0 y= 41.7 w=  4.1 h= 3.2  |  kivy x=  0.0 y= 41.3 w=  4.1 h= 3.2  |  worst Δ  0.4%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 44.9 w= 43.8 h= 1.5  |  kivy x=  0.0 y= 44.5 w= 44.1 h= 1.5  |  worst Δ  0.4%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 46.4 w= 43.6 h= 1.5  |  kivy x=  0.0 y= 46.0 w= 43.8 h= 1.5  |  worst Δ  0.4%
+  PASS  MACROCYCLE 1 · Foundations           compose x=  0.0 y= 48.0 w= 40.9 h= 1.4  |  kivy x=  0.0 y= 47.5 w= 40.9 h= 1.4  |  worst Δ  0.4%
+  PASS  3-Day Full Body Program              compose x=  0.0 y= 49.4 w= 49.9 h= 2.4  |  kivy x=  0.0 y= 49.0 w= 49.9 h= 2.4  |  worst Δ  0.4%
+  PASS  3-Day Full Body Program              compose x=  0.0 y= 51.8 w= 48.9 h= 2.4  |  kivy x=  0.0 y= 51.4 w= 49.2 h= 2.4  |  worst Δ  0.4%
+  PASS  Single label                         compose x=  3.9 y= 56.8 w= 20.9 h= 2.6  |  kivy x=  3.9 y= 56.4 w= 20.3 h= 2.1  |  worst Δ  0.6%
+  PASS  Multi label                          compose x=  3.9 y= 63.8 w= 19.0 h= 2.6  |  kivy x=  3.9 y= 63.4 w= 18.0 h= 2.1  |  worst Δ  0.9%
 
-matched 24/24 compose components; 24 within ±3.0%
-LAYOUT FIDELITY: 100%  (24/24)
+matched 26/26 compose components; 26 within ±3.0%
+LAYOUT FIDELITY: 100%  (26/26)

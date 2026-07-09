@@ -5,34 +5,34 @@ tolerance: ±3.0% of display   (x,w over width; y,h over height)
   PASS  Join                                 compose x= 88.6 y=  2.4 w=  6.8 h= 2.2  |  kivy x= 89.8 y=  1.7 w=  6.3 h= 1.9  |  worst Δ  1.2%
   PASS  3-Day Full Body — Ground Up          compose x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  kivy x=  3.9 y=  8.7 w= 92.2 h= 3.2  |  worst Δ  0.0%
   PASS  Three macrocycles that walk a true   compose x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  kivy x=  3.9 y= 13.2 w= 92.2 h= 8.4  |  worst Δ  0.0%
-  PASS  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 79.0 h= 1.6  |  worst Δ  0.9%
-  PASS  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y= 26.4 w= 18.5 h= 1.5  |  worst Δ  0.3%
-  PASS  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y= 29.9 w= 45.5 h= 1.9  |  worst Δ  1.2%
-  PASS  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y= 31.8 w= 18.0 h= 1.6  |  worst Δ  0.2%
-  PASS  Week 1                               compose x= 22.4 y= 35.1 w= 13.1 h= 2.1  |  kivy x= 22.4 y= 35.4 w= 12.6 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 37.2 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 37.6 w= 18.4 h= 1.9  |  worst Δ  0.6%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 40.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 41.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 43.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 43.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 45.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 46.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 48.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 48.6 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Full Body C — Push                   compose x= 26.8 y= 50.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 51.1 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 53.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 53.7 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Rest                                 compose x= 26.8 y= 55.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 56.2 w= 69.3 h= 1.9  |  worst Δ  0.4%
-  PASS  Week 2                               compose x= 22.4 y= 59.9 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 60.3 w= 13.1 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 62.0 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 62.5 w= 18.4 h= 1.9  |  worst Δ  0.6%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 65.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 66.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 68.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 68.5 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 70.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 71.0 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 73.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 73.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Full Body C — Push                   compose x= 26.8 y= 75.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 76.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 78.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 78.6 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Rest                                 compose x= 26.8 y= 80.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 81.1 w= 69.3 h= 1.9  |  worst Δ  0.5%
-  PASS  Week 3                               compose x= 22.4 y= 84.7 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 85.2 w= 13.1 h= 2.2  |  worst Δ  0.5%
-  PASS  Progression                          compose x= 23.4 y= 86.8 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 87.4 w= 18.4 h= 1.9  |  worst Δ  0.7%
-  PASS  Full Body A — Squat                  compose x= 26.8 y= 90.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 90.9 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Rest                                 compose x= 26.8 y= 92.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 93.4 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Full Body B — Hinge                  compose x= 26.8 y= 95.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 96.0 w= 69.3 h= 1.9  |  worst Δ  0.7%
-  PASS  Rest                                 compose x= 26.8 y= 97.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 98.5 w= 69.3 h= 1.9  |  worst Δ  0.7%
+  PASS  MACROCYCLE 1 · Foundations — Movem   compose x= 12.7 y= 24.8 w= 78.1 h= 1.5  |  kivy x= 12.7 y= 24.8 w= 79.0 h= 1.5  |  worst Δ  0.9%
+  PASS  — 13 weeks                           compose x= 12.7 y= 26.3 w= 18.7 h= 1.4  |  kivy x= 12.7 y= 26.3 w= 18.5 h= 1.4  |  worst Δ  0.3%
+  PASS  Mesocycle 1 · Accumulation           compose x= 17.5 y= 29.7 w= 44.3 h= 1.9  |  kivy x= 17.5 y= 29.7 w= 44.3 h= 1.7  |  worst Δ  0.1%
+  PASS  — 6 weeks                            compose x= 17.5 y= 31.6 w= 18.0 h= 1.5  |  kivy x= 17.5 y= 31.5 w= 18.0 h= 1.5  |  worst Δ  0.1%
+  PASS  Week 1                               compose x= 22.4 y= 35.1 w= 13.1 h= 2.1  |  kivy x= 22.4 y= 35.0 w= 12.6 h= 2.1  |  worst Δ  0.5%
+  PASS  Progression                          compose x= 23.4 y= 37.2 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 37.0 w= 18.4 h= 1.7  |  worst Δ  0.6%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 40.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 40.4 w= 69.3 h= 1.7  |  worst Δ  0.2%
+  PASS  Rest                                 compose x= 26.8 y= 43.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 42.8 w= 69.3 h= 1.7  |  worst Δ  0.3%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 45.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 45.2 w= 69.3 h= 1.7  |  worst Δ  0.4%
+  PASS  Rest                                 compose x= 26.8 y= 48.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 47.7 w= 69.3 h= 1.7  |  worst Δ  0.5%
+  PASS  Full Body C — Push                   compose x= 26.8 y= 50.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 50.1 w= 69.3 h= 1.7  |  worst Δ  0.7%
+  PASS  Rest                                 compose x= 26.8 y= 53.2 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 52.5 w= 69.3 h= 1.7  |  worst Δ  0.8%
+  PASS  Rest                                 compose x= 26.8 y= 55.7 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 54.9 w= 69.3 h= 1.7  |  worst Δ  0.9%
+  PASS  Week 2                               compose x= 22.4 y= 59.9 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 58.9 w= 13.1 h= 2.1  |  worst Δ  1.0%
+  PASS  Progression                          compose x= 23.4 y= 62.0 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 61.0 w= 18.4 h= 1.7  |  worst Δ  1.0%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 65.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 64.4 w= 69.3 h= 1.7  |  worst Δ  1.1%
+  PASS  Rest                                 compose x= 26.8 y= 68.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 66.8 w= 69.3 h= 1.7  |  worst Δ  1.2%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 70.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 69.2 w= 69.3 h= 1.7  |  worst Δ  1.3%
+  PASS  Rest                                 compose x= 26.8 y= 73.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 71.6 w= 69.3 h= 1.7  |  worst Δ  1.4%
+  PASS  Full Body C — Push                   compose x= 26.8 y= 75.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 74.0 w= 69.3 h= 1.7  |  worst Δ  1.5%
+  PASS  Rest                                 compose x= 26.8 y= 78.0 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 76.4 w= 69.3 h= 1.7  |  worst Δ  1.6%
+  PASS  Rest                                 compose x= 26.8 y= 80.5 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 78.8 w= 69.3 h= 1.7  |  worst Δ  1.7%
+  PASS  Week 3                               compose x= 22.4 y= 84.7 w= 13.6 h= 2.1  |  kivy x= 22.4 y= 82.8 w= 13.1 h= 2.1  |  worst Δ  1.9%
+  PASS  Progression                          compose x= 23.4 y= 86.8 w= 19.0 h= 1.9  |  kivy x= 23.4 y= 84.9 w= 18.4 h= 1.7  |  worst Δ  1.9%
+  PASS  Full Body A — Squat                  compose x= 26.8 y= 90.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 88.3 w= 69.3 h= 1.7  |  worst Δ  2.0%
+  PASS  Rest                                 compose x= 26.8 y= 92.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 90.7 w= 69.3 h= 1.7  |  worst Δ  2.1%
+  PASS  Full Body B — Hinge                  compose x= 26.8 y= 95.3 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 93.1 w= 69.3 h= 1.7  |  worst Δ  2.2%
+  PASS  Rest                                 compose x= 26.8 y= 97.8 w= 69.3 h= 1.9  |  kivy x= 26.8 y= 95.5 w= 69.3 h= 1.7  |  worst Δ  2.3%
   OFF   Full Body C — Push                   not visible in EITHER engine
   OFF   Rest                                 not visible in EITHER engine
   OFF   Rest                                 not visible in EITHER engine

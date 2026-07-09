@@ -1,0 +1,2 @@
+{"id": "117_resume_crash_episode", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "-c", "import walker; walker.replay_and_step((0, 4), 3); walker.replay_and_step((0, 5), 3)"], "timeout": 600}

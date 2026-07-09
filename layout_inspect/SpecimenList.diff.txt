@@ -1,11 +1,11 @@
 SpecimenList: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
-  PASS  Item one                             compose x=  0.0 y=  0.0 w= 14.4 h= 1.9  |  kivy x=  0.0 y=  0.0 w= 14.2 h= 1.9  |  worst Δ  0.2%
-  PASS  Item two                             compose x=  0.0 y=  3.6 w= 14.1 h= 1.9  |  kivy x=  0.0 y=  3.6 w= 13.9 h= 1.9  |  worst Δ  0.2%
-  PASS  Section title                        compose x=  0.0 y=  7.8 w= 19.2 h= 1.9  |  kivy x=  0.0 y=  7.8 w= 19.1 h= 1.9  |  worst Δ  0.2%
-  PASS  Section body                         compose x=  0.0 y= 10.5 w= 20.9 h= 1.9  |  kivy x=  0.0 y= 10.5 w= 20.9 h= 1.9  |  worst Δ  0.0%
-  PASS  Item last                            compose x=  0.0 y= 14.1 w= 13.9 h= 1.9  |  kivy x=  0.0 y= 14.1 w= 13.7 h= 1.9  |  worst Δ  0.2%
+  PASS  Item one                             compose x=  0.0 y=  0.0 w= 14.4 h= 1.9  |  kivy x=  0.0 y=  0.0 w= 14.2 h= 1.7  |  worst Δ  0.2%
+  PASS  Item two                             compose x=  0.0 y=  3.6 w= 14.1 h= 1.9  |  kivy x=  0.0 y=  3.5 w= 13.9 h= 1.7  |  worst Δ  0.2%
+  PASS  Section title                        compose x=  0.0 y=  7.8 w= 19.2 h= 1.9  |  kivy x=  0.0 y=  7.5 w= 19.1 h= 1.7  |  worst Δ  0.2%
+  PASS  Section body                         compose x=  0.0 y= 10.5 w= 20.9 h= 1.9  |  kivy x=  0.0 y= 10.2 w= 20.9 h= 1.7  |  worst Δ  0.3%
+  PASS  Item last                            compose x=  0.0 y= 14.1 w= 13.9 h= 1.9  |  kivy x=  0.0 y= 13.7 w= 13.7 h= 1.7  |  worst Δ  0.4%
 
 matched 5/5 compose components; 5 within ±3.0%
 LAYOUT FIDELITY: 100%  (5/5)
