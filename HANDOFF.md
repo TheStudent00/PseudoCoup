@@ -1,3 +1,32 @@
+# Session handoff — 2026-07-08 LINEMAP DENSITY FIX (read this block first)
+
+LINEMAP DENSITY FIX (tools/pseudokotlin/nodes/statements.py, `_distribute()`): the density-differ
+analysis (render/walks/density_differ_analysis.md, rows 1/3/4/5/6/8/13/16) traced 9 of 16 T1
+DENSITY-DIFFER rows to ONE transpiler gap -- `_distribute()` (used by `v_lambda`'s trailing
+statement, `_receiver_scope`'s apply/run trailing statement, and if/when branch trailing
+statements) returned its rendered line WITHOUT the `#@@KTSRC <n>` marker that `stmt_lines()`
+already applies to every other statement, so the LAST statement of any multi-statement lambda body
+(the common composable-nesting shape, e.g. WinsHomeCard's "Log a win" button subtree, or
+AppTopBar's two sibling Texts) had no linemap entry and fell back to identity.py's nearest-line
+guess, silently crediting several distinct composable calls to one earlier, unrelated coordinate.
+Fix: `_distribute()` now calls `self._kt_tag(...)` on both of its terminal return paths (the
+`_stmt_shaped` case and the plain `lead+expr` case), tagging with the trailing node's own line —
+same marker/strip/JSON format as everywhere else, no format change, no regression to the block-form
+if/when/try paths (those already tag every branch statement via `_branch`->`render_statements`).
+Verified: WinsHomeCard.py.linemap.json entries 33->49 (lines 27-31, the "Log a win" subtree, now
+each map to their own kt line: 98/92/83/74/71 instead of all falling back to 97); AppNavigation.py
+line 379 (second sibling Text) now kt:1012 and line 380 (Column wrapper) now kt:1006, instead of
+both collapsing onto line 378's kt:1007 (row 1's exact case). Sandbox short walker.py runs
+(steps=8, reset) on the SAME route sequence: pre-fix 165/283 MOUNT lines carried the "~" approximate
+marker (58.3%); post-fix 0/362 in a longer-reaching run of the same walk. HOST RE-WALK PENDING: the
+3767-approximate count from hostrun 164 was measured against a full walker.py budget on real device
+state; a fresh full host walk (not just this sandboxed short smoke check) is needed to get the real
+post-fix approximate-mount count for the record. PseudoCoup_v0 commits: "linemap density: every
+composable-call line gets its own entry (...)" (transpiler fix, tools/pseudokotlin only) then
+"handoff: linemap density fix, host re-walk pending" (this entry). WFL_MixingCenter's regenerated
+.py/.py.linemap.json build outputs were NOT committed (left uncommitted per standing build-output
+policy — re-running `build_mixingcenter.py` regenerates them identically).
+
 # Session handoff — 2026-07-08 LATE update (COMPONENT IDENTITY SYSTEM; successor model: read this block fully)
 
 OWNER'S STANDING SPEC (verbatim intent, non-negotiable): zero opaqueness. Every UI component and every
