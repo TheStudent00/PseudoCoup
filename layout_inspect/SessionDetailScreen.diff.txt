@@ -2,19 +2,19 @@ SessionDetailScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
   PASS  Full Body A — Squat                  compose x= 13.6 y=  1.5 w= 40.9 h= 2.4  |  kivy x= 12.7 y=  0.0 w= 41.7 h= 2.4  |  worst Δ  1.5%
-  PASS  Sat, Jun 15 at 8:00 AM               compose x= 13.6 y=  3.9 w= 31.4 h= 1.5  |  kivy x= 12.7 y=  2.4 w= 31.5 h= 1.6  |  worst Δ  1.5%
+  PASS  Sat, Jun 15 at 8:00 AM               compose x= 13.6 y=  3.9 w= 31.4 h= 1.5  |  kivy x= 12.7 y=  2.4 w= 31.5 h= 1.5  |  worst Δ  1.5%
   PASS  0m                                   compose x= 14.4 y=  9.6 w=  8.0 h= 3.0  |  kivy x= 14.2 y=  9.6 w=  8.2 h= 3.0  |  worst Δ  0.2%
   PASS  0 kg                                 compose x= 45.0 y=  9.6 w= 10.5 h= 3.0  |  kivy x= 44.8 y=  9.6 w= 10.4 h= 3.0  |  worst Δ  0.2%
   PASS  5                                    compose x= 80.3 y=  9.6 w=  3.2 h= 3.0  |  kivy x= 80.1 y=  9.6 w=  3.2 h= 3.0  |  worst Δ  0.2%
-  PASS  Duration                             compose x= 12.7 y= 12.6 w= 11.7 h= 1.4  |  kivy x= 12.5 y= 12.6 w= 11.5 h= 1.5  |  worst Δ  0.1%
-  PASS  Volume                               compose x= 45.0 y= 12.6 w= 10.2 h= 1.4  |  kivy x= 45.2 y= 12.6 w=  9.5 h= 1.5  |  worst Δ  0.7%
-  PASS  Exercises                            compose x= 75.4 y= 12.6 w= 12.7 h= 1.4  |  kivy x= 75.4 y= 12.6 w= 12.7 h= 1.5  |  worst Δ  0.1%
-  PASS  Exercises                            compose x=  3.9 y= 17.6 w= 15.6 h= 1.9  |  kivy x=  3.9 y= 17.7 w= 15.4 h= 1.9  |  worst Δ  0.1%
-  PASS  Goblet Squat                         compose x=  6.8 y= 22.1 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 22.2 w= 86.4 h= 2.2  |  worst Δ  0.1%
-  PASS  Dumbbell Bench Press                 compose x=  6.8 y= 27.7 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 27.9 w= 86.4 h= 2.2  |  worst Δ  0.2%
-  PASS  Chest-Supported Dumbbell Row         compose x=  6.8 y= 33.2 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 33.6 w= 86.4 h= 2.2  |  worst Δ  0.3%
-  PASS  Dumbbell Lateral Raise               compose x=  6.8 y= 38.8 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 39.2 w= 86.4 h= 2.2  |  worst Δ  0.4%
-  PASS  Hanging Leg Raise                    compose x=  6.8 y= 44.4 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 44.9 w= 86.4 h= 2.2  |  worst Δ  0.5%
+  PASS  Duration                             compose x= 12.7 y= 12.6 w= 11.7 h= 1.4  |  kivy x= 12.5 y= 12.6 w= 11.5 h= 1.4  |  worst Δ  0.1%
+  PASS  Volume                               compose x= 45.0 y= 12.6 w= 10.2 h= 1.4  |  kivy x= 45.2 y= 12.6 w=  9.5 h= 1.4  |  worst Δ  0.7%
+  PASS  Exercises                            compose x= 75.4 y= 12.6 w= 12.7 h= 1.4  |  kivy x= 75.4 y= 12.6 w= 12.7 h= 1.4  |  worst Δ  0.1%
+  PASS  Exercises                            compose x=  3.9 y= 17.6 w= 15.6 h= 1.9  |  kivy x=  3.9 y= 17.6 w= 15.0 h= 1.7  |  worst Δ  0.6%
+  PASS  Goblet Squat                         compose x=  6.8 y= 22.1 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 22.0 w= 86.4 h= 2.1  |  worst Δ  0.1%
+  PASS  Dumbbell Bench Press                 compose x=  6.8 y= 27.7 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 27.5 w= 86.4 h= 2.1  |  worst Δ  0.1%
+  PASS  Chest-Supported Dumbbell Row         compose x=  6.8 y= 33.2 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 33.1 w= 86.4 h= 2.1  |  worst Δ  0.1%
+  PASS  Dumbbell Lateral Raise               compose x=  6.8 y= 38.8 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 38.7 w= 86.4 h= 2.1  |  worst Δ  0.1%
+  PASS  Hanging Leg Raise                    compose x=  6.8 y= 44.4 w= 86.4 h= 2.1  |  kivy x=  6.8 y= 44.3 w= 86.4 h= 2.1  |  worst Δ  0.1%
 
 matched 14/14 compose components; 14 within ±3.0%
 LAYOUT FIDELITY: 100%  (14/14)

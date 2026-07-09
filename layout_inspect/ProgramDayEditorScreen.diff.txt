@@ -2,18 +2,18 @@ ProgramDayEditorScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
   PASS  Full Body A — Squat                  compose x= 13.6 y=  2.0 w= 48.9 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 47.2 h= 2.8  |  worst Δ  2.0%
-  PASS  Goblet Squat                         compose x=  6.8 y= 10.1 w= 20.9 h= 1.9  |  kivy x=  6.8 y= 10.1 w= 20.9 h= 1.9  |  worst Δ  0.0%
-  PASS  2 sets · 10–12 reps · RPE 6 · 180s   compose x=  6.8 y= 11.9 w= 51.6 h= 1.5  |  kivy x=  6.8 y= 11.9 w= 52.5 h= 1.6  |  worst Δ  0.9%
-  PASS  SUPERSET                             compose x=  6.8 y= 15.6 w= 14.6 h= 1.4  |  kivy x=  6.8 y= 15.7 w= 14.8 h= 1.5  |  worst Δ  0.2%
-  PASS  Dumbbell Bench Press                 compose x=  9.7 y= 18.8 w= 35.5 h= 1.9  |  kivy x=  9.7 y= 19.0 w= 35.5 h= 1.9  |  worst Δ  0.2%
-  PASS  2 sets · 8–10 reps · RPE 6 · 120s    compose x=  9.7 y= 20.7 w= 50.4 h= 1.5  |  kivy x=  9.7 y= 20.9 w= 51.2 h= 1.6  |  worst Δ  0.8%
-  PASS  Chest-Supported Dumbbell Row         compose x=  9.7 y= 25.4 w= 51.1 h= 1.9  |  kivy x=  9.7 y= 25.2 w= 51.1 h= 1.9  |  worst Δ  0.1%
-  PASS  2 sets · 8–12 reps · RPE 6 · 120s    compose x=  9.7 y= 27.2 w= 50.1 h= 1.5  |  kivy x=  9.7 y= 27.1 w= 51.0 h= 1.6  |  worst Δ  0.8%
-  PASS  SUPERSET                             compose x=  6.8 y= 36.6 w= 14.6 h= 1.4  |  kivy x=  6.8 y= 36.7 w= 14.8 h= 1.5  |  worst Δ  0.2%
-  PASS  Dumbbell Lateral Raise               compose x=  9.7 y= 39.8 w= 35.8 h= 1.9  |  kivy x=  9.7 y= 40.0 w= 35.8 h= 1.9  |  worst Δ  0.2%
-  PASS  2 sets · 12–15 reps · RPE 6 · 60s    compose x=  9.7 y= 41.6 w= 50.1 h= 1.5  |  kivy x=  9.7 y= 41.9 w= 51.0 h= 1.6  |  worst Δ  0.8%
-  PASS  Hanging Leg Raise                    compose x=  9.7 y= 46.3 w= 29.2 h= 1.9  |  kivy x=  9.7 y= 46.2 w= 29.3 h= 1.9  |  worst Δ  0.1%
-  PASS  2 sets · 10–15 reps · RPE 6 · 60s    compose x=  9.7 y= 48.2 w= 50.4 h= 1.5  |  kivy x=  9.7 y= 48.1 w= 51.2 h= 1.6  |  worst Δ  0.8%
+  PASS  Goblet Squat                         compose x=  6.8 y= 10.1 w= 20.9 h= 1.9  |  kivy x=  6.8 y= 10.1 w= 20.9 h= 1.7  |  worst Δ  0.1%
+  PASS  2 sets · 10–12 reps · RPE 6 · 180s   compose x=  6.8 y= 11.9 w= 51.6 h= 1.5  |  kivy x=  6.8 y= 11.8 w= 52.5 h= 1.5  |  worst Δ  0.9%
+  PASS  SUPERSET                             compose x=  6.8 y= 15.6 w= 14.6 h= 1.4  |  kivy x=  6.8 y= 15.5 w= 14.8 h= 1.4  |  worst Δ  0.2%
+  PASS  Dumbbell Bench Press                 compose x=  9.7 y= 18.8 w= 35.5 h= 1.9  |  kivy x=  9.7 y= 18.7 w= 35.5 h= 1.7  |  worst Δ  0.1%
+  PASS  2 sets · 8–10 reps · RPE 6 · 120s    compose x=  9.7 y= 20.7 w= 50.4 h= 1.5  |  kivy x=  9.7 y= 20.4 w= 51.2 h= 1.5  |  worst Δ  0.8%
+  PASS  Chest-Supported Dumbbell Row         compose x=  9.7 y= 25.4 w= 51.1 h= 1.9  |  kivy x=  9.7 y= 24.7 w= 51.1 h= 1.7  |  worst Δ  0.7%
+  PASS  2 sets · 8–12 reps · RPE 6 · 120s    compose x=  9.7 y= 27.2 w= 50.1 h= 1.5  |  kivy x=  9.7 y= 26.4 w= 51.0 h= 1.5  |  worst Δ  0.8%
+  PASS  SUPERSET                             compose x=  6.8 y= 36.6 w= 14.6 h= 1.4  |  kivy x=  6.8 y= 36.5 w= 14.8 h= 1.4  |  worst Δ  0.2%
+  PASS  Dumbbell Lateral Raise               compose x=  9.7 y= 39.8 w= 35.8 h= 1.9  |  kivy x=  9.7 y= 39.7 w= 35.8 h= 1.7  |  worst Δ  0.1%
+  PASS  2 sets · 12–15 reps · RPE 6 · 60s    compose x=  9.7 y= 41.6 w= 50.1 h= 1.5  |  kivy x=  9.7 y= 41.4 w= 51.0 h= 1.5  |  worst Δ  0.8%
+  PASS  Hanging Leg Raise                    compose x=  9.7 y= 46.3 w= 29.2 h= 1.9  |  kivy x=  9.7 y= 45.7 w= 29.3 h= 1.7  |  worst Δ  0.7%
+  PASS  2 sets · 10–15 reps · RPE 6 · 60s    compose x=  9.7 y= 48.2 w= 50.4 h= 1.5  |  kivy x=  9.7 y= 47.4 w= 51.2 h= 1.5  |  worst Δ  0.8%
 
 matched 13/13 compose components; 13 within ±3.0%
 LAYOUT FIDELITY: 100%  (13/13)
