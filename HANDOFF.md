@@ -1,3 +1,52 @@
+# Session handoff — 2026-07-09 FRONTIER ALIGNMENT PHASE (read this block first)
+
+STATUS: owner approved a two-item frontier-alignment plan this session. Item (1) is LANDED; item (2) is
+QUEUED, not yet run.
+
+(1) KT MISFIRE FIX -- LANDED (WFL_MixingCenter commit b70d65e, test sources only,
+WFL/app/src/test/java/com/sara/workoutforlife/walk/WalkRecorderTest.kt): fixed the kt walker's
+self-documented ANOMALY 1 settle-race misfires. Symptom, established by a read-only survey of a real
+kt_walk.json: "Home" tab fired twice, "You" tab (present in the tree, structurally identical to the four
+tabs that DID fire) never fired at all, and "Search wins"/"Browse programs" edges landed on a DIFFERENT
+node's handler_kind than their own recorded label implies -- BFS coverage corrupted (kt "exhausted" at 21
+states partly by burning budget on wrong/duplicate taps instead of the real frontier). Root cause: the
+existing ANOMALY 1 settle fix (loop settling until two consecutive node-count reads agree) makes a SINGLE
+enumeration's node COUNT stable within one mount, but "ONE FRESH APP MOUNT per replay" means every later
+replay of a shared path prefix settles a BRAND NEW mount's tree from scratch -- a LazyColumn/LazyRow/
+TabRow subcomposition can legitimately settle to a DIFFERENT stable item order across two independent
+mounts of the identically-seeded state, so a bare ordinal captured at one enumeration silently drifted onto
+the wrong node at fire time. Same class of fix as the py side's overlay-identity fix (never fire from a
+stale position -- resolve by stable identity at the moment of firing). Fix: at fire time, after the settle
+that precedes the tap, resolve the target by (label, handler_kind) within the JUST-settled enumeration --
+the same join key walk_diff.py's align_edges() already uses -- not by raw ordinal position; ambiguous
+matches (duplicate label+handler_kind) fall back to ordinal WITHIN the matching subset, logged loudly as
+AMBIGUOUS-RESOLVE; a recorded target that no longer resolves at all is an honest edge error, never a fire
+against whatever now occupies that ordinal. Applied at BOTH fire paths: the walk loop's primary fire site
+and replayTo()'s per-step prefix replay (the latter carries the exposure across mounts, since it re-taps
+recorded ordinals from a previous state's discovery on a fresh mount each time -- Frame's path is now a
+List<PathStep> threading each step's recorded (label, handlerKind) forward for exactly this purpose).
+ordinal's semantics in the persisted kt_walk.json WALK FORMAT are UNCHANGED -- ActionRec.ordinal still
+records the enumeration index at RECORD time; only fire-time RESOLUTION now goes through identity first.
+Every resolution logs to kt_activations.log as "RESOLVE ordinal=N -> label=... handler=... method=exact|
+ambiguous|missing". The ANOMALY 1 comment block in WalkRecorderTest.kt was updated in place (history kept,
+resolution appended) rather than replaced. UNVERIFIED ON HOST: this file has no Gradle/JVM in the authoring
+sandbox (documented at the file's own header) -- syntactic care taken, checked against surrounding code
+style, but not compiled; first host run is the real verification.
+
+(2) BUDGET-PARITY EXHAUSTION RUNS -- QUEUED, not started this session. Purpose: re-run both engines'
+walkers at matched step budgets now that (1) removes kt's misfire-driven budget waste, to get a genuine
+apples-to-apples exhaustion comparison (kt's prior 21-state exhaustion was partly an artifact of the bug
+just fixed, not a true structural ceiling).
+
+CANONICAL ORDERING: held pending evidence -- not decided this session, no change.
+
+SEED ROOTS: deferred. A structural-reachability survey found nothing currently unreachable from the
+existing seed/boot state on either engine, so there is no known gap forcing new seed roots yet; revisit if
+the queued exhaustion runs (item 2) surface one.
+
+No PseudoCoup_v0 transpiler/tooling code was touched this session -- the fix is WFL_MixingCenter-only
+(test sources). No background processes were started by this session; none were left running.
+
 # Session handoff — 2026-07-08 ORACLE SCAN GAP CLOSED + T1 DIFFER ROWS CLASSIFIED (read this block first)
 
 STATUS: both open items from the 165_py_walk_dense_linemaps.log full host walk (DevComms/hostruns/results/
