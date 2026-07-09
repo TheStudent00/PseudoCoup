@@ -63,7 +63,16 @@ filter, per-route counts). GRANULARITY PARITY (commits 231bf79/153f03d): py now 
 per settled state under a STATE header (per-creation lines behind IDENTITY_LOG_VERBOSE) -- recompose churn
 had inflated py counts ~35-40x; oracle_registry is coordinate->[names] (518/1658 coordinates carry multiple
 same-line composables; flat dict had silently dropped primitives). Hostruns 159 (py walk, new format) + 160
-(mount_diff) queued -- first directly-comparable count run.
+(mount_diff) run -- FIRST directly-comparable count run showed raw per-route mount counts still 0 count-agree
+(py's BFS-replay walk redumps the same route many more times than kt's single-visit walk -- 137 STATE dumps
+across 17 py states vs 21 dumps across 21 kt states -- so raw counts were never comparable, only the VISIT-
+NORMALIZED rate is). FIX (WFL_MixingCenter commit 9e233bc): mount_diff's verdicts are now DENSITY-based --
+(mounts of a pair/coordinate on route R) / (STATE dumps that engine recorded on route R), compared as an
+EXACT fractions.Fraction (no float, no tolerance/epsilon). STATUS UPDATE (2026-07-08, latest run): "MOUNT
+DIFF: T1: 62 matched, 19 density-agree, 16 density-differ / T2 24 density-agree, 18 density-differ, 13
+not-comparable, 38 py-only, 298 kt-only pairs" -- density comparison surfaces real agreement (0->19 T1,
+0->24 T2) that raw counts could never show; remaining DIFFER cases are genuine per-visit rendering variation
+(e.g. LazyColumn item counts differing by visit), not noise -- see mount_diff.py's "DENSITY VERDICTS" comment.
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
