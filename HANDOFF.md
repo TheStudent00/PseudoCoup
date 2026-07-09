@@ -1,3 +1,45 @@
+# Session handoff — 2026-07-08 ORACLE SCAN GAP CLOSED + T1 DIFFER ROWS CLASSIFIED (read this block first)
+
+STATUS: both open items from the 165_py_walk_dense_linemaps.log full host walk (DevComms/hostruns/results/
+165_py_walk_dense_linemaps.log, dense linemaps, 0 approximate mounts) are CLOSED this session.
+
+(1) ORACLE SCAN GAP CLOSED (WFL_MixingCenter commit 30d726a): the log's 22 "ORACLE UNKNOWN" lines were all
+ONE distinct coordinate (`ui/components/CompactControls.kt:118 kind=Text`), traced to a registry-scan gap,
+NOT a misattribution or an out-of-scan-root file. Root cause: compose.py's `_composable(kind)` factory
+(shared by BasicTextField/TextField/OutlinedTextField) special-cases a `decorationBox=` keyword by calling
+the slot with a synthetic `_inner` that builds a bare `Node("Text")` the instant the slot's own lambda
+invokes its `inner`/`innerTextField` parameter — there is genuinely no `Text(...)` token anywhere in app
+source at that coordinate (CompactControls.py's `return inner()`, linemap-exact to kt:118); the name "Text"
+is synthesized one frame away, inside the runtime. `oracle_registry.py`'s existing scan (`Call(func=Name(
+PascalCase))`) can never discover this by construction — no widening of recognized call SHAPES would find
+it, since app source calls a lowercase, parameter-bound name there. FIX: added a second registry-scan pass
+keyed off the `decorationBox=` keyword itself (resolve its value to the slot body — inline Lambda or a
+same-file nested def — find every call to that body's own first parameter recursively through nested
+wrapper lambdas, register each resolved coordinate as "Text"). Registry 2272->2273 entries. Verified live:
+sandboxed short walker.py boot (--steps 15 --resume) shows all previously-UNKNOWN CompactControls.kt:118
+occurrences now print "ORACLE OK"; the repo's second decorationBox site (WorkoutExecutionScreen.py) also
+resolves correctly. EXPECTED REMAINDER: 0 UNKNOWN for the boot-reachable subset this session verified; a
+coordinate this fix does NOT and cannot cover is one where a live component's origin resolves to a kt
+coordinate with NO backing composable declaration/primitive/decorationBox shape at all (a genuinely new,
+different scan gap or a real identity.py misattribution) — none such were found in this log (all 22 lines
+were the one decorationBox coordinate), but the next full host walk is what confirms 0 UNKNOWN at full
+(non-boot-limited) coverage.
+
+(2) T1 DENSITY-DIFFER ROWS CLASSIFIED (WFL_MixingCenter commit 3600e1e, render/walks/density_differ_analysis.md
+2026-07-08 section): mount_diff_report.txt's T1 set is now 14 (coord,kind) rows (was 16), coverage having
+grown 58->83 T1-matched coordinates. 7 rows are the already-classified B (real per-visit variation) rows
+carried forward unchanged (ProgressScreen.kt:284, WflCard.kt:51/62/80, WinsHomeCard.kt:127/73/87). The 7 NEW
+rows (WinsHomeCard.kt:71/74/83/92/166/167/172) were investigated with the same method (exact linemap hits,
+per-STATE-block mount counts on both engines) and are ALL class B too — same already-documented root cause
+(py's BFS-replay walk sampled 2 extra non-ANALYTICS `progress` sub-states kt's single-path walk never
+reached; every one of the 7 mounts 1:1 with kt whenever WinsHomeCard actually renders). **NO CLASS-A ROW
+FOUND** — 0 of 14 current T1 DENSITY-DIFFER rows show real twin divergence; nothing from this pass requires
+owner escalation.
+
+Sandbox process cleanup confirmed (ps aux showed no leftover xvfb/python3/walker.py processes after
+verification runs). No PseudoCoup_v0 code was touched this session — both fixes are WFL_MixingCenter-only
+(render/oracle_registry.py, render/walks/density_differ_analysis.md).
+
 # Session handoff — 2026-07-08 LINEMAP DENSITY FIX (read this block first)
 
 LINEMAP DENSITY FIX (tools/pseudokotlin/nodes/statements.py, `_distribute()`): the density-differ
