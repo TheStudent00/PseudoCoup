@@ -150,8 +150,8 @@ class Statements:
             return self._if(node, lead)
         if self._stmt_shaped(node):
             inc = self._maybe_increment(node)   # `if (c) n++` branch -> clean `n += 1`
-            return inc if inc is not None else self.visit(node)
-        return f"{lead}{self.visit(node)}"
+            return self._kt_tag(inc if inc is not None else self.visit(node), node)
+        return self._kt_tag(f"{lead}{self.visit(node)}", node)
 
     def _stmt_shaped(self, node):
         """True for nodes rendering to a Python STATEMENT, not a value-expression:
