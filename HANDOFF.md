@@ -73,6 +73,34 @@ DIFF: T1: 62 matched, 19 density-agree, 16 density-differ / T2 24 density-agree,
 not-comparable, 38 py-only, 298 kt-only pairs" -- density comparison surfaces real agreement (0->19 T1,
 0->24 T2) that raw counts could never show; remaining DIFFER cases are genuine per-visit rendering variation
 (e.g. LazyColumn item counts differing by visit), not noise -- see mount_diff.py's "DENSITY VERDICTS" comment.
+DENSITY-DIFFER ANALYSIS (2026-07-08, render/walks/density_differ_analysis.md, WFL_MixingCenter commit
+3b691d0): all 16 T1 DENSITY-DIFFER rows investigated row-by-row against raw log evidence + kt/py source --
+result: 0 real twin divergence (A), 7 real per-visit variation (B, rows 7/9/10/11/12/14/15 -- entirely
+traced to py's BFS-replay walk sampling 2 extra `progress` tab sub-states kt's single-path walk never
+reached, plus row 10's genuine hasAnyMetric-gated conditional content), 9 instrument artifact (C, rows
+1/2/3/4/5/6/8/13/16 -- two flavors: kt-side Compose runtime frames [`<get-colorScheme>`,
+`rememberComposableLambda`] sharing an "enclosing group location" with the real call, and py-side
+identity.py's nearest-line fallback silently miscrediting multiple distinct composables sharing one
+collapsed/unmapped python line onto one kt coordinate). ARTIFACT FIXES COMMITTED (WFL_MixingCenter commits
+19143bc/893650b): (1) identity.py's resolve_kt_coord() now marks every fallback-resolved coordinate with a
+trailing "~" (e.g. "AppNavigation.kt:414~") so approximate attributions are visibly distinguished from exact
+linemap hits, never silently conflated -- verified live via a sandbox boot dump showing both forms on real
+MOUNT lines. (2) mount_diff.py: approximate ("~") coordinates now participate in T2 (file+name) but are
+excluded from T1 (line-exact) density material entirely, with their own "py approximate-coordinate mounts: N"
+context count; T1 density is now keyed by (coordinate, kind) instead of coordinate alone, so linemap-collapse
+rows compare each kind's own rate independently instead of summing unrelated composables together (same-line,
+same-kind siblings remain mutually indistinguishable -- an inherent limit of the coordinate format, not
+claimed to be solved); kt-side true-infrastructure kinds (remember, rememberComposableLambda,
+collectAsStateWithLifecycle, `<get-...>`) are now excluded from coord_route_counts regardless of vocabulary
+status, fixing the row-2/row-8 runtime-frame-doubles-the-real-call's-count defect. Re-run against current
+logs: T1 DENSITY-DIFFER dropped from 16 to 9 (coord,kind) keys, all of them B-classified rows plus residual
+same-kind-sibling ambiguity (e.g. AppNavigation.kt:1007's two Text calls) -- exactly as the analysis
+predicted. CAVEAT: this re-run used the PRE-FIX py_activations.log (walker.py has not been re-run since the
+identity.py fix), so it carries no "~" markers yet (0 approximate mounts reported) and the row-1/13-style
+same-kind-sibling miscredits are still baked into that log's raw MOUNT lines; full effect of the marking fix
+(further T1 differ reduction, nonzero approximate-mount context count) needs a FRESH host walker.py run,
+which is PENDING (not performed in this session, sandboxed boot-only verification was substituted per task
+scope).
 
 WALK DIFF STATE (hostrun 153): mutual territory 4 shared / 4 kt-only / 10 py-only / 69 edge mismatches;
 COVERAGE GAP kt-only routes [execution, exercise_detail, exercises, gym_list, settings_notifications,
