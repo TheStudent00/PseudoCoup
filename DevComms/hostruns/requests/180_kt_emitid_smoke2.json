@@ -1,0 +1,2 @@
+{"id": "180_kt_emitid_smoke2", "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.walk.WalkRecorderTest", "--rerun", "-Dwalk.steps=80", "-Dwalk.reset=1"], "timeout": 7200}

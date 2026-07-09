@@ -18,6 +18,19 @@ MECHANISM (full, no magic):
     The assistant polls the results directory, reads the log, fixes code, writes the
     next request. The user's only job: start this script, and ctrl-C it when done.
 
+PROGRESS DISPLAY (why the terminal now always shows what is happening):
+  * On a TTY, a single live status line (carriage-return updated ~1/s) shows, per run:
+        [hh:mm:ss] > <id> <spinner> <elapsed>s/~<est>s [====----] NN% <KB> | <last log line>
+    The <est> is the MEDIAN of every prior run's recorded seconds, so the bar is a real
+    (if rough) estimate that fills as the run proceeds; it caps at 99% until the child
+    actually exits, then a persistent DONE line is printed (kept in scrollback).
+  * When idle (no pending requests) it shows a slow "idle -- watching (last <id> rc=..)"
+    line, so an idle service reads as idle, not as a hang.
+  * Every RUN start and DONE/REFUSE is ALSO appended to DevComms/hostruns/service_history.log
+    -- a persistent chronological record that survives terminal scrollback, so no run is
+    silently "dropped" from the history.
+  * Not a TTY (piped/redirected): falls back to a plain newline heartbeat every ~20s.
+
 SAFETY RAILS:
   * cmd is exec'd directly (no shell), so no shell-injection surface.
   * cwd must resolve inside ~/Programming -- anything else is refused.
@@ -30,6 +43,7 @@ Stop:   ctrl-C  (or create DevComms/hostruns/STOP -- checked between runs)
 """
 import json
 import os
+import shutil
 import subprocess
 import sys
 import time
@@ -40,19 +54,94 @@ HOSTRUNS = os.path.join(os.path.dirname(HERE), "DevComms", "hostruns")
 REQ_DIR = os.path.join(HOSTRUNS, "requests")
 RES_DIR = os.path.join(HOSTRUNS, "results")
 STOP = os.path.join(HOSTRUNS, "STOP")
+HISTORY = os.path.join(HOSTRUNS, "service_history.log")
 FENCE = os.path.realpath(os.path.expanduser("~/Programming"))
 ALLOWED = {"./gradlew", "gradlew", "python3", "python", "xvfb-run", "adb", "git"}
 POLL_SECONDS = 3
+SPINNER = "⠋⠙⠹⠸⠼⠴⠦⠧⠇⠏"
+IS_TTY = sys.stdout.isatty()
+_status_shown = False   # a transient \r status line is currently on screen
+
+
+def _ts():
+    return datetime.now().strftime("%H:%M:%S")
+
+
+def _clear():
+    """Erase a transient status line if one is showing, so a persistent line prints clean."""
+    global _status_shown
+    if IS_TTY and _status_shown:
+        sys.stdout.write("\r\033[K")
+        sys.stdout.flush()
+        _status_shown = False
 
 
 def log(msg):
-    print(f"[walk_service {datetime.now().strftime('%H:%M:%S')}] {msg}", flush=True)
+    """A PERSISTENT line (stays in scrollback)."""
+    _clear()
+    print(f"[walk_service {_ts()}] {msg}", flush=True)
+
+
+def status(msg):
+    """A TRANSIENT line (overwritten in place). No-op when not a TTY."""
+    global _status_shown
+    if not IS_TTY:
+        return
+    width = shutil.get_terminal_size((100, 20)).columns
+    sys.stdout.write("\r\033[K" + msg[:max(0, width - 1)])
+    sys.stdout.flush()
+    _status_shown = True
+
+
+def history(line):
+    """Append a persistent chronological record that survives terminal scrollback."""
+    try:
+        with open(HISTORY, "a") as f:
+            f.write(f"{datetime.now(timezone.utc).isoformat()}  {line}\n")
+    except Exception:                      # noqa: BLE001 -- history must never kill the run
+        pass
+
+
+def _bar(frac, width=22):
+    frac = 0.0 if frac < 0 else (1.0 if frac > 1 else frac)
+    full = int(frac * width)
+    return "█" * full + "░" * (width - full)
+
+
+def _estimate_seconds():
+    """Median of every prior run's recorded seconds -- the progress-bar denominator."""
+    vals = []
+    for fn in os.listdir(RES_DIR):
+        if not fn.endswith(".json"):
+            continue
+        try:
+            s = json.load(open(os.path.join(RES_DIR, fn))).get("seconds")
+            if isinstance(s, (int, float)) and s > 0:
+                vals.append(s)
+        except Exception:                  # noqa: BLE001
+            pass
+    if not vals:
+        return 90.0
+    vals.sort()
+    return vals[len(vals) // 2]
+
+
+def _tail(logfile):
+    try:
+        with open(logfile, "rb") as rf:
+            rf.seek(max(0, os.path.getsize(logfile) - 4096))
+            lines = [l for l in rf.read().decode("utf-8", "replace").splitlines() if l.strip()]
+            return lines[-1][:80] if lines else "(no output yet)"
+    except Exception:                      # noqa: BLE001 -- display must never kill the run
+        return "(log unreadable)"
 
 
 def refuse(req_id, reason):
     with open(os.path.join(RES_DIR, req_id + ".json"), "w") as f:
         json.dump({"id": req_id, "returncode": None, "refused": reason}, f, indent=2)
     log(f"REFUSED {req_id}: {reason}")
+    history(f"REFUSED {req_id}: {reason}")
+    return (req_id, None)
 
 
 def run_request(path):
@@ -77,61 +166,72 @@ def run_request(path):
     logfile = os.path.join(RES_DIR, req_id + ".log")
     started = datetime.now(timezone.utc).isoformat()
     t0 = time.time()
-    log(f"RUN {req_id}: {' '.join(cmd)}  (cwd={cwd}, timeout={timeout}s)")
+    est = _estimate_seconds()
+    log(f"RUN {req_id}: {' '.join(cmd)}  (cwd={cwd}, timeout={timeout}s, est~{int(est)}s)")
+    history(f"RUN {req_id}: {' '.join(cmd)}")
     env = dict(os.environ, **{k: str(v) for k, v in req.get("env", {}).items()})
+    spin = 0
+    last_beat = time.time()
     with open(logfile, "w") as lf:
         try:
-            # Popen + poll loop (not subprocess.run) so the terminal shows a HEARTBEAT while a long
-            # run is in flight: every ~20s, print the log's size and its last non-blank line -- the
-            # user can see at a glance that the child is producing output, not hanging.
             proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=lf, stderr=subprocess.STDOUT)
-            last_beat = time.time()
             while True:
                 try:
-                    rc = proc.wait(timeout=2)
+                    rc = proc.wait(timeout=1)
                     break
                 except subprocess.TimeoutExpired:
                     pass
-                if time.time() - t0 > timeout:
+                el = time.time() - t0
+                if el > timeout:
                     proc.kill()
                     proc.wait()
                     rc = -9
                     lf.write(f"\nwalk_service: TIMEOUT after {timeout}s\n")
                     break
-                if time.time() - last_beat >= 20:
+                spin = (spin + 1) % len(SPINNER)
+                size = os.path.getsize(logfile)
+                if IS_TTY:
+                    frac = min(el / est, 0.99) if est > 0 else 0.0
+                    status(f"[{_ts()}] ▶ {req_id} {SPINNER[spin]} {int(el)}s/~{int(est)}s "
+                           f"[{_bar(frac)}] {int(frac * 100):>2}% {size // 1024}KB | {_tail(logfile)}")
+                elif time.time() - last_beat >= 20:      # non-TTY fallback: sparse newline heartbeat
                     last_beat = time.time()
-                    tail = ""
-                    try:
-                        with open(logfile, "rb") as rf:
-                            rf.seek(max(0, os.path.getsize(logfile) - 4096))
-                            lines = [l for l in rf.read().decode("utf-8", "replace").splitlines()
-                                     if l.strip()]
-                            tail = lines[-1][:110] if lines else "(no output yet)"
-                    except Exception:                             # noqa: BLE001 -- heartbeat must never kill the run
-                        tail = "(log unreadable)"
-                    log(f"  … {req_id} {int(time.time() - t0)}s  {os.path.getsize(logfile)}B  | {tail}")
-        except Exception as e:                                    # noqa: BLE001
+                    log(f"  … {req_id} {int(el)}s  {size}B  | {_tail(logfile)}")
+        except Exception as e:                            # noqa: BLE001
             rc = -1
             lf.write(f"\nwalk_service: LAUNCH FAILED: {type(e).__name__}: {e}\n")
+    secs = round(time.time() - t0, 1)
     with open(os.path.join(RES_DIR, req_id + ".json"), "w") as f:
-        json.dump({"id": req_id, "returncode": rc, "seconds": round(time.time() - t0, 1),
+        json.dump({"id": req_id, "returncode": rc, "seconds": secs,
                    "started": started, "finished": datetime.now(timezone.utc).isoformat()},
                   f, indent=2)
-    log(f"DONE {req_id}: rc={rc} ({round(time.time() - t0, 1)}s) -> results/{req_id}.log")
+    log(f"DONE {req_id}: rc={rc} ({secs}s) -> results/{req_id}.log")
+    history(f"DONE {req_id}: rc={rc} ({secs}s)")
+    return (req_id, rc)
 
 
 def main():
     os.makedirs(REQ_DIR, exist_ok=True)
     os.makedirs(RES_DIR, exist_ok=True)
     log(f"watching {REQ_DIR} (stop: ctrl-C, or touch {STOP})")
+    processed = 0
+    last = "none yet"
+    spin = 0
     while True:
         if os.path.exists(STOP):
             log("STOP file present -- exiting. (delete DevComms/hostruns/STOP to allow restart)")
             return 0
         pending = sorted(f for f in os.listdir(REQ_DIR) if f.endswith(".json")
                          and not os.path.exists(os.path.join(RES_DIR, f)))
-        for name in pending:
-            run_request(os.path.join(REQ_DIR, name))
+        if pending:
+            for name in pending:
+                rid, rc = run_request(os.path.join(REQ_DIR, name))
+                processed += 1
+                last = f"{rid} rc={rc}"
+        else:
+            spin = (spin + 1) % len(SPINNER)
+            status(f"[{_ts()}] {SPINNER[spin]} idle -- watching requests/ "
+                   f"(processed {processed} this session, last: {last})")
         time.sleep(POLL_SECONDS)
 
 
