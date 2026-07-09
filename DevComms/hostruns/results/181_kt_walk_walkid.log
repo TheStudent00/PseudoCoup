@@ -1,0 +1,197 @@
+Starting a Gradle Daemon (subsequent builds will be faster)
+
+> Configure project :app
+WARNING: The option setting 'android.disallowKotlinSourceSets=false' is experimental.
+The current default is 'true'.
+
+> Task :app:preBuild UP-TO-DATE
+> Task :app:preDebugBuild UP-TO-DATE
+> Task :app:generateDebugBuildConfig UP-TO-DATE
+> Task :app:generateDebugResources UP-TO-DATE
+> Task :app:packageDebugResources UP-TO-DATE
+> Task :app:processDebugNavigationResources UP-TO-DATE
+> Task :app:parseDebugLocalResources UP-TO-DATE
+> Task :app:generateDebugRFile UP-TO-DATE
+> Task :app:kspDebugKotlin
+
+> Task :app:compileDebugKotlin FAILED
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:98:21 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:111:21 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:115:32 None of the following candidates is applicable:
+fun PaddingValues(all: Dp): PaddingValues
+fun PaddingValues(horizontal: Dp = ..., vertical: Dp = ...): PaddingValues
+fun PaddingValues(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): PaddingValues
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:117:13 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:157:26 None of the following candidates is applicable:
+fun PaddingValues(all: Dp): PaddingValues
+fun PaddingValues(horizontal: Dp = ..., vertical: Dp = ...): PaddingValues
+fun PaddingValues(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): PaddingValues
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:287:26 None of the following candidates is applicable:
+fun PaddingValues(all: Dp): PaddingValues
+fun PaddingValues(horizontal: Dp = ..., vertical: Dp = ...): PaddingValues
+fun PaddingValues(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): PaddingValues
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:459:25 None of the following candidates is applicable:
+constructor(packedValue: Long): Offset
+fun Offset(x: Float, y: Float): Offset
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:460:23 None of the following candidates is applicable:
+constructor(packedValue: Long): Offset
+fun Offset(x: Float, y: Float): Offset
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:466:25 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:467:25 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:487:97 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:492:22 None of the following candidates is applicable:
+constructor(packedValue: Long): Offset
+fun Offset(x: Float, y: Float): Offset
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/progress/ProgressScreen.kt:654:21 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:107:73 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:108:68 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:109:69 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:110:72 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:111:71 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:112:72 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:187:87 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:209:13 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:222:9 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:227:26 None of the following candidates is applicable:
+fun PaddingValues(all: Dp): PaddingValues
+fun PaddingValues(horizontal: Dp = ..., vertical: Dp = ...): PaddingValues
+fun PaddingValues(start: Dp = ..., top: Dp = ..., end: Dp = ..., bottom: Dp = ...): PaddingValues
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:329:29 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:416:9 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:444:81 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:539:17 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:545:17 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:583:61 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:621:9 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:635:69 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:646:60 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:675:9 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:692:69 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:703:62 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:755:44 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:796:29 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:842:300 None of the following candidates is applicable:
+constructor(width: Dp, brush: Brush): BorderStroke
+fun BorderStroke(width: Dp, color: Color): BorderStroke
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:847:242 None of the following candidates is applicable:
+constructor(width: Dp, brush: Brush): BorderStroke
+fun BorderStroke(width: Dp, color: Color): BorderStroke
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:876:20 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:904:13 No parameter with name 'modifier' found.
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:966:19 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:973:23 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1047:78 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1120:17 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1152:25 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1181:25 None of the following candidates is applicable:
+constructor(topStart: CornerSize, topEnd: CornerSize, bottomEnd: CornerSize, bottomStart: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(corner: CornerSize): RoundedCornerShape
+fun RoundedCornerShape(size: Dp): RoundedCornerShape
+fun RoundedCornerShape(size: Float): RoundedCornerShape
+fun RoundedCornerShape(percent: Int): RoundedCornerShape
+fun RoundedCornerShape(topStart: Dp = ..., topEnd: Dp = ..., bottomEnd: Dp = ..., bottomStart: Dp = ...): RoundedCornerShape
+fun RoundedCornerShape(topStart: Float = ..., topEnd: Float = ..., bottomEnd: Float = ..., bottomStart: Float = ...): RoundedCornerShape
+fun RoundedCornerShape(topStartPercent: Int = ..., topEndPercent: Int = ..., bottomEndPercent: Int = ..., bottomStartPercent: Int = ...): RoundedCornerShape
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1183:42 None of the following candidates is applicable:
+constructor(width: Dp, brush: Brush): BorderStroke
+fun BorderStroke(width: Dp, color: Color): BorderStroke
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1184:31 None of the following candidates is applicable:
+constructor(width: Dp, brush: Brush): BorderStroke
+fun BorderStroke(width: Dp, color: Color): BorderStroke
+e: file:///home/lucas/Programming/WFL_MixingCenter/WFL/app/src/main/java/com/sara/workoutforlife/ui/today/TodayScreen.kt:1210:52 No parameter with name 'modifier' found.
+
+FAILURE: Build failed with an exception.
+
+* What went wrong:
+Execution failed for task ':app:compileDebugKotlin' (registered by plugin 'com.android.internal.application').
+> A failure occurred while executing org.jetbrains.kotlin.compilerRunner.GradleCompilerRunnerWithWorkers$GradleKotlinCompilerWorkAction
+   > Compilation error. See log for more details
+
+* Try:
+> Run with --stacktrace option to get the stack trace.
+> Run with --info or --debug option to get more log output.
+> Run with --scan to get full insights from a Build Scan (powered by Develocity).
+> Get more help at https://help.gradle.org.
+
+BUILD FAILED in 23s
+8 actionable tasks: 2 executed, 6 up-to-date
