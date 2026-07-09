@@ -1,0 +1,1099 @@
+oracle_registry: built 2273 entries from 253 transpiled files under /home/lucas/Programming/WFL_MixingCenter
+====================================================================================================
+MOUNT DIFF -- component-identity comparison, joined on Kotlin source coordinate,
+cross-checked against the oracle registry (render/oracle_registry.py)
+====================================================================================================
+
+kt log read:  /home/lucas/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log
+py log read:  /home/lucas/Programming/WFL_MixingCenter/render/walks/py_activations.log
+py walk json: /home/lucas/Programming/WFL_MixingCenter/render/walks/py_walk.json
+kt walk json: /home/lucas/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_walk.json
+
+registry entries (R): 2273
+kt non-app frames filtered (library-internal / test-harness MOUNT occurrences, no registry entry): 12514
+py non-app frames filtered (MOUNT occurrences with no registry entry): 417
+mutual routes (both walk jsons visited -- the only routes any DENSITY verdict, Tier 1 or Tier 2, is ever based on; see refinement (2)): 4 ['my_program', 'paths', 'progress', 'today']
+kt STATE dumps recorded, total 7 across 5 routes -- per-route: {'execution/{sessionId}': 1, 'my_program': 1, 'paths': 1, 'progress': 1, 'today': 3}
+py STATE dumps recorded, total 663 across 7 routes -- per-route: {'log_cardio': 2, 'my_program': 54, 'paths': 36, 'programs': 42, 'progress': 50, 'settings': 128, 'today': 351}
+(these dump counts are the DENSITY DENOMINATOR -- see module comment "DENSITY VERDICTS": py's walk BFS-replays every path per episode and can redump the same route many times over, while kt visits each state once; raw per-route MOUNT counts alone are therefore not engine-comparable, only mounts-per-dump DENSITY is.)
+py approximate-coordinate mounts: 0 -- MOUNT occurrences whose origin was resolved via identity.py's nearest-line fallback (a "~"-marked coordinate, see identity.py's HONESTY FIX / is_approximate_coord()), reported as CONTEXT only: these participate in T2 (file+name) density comparison (see strip_approx_marker()) but are EXCLUDED from T1 (line-exact) density material entirely -- an approximate coordinate is, by construction, not an exact linemap hit, so it is never compared as if it were.
+kt approximate-coordinate mounts: 0 -- symmetric count on the kt side (0 in practice today: kt's origin comes from Compose's own runtime slot-table walk, never identity.py's linemap fallback -- kept here for symmetry/future-proofing only).
+
+----------------------------------------------------------------------------------------------------
+COMPOSABLE-VOCABULARY FILTER (refinement (1)): registry.values() (247 distinct names in
+this hostrun) is the complete known-composable vocabulary. A one-sided MOUNT whose `kind`
+is outside that vocabulary is a Compose runtime/infrastructure frame that happens to
+resolve to an app file (remember, rememberComposableLambda, collectAsStateWithLifecycle,
+<get-...>, Node/Layout, lambda names, ...) -- never a component -- partitioned OUT of the
+one-sided pair lists below, counted and named here instead of silently reported as a
+phantom one-sided component.
+----------------------------------------------------------------------------------------------------
+kt infrastructure frames in app files: 5 (distinct names: ['<get-typography>', 'remember', 'rememberComposableLambda'])
+  of which TRUE Compose-runtime infrastructure (never a composable, e.g. remember/
+  <get-...>): ['<get-typography>', 'remember', 'rememberComposableLambda']
+  of which REAL primitives lost to a registry keying collision (see classify_infra_names() docstring -- NOT infrastructure, a pre-existing oracle_registry.py gap traced during this refinement): []
+py infrastructure frames in app files: 9 (distinct names: ['Item'])
+  of which TRUE infrastructure (compose.py's synthetic LazyColumn/LazyRow item-boundary node -- the one verified py-side exception, see module docstring refinement (1)): ['Item']
+  of which REAL primitives lost to the same registry keying collision as kt's list above: []
+py-side verification (checked, not assumed): py kinds are composable names BY
+CONSTRUCTION for all but the exceptions listed above (identity.py's stack walk only fires
+inside transpiled app frames, so almost nothing else py ever names is non-vocabulary --
+see module docstring refinement (1)).
+COLLISION ROOT CAUSE (traced, not assumed): a composable call whose only argument is a
+lambda containing a nested composable call -- e.g. TodayScreen.py:200's
+`ExtendedFloatingActionButton(icon=(lambda: Icon(...)), text=(lambda: Text(...)))` -- has
+its OUTER call's kt coordinate collapse, via the linemap, to the SAME source line as the
+INNER lambda-argument call's coordinate (the multi-line Kotlin call expression collapses
+to one line); oracle_registry.py's flat {kt_coord: name} last-scanned-wins overwrite (see
+its own KEYING section) then silently drops the outer name from the registry entirely.
+This is a pre-existing oracle_registry.py limitation, out of scope for this reporting-side
+file to fix -- surfaced explicitly here rather than mischaracterized as "infrastructure".
+
+----------------------------------------------------------------------------------------------------
+GLOBAL: distinct app coordinates mounted -- TIER 1 (line-exact join) -- THE HEADLINE
+(subcomposition capture went live: T1exact went from ~0, parked, to real, substantial
+evidence -- see module docstring refinement (3)). kt-only/py-only below are the
+VOCABULARY-FILTERED (real components only) one-sided sets -- infra frames are reported
+separately above, never mixed into these.
+----------------------------------------------------------------------------------------------------
+py distinct app coordinates:  177
+kt distinct app coordinates:  89
+T1exact BOTH:                 50
+py-only (vocabulary-filtered, real components): 118 (+ 9 infra frames filtered out, see above)
+kt-only (vocabulary-filtered, real components): 34 (+ 5 infra frames filtered out, see above)
+
+py-only coordinates (present on py, absent on kt, real components only) -- named by ledger entry:
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:818 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:822 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:829 -> Text
+      kind='Text' text="'Workout in progress'"
+  [PY-ONLY] navigation/AppNavigation.kt:834 -> OutlinedButton / Text
+      kind='OutlinedButton' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:111 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:118 -> Text
+      kind='Text' text="'Log cardio or other activity so it count...'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:125 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:127 -> Text
+      kind='Text' text="'Activity'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:133 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:134 -> FlowRow / FilterChip / Text
+      kind='FlowRow' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:144 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:146 -> Text
+      kind='Text' text="'When'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:152 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:154 -> OutlinedButton
+      kind='OutlinedButton' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:178 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:190 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:192 -> Text
+      kind='Text' text="'Intensity'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:198 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:199 -> SingleChoiceSegmentedButtonRow / SegmentedButton / Text
+      kind='SingleChoiceSegmentedButtonRow' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:213 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:215 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:236 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:238 -> OutlinedTextField / Text
+      kind='OutlinedTextField' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:245 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:247 -> Button
+      kind='Button' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:99 -> Scaffold / TopAppBar / Text / IconButton / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:118 -> Text
+      kind='Text' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:122 -> Text
+      kind='Text' text="'kg'"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Text
+      kind='Text' text="'KG'"
+  [PY-ONLY] ui/components/CompactControls.kt:174 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:45 -> Text
+      kind='Text' text="'Avg HR (bpm)'"
+  [PY-ONLY] ui/components/CompactControls.kt:60 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:99 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:131 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:219 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:234 -> Text
+      kind='Text' text="'Cardio'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:247 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'5.0 km'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:105 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:134 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:169 -> Text
+      kind='Text' text="'Self-directed'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:196 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'On my own journey'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text='"You know your goals. We\'ll get out of yo..."'
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:209 -> Text
+      kind='Text' text="'2–6 sessions/week · ~60 min'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Scaffold / TopAppBar / Surface / Text / IconButton / Button / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:135 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:175 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:280 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'RIR Awareness'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:300 -> FlowRow / OutlinePill
+      kind='FlowRow' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:351 -> Text
+      kind='Text' text="'Develop the skill of Reps in Reserve (RI...'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:361 -> Button / Text
+      kind='Button' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Surface / Text
+      kind='Surface' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Scaffold / TopAppBar / Text / IconButton / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:133 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:143 -> Text
+      kind='Text' text="'Log a few sets to start tracking your be...'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:516 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:533 -> Text
+      kind='Text' text="'Lifting and cardio combined.'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 30 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:591 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:140 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:304 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:344 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Developer'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Debug panel'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:393 -> Text
+      kind='Text' text="'Time travel + seed test state'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Log a victory'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text="'Prompts to record qualitative wins and p...'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:426 -> SingleChoiceSegmentedButtonRow / SegmentedButton / Text
+      kind='SingleChoiceSegmentedButtonRow' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:314 -> Button
+      kind='Button' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+
+kt-only coordinates (present on kt, absent on py, real components only) -- named by ledger entry:
+  [KT-ONLY] navigation/AppNavigation.kt:468 -> TodayScreen
+      kind='TodayScreen' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:505 -> ProgressScreen
+      kind='ProgressScreen' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:599 -> WorkoutExecutionScreen
+      kind='WorkoutExecutionScreen' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:864 -> Column
+      kind='Column' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:870 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:875 -> Text
+      kind='Text' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:880 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:887 -> TextButton / Text
+      kind='TextButton' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:892 -> HorizontalDivider
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:894 -> Box / Text
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:161 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:163 -> TopAppBar / Text / IconButton / Icon
+      kind='TopAppBar' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:187 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:191 -> DropdownMenu
+      kind='DropdownMenu' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:218 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:248 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:253 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:254 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:261 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:262 -> Button / Text
+      kind='Button' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:309 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:310 -> AnimatedVisibility / PrBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:320 -> AnimatedVisibility / MidMicrocycleBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:332 -> AnimatedVisibility / CardioReadinessNote
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/programs/MyProgramScreen.kt:88 -> NoProgram
+      kind='NoProgram' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:284 -> WeeklyWorkoutsCard
+      kind='WeeklyWorkoutsCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:389 -> TodayActionMenu
+      kind='TodayActionMenu' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:499 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:507 -> WflCardTitle
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:72 -> WflCardTitle
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:78 -> WinsDonut
+      kind='WinsDonut' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:96 -> Icon
+      kind='Icon' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:97 -> Spacer
+      kind='Spacer' text=''
+
+----------------------------------------------------------------------------------------------------
+T1 PER-ROUTE DENSITY COMPARISON (refinement (3), DENSITY refinement): for every T1-matched
+(line-exact) coordinate, compare per-route mount DENSITY (mounts on route / STATE dumps
+recorded on that route by that engine) on MUTUAL routes only, as an EXACT Fraction -- raw
+per-route mount counts are NOT the verdict basis (py's BFS-replay walk redumps the same
+route many more times than kt's single-visit walk, so raw counts scale with visit count,
+not with rendering agreement; see module comment "DENSITY VERDICTS"). KEYED BY (coord,
+kind), NOT coordinate alone (density-fix item 2b) -- a same-line coordinate that carries
+more than one distinct `kind` (the linemap-collapse defect, or a genuine same-line
+multi-composable declaration) is compared per-kind, like-for-like, never summed together.
+----------------------------------------------------------------------------------------------------
+T1: 50 coordinates matched, of which 37 (coord,kind) keys density-agree on mutual routes, 13 (coord,kind) keys density-differ, 0 coordinates have no mutually-routed evidence to compare on ANY kind (neither agree nor differ -- see docstring)
+
+T1 DENSITY-DIFFER (coordinate, kind) keys (line-exact coordinate match, but exact-
+Fraction per-route density for THIS kind differs on at least one mutual route -- 
+py=mounts/dumps=decimal kt=mounts/dumps=decimal shown as evidence; decimal is for
+readability only, comparison is exact):
+  ui/progress/ProgressScreen.kt:284 -> LazyColumn  kind='LazyColumn'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/theme/WflCard.kt:51 -> Card  kind='Card'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/theme/WflCard.kt:80 -> Text  kind='Text'
+      route='progress': py=92/50=1.84 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:127 -> Box  kind='Box'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:166 -> Column  kind='Column'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:167 -> Text  kind='Text'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:172 -> Text  kind='Text'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:71 -> Column  kind='Column'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:73 -> Spacer  kind='Spacer'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:74 -> Row  kind='Row'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:83 -> Column  kind='Column'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:87 -> Text  kind='Text'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt:92 -> Button  kind='Button'
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+
+----------------------------------------------------------------------------------------------------
+GLOBAL: TIER 2 (COUNT-BASED, the agreement gauge) -- for every (basename-resolved file,
+composable NAME) pair mounted on either engine, compare mount DENSITY (mounts on a route /
+STATE dumps recorded on that route by that engine) as an EXACT fractions.Fraction between
+engines, restricted to MUTUAL ROUTES ONLY (refinement (2): kt's and py's walks have
+different step budgets/state sets -- 21 kt states / 17 py states in this hostrun, and py's
+BFS-replay walk redumps routes many more times than kt's single-visit walk -- so raw GLOBAL
+mount totals are NOT COMPARABLE and are reported as context only, never a verdict input;
+see diff_file_kind_pairs_counts()'s docstring / module comment "DENSITY VERDICTS" for the
+exact rule). A pair with no mutual-route overlap where both sides have a computable
+density is NOT COMPARABLE, reported separately, never folded into AGREE or DIFFER. No
+float/tolerance/epsilon comparison anywhere -- density equality is exact Fraction equality.
+kt line-number defect is DIAGNOSED AND PARKED (Compose ui-tooling-data parser credits
+app-level conditional call groups to an ancestor's location -- GROUPDUMP hostrun 156
+evidence, see module docstring) -- FILE and NAME are what both engines prove correctly,
+so Tier 2 file+name density agreement is the secondary agreement gauge; Tier 1 line-exact
+(above) is now the headline, per refinement (3).
+registry=N THIRD COLUMN is CONTEXT ONLY (distinct static call sites for that file+name)
+-- NOT an equality target: one call site can mount many times (loops/lists/conditionals).
+----------------------------------------------------------------------------------------------------
+py distinct (file,name) pairs: 112
+kt distinct (file,name) pairs: 141
+T2(file+name) DENSITY AGREE (mutual-route-scoped):  24
+T2(file+name) DENSITY DIFFER (mutual-route-scoped): 19
+T2(file+name) NOT COMPARABLE (no mutual-route overlap with a computable density; global NOT COMPARABLE): 0
+py-only (file,name) pairs:    69
+kt-only (file,name) pairs:    98
+
+T2 DENSITY AGREE pairs (same file, same name, EXACT-Fraction mutual-route-scoped density matches on every mutual route both sides have a computable density for):
+  navigation/AppNavigation.kt / Icon: (registry=2 distinct call sites) DENSITY AGREE [global py=3095 kt=30 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  navigation/AppNavigation.kt / NavigationBar: (registry=1 distinct call sites) DENSITY AGREE [global py=619 kt=6 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  navigation/AppNavigation.kt / NavigationBarItem: (registry=1 distinct call sites) DENSITY AGREE [global py=3095 kt=30 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  navigation/AppNavigation.kt / Scaffold: (registry=1 distinct call sites) DENSITY AGREE [global py=663 kt=7 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  navigation/AppNavigation.kt / TopAppBar: (registry=1 distinct call sites) DENSITY AGREE [global py=619 kt=6 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/components/GlitterBurstStar.kt / Box: (registry=2 distinct call sites) DENSITY AGREE [global py=1238 kt=12 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/components/GlitterBurstStar.kt / Icon: (registry=1 distinct call sites) DENSITY AGREE [global py=619 kt=6 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/components/GlitterBurstStar.kt / Surface: (registry=2 distinct call sites) DENSITY AGREE [global py=619 kt=6 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / AnimatedVisibility: (registry=1 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / Box: (registry=4 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / Button: (registry=2 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / Column: (registry=3 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / LazyColumn: (registry=1 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/paths/PathsScreen.kt / Spacer: (registry=6 distinct call sites) DENSITY AGREE [global py=36 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/programs/MyProgramScreen.kt / Box: (registry=1 distinct call sites) DENSITY AGREE [global py=54 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/programs/MyProgramScreen.kt / Button: (registry=1 distinct call sites) DENSITY AGREE [global py=54 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/programs/MyProgramScreen.kt / Column: (registry=3 distinct call sites) DENSITY AGREE [global py=108 kt=2 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/programs/MyProgramScreen.kt / Spacer: (registry=8 distinct call sites) DENSITY AGREE [global py=108 kt=2 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/progress/ProgressScreen.kt / Tab: (registry=1 distinct call sites) DENSITY AGREE [global py=150 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/progress/ProgressScreen.kt / TabRow: (registry=1 distinct call sites) DENSITY AGREE [global py=50 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/today/TodayScreen.kt / Column: (registry=13 distinct call sites) DENSITY AGREE [global py=351 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/today/TodayScreen.kt / FloatingActionButton: (registry=1 distinct call sites) DENSITY AGREE [global py=351 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/today/TodayScreen.kt / LazyColumn: (registry=1 distinct call sites) DENSITY AGREE [global py=351 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+  ui/today/TodayScreen.kt / Row: (registry=14 distinct call sites) DENSITY AGREE [global py=351 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+
+T2 DENSITY DIFFER pairs (same file, same name, EXACT-Fraction density differs on at least one MUTUAL route -- evidence lines show every disagreeing mutual route as py=mounts/dumps=decimal kt=mounts/dumps=decimal, decimal for readability only, comparison itself is exact; a pair whose raw GLOBAL totals differ but whose mutual-route densities all agree is NOT reported here -- genuine per-visit variation, e.g. a LazyColumn realizing a different item count on different visits, is real signal and legitimately shows up here, not noise):
+  navigation/AppNavigation.kt / Column: (registry=5 distinct call sites) DENSITY DIFFER [global py=1857 kt=19 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=1053/351=3.0 kt=10/3=3.3333333333333335
+  navigation/AppNavigation.kt / HorizontalDivider: (registry=3 distinct call sites) DENSITY DIFFER [global py=619 kt=7 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=351/351=1.0 kt=4/3=1.3333333333333333
+  navigation/AppNavigation.kt / Row: (registry=4 distinct call sites) DENSITY DIFFER [global py=2 kt=2 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=2/351=0.005698005698005698 kt=2/3=0.6666666666666666
+  navigation/AppNavigation.kt / Text: (registry=14 distinct call sites) DENSITY DIFFER [global py=4335 kt=45 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=2459/351=7.005698005698005 kt=24/3=8.0
+  ui/paths/PathsScreen.kt / Text: (registry=12 distinct call sites) DENSITY DIFFER [global py=72 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='paths': py=72/36=2.0 kt=3/1=3.0
+  ui/programs/MyProgramScreen.kt / Text: (registry=8 distinct call sites) DENSITY DIFFER [global py=108 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='my_program': py=108/54=2.0 kt=3/1=3.0
+  ui/progress/ProgressScreen.kt / Column: (registry=10 distinct call sites) DENSITY DIFFER [global py=190 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=190/50=3.8 kt=1/1=1.0
+  ui/progress/ProgressScreen.kt / LazyColumn: (registry=2 distinct call sites) DENSITY DIFFER [global py=46 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/progress/ProgressScreen.kt / Text: (registry=22 distinct call sites) DENSITY DIFFER [global py=234 kt=4 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=234/50=4.68 kt=4/1=4.0
+  ui/theme/WflCard.kt / Card: (registry=2 distinct call sites) DENSITY DIFFER [global py=969 kt=4 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=94/50=1.88 kt=1/1=1.0
+  ui/theme/WflCard.kt / Text: (registry=1 distinct call sites) DENSITY DIFFER [global py=443 kt=4 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=92/50=1.84 kt=1/1=1.0
+  ui/today/TodayScreen.kt / Box: (registry=12 distinct call sites) DENSITY DIFFER [global py=734 kt=6 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=734/351=2.091168091168091 kt=6/3=2.0
+  ui/today/TodayScreen.kt / Text: (registry=38 distinct call sites) DENSITY DIFFER [global py=700 kt=9 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='today': py=700/351=1.9943019943019944 kt=9/3=3.0
+  ui/wins/WinsHomeCard.kt / Box: (registry=1 distinct call sites) DENSITY DIFFER [global py=46 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt / Button: (registry=1 distinct call sites) DENSITY DIFFER [global py=46 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt / Column: (registry=3 distinct call sites) DENSITY DIFFER [global py=138 kt=3 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=138/50=2.76 kt=3/1=3.0
+  ui/wins/WinsHomeCard.kt / Row: (registry=1 distinct call sites) DENSITY DIFFER [global py=46 kt=1 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=46/50=0.92 kt=1/1=1.0
+  ui/wins/WinsHomeCard.kt / Spacer: (registry=2 distinct call sites) DENSITY DIFFER [global py=46 kt=2 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=46/50=0.92 kt=2/1=2.0
+  ui/wins/WinsHomeCard.kt / Text: (registry=4 distinct call sites) DENSITY DIFFER [global py=138 kt=4 NOT COMPARABLE -- different walk budgets, raw totals, context only]
+      route='progress': py=138/50=2.76 kt=4/1=4.0
+
+T2 PY-ONLY pairs (file+name mounted on py, never on kt):
+  [PY-ONLY] navigation/AppNavigation.kt / OutlinedButton: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] navigation/AppNavigation.kt / Surface: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Button: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Column: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / FilterChip: py=22 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / FlowRow: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / IconButton: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / OutlinedButton: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / OutlinedTextField: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Row: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Scaffold: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / SegmentedButton: py=6 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / SingleChoiceSegmentedButtonRow: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Spacer: py=20 kt=0 (registry=11 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / Text: py=12 kt=0 (registry=12 distinct call sites)
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt / TopAppBar: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / BasicTextField: py=262 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Box: py=518 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Column: py=6 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Icon: py=256 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Row: py=518 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Spacer: py=128 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/components/CompactControls.kt / Text: py=652 kt=0 (registry=8 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Column: py=2 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Item: py=6 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / LazyColumn: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Row: py=6 kt=0 (registry=5 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Spacer: py=4 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Surface: py=2 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Text: py=14 kt=0 (registry=11 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Button: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Column: py=50 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / HorizontalDivider: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / IconButton: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Item: py=32 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / LazyColumn: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Row: py=20 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Scaffold: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Spacer: py=40 kt=0 (registry=4 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Surface: py=2 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Text: py=74 kt=0 (registry=6 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / TopAppBar: py=2 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathsScreen.kt / Item: py=36 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Button: py=501 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Column: py=1008 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / FlowRow: py=504 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / IconButton: py=42 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Item: py=546 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / LazyColumn: py=42 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Row: py=504 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Scaffold: py=42 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Spacer: py=1509 kt=0 (registry=4 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Surface: py=969 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Text: py=2061 kt=0 (registry=16 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / TopAppBar: py=42 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Box: py=2 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Item: py=92 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Row: py=46 kt=0 (registry=7 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / Column: py=2048 kt=0 (registry=5 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / HorizontalDivider: py=896 kt=0 (registry=7 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / Icon: py=768 kt=0 (registry=6 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / Row: py=1280 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / SegmentedButton: py=1536 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / SingleChoiceSegmentedButtonRow: py=512 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/settings/SettingsScreen.kt / Text: py=4480 kt=0 (registry=10 distinct call sites)
+  [PY-ONLY] ui/theme/Theme.kt / CompositionLocalProvider: py=663 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/today/TodayScreen.kt / Button: py=2 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/today/TodayScreen.kt / ExtendedFloatingActionButton: py=96 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/today/TodayScreen.kt / Item: py=702 kt=0 (registry=0 distinct call sites)
+
+T2 KT-ONLY pairs (file+name mounted on kt, never on py):
+  [KT-ONLY] navigation/AppNavigation.kt / <get-colorScheme>: py=0 kt=43 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / <get-colors>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / <get-typography>: py=0 kt=14 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / AppNotificationPanel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / AppTopBar: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / Box: py=0 kt=1 (registry=3 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / GlitterBurstStar: py=0 kt=6 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ModalBottomSheet: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / MyProgramScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / NavHost: py=0 kt=7 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / PathsScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ProgressScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / TextButton: py=0 kt=1 (registry=4 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / TodayScreen: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / WorkoutExecutionScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / collectAsStateWithLifecycle: py=0 kt=7 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / colors: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / remember: py=0 kt=74 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / rememberComposableLambda: py=0 kt=79 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / rememberModalBottomSheetState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / <get-colorScheme>: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / <get-colors>: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / Canvas: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / LaunchedEffect: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / remember: py=0 kt=48 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / rememberComposableLambda: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / <get-typography>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / AnimatedVisibility: py=0 kt=3 (registry=3 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Box: py=0 kt=2 (registry=13 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Button: py=0 kt=1 (registry=4 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Column: py=0 kt=1 (registry=17 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / DropdownMenu: py=0 kt=1 (registry=3 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Icon: py=0 kt=3 (registry=21 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / IconButton: py=0 kt=3 (registry=10 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / LaunchedEffect: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Scaffold: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Spacer: py=0 kt=2 (registry=26 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Text: py=0 kt=5 (registry=78 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / TextButton: py=0 kt=1 (registry=8 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / TopAppBar: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / collectAsStateWithLifecycle: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / remember: py=0 kt=13 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / rememberComposableLambda: py=0 kt=9 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / topAppBarColors: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / <get-colorScheme>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / <get-typography>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / EmptyPathsState: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / buttonColors: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / collectAsStateWithLifecycle: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / remember: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / rememberComposableLambda: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / <get-typography>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / NoProgram: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / collectAsStateWithLifecycle: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / remember: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / rememberScrollState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / <get-colorScheme>: py=0 kt=7 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / <get-typography>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / WinsHomeCard: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / collectAsStateWithLifecycle: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / hiltViewModel: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / remember: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / rememberComposableLambda: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-colorScheme>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-colors>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-tokens>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-typography>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / cardColors: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / cardElevation: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / <get-colorScheme>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / <get-typography>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / Icon: py=0 kt=6 (registry=10 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / LaunchedEffect: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / TodayActionMenu: py=0 kt=3 (registry=2 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WeeklyWorkoutsCard: py=0 kt=3 (registry=2 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WflCard: py=0 kt=3 (registry=6 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WflCardTitle: py=0 kt=3 (registry=5 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / collectAsStateWithLifecycle: py=0 kt=18 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / hiltViewModel: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / remember: py=0 kt=33 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / rememberComposableLambda: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-colors>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-tokens>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-typography>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / Canvas: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / Icon: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WflCard: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WflCardTitle: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WinsDonut: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / collectAsStateWithLifecycle: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / remember: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / rememberComposableLambda: py=0 kt=1 (registry=0 distinct call sites)
+
+SUMMARY: T1: 50 coordinates matched, 37 (coord,kind) density-agree, 13 (coord,kind) density-differ / T2 24 density-agree, 19 density-differ, 0 not-comparable, 69 py-only, 98 kt-only pairs (of 2273 registry entries; kt infra frames in app files: 5, kt non-app frames filtered: 12514; py approximate-coordinate mounts: 0)
+
+----------------------------------------------------------------------------------------------------
+PER-ROUTE: distinct app coordinates mounted, for every route BOTH walks' state jsons mention at least one coordinate on (one-sided lists here are ALSO vocabulary-filtered, refinement (1) -- infra frames excluded)
+----------------------------------------------------------------------------------------------------
+route='execution/{sessionId}': 0 both / 0 py-only / 15 kt-only
+  [KT-ONLY] navigation/AppNavigation.kt:599 -> WorkoutExecutionScreen
+      kind='WorkoutExecutionScreen' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:161 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:163 -> TopAppBar / Text / IconButton / Icon
+      kind='TopAppBar' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:187 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:191 -> DropdownMenu
+      kind='DropdownMenu' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:218 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:248 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:253 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:254 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:261 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:262 -> Button / Text
+      kind='Button' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:309 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:310 -> AnimatedVisibility / PrBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:320 -> AnimatedVisibility / MidMicrocycleBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:332 -> AnimatedVisibility / CardioReadinessNote
+      kind='AnimatedVisibility' text=''
+
+route='log_cardio': 0 both / 30 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:111 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:118 -> Text
+      kind='Text' text="'Log cardio or other activity so it count...'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:125 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:127 -> Text
+      kind='Text' text="'Activity'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:133 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:134 -> FlowRow / FilterChip / Text
+      kind='FlowRow' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:144 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:146 -> Text
+      kind='Text' text="'When'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:152 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:154 -> OutlinedButton
+      kind='OutlinedButton' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:178 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:190 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:192 -> Text
+      kind='Text' text="'Intensity'"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:198 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:199 -> SingleChoiceSegmentedButtonRow / SegmentedButton / Text
+      kind='SingleChoiceSegmentedButtonRow' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:213 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:215 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:236 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:238 -> OutlinedTextField / Text
+      kind='OutlinedTextField' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:245 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:247 -> Button
+      kind='Button' text="''"
+  [PY-ONLY] ui/cardio/LogCardioScreen.kt:99 -> Scaffold / TopAppBar / Text / IconButton / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:118 -> Text
+      kind='Text' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:45 -> Text
+      kind='Text' text="'Avg HR (bpm)'"
+  [PY-ONLY] ui/components/CompactControls.kt:60 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:99 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+
+route='my_program': 19 both / 2 py-only / 1 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [KT-ONLY] ui/programs/MyProgramScreen.kt:88 -> NoProgram
+      kind='NoProgram' text=''
+
+route='paths': 19 both / 16 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:105 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:134 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:169 -> Text
+      kind='Text' text="'Self-directed'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:196 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'On my own journey'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text='"You know your goals. We\'ll get out of yo..."'
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:209 -> Text
+      kind='Text' text="'2–6 sessions/week · ~60 min'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Scaffold / TopAppBar / Surface / Text / IconButton / Button / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+
+route='programs': 0 both / 17 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:135 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:175 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:280 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'RIR Awareness'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:300 -> FlowRow / OutlinePill
+      kind='FlowRow' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:351 -> Text
+      kind='Text' text="'Develop the skill of Reps in Reserve (RI...'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:361 -> Button / Text
+      kind='Button' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Surface / Text
+      kind='Surface' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Scaffold / TopAppBar / Text / IconButton / Icon
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+
+route='progress': 26 both / 25 py-only / 5 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:131 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:219 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:234 -> Text
+      kind='Text' text="'Cardio'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:247 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'5.0 km'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:133 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:143 -> Text
+      kind='Text' text="'Log a few sets to start tracking your be...'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:516 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:533 -> Text
+      kind='Text' text="'Lifting and cardio combined.'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 30 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:591 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [KT-ONLY] navigation/AppNavigation.kt:505 -> ProgressScreen
+      kind='ProgressScreen' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:72 -> WflCardTitle
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:78 -> WinsDonut
+      kind='WinsDonut' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:96 -> Icon
+      kind='Icon' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:97 -> Spacer
+      kind='Spacer' text=''
+
+route='settings': 0 both / 47 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> TopAppBar / GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1006 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:1012 -> Text
+      kind='Text' text="'Hey, User'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:388 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:413 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:415 -> NavigationBar
+      kind='NavigationBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:428 -> NavigationBarItem / Icon / Text
+      kind='NavigationBarItem' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:118 -> Text
+      kind='Text' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:122 -> Text
+      kind='Text' text="'kg'"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Text
+      kind='Text' text="'KG'"
+  [PY-ONLY] ui/components/CompactControls.kt:174 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'80.0'"
+  [PY-ONLY] ui/components/CompactControls.kt:99 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Surface / Box / Icon
+      kind='Surface' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:140 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:304 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:344 -> SettingsRow / Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Developer'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Debug panel'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:393 -> Text
+      kind='Text' text="'Time travel + seed test state'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Log a victory'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text="'Prompts to record qualitative wins and p...'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:426 -> SingleChoiceSegmentedButtonRow / SegmentedButton / Text
+      kind='SingleChoiceSegmentedButtonRow' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+
+route='today': 20 both / 11 py-only / 13 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:818 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:822 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:829 -> Text
+      kind='Text' text="'Workout in progress'"
+  [PY-ONLY] navigation/AppNavigation.kt:834 -> OutlinedButton / Text
+      kind='OutlinedButton' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:314 -> Button
+      kind='Button' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> ExtendedFloatingActionButton / Icon / Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [KT-ONLY] navigation/AppNavigation.kt:468 -> TodayScreen
+      kind='TodayScreen' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:864 -> Column
+      kind='Column' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:870 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:875 -> Text
+      kind='Text' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:880 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:887 -> TextButton / Text
+      kind='TextButton' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:892 -> HorizontalDivider
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:894 -> Box / Text
+      kind='Box' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:284 -> WeeklyWorkoutsCard
+      kind='WeeklyWorkoutsCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:389 -> TodayActionMenu
+      kind='TodayActionMenu' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:499 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:507 -> WflCardTitle
+      kind='WflCardTitle' text=''
+
+----------------------------------------------------------------------------------------------------
+ACTIVATION comparison (secondary, cheap): distinct ORIGIN coordinates activated on each side (ACTIVATE lines -- a component that fired a real handler, not just mounted)
+----------------------------------------------------------------------------------------------------
+py distinct activated coordinates: 22
+kt distinct activated coordinates: 0
+BOTH: 0  py-only: 22  kt-only: 0
+py-only activated coordinates:
+  [PY-ONLY] navigation/AppNavigation.kt:428 -> NavigationBarItem / Icon / Text
+  [PY-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+  [PY-ONLY] navigation/AppNavigation.kt:887 -> TextButton / Text
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+  [PY-ONLY] ui/components/CompactControls.kt:180 -> DropdownMenu
+  [PY-ONLY] ui/components/CompactControls.kt:182 -> DropdownMenuItem / Text
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Surface / Box / Icon
+  [PY-ONLY] ui/paths/PathsScreen.kt:177 -> Button / Text
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:270 -> Button / Text
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:361 -> Button / Text
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Scaffold / TopAppBar / Text / IconButton / Icon
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> TabRow / Tab / Text
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+  [PY-ONLY] ui/settings/SettingsScreen.kt:426 -> SingleChoiceSegmentedButtonRow / SegmentedButton / Text
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> ExtendedFloatingActionButton / Icon / Text
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> ExtendedFloatingActionButton / Icon / Text
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> ExtendedFloatingActionButton / Icon / Text
+  [PY-ONLY] ui/today/TodayScreen.kt:476 -> FloatingActionButton / Icon
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:92 -> Button
+
+====================================================================================================
+MOUNT DIFF: T1: 50 coordinates matched, 37 (coord,kind) density-agree, 13 (coord,kind) density-differ / T2 24 density-agree, 19 density-differ, 0 not-comparable, 69 py-only, 98 kt-only pairs (of 2273 registry entries; kt infra frames in app files: 5, kt non-app frames filtered: 12514; py approximate-coordinate mounts: 0)
+====================================================================================================

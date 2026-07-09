@@ -1,4 +1,69 @@
-# Session handoff — 2026-07-09 FRONTIER ALIGNMENT PHASE (read this block first)
+# Session handoff — 2026-07-09 (post-run 176–178) VERIFICATION: KT RE-FIX 664017d FAILED ON HOST (read this block first)
+
+STATUS: the re-run the block below left QUEUED has now executed. The walk service ran the queued batch --
+176 (kt walk, re-fix 664017d, 200-step budget), 177 (walk_diff.py), 178 (mount_diff.py); results in
+DevComms/hostruns/results/. OUTCOME: item (1)'s re-fix DID NOT HOLD. kt-walker coverage fell FURTHER
+instead of recovering. Item (2) (budget-parity exhaustion runs) stays BLOCKED -- its precondition (664017d
+"restores or improves on the ~21-state/43-edge baseline with a clean RESOLVE log") is not met.
+
+WHAT THE RUNS SHOW (one cause; the numbers are the evidence). kt-walker coverage at the same 200-step
+budget, across the three states this fix has passed through -- pre-regression baseline, the regressed run
+that b70d65e produced, and this re-fix run:
+
+    metric                          pre-regression    regressed run      re-fix run
+                                    baseline          169 / 174 / 175    176 / 177 / 178
+    kt states reached               ~21 / 43 edges    10 / 18 edges      7 / (not captured)
+    mount_diff T1 coords matched    (not on record)   107                50
+    mount_diff kt-only pairs        (not on record)   156                98
+
+  - "states" here = shared + kt-only from walk_diff (the metric that makes run 169 = 10). Evidence:
+    177_walk_diff_refix.log line 3 "TOTAL: 4 shared states, 3 kt-only" (= 7); 174_walk_diff_exhaustion.log
+    line 3 "4 shared states, 6 kt-only" (= 10, the regressed run); ~21/43 baseline is from the block below
+    (pre-b70d65e).
+  - coords matched: 178_mount_diff_refix.log line 1098 "T1: 50 coordinates matched" vs
+    175_mount_diff_exhaustion.log "T1: 107 coordinates matched". kt-only pairs 98 vs 156 from the same two
+    lines.
+
+CAUSE (inferred from the coverage direction; the per-path RESOLVE trail is NOT in the captured results --
+see UNVERIFIED below): 664017d's rule -- "treat Ambiguous the same as Missing: never fire a match you
+cannot uniquely identify, discard the path" -- over-corrected. boundsKey (the node's boundsInRoot rounded
+to whole pixels) is not narrowing the ambiguous (label, handlerKind) match sets down to exactly one node
+often enough. So the paths that b70d65e used to fire (wrongly, on a guessed node) now resolve Ambiguous and
+get DISCARDED, and discarding them drops coverage BELOW even the regressed run: 7 states vs 10 regressed vs
+the ~21 baseline the fix was meant to restore. The fix removed the dishonesty (it no longer fires a node it
+cannot identify) but at the cost of exploring almost nothing. The FAB case from the block below is exactly
+where boundsKey fails to discriminate: an icon-only FAB whose label falls back to nodeKind = "Button", a
+(label="Button", handlerKind="onClick") pair shared across screens, and boundsKey did not uniquely narrow
+it.
+
+UNVERIFIED FROM CAPTURED ARTIFACTS: run 176's captured result (176_kt_walk_resolve_refix.log) is gradle
+stdout ONLY -- "BUILD SUCCESSFUL in 59s", returncode 0, no walk summary. The kt_walk.json state/edge counts
+and the new MISSING-RESOLVE-CONTEXT / MISSING-RESOLVE-ENTRY RESOLVE trail this fix added live in
+WFL_MixingCenter (WFL/app/build/walks/kt_activations.log, kt_walk.json) and were NOT copied into
+DevComms/hostruns/results/. The coverage drop is real and visible because walk_diff (177) and mount_diff
+(178) read those host logs directly and reported on them -- but the per-path reasons (how many paths
+resolved Ambiguous vs Missing, and what boundsKey each searched for against what settled enumeration) are
+NOT in the captured artifacts and have not been read this session. TO CLOSE THIS: the next run request must
+tee WFL/app/build/walks/kt_activations.log and kt_walk.json into results/ alongside the gradle stdout
+(request 176 captured neither -- see DevComms/hostruns/requests/176_kt_walk_resolve_refix.json, cmd has no
+tee).
+
+NEXT DECISION (owner's -- this is a naming/ontology call about what "node identity" IS in the walker, so
+deferred, not chosen this session): discard-on-ambiguous as it stands trades false coverage for near-zero
+coverage. Two directions:
+  (a) make the identity discriminator stronger so fewer matches are ambiguous in the first place --
+      (label, handlerKind, boundsKey) is not enough for the icon-only FAB. Candidate: fold route + subtree
+      structure into the identity, not just those three fields.
+  (b) keep discard-on-ambiguous but stop the ambiguity forming at all -- capture a stable identity at
+      RECORD time and persist it, rather than reconstructing one at fire time, so a path always resolves
+      to the same node it was recorded against.
+
+CANONICAL ORDERING: unchanged, still held pending evidence.
+SEED ROOTS: unchanged, still deferred.
+No PseudoCoup_v0 transpiler/tooling code touched this session. No background processes started or left
+running.
+
+# Session handoff — 2026-07-09 FRONTIER ALIGNMENT PHASE (superseded by the block above; kept as the pre-run record -- it explains why runs 176–178 were queued)
 
 STATUS: owner approved a two-item frontier-alignment plan this session. Item (1) REGRESSED on its first
 host run, diagnosed, and re-fixed this session (WFL_MixingCenter commit 664017d) -- re-run queued, not yet
