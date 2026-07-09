@@ -1,42 +1,72 @@
 # Session handoff — 2026-07-09 FRONTIER ALIGNMENT PHASE (read this block first)
 
-STATUS: owner approved a two-item frontier-alignment plan this session. Item (1) is LANDED; item (2) is
-QUEUED, not yet run.
+STATUS: owner approved a two-item frontier-alignment plan this session. Item (1) REGRESSED on its first
+host run, diagnosed, and re-fixed this session (WFL_MixingCenter commit 664017d) -- re-run queued, not yet
+executed. Item (2) is still QUEUED, blocked on item (1)'s re-run confirming the fix actually holds.
 
-(1) KT MISFIRE FIX -- LANDED (WFL_MixingCenter commit b70d65e, test sources only,
-WFL/app/src/test/java/com/sara/workoutforlife/walk/WalkRecorderTest.kt): fixed the kt walker's
-self-documented ANOMALY 1 settle-race misfires. Symptom, established by a read-only survey of a real
-kt_walk.json: "Home" tab fired twice, "You" tab (present in the tree, structurally identical to the four
-tabs that DID fire) never fired at all, and "Search wins"/"Browse programs" edges landed on a DIFFERENT
-node's handler_kind than their own recorded label implies -- BFS coverage corrupted (kt "exhausted" at 21
-states partly by burning budget on wrong/duplicate taps instead of the real frontier). Root cause: the
-existing ANOMALY 1 settle fix (loop settling until two consecutive node-count reads agree) makes a SINGLE
-enumeration's node COUNT stable within one mount, but "ONE FRESH APP MOUNT per replay" means every later
-replay of a shared path prefix settles a BRAND NEW mount's tree from scratch -- a LazyColumn/LazyRow/
-TabRow subcomposition can legitimately settle to a DIFFERENT stable item order across two independent
-mounts of the identically-seeded state, so a bare ordinal captured at one enumeration silently drifted onto
-the wrong node at fire time. Same class of fix as the py side's overlay-identity fix (never fire from a
-stale position -- resolve by stable identity at the moment of firing). Fix: at fire time, after the settle
-that precedes the tap, resolve the target by (label, handler_kind) within the JUST-settled enumeration --
-the same join key walk_diff.py's align_edges() already uses -- not by raw ordinal position; ambiguous
-matches (duplicate label+handler_kind) fall back to ordinal WITHIN the matching subset, logged loudly as
-AMBIGUOUS-RESOLVE; a recorded target that no longer resolves at all is an honest edge error, never a fire
-against whatever now occupies that ordinal. Applied at BOTH fire paths: the walk loop's primary fire site
-and replayTo()'s per-step prefix replay (the latter carries the exposure across mounts, since it re-taps
-recorded ordinals from a previous state's discovery on a fresh mount each time -- Frame's path is now a
-List<PathStep> threading each step's recorded (label, handlerKind) forward for exactly this purpose).
-ordinal's semantics in the persisted kt_walk.json WALK FORMAT are UNCHANGED -- ActionRec.ordinal still
-records the enumeration index at RECORD time; only fire-time RESOLUTION now goes through identity first.
-Every resolution logs to kt_activations.log as "RESOLVE ordinal=N -> label=... handler=... method=exact|
-ambiguous|missing". The ANOMALY 1 comment block in WalkRecorderTest.kt was updated in place (history kept,
-resolution appended) rather than replaced. UNVERIFIED ON HOST: this file has no Gradle/JVM in the authoring
-sandbox (documented at the file's own header) -- syntactic care taken, checked against surrounding code
-style, but not compiled; first host run is the real verification.
+(1) KT MISFIRE FIX -- LANDED then REGRESSED then RE-FIXED (WFL_MixingCenter commits b70d65e -> 664017d,
+test sources only, WFL/app/src/test/java/com/sara/workoutforlife/walk/WalkRecorderTest.kt).
 
-(2) BUDGET-PARITY EXHAUSTION RUNS -- QUEUED, not started this session. Purpose: re-run both engines'
-walkers at matched step budgets now that (1) removes kt's misfire-driven budget waste, to get a genuine
-apples-to-apples exhaustion comparison (kt's prior 21-state exhaustion was partly an artifact of the bug
-just fixed, not a true structural ceiling).
+  ORIGINAL FIX (b70d65e): fixed the kt walker's self-documented ANOMALY 1 settle-race misfires (bare
+  ordinal captured at one settled enumeration silently drifting onto a DIFFERENT node when replayed against
+  a later, independently-settled mount). Resolved fire targets by (label, handler_kind) identity within the
+  just-settled enumeration instead of raw ordinal position; an ambiguous match (>1 node sharing that
+  (label, handler_kind) pair) fell back to `ordinal`'s position WITHIN the matching subset.
+
+  REGRESSION (first real host run of b70d65e, DevComms/hostruns/results/169_kt_walk_exhaustion.log +
+  WFL/app/build/walks/kt_activations.log): 200-step budget, 98s runtime, finished at only 10 states/18
+  edges -- WORSE than the pre-b70d65e baseline (21 states/43 edges) the fix was meant to improve on. Only
+  38 total RESOLVE lines logged in the whole run. Root cause, confirmed directly against the RESOLVE/
+  ACTIVATE trail: the AMBIGUOUS fallback ("ordinal's position WITHIN the matching subset") was ITSELF a
+  blind stale-position guess -- the exact class of bug b70d65e was supposed to eliminate, one level deeper.
+  Evidence: frontier path [0] on route "today" is a bare icon-only FAB whose subtreeText() has no text
+  anywhere in its subtree, so its label falls back to nodeKind(node) = the generic string "Button" -- not a
+  distinguishing identity. That (label="Button", handlerKind="onClick") pair matches MULTIPLE unrelated
+  nodes across MULTIPLE unrelated screens. Replaying path [0] four separate times in one run (nActions
+  discovery + fire, called across separate walkApp() iterations off the same frontier frame) landed on FOUR
+  DIFFERENT ROUTES: "today" (twice), "execution/{sessionId}" (matchCount=3, ambiguous), and "log_cardio"
+  (kt_activations.log lines 14679/14681/15602/19149/22845) -- the ambiguous-fallback guess picked a
+  different actual node each time. This corrupted the walk two ways at once: (a) a frame's own
+  nActions-discovery replay and its later fire replay could land on two different mounts' states, so
+  frame.nActions was computed against a tree the fire step never revisited; (b) newly-discovered frontier
+  Frames carried this same non-unique (label, handlerKind) forward into their own PathStep, so later
+  replays of THOSE paths sometimes found the recorded pair nowhere in a further mount's tree at all
+  ("RESOLVE ... label=UNKNOWN method=missing"), returned false from replayTo(), and were discarded as a
+  ReplayError instead of explored -- which is why the walk exhausted its 200-step budget in 98s having
+  logged only 38 RESOLVE calls total.
+
+  RE-FIX (this session, commit 664017d): stop guessing on ambiguity. InteractiveRef/PathStep now also carry
+  `boundsKey` (the node's own boundsInRoot, rounded to whole pixels -- already computed elsewhere in the
+  file for the ACTIVATE log's origin=, so free to capture here too). resolveTarget() uses boundsKey ONLY to
+  NARROW an already-ambiguous (label, handlerKind) match set to the exact recorded screen position -- never
+  as a sole identity key on its own, and never a position-guess fallback. If boundsKey narrows the set to
+  exactly one node, that resolution is Exact; if it doesn't (key absent from the match set, or still >1
+  match), resolution is honestly Ambiguous/Missing -- replayTo() now treats Ambiguous the same as Missing
+  (returns false; never fires a match it cannot uniquely identify), same principle b70d65e already applied
+  to Missing. NOTHING-HIDDEN RULE: every failed resolution (Ambiguous or Missing) now logs the exact
+  (label, handlerKind, boundsKey) it searched for AND up to 10 entries of the settled enumeration it
+  actually searched against (new MISSING-RESOLVE-CONTEXT / MISSING-RESOLVE-ENTRY log lines) -- the original
+  regression's kt_activations.log recorded only "label=UNKNOWN handler=UNKNOWN method=missing" with no way
+  to tell from the log alone what was being searched for or what was actually on screen; reconstructing the
+  actual cause this session required cross-referencing RESOLVE/ACTIVATE lines by hand across the whole log,
+  which this fix's logging closes. loadProgress() now explicitly handles a THIRD progress-file generation
+  (bare-ordinal legacy pre-b70d65e, then label/handlerKind-only from b70d65e itself, now +boundsKey from
+  this fix), using has()-guarded reads so a progress file missing the bounds_key key degrades to null
+  instead of throwing (org.json's isNull() throws on a genuinely absent key, not just JSONObject.NULL).
+  ordinal's semantics in the persisted kt_walk.json WALK FORMAT remain UNCHANGED throughout both sessions --
+  ActionRec.ordinal still records the enumeration index at RECORD time; only fire-time RESOLUTION logic
+  changed. UNVERIFIED ON HOST: this fix itself has not been run yet -- diagnosed and re-fixed from the
+  169 hostrun's logs only (per this session's constraints, gradle was not runnable here); the next host run
+  is the real verification, and per this task's own instructions IS the queued re-run referenced in STATUS
+  above (folded into item (2)'s budget-parity runs rather than a separate item).
+
+(2) BUDGET-PARITY EXHAUSTION RUNS -- QUEUED, not started. BLOCKED on confirming item (1)'s re-fix (commit
+664017d) actually resolves the regression on a real host run first -- re-running budget-parity comparisons
+against a still-broken kt walker would just reproduce the same corrupted-coverage numbers. Once a host run
+confirms 664017d restores (or improves on) the pre-regression ~21-state/43-edge baseline with a clean
+RESOLVE log (no unexplained Ambiguous/Missing clusters), proceed to: re-run both engines' walkers at
+matched step budgets to get a genuine apples-to-apples exhaustion comparison (kt's original 21-state
+exhaustion was partly an artifact of the ANOMALY 1 bug, not a true structural ceiling).
 
 CANONICAL ORDERING: held pending evidence -- not decided this session, no change.
 
