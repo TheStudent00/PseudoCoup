@@ -11,7 +11,7 @@ full id is the path from the composable root -- a stable handle for the cross-si
 
 ## @Composable WflSectionHeader
   - Row[0]  <container>   size: w=fill(rel) h=wrap(rel)
-      pad=horizontal = WflTheme.tokens.screenMargin, vertical = WflTheme.tokens.rowVertical (abs) · children: verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.SpaceBetween (rel) · non-layout: clickable
+      pad=horizontal = WflTheme.tokens.screenMargin, vertical = WflTheme.tokens.rowVertical (abs) · children: verticalAlignment=Alignment.CenterVertically, horizontalArrangement=Arrangement.SpaceBetween (rel) · non-layout: semantics, clickable
     - Text[$label · $count]  <leaf>   size: w=wrap(rel) h=wrap(rel)
     - Icon[desc=Collapse|Expand]  <leaf>   size: w=wrap(rel) h=wrap(rel)
   ids:

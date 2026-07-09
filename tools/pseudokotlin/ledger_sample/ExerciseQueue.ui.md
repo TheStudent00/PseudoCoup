@@ -16,13 +16,15 @@ full id is the path from the composable root -- a stable handle for the cross-si
         pad=horizontal = 16.dp (abs)
     - LazyRow[1]  <container>   size: w=wrap(rel) h=wrap(rel)
         children: horizontalArrangement=Arrangement.spacedBy(8.dp) (rel)
-      - FilterChip[0]  <leaf>   size: w=wrap(rel) h=wrap(rel)
+      - FilterChip[0]  <container>   size: w=wrap(rel) h=wrap(rel)
+        - Text[label]  <leaf>   size: w=wrap(rel) h=wrap(rel)
   ids:
     ExerciseQueue/LaunchedEffect[0]
     ExerciseQueue/Column[1]
     ExerciseQueue/Column[1]/Text[UP NEXT]
     ExerciseQueue/Column[1]/LazyRow[1]
     ExerciseQueue/Column[1]/LazyRow[1]/FilterChip[0]
+    ExerciseQueue/Column[1]/LazyRow[1]/FilterChip[0]/Text[label]
 
 ---
-summary: 1 composables, 5 widget nodes
+summary: 1 composables, 6 widget nodes
