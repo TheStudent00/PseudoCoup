@@ -1,0 +1,2 @@
+{"id": "124_retranspile_post_discipline", "cwd": "~/Programming/PseudoCoup_v0",
+ "cmd": ["python3", "tools/pseudokotlin/build_mixingcenter.py"], "timeout": 900}

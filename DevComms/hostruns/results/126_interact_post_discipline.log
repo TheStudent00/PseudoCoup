@@ -1,0 +1,166 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-08_3.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+VIEWMODEL CONSTRUCTION TRACEBACK (TodayViewModel):
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 168, in viewmodel_of
+     vm = build(cls, ns, ctx)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 149, in build
+     return cls(*args)
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 287, in __init__
+     viewModelScope.launch(_lam8)
+     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/coroutines.py", line 55, in launch
+     block()
+     ~~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 286, in _lam8
+     raise RuntimeError(f"unreachable when-branch: subject='when'")
+ RuntimeError: unreachable when-branch: subject='when'
+
+== per-screen ==
+  ExerciseDetailScreen       13/13 ok, 0 fail
+  ExercisesScreen            378/378 ok, 0 fail
+  GymListScreen              5/5 ok, 0 fail
+  HistoryScreen              0/0 ok, 0 fail
+  LogCardioScreen            21/21 ok, 0 fail
+  ProgramsScreen             25/25 ok, 0 fail
+  ProgressScreen             5/5 ok, 0 fail
+  SettingsScreen             28/29 ok, 1 fail
+  TodayScreen                BUILD FAILED: RuntimeError: viewmodel_of: construction of TodayViewModel raised RuntimeE
+  WinsListScreen             BUILD FAILED: NameError: name 'WinsListViewModel' is not defined
+  OnboardingScreen           EXCLUDED: no ViewModel/first-run flow to seed here; the walk.py front-door harness covers onboarding by firing its real advance/choice buttons in sequence
+  SessionDetailScreen        1/1 ok, 0 fail
+  ReportBugScreen            7/7 ok, 0 fail
+  ExerciseCreateScreen       106/106 ok, 0 fail
+  GymCreateWizardScreen      5/5 ok, 0 fail
+  GymEditorScreen            4/4 ok, 0 fail
+  PathDetailScreen           1/1 ok, 0 fail
+  PathsScreen                1/1 ok, 0 fail
+  SuggestedStretchesScreen   27/27 ok, 0 fail
+  WorkoutCooldownScreen      9/9 ok, 0 fail
+  WorkoutExecutionScreen     43/43 ok, 0 fail
+  WorkoutSummaryScreen       2/2 ok, 0 fail
+  WorkoutWarmupScreen        10/10 ok, 0 fail
+  ExercisePickerScreen       393/393 ok, 0 fail
+  MyProgramScreen            1/1 ok, 0 fail
+  ProgramDayEditorScreen     1/1 ok, 0 fail
+  ProgramEditorScreen        307/307 ok, 0 fail
+  UpdateProgramWizardScreen  5/5 ok, 0 fail
+
+INTERACT: 1399 fired, 1398 ok, 1 failures across 27 screens
+
+== failure groups ==
+  [1] TypeError @ kotlin_rt.py:1423 :: not all arguments converted during string formatting
+  [1] RuntimeError @ ? :: viewmodel_of: construction of TodayViewModel raised RuntimeError: unreachable when-branch: subject='?' -- this is a real
+  [1] NameError @ WinsListScreen.py:46 :: name '?' is not defined
+VIEWMODEL CONSTRUCTION TRACEBACK (TodayViewModel):
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 168, in viewmodel_of
+     vm = build(cls, ns, ctx)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 149, in build
+     return cls(*args)
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 287, in __init__
+     viewModelScope.launch(_lam8)
+     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/coroutines.py", line 55, in launch
+     block()
+     ~~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 286, in _lam8
+     raise RuntimeError(f"unreachable when-branch: subject='when'")
+ RuntimeError: unreachable when-branch: subject='when'
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 168, in viewmodel_of
+     vm = build(cls, ns, ctx)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 149, in build
+     return cls(*args)
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 287, in __init__
+     viewModelScope.launch(_lam8)
+     ~~~~~~~~~~~~~~~~~~~~~^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/coroutines.py", line 55, in launch
+     block()
+     ~~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayViewModel.py", line 286, in _lam8
+     raise RuntimeError(f"unreachable when-branch: subject='when'")
+ RuntimeError: unreachable when-branch: subject='when'
+ 
+ The above exception was the direct cause of the following exception:
+ 
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/interact.py", line 505, in <module>
+     main()
+     ~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/interact.py", line 473, in main
+     shell_fired, shell_ok, shell_fail, shell_rows, shell_groups = sweep_shell(ns)
+                                                                   ~~~~~~~~~~~^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/interact.py", line 424, in sweep_shell
+     template = build_shell(ns)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/interact.py", line 405, in build_shell
+     comp.compose()
+     ~~~~~~~~~~~~^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 477, in compose
+     self.fn(*self.args, **self.kwargs)
+     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/run_app.py", line 98, in themed
+     return theme(darkTheme=False, content=(lambda it=None: _fn(*_a2, **_k)))
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/theme/Theme.py", line 20, in WorkoutforlifeTheme
+     CompositionLocalProvider(LocalWflColors.provides(wflColors), LocalWflTokens.provides(ComfortableTokens), (lambda it=None: MaterialTheme(colorScheme=(DarkColorScheme if darkTheme else LightColorScheme), typography=Typography, content=content)))
+     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 212, in CompositionLocalProvider
+     _call(content)
+     ~~~~~^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/theme/Theme.py", line 20, in <lambda>
+     CompositionLocalProvider(LocalWflColors.provides(wflColors), LocalWflTokens.provides(ComfortableTokens), (lambda it=None: MaterialTheme(colorScheme=(DarkColorScheme if darkTheme else LightColorScheme), typography=Typography, content=content)))
+                                                                                                                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose_ui.py", line 633, in __call__
+     return content()
+   File "/home/lucas/Programming/WFL_MixingCenter/render/run_app.py", line 98, in <lambda>
+     return theme(darkTheme=False, content=(lambda it=None: _fn(*_a2, **_k)))
+                                                            ~~~^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 314, in AppNavigation
+     Scaffold(topBar=_lam25, bottomBar=_lam28, content=_lam122)
+     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 245, in Scaffold
+     fn(inner)                 # the transpiled lambda takes (it=None): pass the real
+     ~~^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 313, in _lam122
+     return NavHost(navController=navController, startDestination=startDestination, content=_lam123)
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/navigation.py", line 176, in NavHost
+     _call(fn)
+     ~~~~~^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 206, in _lam145
+     return TodayScreen(innerPadding=innerPadding, onNavigateToExecution=(lambda sessionId: navController.navigate(Screen.WorkoutExecution.createRoute(sessionId))), onNavigateToWarmup=(lambda sessionId: navController.navigate(Screen.WorkoutWarmup.createRoute(sessionId))), onNavigateToWins=_lam147, onNavigateToLogCardio=_lam150)
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/today/TodayScreen.py", line 92, in TodayScreen
+     if viewModel is None: viewModel = hiltViewModel(TodayViewModel)
+                                       ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/extras.py", line 170, in hiltViewModel
+     vm = _VM_FACTORY(cls)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 203, in factory
+     vm = viewmodel_of(cls, ns, args)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/di.py", line 176, in viewmodel_of
+     raise RuntimeError(
+     ...<3 lines>...
+     ) from e
+ RuntimeError: viewmodel_of: construction of TodayViewModel raised RuntimeError: unreachable when-branch: subject='when' -- this is a real bug (in the ViewModel or a dependency it eagerly evaluates), not an unresolvable-off-Android dependency, so it is NOT swallowed into a placeholder.

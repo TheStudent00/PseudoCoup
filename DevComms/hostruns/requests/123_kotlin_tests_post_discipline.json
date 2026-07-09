@@ -1,0 +1,2 @@
+{"id": "123_kotlin_tests_post_discipline", "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g"], "timeout": 3600}

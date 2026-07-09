@@ -1,0 +1,94 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-08_19.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 838, in <module>
+     main()
+     ~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 828, in main
+     prog, spent = walk(args.steps, args.out)
+                   ~~~~^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 668, in walk
+     prog = bootstrap_root(prog)
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 650, in bootstrap_root
+     result, crash = run_in_session(body)
+                     ~~~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 535, in run_in_session
+     app.run()
+     ~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 955, in run
+     self._run_prepare()
+     ~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/app.py", line 950, in _run_prepare
+     self.dispatch('on_start')
+     ~~~~~~~~~~~~~^^^^^^^^^^^^
+   File "kivy/_event.pyx", line 731, in kivy._event.EventDispatcher.dispatch
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 513, in on_start
+     self.settle()
+     ~~~~~~~~~~~^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 425, in settle
+     self.comp.compose()
+     ~~~~~~~~~~~~~~~~~^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 477, in compose
+     self.fn(*self.args, **self.kwargs)
+     ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/run_app.py", line 98, in themed
+     return theme(darkTheme=False, content=(lambda it=None: _fn(*_a2, **_k)))
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/theme/Theme.py", line 20, in WorkoutforlifeTheme
+     CompositionLocalProvider(LocalWflColors.provides(wflColors), LocalWflTokens.provides(ComfortableTokens), (lambda it=None: MaterialTheme(colorScheme=(DarkColorScheme if darkTheme else LightColorScheme), typography=Typography, content=content)))
+     ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 212, in CompositionLocalProvider
+     _call(content)
+     ~~~~~^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/theme/Theme.py", line 20, in <lambda>
+     CompositionLocalProvider(LocalWflColors.provides(wflColors), LocalWflTokens.provides(ComfortableTokens), (lambda it=None: MaterialTheme(colorScheme=(DarkColorScheme if darkTheme else LightColorScheme), typography=Typography, content=content)))
+                                                                                                                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose_ui.py", line 633, in __call__
+     return content()
+   File "/home/lucas/Programming/WFL_MixingCenter/render/run_app.py", line 98, in <lambda>
+     return theme(darkTheme=False, content=(lambda it=None: _fn(*_a2, **_k)))
+                                                            ~~~^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 314, in AppNavigation
+     Scaffold(topBar=_lam25, bottomBar=_lam28, content=_lam122)
+     ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 251, in Scaffold
+     _call(fn)
+     ~~~~~^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 165, in _lam25
+     return Column(_lam26)
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 117, in make
+     _call(a)
+     ~~~~~^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 163, in _lam26
+     AppTopBar(displayName=displayName.value, celebrationActive=pendingCelebration.value != None, hasNotifications=(len(notificationItems.value) != 0), unreadCount=unreadCount.value, today=appViewModel.today, onNotificationsTapped=_lam27)
+     ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/navigation/AppNavigation.py", line 375, in AppTopBar
+     dayName = today.dayOfWeek.getDisplayName(TextStyle.FULL, Locale.ENGLISH)
+                                                              ^^^^^^^^^^^^^^
+ AttributeError: type object 'Locale' has no attribute 'ENGLISH'

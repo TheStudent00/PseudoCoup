@@ -1,0 +1,5 @@
+{
+  "id": "121_walk_diff_hermetic",
+  "returncode": null,
+  "refused": "unparseable request JSON: FileNotFoundError: [Errno 2] No such file or directory: '/home/lucas/Programming/PseudoCoup_v0/DevComms/hostruns/requests/121_walk_diff_hermetic.json'"
+}

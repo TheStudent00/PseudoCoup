@@ -1,0 +1,2 @@
+{"id": "125_fidelity_post_discipline", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "fidelity.py"], "timeout": 3600}

@@ -1,0 +1,751 @@
+[[1;32mINFO[0m   ] [Logger      ] Record log in /home/lucas/.kivy/logs/kivy_26-07-08_2.txt
+[[1;32mINFO[0m   ] [Kivy        ] v2.3.1
+[[1;32mINFO[0m   ] [Kivy        ] Installed at "/home/lucas/anaconda3/lib/python3.13/site-packages/kivy/__init__.py"
+[[1;32mINFO[0m   ] [Python      ] v3.13.9 | packaged by Anaconda, Inc. | (main, Oct 21 2025, 19:16:10) [GCC 11.2.0]
+[[1;32mINFO[0m   ] [Python      ] Interpreter at "/home/lucas/anaconda3/bin/python3"
+[[1;32mINFO[0m   ] [Logger      ] Purge log fired. Processing...
+[[1;32mINFO[0m   ] [Logger      ] Purge finished!
+[[1;32mINFO[0m   ] [Factory     ] 195 symbols loaded
+[[1;32mINFO[0m   ] [Image       ] Providers: img_tex, img_dds, img_sdl2, img_pil (img_ffpyplayer ignored)
+[[1;32mINFO[0m   ] [Text        ] Provider: sdl2
+[[1;32mINFO[0m   ] [Window      ] Provider: sdl2
+[[1;32mINFO[0m   ] [GL          ] Using the "OpenGL" graphics system
+[[1;32mINFO[0m   ] [GL          ] Backend used <sdl2>
+[[1;32mINFO[0m   ] [GL          ] OpenGL version <b'4.5 (Compatibility Profile) Mesa 26.0.3-1ubuntu1'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL vendor <b'Mesa'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL renderer <b'llvmpipe (LLVM 21.1.8, 256 bits)'>
+[[1;32mINFO[0m   ] [GL          ] OpenGL parsed version: 4, 5
+[[1;32mINFO[0m   ] [GL          ] Shading version <b'4.50'>
+[[1;32mINFO[0m   ] [GL          ] Texture max size <16384>
+[[1;32mINFO[0m   ] [GL          ] Texture max units <32>
+[[1;32mINFO[0m   ] [Window      ] auto add sdl2 input provider
+[[1;32mINFO[0m   ] [Window      ] virtual keyboard not allowed, single mode, not docked
+[[1;32mINFO[0m   ] [GL          ] NPOT texture support is available
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75866998cae0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.142s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758669b57a60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.051s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=12:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=12 action={'kind': 'DropdownMenuItem', 'label': 'No lingo', 'handler_kind': 'onClick', 'ordinal': 12} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 5.67s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758669a16480>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758661b1bc40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.045s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=13:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=13 action={'kind': 'DropdownMenuItem', 'label': 'RPE', 'handler_kind': 'onClick', 'ordinal': 13} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 5.86s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75865f2237e0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75865f223c40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.474s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=14:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=14 action={'kind': 'DropdownMenuItem', 'label': 'RIR', 'handler_kind': 'onClick', 'ordinal': 14} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 6.29s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75865c5622a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75865c39f380>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.045s
+DEBUG _fire begin <function CompactDropdown.<locals>._lam7.<locals>._lam9 at 0x75865bf32fc0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.046s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=15 action={'kind': 'Row', 'label': 'KG', 'handler_kind': 'onClick', 'ordinal': 15} dest=['9c4ce5f2ed'] error=None unsettled=False 6.38s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586593cf420>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7586dc1d9580>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=16:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=16 action={'kind': 'DropdownMenu', 'label': 'KG / LB', 'handler_kind': 'onDismissRequest', 'ordinal': 16} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 5.89s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758656599300>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7586564c62a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=17:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=17 action={'kind': 'DropdownMenuItem', 'label': 'KG', 'handler_kind': 'onClick', 'ordinal': 17} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 6.02s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758653e679c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.032s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758653d00860>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+STEP HANDLER TRACEBACK path=[0, 7] ordinal=18:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=18 action={'kind': 'DropdownMenuItem', 'label': 'LB', 'handler_kind': 'onClick', 'ordinal': 18} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 6.23s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75865160d1c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7586515a5760>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.048s
+DEBUG _fire begin <function AppNavigation.<locals>._lam122.<locals>._lam123.<locals>.<lambda>.<locals>.<lambda> at 0x7586511c4220>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.035s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=19 action={'kind': 'Row', 'label': 'Gym profiles / Manage gyms and equipment', 'handler_kind': 'onClick', 'ordinal': 19} dest=['7895077a81'] error=None unsettled=False 7.85s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75864e53a020>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75864e4de0c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.049s
+DEBUG _fire begin <function AppNavigation.<locals>._lam122.<locals>._lam123.<locals>.<lambda>.<locals>.<lambda> at 0x75864e182160>
+DEBUG _fire handler done in 0.000s, flushing
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+DEBUG _fire flush done in 2.671s
+STEP path=[0, 7] ordinal=20 action={'kind': 'Row', 'label': 'Exercises / Browse, favourite, and crea…', 'handler_kind': 'onClick', 'ordinal': 20} dest=['9c4ce5f2ed'] error=None unsettled=False 7.83s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75864a535f80>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75864a370540>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.048s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x758649d67ce0>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.043s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=21 action={'kind': 'SegmentedButton', 'label': 'Push', 'handler_kind': 'onClick', 'ordinal': 21} dest=['fbcb196e68'] error=None unsettled=False 7.15s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758647ec67a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758647e8e7a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.046s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75864787f4c0>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.048s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=22 action={'kind': 'SegmentedButton', 'label': 'In-app', 'handler_kind': 'onClick', 'ordinal': 22} dest=['fbcb196e68'] error=None unsettled=False 5.42s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586456bc540>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7586455e14e0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75864517b560>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.045s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=23 action={'kind': 'SegmentedButton', 'label': 'None', 'handler_kind': 'onClick', 'ordinal': 23} dest=['fbcb196e68'] error=None unsettled=False 7.33s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758641abb4c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758644ebf9c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.062s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75864682d440>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.061s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=24 action={'kind': 'SegmentedButton', 'label': 'Push', 'handler_kind': 'onClick', 'ordinal': 24} dest=['fbcb196e68'] error=None unsettled=False 7.62s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75863ffae840>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75863fdacd60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.045s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75863f59b6a0>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.043s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=25 action={'kind': 'SegmentedButton', 'label': 'In-app', 'handler_kind': 'onClick', 'ordinal': 25} dest=['fbcb196e68'] error=None unsettled=False 5.39s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75863cbe8cc0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.030s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75863c954d60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75863c68aa20>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.048s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=26 action={'kind': 'SegmentedButton', 'label': 'None', 'handler_kind': 'onClick', 'ordinal': 26} dest=['fbcb196e68'] error=None unsettled=False 7.85s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758639348400>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.034s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7586391668e0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.046s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x7586388d9620>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.042s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=27 action={'kind': 'SegmentedButton', 'label': 'Push', 'handler_kind': 'onClick', 'ordinal': 27} dest=['fbcb196e68'] error=None unsettled=False 5.28s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758637bc6e80>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75863fdcfe20>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.053s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x75863661d580>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.045s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=28 action={'kind': 'SegmentedButton', 'label': 'In-app', 'handler_kind': 'onClick', 'ordinal': 28} dest=['fbcb196e68'] error=None unsettled=False 8.23s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586338cf920>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.034s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758633679e40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+DEBUG _fire begin <function NotificationRow.<locals>._lam22.<locals>.<lambda>.<locals>.<lambda>.<locals>.<lambda> at 0x758632f54cc0>
+DEBUG _fire handler done in 0.001s, flushing
+DEBUG _fire flush done in 0.043s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=29 action={'kind': 'SegmentedButton', 'label': 'None', 'handler_kind': 'onClick', 'ordinal': 29} dest=['fbcb196e68'] error=None unsettled=False 5.34s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586329dff60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758635f38f40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758638f1ba60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=30 action={'kind': 'SegmentedButton', 'label': 'Push', 'handler_kind': 'onClick', 'ordinal': 30} dest=['98fa86b2f0'] error=None unsettled=False 8.56s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75862e9b3740>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.031s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75862e729bc0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.049s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75862e3371a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.026s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=31 action={'kind': 'SegmentedButton', 'label': 'In-app', 'handler_kind': 'onClick', 'ordinal': 31} dest=['017754e170'] error=None unsettled=False 5.26s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75862b4453a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.026s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75862b16e160>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75862a80ea20>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=32 action={'kind': 'SegmentedButton', 'label': 'None', 'handler_kind': 'onClick', 'ordinal': 32} dest=['9c4ce5f2ed'] error=None unsettled=False 8.90s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75862a051b20>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.032s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758629fcb560>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.049s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=33 action={'kind': 'Row', 'label': 'Back up my data / Save workouts, progre…', 'handler_kind': 'onClick', 'ordinal': 33} dest=['9c4ce5f2ed'] error=None unsettled=False 5.46s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758626ec07c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758626e49940>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.045s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=34 action={'kind': 'Row', 'label': 'Restore from backup / Replace current d…', 'handler_kind': 'onClick', 'ordinal': 34} dest=['9c4ce5f2ed'] error=None unsettled=False 5.26s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758622de5da0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758622fc0e00>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.058s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=35 action={'kind': 'Row', 'label': 'Report a bug / Send us a problem with d…', 'handler_kind': 'onClick', 'ordinal': 35} dest=['9c4ce5f2ed'] error=None unsettled=False 9.37s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586223bd9e0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758622103ec0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.047s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 7] ordinal=36 action={'kind': 'Row', 'label': 'Debug panel / Time travel + seed test s…', 'handler_kind': 'onClick', 'ordinal': 36} dest=['9c4ce5f2ed'] error=None unsettled=False 5.40s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75861edbe5c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.026s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x75861ea7d6c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.030s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] action=<count-actions-for-new-frontier-frame> result=n_actions=13 5.11s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75861e4a5940>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x75861b6e51c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+STEP HANDLER TRACEBACK path=[0, 8] ordinal=0:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=0 action={'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'handler_kind': 'onDismissRequest', 'ordinal': 0} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 5.08s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75861a803ce0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758619ae3600>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.031s
+STEP HANDLER TRACEBACK path=[0, 8] ordinal=1:
+ Traceback (most recent call last):
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 578, in body
+     app.real_tap(node)
+     ~~~~~~~~~~~~^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/render/walker.py", line 462, in real_tap
+     raise LookupError("widget for node not found in mounted tree (recompose moved/removed it)")
+ LookupError: widget for node not found in mounted tree (recompose moved/removed it)
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=1 action={'kind': 'TextButton', 'label': 'Settings', 'handler_kind': 'onClick', 'ordinal': 1} dest=None error={'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'} unsettled=False 9.61s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758617ed8040>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758617d64360>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758617cc9260>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=2 action={'kind': 'Surface', 'label': 'Surface', 'handler_kind': 'onClick', 'ordinal': 2} dest=['9910ac6760'] error=None unsettled=False 5.23s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75861554d800>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x7586154f0f40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.031s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75861518cc20>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.000s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=3 action={'kind': 'NavigationBarItem', 'label': 'Home', 'handler_kind': 'onClick', 'ordinal': 3} dest=['9910ac6760'] error=None unsettled=False 5.19s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586124ee2a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x7586121aff60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.029s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x758611c43ec0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.026s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=4 action={'kind': 'NavigationBarItem', 'label': 'Program', 'handler_kind': 'onClick', 'ordinal': 4} dest=['e60ee2c6c9'] error=None unsettled=False 5.19s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75860edee0c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x75860e9bbe20>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.030s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75860e48fd80>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.026s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=5 action={'kind': 'NavigationBarItem', 'label': 'Paths', 'handler_kind': 'onClick', 'ordinal': 5} dest=['017754e170'] error=None unsettled=False 10.23s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75860dfdca40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x75860dea3c40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.031s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75860dc38f40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.042s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=6 action={'kind': 'NavigationBarItem', 'label': 'Progress', 'handler_kind': 'onClick', 'ordinal': 6} dest=['5039024228'] error=None unsettled=False 5.42s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x75860b57c680>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x75860b48b740>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.030s
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x75860b2cb9c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.049s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=7 action={'kind': 'NavigationBarItem', 'label': 'You', 'handler_kind': 'onClick', 'ordinal': 7} dest=['9c4ce5f2ed'] error=None unsettled=False 5.29s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758608160f40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758607eebf60>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758607915440>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.031s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=8 action={'kind': 'Box', 'label': 'Box', 'handler_kind': 'onClick', 'ordinal': 8} dest=['98fa86b2f0'] error=None unsettled=False 5.20s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x758604705300>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.032s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x7586048365c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.028s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam20 at 0x7586044bb2e0>
+DEBUG _fire handler done in 0.002s, flushing
+DEBUG _fire flush done in 0.030s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=9 action={'kind': 'ExtendedFloatingActionButton', 'label': 'New mobility session', 'handler_kind': 'onClick', 'ordinal': 9} dest=['d7ff8623a4'] error=None unsettled=False 5.17s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586011162a0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.032s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758600f6a5c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam19 at 0x758600b41120>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=10 action={'kind': 'ExtendedFloatingActionButton', 'label': 'Log a Win', 'handler_kind': 'onClick', 'ordinal': 10} dest=['ae2f044580'] error=None unsettled=False 5.18s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7586009c8a40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.033s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x758600ad4f40>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.034s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam21 at 0x75860799bec0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.034s
+ UNPINNED TEXT? 'Today' looks wall-clock-shaped -- substituting '<TIME>' before hashing.
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=11 action={'kind': 'ExtendedFloatingActionButton', 'label': 'Log other exercise', 'handler_kind': 'onClick', 'ordinal': 11} dest=['30cb4f94e8'] error=None unsettled=False 11.20s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function GlitterBurstStar.<locals>._lam5.<locals>._lam10 at 0x7585fdb9a660>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x7585fdab1940>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.030s
+DEBUG _fire begin <function TodayScreen.<locals>._lam4.<locals>._lam18 at 0x7585fd9e6e80>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.027s
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[0, 8] ordinal=12 action={'kind': 'FloatingActionButton', 'label': 'FloatingActionButton', 'handler_kind': 'onClick', 'ordinal': 12} dest=['98fa86b2f0'] error=None unsettled=False 5.24s
+[[1;32mINFO[0m   ] [ProbeSysfs  ] device match: /dev/input/event7
+[[1;32mINFO[0m   ] [MTD         ] Read event from </dev/input/event7>
+[[1;32mINFO[0m   ] [Base        ] Start application main loop
+[[1;33mWARNING[0m] [MTD         ] Unable to open device "/dev/input/event7". Please ensure you have the appropriate permissions.
+DEBUG _fire begin <function AppNavigation.<locals>._lam28.<locals>._lam29.<locals>._lam30.<locals>._lam31.<locals>._lam34 at 0x7585faf325c0>
+DEBUG _fire handler done in 0.000s, flushing
+DEBUG _fire flush done in 0.034s
+DEBUG _fire begin <function AppNavigation.<locals>._lam122.<locals>._lam123.<locals>.<lambda>.<locals>.<lambda> at 0x7585faedfd80>
+DEBUG _fire handler done in 0.000s, flushing
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e5edb70>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e44e3c0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758649172740>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e4fc600>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e2fdcc0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e25b1c0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75866990a200>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586584029e0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758648dd5080>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75864935bc40>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e3a1da0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e35bd20>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e561a20>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e546350>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e526510>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863e5156a0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586494a6200>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758649347930>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75864920fb60>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758649108d70>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586492d4b40>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758649abb310>>>
+DEBUG _fire flush done in 0.643s
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637e0add0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637fac520>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638131be0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638146660>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638195780>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637eb5ef0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586380026d0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638049be0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863803a7b0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586380bdef0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586382bb7e0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638292c10>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586382fd4e0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863836f540>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586383342f0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637ec5160>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638437d90>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863844aa50>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638480600>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586385a5b00>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586385b1240>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758638531cc0>>>
+[[1;31mCRITICAL[0m] [Clock       ] Warning, too much iteration done before the next frame. Check your code, or increase the Clock.max_iteration attribute. Remaining events:
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637716f90>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586377980c0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863763b5b0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637614910>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863731bbd0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586376ee5f0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637afe580>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863757eb30>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586375bde80>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586375af070>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586374fd390>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x75863753bb60>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x7586379ff4d0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637b82dd0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637bc0520>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637bacc20>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637aa7d90>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637a964a0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637a655c0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637de42f0>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637dbba80>>>
+<ClockEvent (-1.0) callback=<bound method BoxLayout.do_layout of <kivy.uix.boxlayout.BoxLayout object at 0x758637801fd0>>>
+[[1;32mINFO[0m   ] [Base        ] Leaving application in progress...
+STEP path=[2, 6] action=<count-actions-for-new-frontier-frame> result=n_actions=25 5.81s
+# py_walk summary
+states: 35
+edges:  168
+crashed edges: 26
+nav-bar destinations reached: ['my_program', 'paths', 'progress', 'settings', 'today'] (5/5)
+distinct routes/screens reached: ['gym_list', 'log_cardio', 'my_program', 'paths', 'programs', 'progress', 'settings', 'today'] (8/27 known Screen.kt routes)
+frontier remaining: 23
+done: False
+
+## crashes (findings, not fixed here)
+  - {'handler_kind': 'onDismissRequest', 'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'ordinal': 0}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'TextButton', 'label': 'Settings', 'ordinal': 1}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'DropdownMenu', 'label': 'No lingo / RPE / RIR', 'ordinal': 9}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'DropdownMenuItem', 'label': 'No lingo', 'ordinal': 10}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'DropdownMenuItem', 'label': 'RPE', 'ordinal': 11}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'DropdownMenuItem', 'label': 'RIR', 'ordinal': 12}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'DropdownMenu', 'label': 'KG / LB', 'ordinal': 14}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'DropdownMenuItem', 'label': 'KG', 'ordinal': 15}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'DropdownMenuItem', 'label': 'LB', 'ordinal': 16}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'ordinal': 0}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'TextButton', 'label': 'Settings', 'ordinal': 1}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'ordinal': 0}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'TextButton', 'label': 'Settings', 'ordinal': 1}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'ordinal': 0}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'TextButton', 'label': 'Settings', 'ordinal': 1}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'ordinal': 0}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onClick', 'kind': 'TextButton', 'label': 'Settings', 'ordinal': 1}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'handler_kind': 'onDismissRequest', 'kind': 'DropdownMenu', 'label': 'No lingo / RPE / RIR', 'ordinal': 11}: {'message': 'widget for node not found in mounted tree (recompose moved/removed it)', 'type': 'LookupError'}
+  - {'kind': 'DropdownMenuItem', 'label': 'No lingo', 'handler_kind': 'onClick', 'ordinal': 12}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'DropdownMenuItem', 'label': 'RPE', 'handler_kind': 'onClick', 'ordinal': 13}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'DropdownMenuItem', 'label': 'RIR', 'handler_kind': 'onClick', 'ordinal': 14}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'DropdownMenu', 'label': 'KG / LB', 'handler_kind': 'onDismissRequest', 'ordinal': 16}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'DropdownMenuItem', 'label': 'KG', 'handler_kind': 'onClick', 'ordinal': 17}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'DropdownMenuItem', 'label': 'LB', 'handler_kind': 'onClick', 'ordinal': 18}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'ModalBottomSheet', 'label': "Notifications / Settings / You're all c…", 'handler_kind': 'onDismissRequest', 'ordinal': 0}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}
+  - {'kind': 'TextButton', 'label': 'Settings', 'handler_kind': 'onClick', 'ordinal': 1}: {'type': 'LookupError', 'message': 'widget for node not found in mounted tree (recompose moved/removed it)'}

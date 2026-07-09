@@ -1,0 +1,5 @@
+{
+  "id": "120_py_walk_finish",
+  "returncode": null,
+  "refused": "unparseable request JSON: FileNotFoundError: [Errno 2] No such file or directory: '/home/lucas/Programming/PseudoCoup_v0/DevComms/hostruns/requests/120_py_walk_finish.json'"
+}

@@ -1,0 +1,2 @@
+{"id": "158_mount_diff_subcomposition", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "mount_diff.py"], "timeout": 300}

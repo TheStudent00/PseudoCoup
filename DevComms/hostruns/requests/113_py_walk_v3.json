@@ -1,0 +1,2 @@
+{"id": "113_py_walk_v3", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["xvfb-run", "-a", "python3", "-u", "walker.py", "--steps", "200", "--reset"], "timeout": 7200}

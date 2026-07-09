@@ -1,0 +1,2114 @@
+oracle_registry: built 1658 entries from 253 transpiled files under /home/lucas/Programming/WFL_MixingCenter
+====================================================================================================
+MOUNT DIFF -- component-identity comparison, joined on Kotlin source coordinate,
+cross-checked against the oracle registry (render/oracle_registry.py)
+====================================================================================================
+
+registry entries (R): 1658
+kt non-app frames filtered (library-internal / test-harness MOUNT occurrences, no registry entry): 44084
+py non-app frames filtered (MOUNT occurrences with no registry entry): 312
+
+----------------------------------------------------------------------------------------------------
+GLOBAL: distinct app coordinates mounted -- TIER 1 (line-exact join, UNCHANGED behavior)
+----------------------------------------------------------------------------------------------------
+py distinct app coordinates:  118
+kt distinct app coordinates:  165
+T1exact BOTH:                 67
+py-only:                      51
+kt-only:                      98
+
+py-only coordinates (present on py, absent on kt) -- named by ledger entry:
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:250 -> StatLabel
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:91 -> CardioCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:98 -> Spacer
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:115 -> Text
+      kind='Text' text="'Choose what matters to you. Select up to...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:124 -> SectionHeader
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:141 -> CompactValueField
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='Text' text="'Mental health focus'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'Moving Through'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text="'Exercise is one of the most evidence-bac...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:216 -> Icon
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Text
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:172 -> ProgramCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:174 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'3-Day Full Body — Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> OutlinePill
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Text
+      kind='Text' text="'Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Icon
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:122 -> Text
+      kind='FilterChip' text="''"
+
+kt-only coordinates (present on kt, absent on py) -- named by ledger entry:
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:870 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:875 -> Text
+      kind='Text' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:892 -> Text
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:160 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:167 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:169 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:174 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:183 -> ConditioningActivityPicker
+      kind='ConditioningActivityPicker' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:189 -> Text
+      kind='OutlinedButton' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:197 -> Text
+      kind='TextButton' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:218 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:223 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:230 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:82 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:161 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:177 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:181 -> Text
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:188 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:218 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:248 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:253 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:254 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:261 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:310 -> PrBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:320 -> CardioReadinessNote
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:104 -> StatCard
+      kind='StatCard' text='0 kg'
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:142 -> Text
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:173 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:183 -> Text
+      kind='Text' text='<TIME>'
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:52 -> Text
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:99 -> StatCard
+      kind='StatCard' text='<TIME>'
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:102 -> Icon
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:45 -> ActivityCard
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:65 -> Surface
+      kind='Surface' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:76 -> Text
+      kind='Text' text='🚶'
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:80 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:81 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:82 -> Text
+      kind='Row' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:83 -> Text
+      kind='Text' text='Slow walk'
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:89 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:178 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:185 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:186 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:187 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:188 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:195 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:204 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:207 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:208 -> Text
+      kind='Button' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:182 -> LazyColumn
+      kind='LazyColumn' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:197 -> Text
+      kind='remember' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:199 -> Text
+      kind='SuggestionChip' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:243 -> HorizontalDivider
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:244 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:278 -> Column
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:279 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:69 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:79 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:87 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:191 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:200 -> Icon
+      kind='Text' text='Push  ·  39'
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:222 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:230 -> Icon
+      kind='Column' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:235 -> Text
+      kind='Text' text='Arnold Press'
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:66 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/gym/GymListScreen.kt:58 -> GymListItem
+      kind='collectAsStateWithLifecycle' text=''
+  [KT-ONLY] ui/gym/GymListScreen.kt:60 -> Icon
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/progress/ProgressScreen.kt:255 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/progress/ProgressScreen.kt:259 -> Text
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:147 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:149 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:166 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:192 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:194 -> CompactDropdown
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:208 -> CompactDropdown
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:221 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:250 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:257 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:266 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:275 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:284 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:294 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:327 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:499 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:507 -> Text
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:50 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:63 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:67 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:86 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:87 -> FlowRow
+      kind='rememberComposableLambda' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:97 -> Text
+      kind='OutlinedTextField' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:106 -> LogWinSheet
+      kind='LogWinSheet' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:70 -> WflCard
+      kind='rememberComposableLambda' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:72 -> WflCardTitle
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:78 -> WinsDonut
+      kind='WinsDonut' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:96 -> Icon
+      kind='Icon' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:191 -> LogWinSheet
+      kind='LogWinSheet' text=''
+
+----------------------------------------------------------------------------------------------------
+GLOBAL: TIER 2 (COUNT-BASED, the agreement gauge) -- for every (basename-resolved file,
+composable NAME) pair mounted on either engine, compare the MULTISET COUNT of mount
+occurrences between engines, per ROUTE where route data exists on both engines, else
+globally (see diff_file_kind_pairs_counts()'s docstring for the exact fallback rule).
+kt line-number defect is DIAGNOSED AND PARKED (Compose ui-tooling-data parser credits
+app-level conditional call groups to an ancestor's location -- GROUPDUMP hostrun 156
+evidence, see module docstring) -- FILE and NAME are what both engines prove correctly,
+so Tier 2 file+name count agreement is the primary agreement gauge; Tier 1 line-exact
+(above) is kept, labeled, as the aspirational finer-grained measure.
+registry=N THIRD COLUMN is CONTEXT ONLY (distinct static call sites for that file+name)
+-- NOT an equality target: one call site can mount many times (loops/lists/conditionals).
+----------------------------------------------------------------------------------------------------
+py distinct (file,name) pairs: 105
+kt distinct (file,name) pairs: 353
+T2(file+name) AGREE:          0
+T2(file+name) COUNT MISMATCH: 66
+py-only (file,name) pairs:    39
+kt-only (file,name) pairs:    287
+
+T2 COUNT MISMATCH pairs (same file, same name, but counts differ on at least one scope -- evidence lines show every disagreeing scope, route name or GLOBAL on fallback):
+  navigation/AppNavigation.kt / Column: py=1356 kt=25 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=219 kt=3
+      scope='paths': py=249 kt=3
+      scope='programs': py=21 kt=0
+      scope='progress': py=336 kt=9
+      scope='settings': py=192 kt=0
+      scope='today': py=339 kt=10
+  navigation/AppNavigation.kt / HorizontalDivider: py=452 kt=9 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=73 kt=1
+      scope='paths': py=83 kt=1
+      scope='programs': py=7 kt=0
+      scope='progress': py=112 kt=3
+      scope='settings': py=64 kt=0
+      scope='today': py=113 kt=4
+  navigation/AppNavigation.kt / Icon: py=2260 kt=40 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=365 kt=5
+      scope='paths': py=415 kt=5
+      scope='programs': py=35 kt=0
+      scope='progress': py=560 kt=15
+      scope='settings': py=320 kt=0
+      scope='today': py=565 kt=15
+  navigation/AppNavigation.kt / NavigationBar: py=452 kt=8 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=73 kt=1
+      scope='paths': py=83 kt=1
+      scope='programs': py=7 kt=0
+      scope='progress': py=112 kt=3
+      scope='settings': py=64 kt=0
+      scope='today': py=113 kt=3
+  navigation/AppNavigation.kt / NavigationBarItem: py=2260 kt=40 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=365 kt=5
+      scope='paths': py=415 kt=5
+      scope='programs': py=35 kt=0
+      scope='progress': py=560 kt=15
+      scope='settings': py=320 kt=0
+      scope='today': py=565 kt=15
+  navigation/AppNavigation.kt / Scaffold: py=507 kt=21 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='execution/{sessionId}': py=0 kt=1
+      scope='exercise_detail/{exerciseId}': py=0 kt=1
+      scope='exercises': py=0 kt=1
+      scope='gym_list': py=0 kt=1
+      scope='my_program': py=81 kt=1
+      scope='paths': py=92 kt=1
+      scope='programs': py=11 kt=0
+      scope='progress': py=125 kt=3
+      scope='settings': py=71 kt=0
+      scope='settings_notifications': py=0 kt=4
+      scope='today': py=127 kt=3
+      scope='wins': py=0 kt=2
+      scope='workout_cooldown/{sessionId}': py=0 kt=2
+      scope='workout_summary/{sessionId}': py=0 kt=1
+  navigation/AppNavigation.kt / Text: py=3164 kt=59 (registry=10 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=511 kt=7
+      scope='paths': py=581 kt=7
+      scope='programs': py=49 kt=0
+      scope='progress': py=784 kt=21
+      scope='settings': py=448 kt=0
+      scope='today': py=791 kt=24
+  navigation/AppNavigation.kt / TopAppBar: py=452 kt=8 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=73 kt=1
+      scope='paths': py=83 kt=1
+      scope='programs': py=7 kt=0
+      scope='progress': py=112 kt=3
+      scope='settings': py=64 kt=0
+      scope='today': py=113 kt=3
+  ui/components/CompactControls.kt / BasicTextField: py=66 kt=8 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=6 kt=0
+      scope='paths': py=6 kt=0
+      scope='settings': py=48 kt=0
+      scope='settings_notifications': py=0 kt=8
+      scope='today': py=6 kt=0
+  ui/components/CompactControls.kt / Box: py=132 kt=16 (registry=3 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=12 kt=0
+      scope='paths': py=12 kt=0
+      scope='settings': py=96 kt=0
+      scope='settings_notifications': py=0 kt=16
+      scope='today': py=12 kt=0
+  ui/components/CompactControls.kt / Icon: py=66 kt=8 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=6 kt=0
+      scope='paths': py=6 kt=0
+      scope='settings': py=48 kt=0
+      scope='settings_notifications': py=0 kt=8
+      scope='today': py=6 kt=0
+  ui/components/CompactControls.kt / Row: py=132 kt=16 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=12 kt=0
+      scope='paths': py=12 kt=0
+      scope='settings': py=96 kt=0
+      scope='settings_notifications': py=0 kt=16
+      scope='today': py=12 kt=0
+  ui/components/CompactControls.kt / Spacer: py=33 kt=4 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='settings': py=24 kt=0
+      scope='settings_notifications': py=0 kt=4
+      scope='today': py=3 kt=0
+  ui/components/CompactControls.kt / Text: py=165 kt=17 (registry=5 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=15 kt=0
+      scope='paths': py=15 kt=0
+      scope='settings': py=120 kt=0
+      scope='settings_notifications': py=0 kt=17
+      scope='today': py=15 kt=0
+  ui/components/GlitterBurstStar.kt / Box: py=904 kt=16 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=146 kt=2
+      scope='paths': py=166 kt=2
+      scope='programs': py=14 kt=0
+      scope='progress': py=224 kt=6
+      scope='settings': py=128 kt=0
+      scope='today': py=226 kt=6
+  ui/components/GlitterBurstStar.kt / Icon: py=452 kt=8 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=73 kt=1
+      scope='paths': py=83 kt=1
+      scope='programs': py=7 kt=0
+      scope='progress': py=112 kt=3
+      scope='settings': py=64 kt=0
+      scope='today': py=113 kt=3
+  ui/components/GlitterBurstStar.kt / Surface: py=452 kt=8 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=73 kt=1
+      scope='paths': py=83 kt=1
+      scope='programs': py=7 kt=0
+      scope='progress': py=112 kt=3
+      scope='settings': py=64 kt=0
+      scope='today': py=113 kt=3
+  ui/paths/PathsScreen.kt / AnimatedVisibility: py=47 kt=1 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / Box: py=47 kt=1 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / Button: py=47 kt=1 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / Column: py=47 kt=1 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / LazyColumn: py=47 kt=1 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / Spacer: py=47 kt=1 (registry=4 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=35 kt=1
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/paths/PathsScreen.kt / Text: py=94 kt=3 (registry=8 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=6 kt=0
+      scope='paths': py=70 kt=3
+      scope='progress': py=6 kt=0
+      scope='settings': py=6 kt=0
+      scope='today': py=6 kt=0
+  ui/programs/MyProgramScreen.kt / Box: py=44 kt=1 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=29 kt=1
+      scope='paths': py=3 kt=0
+      scope='programs': py=3 kt=0
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/programs/MyProgramScreen.kt / Button: py=44 kt=1 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=29 kt=1
+      scope='paths': py=3 kt=0
+      scope='programs': py=3 kt=0
+      scope='progress': py=3 kt=0
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/programs/MyProgramScreen.kt / Column: py=88 kt=2 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=58 kt=2
+      scope='paths': py=6 kt=0
+      scope='programs': py=6 kt=0
+      scope='progress': py=6 kt=0
+      scope='settings': py=6 kt=0
+      scope='today': py=6 kt=0
+  ui/programs/MyProgramScreen.kt / Spacer: py=88 kt=2 (registry=4 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=58 kt=2
+      scope='paths': py=6 kt=0
+      scope='programs': py=6 kt=0
+      scope='progress': py=6 kt=0
+      scope='settings': py=6 kt=0
+      scope='today': py=6 kt=0
+  ui/programs/MyProgramScreen.kt / Text: py=88 kt=3 (registry=7 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=58 kt=3
+      scope='paths': py=6 kt=0
+      scope='programs': py=6 kt=0
+      scope='progress': py=6 kt=0
+      scope='settings': py=6 kt=0
+      scope='today': py=6 kt=0
+  ui/progress/ProgressScreen.kt / Column: py=253 kt=5 (registry=4 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=12 kt=0
+      scope='paths': py=12 kt=0
+      scope='progress': py=205 kt=5
+      scope='settings': py=12 kt=0
+      scope='today': py=12 kt=0
+  ui/progress/ProgressScreen.kt / LazyColumn: py=61 kt=3 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=49 kt=3
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/progress/ProgressScreen.kt / Tab: py=201 kt=9 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=9 kt=0
+      scope='paths': py=9 kt=0
+      scope='progress': py=165 kt=9
+      scope='settings': py=9 kt=0
+      scope='today': py=9 kt=0
+  ui/progress/ProgressScreen.kt / TabRow: py=67 kt=3 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=55 kt=3
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/progress/ProgressScreen.kt / Text: py=311 kt=14 (registry=15 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=15 kt=0
+      scope='paths': py=15 kt=0
+      scope='progress': py=251 kt=14
+      scope='settings': py=15 kt=0
+      scope='today': py=15 kt=0
+  ui/settings/SettingsScreen.kt / Column: py=528 kt=63 (registry=3 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=48 kt=0
+      scope='paths': py=48 kt=0
+      scope='settings': py=384 kt=0
+      scope='settings_notifications': py=0 kt=63
+      scope='today': py=48 kt=0
+  ui/settings/SettingsScreen.kt / HorizontalDivider: py=231 kt=28 (registry=7 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=21 kt=0
+      scope='paths': py=21 kt=0
+      scope='settings': py=168 kt=0
+      scope='settings_notifications': py=0 kt=28
+      scope='today': py=21 kt=0
+  ui/settings/SettingsScreen.kt / Icon: py=198 kt=24 (registry=6 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=18 kt=0
+      scope='paths': py=18 kt=0
+      scope='settings': py=144 kt=0
+      scope='settings_notifications': py=0 kt=24
+      scope='today': py=18 kt=0
+  ui/settings/SettingsScreen.kt / Row: py=330 kt=40 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=30 kt=0
+      scope='paths': py=30 kt=0
+      scope='settings': py=240 kt=0
+      scope='settings_notifications': py=0 kt=40
+      scope='today': py=30 kt=0
+  ui/settings/SettingsScreen.kt / SegmentedButton: py=396 kt=48 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=36 kt=0
+      scope='paths': py=36 kt=0
+      scope='settings': py=288 kt=0
+      scope='settings_notifications': py=0 kt=48
+      scope='today': py=36 kt=0
+  ui/settings/SettingsScreen.kt / SingleChoiceSegmentedButtonRow: py=132 kt=16 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=12 kt=0
+      scope='paths': py=12 kt=0
+      scope='settings': py=96 kt=0
+      scope='settings_notifications': py=0 kt=16
+      scope='today': py=12 kt=0
+  ui/settings/SettingsScreen.kt / Text: py=1155 kt=188 (registry=7 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=105 kt=0
+      scope='paths': py=105 kt=0
+      scope='settings': py=840 kt=0
+      scope='settings_notifications': py=0 kt=188
+      scope='today': py=105 kt=0
+  ui/theme/WflCard.kt / Card: py=503 kt=12 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=49 kt=0
+      scope='paths': py=84 kt=0
+      scope='programs': py=41 kt=0
+      scope='progress': py=164 kt=5
+      scope='settings': py=44 kt=0
+      scope='today': py=121 kt=3
+      scope='workout_cooldown/{sessionId}': py=0 kt=1
+      scope='workout_summary/{sessionId}': py=0 kt=3
+  ui/theme/WflCard.kt / Text: py=434 kt=8 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=49 kt=0
+      scope='paths': py=54 kt=0
+      scope='programs': py=5 kt=0
+      scope='progress': py=161 kt=5
+      scope='settings': py=44 kt=0
+      scope='today': py=121 kt=3
+  ui/today/TodayScreen.kt / Box: py=630 kt=6 (registry=7 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=86 kt=0
+      scope='paths': py=96 kt=0
+      scope='programs': py=10 kt=0
+      scope='progress': py=126 kt=0
+      scope='settings': py=76 kt=0
+      scope='today': py=236 kt=6
+  ui/today/TodayScreen.kt / Column: py=312 kt=3 (registry=3 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=43 kt=0
+      scope='paths': py=48 kt=0
+      scope='programs': py=5 kt=0
+      scope='progress': py=63 kt=0
+      scope='settings': py=38 kt=0
+      scope='today': py=115 kt=3
+  ui/today/TodayScreen.kt / FloatingActionButton: py=312 kt=3 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=43 kt=0
+      scope='paths': py=48 kt=0
+      scope='programs': py=5 kt=0
+      scope='progress': py=63 kt=0
+      scope='settings': py=38 kt=0
+      scope='today': py=115 kt=3
+  ui/today/TodayScreen.kt / LazyColumn: py=312 kt=3 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=43 kt=0
+      scope='paths': py=48 kt=0
+      scope='programs': py=5 kt=0
+      scope='progress': py=63 kt=0
+      scope='settings': py=38 kt=0
+      scope='today': py=115 kt=3
+  ui/today/TodayScreen.kt / Row: py=312 kt=3 (registry=9 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=43 kt=0
+      scope='paths': py=48 kt=0
+      scope='programs': py=5 kt=0
+      scope='progress': py=63 kt=0
+      scope='settings': py=38 kt=0
+      scope='today': py=115 kt=3
+  ui/today/TodayScreen.kt / Text: py=624 kt=9 (registry=31 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=86 kt=0
+      scope='paths': py=96 kt=0
+      scope='programs': py=10 kt=0
+      scope='progress': py=126 kt=0
+      scope='settings': py=76 kt=0
+      scope='today': py=230 kt=9
+  ui/wins/WinsHomeCard.kt / Box: py=61 kt=3 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=49 kt=3
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/wins/WinsHomeCard.kt / Button: py=61 kt=3 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=49 kt=3
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/wins/WinsHomeCard.kt / Column: py=183 kt=9 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=9 kt=0
+      scope='paths': py=9 kt=0
+      scope='progress': py=147 kt=9
+      scope='settings': py=9 kt=0
+      scope='today': py=9 kt=0
+  ui/wins/WinsHomeCard.kt / Row: py=61 kt=3 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=49 kt=3
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/wins/WinsHomeCard.kt / Spacer: py=61 kt=6 (registry=1 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=3 kt=0
+      scope='paths': py=3 kt=0
+      scope='progress': py=49 kt=6
+      scope='settings': py=3 kt=0
+      scope='today': py=3 kt=0
+  ui/wins/WinsHomeCard.kt / Text: py=183 kt=12 (registry=3 distinct call sites) COUNT MISMATCH
+      scope='my_program': py=9 kt=0
+      scope='paths': py=9 kt=0
+      scope='progress': py=147 kt=12
+      scope='settings': py=9 kt=0
+      scope='today': py=9 kt=0
+  ui/wins/WinsListScreen.kt / Box: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / Column: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / FilterChip: py=7 kt=8 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=7 kt=0
+      scope='wins': py=0 kt=8
+  ui/wins/WinsListScreen.kt / FloatingActionButton: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / IconButton: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / LazyRow: py=1 kt=2 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / OutlinedTextField: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / Scaffold: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / Spacer: py=1 kt=2 (registry=2 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+  ui/wins/WinsListScreen.kt / Text: py=3 kt=13 (registry=5 distinct call sites) COUNT MISMATCH
+      scope='progress': py=3 kt=0
+      scope='wins': py=0 kt=13
+  ui/wins/WinsListScreen.kt / TopAppBar: py=1 kt=2 (registry=0 distinct call sites) COUNT MISMATCH
+      scope='progress': py=1 kt=0
+      scope='wins': py=0 kt=2
+
+T2 PY-ONLY pairs (file+name mounted on py, never on kt):
+  [PY-ONLY] ui/history/HistoryScreen.kt / Column: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Item: py=9 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / LazyColumn: py=3 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Row: py=9 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Spacer: py=6 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Surface: py=3 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/history/HistoryScreen.kt / Text: py=21 kt=0 (registry=7 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Button: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Column: py=75 kt=0 (registry=2 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / HorizontalDivider: py=3 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / IconButton: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Item: py=48 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / LazyColumn: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Row: py=30 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Scaffold: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Spacer: py=60 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Surface: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / Text: py=111 kt=0 (registry=5 distinct call sites)
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt / TopAppBar: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/paths/PathsScreen.kt / Item: py=47 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Button: py=36 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Column: py=72 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / FlowRow: py=36 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / IconButton: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Item: py=39 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / LazyColumn: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Row: py=36 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Scaffold: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Spacer: py=108 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Surface: py=69 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / Text: py=147 kt=0 (registry=14 distinct call sites)
+  [PY-ONLY] ui/programs/ProgramsScreen.kt / TopAppBar: py=3 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Box: py=3 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Item: py=122 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/progress/ProgressScreen.kt / Row: py=61 kt=0 (registry=3 distinct call sites)
+  [PY-ONLY] ui/theme/Theme.kt / CompositionLocalProvider: py=507 kt=0 (registry=1 distinct call sites)
+  [PY-ONLY] ui/today/TodayScreen.kt / ExtendedFloatingActionButton: py=18 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/today/TodayScreen.kt / Item: py=624 kt=0 (registry=0 distinct call sites)
+  [PY-ONLY] ui/wins/WinsListScreen.kt / Item: py=7 kt=0 (registry=0 distinct call sites)
+
+T2 KT-ONLY pairs (file+name mounted on kt, never on py):
+  [KT-ONLY] navigation/AppNavigation.kt / <get-colorScheme>: py=0 kt=57 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / <get-colors>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / <get-typography>: py=0 kt=18 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / AppNotificationPanel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / AppTopBar: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / Box: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ExerciseDetailScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ExercisesScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / GlitterBurstStar: py=0 kt=8 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / GymListScreen: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ModalBottomSheet: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / MyProgramScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / NavHost: py=0 kt=21 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / PathsScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / ProgressScreen: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / Row: py=0 kt=2 (registry=2 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / SettingsScreen: py=0 kt=4 (registry=2 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / TextButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / TodayScreen: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / WinsListScreen: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / WorkoutCooldownScreen: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / WorkoutExecutionScreen: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / WorkoutSummaryScreen: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / collectAsStateWithLifecycle: py=0 kt=21 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / colors: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / remember: py=0 kt=150 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / rememberComposableLambda: py=0 kt=105 (registry=0 distinct call sites)
+  [KT-ONLY] navigation/AppNavigation.kt / rememberModalBottomSheetState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / <get-colorScheme>: py=0 kt=36 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / <get-tokens>: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / <get-typography>: py=0 kt=25 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / DropdownMenu: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / DropdownMenuItem: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / remember: py=0 kt=37 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/CompactControls.kt / rememberComposableLambda: py=0 kt=21 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / <get-colorScheme>: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / <get-colors>: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / Canvas: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / LaunchedEffect: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / remember: py=0 kt=64 (registry=0 distinct call sites)
+  [KT-ONLY] ui/components/GlitterBurstStar.kt / rememberComposableLambda: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / <get-colorScheme>: py=0 kt=14 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / <get-colors>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / <get-shapes>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / <get-tokens>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / <get-typography>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Box: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Column: py=0 kt=4 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / ConditioningActivityPicker: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / ConditioningFinishedView: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / CooldownSelecting: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Icon: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / IconButton: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / OutlinedButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / PostWorkoutCheckIn: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Row: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Scaffold: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Spacer: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Surface: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / Text: py=0 kt=12 (registry=7 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / TextButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / TopAppBar: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / WflCard: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / collectAsStateWithLifecycle: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / hiltViewModel: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / remember: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / rememberComposableLambda: py=0 kt=18 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt / rememberScrollState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / <get-typography>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / AnimatedVisibility: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Box: py=0 kt=2 (registry=8 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Button: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Column: py=0 kt=1 (registry=11 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / DropdownMenu: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Icon: py=0 kt=3 (registry=19 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / IconButton: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / LaunchedEffect: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Scaffold: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Spacer: py=0 kt=2 (registry=18 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / Text: py=0 kt=5 (registry=54 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / TextButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / TopAppBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / collectAsStateWithLifecycle: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / remember: py=0 kt=13 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / rememberComposableLambda: py=0 kt=9 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt / topAppBarColors: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / <get-colorScheme>: py=0 kt=9 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / <get-colors>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / <get-typography>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Column: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / HorizontalDivider: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Icon: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / IconButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / LazyColumn: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Row: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Scaffold: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Spacer: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / StatCard: py=0 kt=3 (registry=3 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / Text: py=0 kt=9 (registry=9 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / TextButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / TopAppBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / WflCard: py=0 kt=3 (registry=3 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / collectAsStateWithLifecycle: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt / rememberComposableLambda: py=0 kt=7 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / <get-colorScheme>: py=0 kt=20 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / <get-colors>: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / <get-shapes>: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / <get-tokens>: py=0 kt=10 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / <get-typography>: py=0 kt=20 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / ActivityCard: py=0 kt=5 (registry=2 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Box: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Column: py=0 kt=6 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Icon: py=0 kt=5 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Row: py=0 kt=10 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Spacer: py=0 kt=15 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Surface: py=0 kt=5 (registry=1 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / Text: py=0 kt=20 (registry=4 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / remember: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt / rememberComposableLambda: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / <get-typography>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / Button: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / Column: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / Spacer: py=0 kt=6 (registry=8 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / Text: py=0 kt=4 (registry=10 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / buttonColors: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / rememberComposableLambda: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt / rememberScrollState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / <get-colorScheme>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / <get-colors>: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / <get-tokens>: py=0 kt=11 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / <get-typography>: py=0 kt=7 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / AssistChip: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / Column: py=0 kt=4 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / DetailSection: py=0 kt=4 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / DropdownMenu: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / ExerciseDetailContent: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / FlowRow: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / HorizontalDivider: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / Icon: py=0 kt=3 (registry=3 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / IconButton: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / LaunchedEffect: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / LazyColumn: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / Scaffold: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / Spacer: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / SuggestionChip: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / Text: py=0 kt=12 (registry=15 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / TopAppBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / collectAsStateWithLifecycle: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / remember: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt / rememberComposableLambda: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / <get-colorScheme>: py=0 kt=28 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / <get-colors>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / <get-tokens>: py=0 kt=60 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / <get-typography>: py=0 kt=29 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Box: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Column: py=0 kt=14 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / ExerciseListItem: py=0 kt=14 (registry=2 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Icon: py=0 kt=16 (registry=3 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / IconButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / InputField: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / LazyColumn: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / PrimaryScrollableTabRow: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Row: py=0 kt=15 (registry=2 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Scaffold: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / SearchBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / SectionHeader: py=0 kt=1 (registry=3 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Tab: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / Text: py=0 kt=35 (registry=4 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / TopAppBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / collectAsStateWithLifecycle: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / remember: py=0 kt=70 (registry=0 distinct call sites)
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt / rememberComposableLambda: py=0 kt=9 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / <get-colorScheme>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / <get-typography>: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / Box: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / FloatingActionButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / Icon: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / IconButton: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / Scaffold: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / Text: py=0 kt=2 (registry=6 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / TopAppBar: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / collectAsStateWithLifecycle: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / remember: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/gym/GymListScreen.kt / rememberComposableLambda: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / <get-colorScheme>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / <get-typography>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / EmptyPathsState: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / buttonColors: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / collectAsStateWithLifecycle: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / remember: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/paths/PathsScreen.kt / rememberComposableLambda: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / <get-typography>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / NoProgram: py=0 kt=1 (registry=2 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / collectAsStateWithLifecycle: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / hiltViewModel: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / remember: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/programs/MyProgramScreen.kt / rememberScrollState: py=0 kt=1 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / <get-colorScheme>: py=0 kt=21 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / <get-typography>: py=0 kt=5 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / CheckInInsightCard: py=0 kt=2 (registry=2 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / WflCard: py=0 kt=2 (registry=5 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / WflCardTitle: py=0 kt=2 (registry=3 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / WinsHomeCard: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / collectAsStateWithLifecycle: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / hiltViewModel: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / remember: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/progress/ProgressScreen.kt / rememberComposableLambda: py=0 kt=14 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / <get-colorScheme>: py=0 kt=80 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / <get-colors>: py=0 kt=28 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / <get-tokens>: py=0 kt=196 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / <get-typography>: py=0 kt=188 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / CompactDropdown: py=0 kt=8 (registry=2 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / CompactValueField: py=0 kt=8 (registry=2 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / LaunchedEffect: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / NotificationRow: py=0 kt=16 (registry=5 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / SectionHeader: py=0 kt=28 (registry=6 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / SettingsRow: py=0 kt=40 (registry=4 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / collectAsStateWithLifecycle: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / hiltViewModel: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / itemShape: py=0 kt=48 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / remember: py=0 kt=168 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / rememberComposableLambda: py=0 kt=84 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / rememberLauncherForActivityResult: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/settings/SettingsScreen.kt / rememberScrollState: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-colorScheme>: py=0 kt=20 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-colors>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-tokens>: py=0 kt=24 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / <get-typography>: py=0 kt=8 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / cardColors: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/theme/WflCard.kt / cardElevation: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / <get-colorScheme>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / <get-typography>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / Icon: py=0 kt=6 (registry=6 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / LaunchedEffect: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / TodayActionMenu: py=0 kt=3 (registry=2 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WeeklyWorkoutsCard: py=0 kt=3 (registry=2 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WflCard: py=0 kt=3 (registry=6 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / WflCardTitle: py=0 kt=3 (registry=4 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / collectAsStateWithLifecycle: py=0 kt=18 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / hiltViewModel: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / remember: py=0 kt=33 (registry=0 distinct call sites)
+  [KT-ONLY] ui/today/TodayScreen.kt / rememberComposableLambda: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / <get-colorScheme>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / <get-tokens>: py=0 kt=4 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / <get-typography>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / Button: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / Column: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / FilterChip: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / FlowRow: py=0 kt=2 (registry=2 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / ModalBottomSheet: py=0 kt=2 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / OutlinedTextField: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / Text: py=0 kt=22 (registry=6 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / buttonColors: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / remember: py=0 kt=22 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / rememberComposableLambda: py=0 kt=16 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / rememberModalBottomSheetState: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/LogWinSheet.kt / rememberScrollState: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-colorScheme>: py=0 kt=6 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-colors>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-tokens>: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / <get-typography>: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / Canvas: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / Icon: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / LogWinSheet: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WflCard: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WflCardTitle: py=0 kt=3 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / WinsDonut: py=0 kt=3 (registry=2 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / collectAsStateWithLifecycle: py=0 kt=9 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / remember: py=0 kt=11 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsHomeCard.kt / rememberComposableLambda: py=0 kt=3 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / <get-colorScheme>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / <get-typography>: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / Icon: py=0 kt=6 (registry=3 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / LogWinSheet: py=0 kt=1 (registry=1 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / collectAsStateWithLifecycle: py=0 kt=12 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / hiltViewModel: py=0 kt=2 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / remember: py=0 kt=18 (registry=0 distinct call sites)
+  [KT-ONLY] ui/wins/WinsListScreen.kt / rememberComposableLambda: py=0 kt=14 (registry=0 distinct call sites)
+
+SUMMARY: MOUNT DIFF: T1exact 67 / T2(file+name) 0 agree, 66 count-mismatch, 39 py-only, 287 kt-only pairs (of 1658 registry entries; kt non-app frames filtered: 44084)
+
+----------------------------------------------------------------------------------------------------
+PER-ROUTE: distinct app coordinates mounted, for every route BOTH walks' state jsons mention at least one coordinate on
+----------------------------------------------------------------------------------------------------
+route='execution/{sessionId}': 0 both / 0 py-only / 11 kt-only
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:161 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:177 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:181 -> Text
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:188 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:218 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:248 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:253 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:254 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:261 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:310 -> PrBanner
+      kind='AnimatedVisibility' text=''
+  [KT-ONLY] ui/execution/WorkoutExecutionScreen.kt:320 -> CardioReadinessNote
+      kind='AnimatedVisibility' text=''
+
+route='exercise_detail/{exerciseId}': 0 both / 0 py-only / 10 kt-only
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:182 -> LazyColumn
+      kind='LazyColumn' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:197 -> Text
+      kind='remember' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:199 -> Text
+      kind='SuggestionChip' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:243 -> HorizontalDivider
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:244 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:278 -> Column
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:279 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:69 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:79 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/exercises/ExerciseDetailScreen.kt:87 -> Icon
+      kind='remember' text=''
+
+route='exercises': 0 both / 0 py-only / 6 kt-only
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:191 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:200 -> Icon
+      kind='Text' text='Push  ·  39'
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:222 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:230 -> Icon
+      kind='Column' text=''
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:235 -> Text
+      kind='Text' text='Arnold Press'
+  [KT-ONLY] ui/exercises/ExercisesScreen.kt:66 -> Box
+      kind='Box' text=''
+
+route='gym_list': 0 both / 0 py-only / 2 kt-only
+  [KT-ONLY] ui/gym/GymListScreen.kt:58 -> GymListItem
+      kind='collectAsStateWithLifecycle' text=''
+  [KT-ONLY] ui/gym/GymListScreen.kt:60 -> Icon
+      kind='Scaffold' text=''
+
+route='my_program': 13 both / 61 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='paths': 12 both / 74 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:115 -> Text
+      kind='Text' text="'Choose what matters to you. Select up to...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:124 -> SectionHeader
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:141 -> CompactValueField
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='Text' text="'Mental health focus'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'Moving Through'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text="'Exercise is one of the most evidence-bac...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:216 -> Icon
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Text
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='programs': 0 both / 36 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:172 -> ProgramCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:174 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'3-Day Full Body — Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> OutlinePill
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Text
+      kind='Text' text="'Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Icon
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+
+route='progress': 17 both / 48 py-only / 13 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:250 -> StatLabel
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:91 -> CardioCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:98 -> Spacer
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:106 -> Icon
+      kind='Text' text="'Search wins'"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:118 -> LazyRow
+      kind='LazyRow' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:122 -> Text
+      kind='FilterChip' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:162 -> WinRow
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:86 -> Icon
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:88 -> Icon
+      kind='IconButton' text="''"
+  [KT-ONLY] ui/progress/ProgressScreen.kt:255 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/progress/ProgressScreen.kt:259 -> Text
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:50 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:63 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:67 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:86 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:87 -> FlowRow
+      kind='rememberComposableLambda' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:97 -> Text
+      kind='OutlinedTextField' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:106 -> LogWinSheet
+      kind='LogWinSheet' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:70 -> WflCard
+      kind='rememberComposableLambda' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:72 -> WflCardTitle
+      kind='WflCardTitle' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:78 -> WinsDonut
+      kind='WinsDonut' text=''
+  [KT-ONLY] ui/wins/WinsHomeCard.kt:96 -> Icon
+      kind='Icon' text=''
+
+route='settings': 0 both / 74 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='settings_notifications': 0 both / 0 py-only / 41 kt-only
+  [KT-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text=''
+  [KT-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:147 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:149 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:166 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:192 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:194 -> CompactDropdown
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:208 -> CompactDropdown
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:221 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:250 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:257 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:266 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:275 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:284 -> NotificationRow
+      kind='NotificationRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:294 -> SettingsRow
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='<get-tokens>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:327 -> SectionHeader
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='SettingsRow' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='SectionHeader' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text=''
+
+route='today': 13 both / 64 py-only / 6 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:870 -> Row
+      kind='Row' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:875 -> Text
+      kind='Text' text=''
+  [KT-ONLY] navigation/AppNavigation.kt:892 -> Text
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:499 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/today/TodayScreen.kt:507 -> Text
+      kind='WflCardTitle' text=''
+
+route='wins': 0 both / 0 py-only / 12 kt-only
+  [KT-ONLY] ui/wins/LogWinSheet.kt:50 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:63 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:67 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:86 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:87 -> FlowRow
+      kind='rememberComposableLambda' text=''
+  [KT-ONLY] ui/wins/LogWinSheet.kt:97 -> Text
+      kind='OutlinedTextField' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:106 -> Icon
+      kind='OutlinedTextField' text='42'
+  [KT-ONLY] ui/wins/WinsListScreen.kt:118 -> LazyRow
+      kind='LazyRow' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:162 -> WinRow
+      kind='Spacer' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:191 -> LogWinSheet
+      kind='LogWinSheet' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:86 -> Icon
+      kind='remember' text=''
+  [KT-ONLY] ui/wins/WinsListScreen.kt:88 -> Icon
+      kind='Scaffold' text=''
+
+route='workout_cooldown/{sessionId}': 0 both / 0 py-only / 30 kt-only
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:160 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:167 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:169 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:174 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:183 -> ConditioningActivityPicker
+      kind='ConditioningActivityPicker' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:189 -> Text
+      kind='OutlinedButton' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:197 -> Text
+      kind='TextButton' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:218 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:223 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:230 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/WorkoutCooldownScreen.kt:82 -> Scaffold
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:102 -> Icon
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:45 -> ActivityCard
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:65 -> Surface
+      kind='Surface' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:76 -> Text
+      kind='Text' text='🚶'
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:80 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:81 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:82 -> Text
+      kind='Row' text=''
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:83 -> Text
+      kind='Text' text='Slow walk'
+  [KT-ONLY] ui/execution/components/ConditioningActivityPicker.kt:89 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:178 -> Column
+      kind='Column' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:185 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:186 -> Text
+      kind='<get-typography>' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:187 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:188 -> Text
+      kind='Text' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:195 -> Text
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:204 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:207 -> Spacer
+      kind='Spacer' text=''
+  [KT-ONLY] ui/execution/components/ConditioningTimer.kt:208 -> Text
+      kind='Button' text=''
+  [KT-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text=''
+
+route='workout_summary/{sessionId}': 0 both / 0 py-only / 7 kt-only
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:104 -> StatCard
+      kind='StatCard' text='0 kg'
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:142 -> Text
+      kind='HorizontalDivider' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:173 -> WflCard
+      kind='WflCard' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:183 -> Text
+      kind='Text' text='<TIME>'
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:52 -> Text
+      kind='Scaffold' text=''
+  [KT-ONLY] ui/execution/WorkoutSummaryScreen.kt:99 -> StatCard
+      kind='StatCard' text='<TIME>'
+  [KT-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text=''
+
+----------------------------------------------------------------------------------------------------
+ACTIVATION comparison (secondary, cheap): distinct ORIGIN coordinates activated on each side (ACTIVATE lines -- a component that fired a real handler, not just mounted)
+----------------------------------------------------------------------------------------------------
+py distinct activated coordinates: 10
+kt distinct activated coordinates: 0
+BOTH: 0  py-only: 10  kt-only: 0
+py-only activated coordinates:
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+  [PY-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+  [PY-ONLY] navigation/AppNavigation.kt:883 -> Text
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+
+====================================================================================================
+MOUNT DIFF: T1exact 67 / T2(file+name) 0 agree, 66 count-mismatch, 39 py-only, 287 kt-only pairs (of 1658 registry entries; kt non-app frames filtered: 44084)
+====================================================================================================

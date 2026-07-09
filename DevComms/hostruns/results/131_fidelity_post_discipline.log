@@ -1,0 +1,30 @@
+  Specimen gate: 26/26 (not counted)
+  SpecimenList gate: 5/5 (not counted)
+  ExerciseDetailScreen: 16/16 within tolerance
+  ExercisesScreen: 35/35 within tolerance
+  GymListScreen: 7/7 within tolerance
+  HistoryScreen: 7/7 within tolerance
+  LogCardioScreen: 25/25 within tolerance
+  ProgramsScreen: 21/21 within tolerance
+  ProgressScreen: 9/9 within tolerance
+  SettingsScreen: 41/41 within tolerance
+  TodayScreen: 3/3 within tolerance
+ompositionLocalProvider
+     _call(content)
+     ~~~~~^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose.py", line 67, in _call
+     return fn()
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/theme/Theme.py", line 20, in <lambda>
+     CompositionLocalProvider(LocalWflColors.provides(wflColors), LocalWflTokens.provides(ComfortableTokens), (lambda it=None: MaterialTheme(colorScheme=(DarkColorScheme if darkTheme else LightColorScheme), typography=Typography, content=content)))
+                                                                                                                               ~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/PseudoCoup_v0/tools/pseudokotlin/runtime/compose_ui.py", line 633, in __call__
+     return content()
+   File "/home/lucas/Programming/WFL_MixingCenter/render/inspect_layout.py", line 255, in <lambda>
+     return theme(darkTheme=False, content=(lambda it=None: fn(*args, **kwargs)))
+                                                            ~~^^^^^^^^^^^^^^^^^
+   File "/home/lucas/Programming/WFL_MixingCenter/ui/wins/WinsListScreen.py", line 46, in WinsListScreen
+     if viewModel is None: viewModel = hiltViewModel(WinsListViewModel)
+                                                     ^^^^^^^^^^^^^^^^^
+ NameError: name 'WinsListViewModel' is not defined. Did you mean: 'HiltViewModel'?
+
+fidelity.py: the kivy dump failed for WinsListScreen (above)

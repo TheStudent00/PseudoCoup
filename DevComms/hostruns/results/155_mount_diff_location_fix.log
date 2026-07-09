@@ -1,0 +1,1125 @@
+oracle_registry: built 1658 entries from 253 transpiled files under /home/lucas/Programming/WFL_MixingCenter
+====================================================================================================
+MOUNT DIFF -- component-identity comparison, joined on Kotlin source coordinate,
+cross-checked against the oracle registry (render/oracle_registry.py)
+====================================================================================================
+
+registry entries (R): 1658
+kt non-app frames filtered (library-internal / test-harness MOUNT occurrences, no registry entry): 1569
+py non-app frames filtered (MOUNT occurrences with no registry entry): 312
+
+----------------------------------------------------------------------------------------------------
+GLOBAL: distinct app coordinates mounted
+----------------------------------------------------------------------------------------------------
+py distinct app coordinates:  118
+kt distinct app coordinates:  1
+BOTH:                         0
+py-only:                      118
+kt-only:                      1
+
+SUMMARY: MOUNT DIFF: 0 both / 118 py-only / 1 kt-only app coordinates (of 1658 registry entries; kt non-app frames filtered: 1569)
+
+py-only coordinates (present on py, absent on kt) -- named by ledger entry:
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:250 -> StatLabel
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:91 -> CardioCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:98 -> Spacer
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:115 -> Text
+      kind='Text' text="'Choose what matters to you. Select up to...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:124 -> SectionHeader
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:141 -> CompactValueField
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='Text' text="'Mental health focus'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'Moving Through'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text="'Exercise is one of the most evidence-bac...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:216 -> Icon
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Text
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:172 -> ProgramCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:174 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'3-Day Full Body — Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> OutlinePill
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Text
+      kind='Text' text="'Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Icon
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:106 -> Icon
+      kind='Text' text="'Search wins'"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:118 -> LazyRow
+      kind='LazyRow' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:122 -> Text
+      kind='FilterChip' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:162 -> WinRow
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:86 -> Icon
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:88 -> Icon
+      kind='IconButton' text="''"
+
+kt-only coordinates (present on kt, absent on py) -- named by ledger entry:
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+
+----------------------------------------------------------------------------------------------------
+PER-ROUTE: distinct app coordinates mounted, for every route BOTH walks' state jsons mention at least one coordinate on
+----------------------------------------------------------------------------------------------------
+route='my_program': 0 both / 74 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='paths': 0 both / 86 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:115 -> Text
+      kind='Text' text="'Choose what matters to you. Select up to...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:124 -> SectionHeader
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:141 -> CompactValueField
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:162 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:164 -> HorizontalDivider
+      kind='Text' text="'Mental health focus'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:200 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:201 -> Text
+      kind='Text' text="'Moving Through'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:202 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:203 -> Text
+      kind='Text' text="'Exercise is one of the most evidence-bac...'"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:208 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:216 -> Icon
+      kind='Row' text="''"
+  [PY-ONLY] ui/paths/PathSelectionSheet.kt:69 -> Text
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='programs': 0 both / 36 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:172 -> ProgramCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:174 -> Text
+      kind='Text' text="'Active'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:285 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:291 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:292 -> Text
+      kind='Text' text="'3-Day Full Body — Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:299 -> OutlinePill
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:350 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:360 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:385 -> Text
+      kind='Text' text="'Ground Up'"
+  [PY-ONLY] ui/programs/ProgramsScreen.kt:89 -> Icon
+      kind='IconButton' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+
+route='progress': 0 both / 65 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:130 -> Surface
+      kind='Surface' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:138 -> Text
+      kind='Text' text="'Jun 10 – Jun 16'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:223 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:228 -> Text
+      kind='Text' text="'Run'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:241 -> Text
+      kind='Text' text="'Sat, Jun 15 at 8:00 AM'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:246 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:250 -> StatLabel
+      kind='Row' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:265 -> Text
+      kind='Text' text="'30 min'"
+  [PY-ONLY] ui/history/HistoryScreen.kt:86 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:91 -> CardioCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/history/HistoryScreen.kt:98 -> Spacer
+      kind='Item' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:138 -> Text
+      kind='Text' text="'No bests yet'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:106 -> Icon
+      kind='Text' text="'Search wins'"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:118 -> LazyRow
+      kind='LazyRow' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:122 -> Text
+      kind='FilterChip' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:162 -> WinRow
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:86 -> Icon
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/wins/WinsListScreen.kt:88 -> Icon
+      kind='IconButton' text="''"
+
+route='settings': 0 both / 74 py-only / 0 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+
+route='today': 0 both / 77 py-only / 1 kt-only
+  [PY-ONLY] navigation/AppNavigation.kt:1004 -> GlitterBurstStar
+      kind='TopAppBar' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:1007 -> Text
+      kind='Text' text="'Saturday'"
+  [PY-ONLY] navigation/AppNavigation.kt:385 -> Scaffold
+      kind='Scaffold' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:389 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:414 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+      kind='Icon' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:109 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:111 -> Text
+      kind='Text' text="'User'"
+  [PY-ONLY] ui/components/CompactControls.kt:121 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:150 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:168 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/components/CompactControls.kt:173 -> Icon
+      kind='Text' text="'RPE'"
+  [PY-ONLY] ui/components/CompactControls.kt:86 -> BasicTextField
+      kind='BasicTextField' text="'User'"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:128 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:157 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:164 -> Text
+      kind='Text' text="'Start with your why.'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:170 -> Text
+      kind='Text' text="'A Path connects your training to what ac...'"
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:65 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:66 -> PathSelectionSheet
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/paths/PathsScreen.kt:77 -> EmptyPathsState
+      kind='Item' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:251 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:258 -> Text
+      kind='Text' text="'No program yet'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:263 -> Text
+      kind='Text' text="'Join a program to see your training road...'"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:77 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:78 -> EnrolledProgramSpeedDial
+      kind='Column' text="''"
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:84 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:284 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:298 -> WinsHomeCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:330 -> ActiveMinutesCard
+      kind='Item' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:518 -> Text
+      kind='Row' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:585 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:586 -> Text
+      kind='Text' text="'Last 7 days'"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:64 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+      kind='Tab' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:124 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:164 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:206 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:223 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:235 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:237 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:264 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:273 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:282 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:292 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:312 -> HorizontalDivider
+      kind='HorizontalDivider' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:314 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:329 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:343 -> Icon
+      kind='Icon' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:365 -> Text
+      kind='Text' text="'Profile'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:382 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:390 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:391 -> Text
+      kind='Text' text="'Display name'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:414 -> Column
+      kind='Column' text="''"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:419 -> Text
+      kind='Text' text="'Workout reminders'"
+  [PY-ONLY] ui/settings/SettingsScreen.kt:420 -> Text
+      kind='Text' text='"Remind you when it\'s time to log your ne..."'
+  [PY-ONLY] ui/theme/Theme.kt:94 -> CompositionLocalProvider
+      kind='CompositionLocalProvider' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:62 -> Card
+      kind='Card' text="''"
+  [PY-ONLY] ui/theme/WflCard.kt:80 -> Text
+      kind='Text' text='"This week\'s workouts"'
+  [PY-ONLY] ui/today/TodayScreen.kt:223 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:224 -> LazyColumn
+      kind='LazyColumn' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:360 -> PathEncouragementCard
+      kind='Text' text="'No program enrolled yet. Head to Paths t...'"
+  [PY-ONLY] ui/today/TodayScreen.kt:434 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:437 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:454 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:461 -> Text
+      kind='ExtendedFloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+      kind='FloatingActionButton' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:502 -> Row
+      kind='Row' text="''"
+  [PY-ONLY] ui/today/TodayScreen.kt:518 -> Text
+      kind='Text' text="'Set up a program to see your week here.'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:127 -> Box
+      kind='Box' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:167 -> Text
+      kind='Text' text="'0'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:73 -> Spacer
+      kind='Spacer' text="''"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:87 -> Text
+      kind='Text' text="'More than the numbers — the real-life wi...'"
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+      kind='Button' text="''"
+  [KT-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+      kind='ModalBottomSheet' text=''
+
+----------------------------------------------------------------------------------------------------
+ACTIVATION comparison (secondary, cheap): distinct ORIGIN coordinates activated on each side (ACTIVATE lines -- a component that fired a real handler, not just mounted)
+----------------------------------------------------------------------------------------------------
+py distinct activated coordinates: 10
+kt distinct activated coordinates: 0
+BOTH: 0  py-only: 10  kt-only: 0
+py-only activated coordinates:
+  [PY-ONLY] navigation/AppNavigation.kt:435 -> Text
+  [PY-ONLY] navigation/AppNavigation.kt:859 -> ModalBottomSheet
+  [PY-ONLY] navigation/AppNavigation.kt:883 -> Text
+  [PY-ONLY] ui/components/GlitterBurstStar.kt:172 -> Icon
+  [PY-ONLY] ui/paths/PathsScreen.kt:176 -> Text
+  [PY-ONLY] ui/programs/MyProgramScreen.kt:269 -> Text
+  [PY-ONLY] ui/progress/ProgressScreen.kt:69 -> Text
+  [PY-ONLY] ui/theme/WflCard.kt:51 -> Card
+  [PY-ONLY] ui/today/TodayScreen.kt:468 -> Text
+  [PY-ONLY] ui/wins/WinsHomeCard.kt:97 -> Text
+
+====================================================================================================
+MOUNT DIFF: 0 both / 118 py-only / 1 kt-only app coordinates (of 1658 registry entries; kt non-app frames filtered: 1569)
+====================================================================================================

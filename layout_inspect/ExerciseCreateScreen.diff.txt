@@ -2,23 +2,23 @@ ExerciseCreateScreen: compose display 411x915 vs kivy display 411x915
 tolerance: ±3.0% of display   (x,w over width; y,h over height)
 
   PASS  New exercise                         compose x= 13.6 y=  2.0 w= 32.6 h= 3.1  |  kivy x= 12.7 y=  0.0 w= 32.5 h= 2.8  |  worst Δ  2.0%
-  PASS  Exercise name                        compose x=  4.9 y=  7.9 w= 19.2 h= 1.4  |  kivy x=  4.9 y=  7.9 w= 19.5 h= 1.5  |  worst Δ  0.2%
-  PASS  Primary muscles *                    compose x=  4.9 y= 15.1 w= 23.8 h= 1.4  |  kivy x=  4.9 y= 15.5 w= 23.7 h= 1.5  |  worst Δ  0.4%
-  PASS  Select…                              compose x=  7.8 y= 18.0 w= 78.6 h= 1.9  |  kivy x=  7.8 y= 18.5 w= 78.6 h= 1.9  |  worst Δ  0.5%
-  PASS  Secondary muscles                    compose x=  4.9 y= 23.1 w= 25.5 h= 1.4  |  kivy x=  4.9 y= 23.6 w= 26.0 h= 1.5  |  worst Δ  0.5%
-  PASS  Select…                              compose x=  7.8 y= 26.0 w= 78.6 h= 1.9  |  kivy x=  7.8 y= 26.6 w= 78.6 h= 1.9  |  worst Δ  0.6%
-  PASS  Movement pattern                     compose x=  4.9 y= 31.0 w= 24.6 h= 1.4  |  kivy x=  4.9 y= 31.7 w= 24.6 h= 1.5  |  worst Δ  0.7%
-  PASS  Isolation                            compose x=  7.8 y= 33.8 w= 13.6 h= 1.9  |  kivy x=  7.8 y= 34.5 w= 13.2 h= 1.9  |  worst Δ  0.7%
-  PASS  Equipment                            compose x=  4.9 y= 38.6 w= 14.4 h= 1.4  |  kivy x=  4.9 y= 39.3 w= 14.2 h= 1.5  |  worst Δ  0.8%
-  PASS  Dumbbell                             compose x=  7.8 y= 41.3 w= 15.3 h= 1.9  |  kivy x=  7.8 y= 42.1 w= 14.9 h= 1.9  |  worst Δ  0.8%
-  PASS  Unilateral                           compose x=  4.9 y= 47.9 w= 30.4 h= 1.9  |  kivy x=  4.9 y= 47.8 w= 30.5 h= 1.9  |  worst Δ  0.1%
-  PASS  Compound                             compose x= 51.8 y= 47.9 w= 30.7 h= 1.9  |  kivy x= 51.9 y= 47.8 w= 30.5 h= 1.9  |  worst Δ  0.1%
-  PASS  Base starting weight on (optional)   compose x=  4.9 y= 53.6 w= 46.0 h= 1.4  |  kivy x=  4.9 y= 52.7 w= 44.9 h= 1.5  |  worst Δ  1.1%
-  PASS  None — start light                   compose x=  7.8 y= 56.3 w= 29.0 h= 1.9  |  kivy x=  7.8 y= 55.5 w= 29.4 h= 1.9  |  worst Δ  0.8%
-  PASS  For a new movement, we'll start ne   compose x=  4.9 y= 59.3 w= 90.3 h= 3.2  |  kivy x=  4.9 y= 58.6 w= 90.2 h= 3.3  |  worst Δ  0.8%
-  PASS  Form notes (optional)                compose x=  8.8 y= 67.3 w= 38.7 h= 2.6  |  kivy x=  8.8 y= 66.7 w= 38.0 h= 2.2  |  worst Δ  0.7%
-  PASS  Coaching cues (optional)             compose x=  8.8 y= 81.7 w= 45.3 h= 2.6  |  kivy x=  8.8 y= 81.1 w= 45.1 h= 2.2  |  worst Δ  0.7%
-  PASS  Video link (optional)                compose x=  4.9 y= 90.9 w= 27.5 h= 1.4  |  kivy x=  4.9 y= 90.3 w= 26.2 h= 1.5  |  worst Δ  1.3%
+  PASS  Exercise name                        compose x=  4.9 y=  7.9 w= 19.2 h= 1.4  |  kivy x=  4.9 y=  7.9 w= 19.5 h= 1.4  |  worst Δ  0.2%
+  PASS  Primary muscles *                    compose x=  4.9 y= 15.1 w= 23.8 h= 1.4  |  kivy x=  4.9 y= 15.3 w= 23.7 h= 1.4  |  worst Δ  0.2%
+  PASS  Select…                              compose x=  7.8 y= 18.0 w= 78.6 h= 1.9  |  kivy x=  7.8 y= 18.3 w= 78.6 h= 1.7  |  worst Δ  0.2%
+  PASS  Secondary muscles                    compose x=  4.9 y= 23.1 w= 25.5 h= 1.4  |  kivy x=  4.9 y= 23.3 w= 26.0 h= 1.4  |  worst Δ  0.4%
+  PASS  Select…                              compose x=  7.8 y= 26.0 w= 78.6 h= 1.9  |  kivy x=  7.8 y= 26.2 w= 78.6 h= 1.7  |  worst Δ  0.2%
+  PASS  Movement pattern                     compose x=  4.9 y= 31.0 w= 24.6 h= 1.4  |  kivy x=  4.9 y= 31.3 w= 24.6 h= 1.4  |  worst Δ  0.2%
+  PASS  Isolation                            compose x=  7.8 y= 33.8 w= 13.6 h= 1.9  |  kivy x=  7.8 y= 34.0 w= 13.2 h= 1.7  |  worst Δ  0.4%
+  PASS  Equipment                            compose x=  4.9 y= 38.6 w= 14.4 h= 1.4  |  kivy x=  4.9 y= 38.8 w= 14.2 h= 1.4  |  worst Δ  0.2%
+  PASS  Dumbbell                             compose x=  7.8 y= 41.3 w= 15.3 h= 1.9  |  kivy x=  7.8 y= 41.5 w= 14.9 h= 1.7  |  worst Δ  0.4%
+  PASS  Unilateral                           compose x=  4.9 y= 47.9 w= 30.4 h= 1.9  |  kivy x=  4.9 y= 47.2 w= 30.5 h= 1.7  |  worst Δ  0.7%
+  PASS  Compound                             compose x= 51.8 y= 47.9 w= 30.7 h= 1.9  |  kivy x= 51.9 y= 47.2 w= 30.5 h= 1.7  |  worst Δ  0.7%
+  PASS  Base starting weight on (optional)   compose x=  4.9 y= 53.6 w= 46.0 h= 1.4  |  kivy x=  4.9 y= 52.0 w= 44.9 h= 1.4  |  worst Δ  1.5%
+  PASS  None — start light                   compose x=  7.8 y= 56.3 w= 29.0 h= 1.9  |  kivy x=  7.8 y= 54.8 w= 29.4 h= 1.7  |  worst Δ  1.5%
+  PASS  For a new movement, we'll start ne   compose x=  4.9 y= 59.3 w= 90.3 h= 3.2  |  kivy x=  4.9 y= 57.8 w= 90.2 h= 3.3  |  worst Δ  1.5%
+  PASS  Form notes (optional)                compose x=  8.8 y= 67.3 w= 38.7 h= 2.6  |  kivy x=  8.8 y= 65.9 w= 38.0 h= 2.1  |  worst Δ  1.4%
+  PASS  Coaching cues (optional)             compose x=  8.8 y= 81.7 w= 45.3 h= 2.6  |  kivy x=  8.8 y= 80.3 w= 45.1 h= 2.1  |  worst Δ  1.4%
+  PASS  Video link (optional)                compose x=  4.9 y= 90.9 w= 27.5 h= 1.4  |  kivy x=  4.9 y= 89.5 w= 26.2 h= 1.4  |  worst Δ  1.4%
 
 matched 18/18 compose components; 18 within ±3.0%
 LAYOUT FIDELITY: 100%  (18/18)
