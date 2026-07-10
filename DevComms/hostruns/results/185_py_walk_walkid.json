@@ -1,0 +1,5 @@
+{
+  "id": "185_py_walk_walkid",
+  "returncode": null,
+  "refused": "cmd[0] not on the allowed list: ['bash']"
+}

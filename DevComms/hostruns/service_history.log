@@ -6,3 +6,10 @@
 2026-07-09T23:10:30.152401+00:00  DONE 183_kt_walk_walkid_v3: rc=0 (35.9s)
 2026-07-10T00:36:21.896067+00:00  RUN 184_kt_walk_walkid_v4: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
 2026-07-10T00:36:51.722126+00:00  DONE 184_kt_walk_walkid_v4: rc=0 (29.9s)
+2026-07-10T02:24:39.702934+00:00  REFUSED 185_py_walk_walkid: cmd[0] not on the allowed list: ['bash']
+2026-07-10T02:28:31.979534+00:00  RUN 186_py_walk_walkid: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json
+2026-07-10T03:00:25.796178+00:00  DONE 186_py_walk_walkid: rc=0 (1913.8s)
+2026-07-10T03:00:25.869022+00:00  RUN 187_py_walkid_capture: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('walks/py_walk.json', d+'/186_py_walk.json'); shutil.copy('walks/py_activations.log', d+'/186_py_activations.log'); print('captured')
+2026-07-10T03:00:25.948363+00:00  DONE 187_py_walkid_capture: rc=0 (0.1s)
+2026-07-10T03:18:57.570461+00:00  RUN 188_walk_diff_walkid: python3 walk_diff.py
+2026-07-10T03:18:57.734983+00:00  DONE 188_walk_diff_walkid: rc=0 (0.2s)
