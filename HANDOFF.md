@@ -1,4 +1,57 @@
-# Session handoff — 2026-07-09 LATE (Phase 5 PYTHON SIDE LANDED; host run 185 queued) (read this block first)
+# Session handoff — 2026-07-10 (walkTag BROADENED app-wide; host runs 189-193 queued) (read this block first)
+
+GLOSSARY (owner-anchored; do not collapse these two layers again -- doing so cost trust this session):
+  Ledger id
+      the unique positional-path id idgen.py COMPUTES for every Kotlin source node by parsing.
+      Never injected; exists for ALL nodes; ledger_unified.py is the record keyed by it.
+      example: AppNavigation's FAB call has a ledger id even though (pre-broadening) its source
+      carried no walkTag.
+  walkTag (insertion)
+      inject_emitid.py writing `.walkTag("<ledger id>")` into Kotlin source so that SAME id is
+      present at runtime and the node can announce it. Same id space; injection makes a ledger id
+      visible to the running app. Purpose: a replay-stable handle for the walker.
+  EVERYTHING IS TRACKED (owner's spec, runtime property, does NOT rest on insertion)
+      no component exists/gets touched/disappears at runtime without the system naming it: every
+      widget construction -- app code OR imported library -- passes through the runtime's hooked
+      node-construction choke point (identity.py on py; semantics enumeration on kt), lands in the
+      MOUNT/ACTIVATE log with an identity, and cross-checks against the ledger loudly (ORACLE
+      UNKNOWN on failure). Insertion is a stronger handle layered on top where reachable; the
+      choke-point hook is the catch-all for what insertion can't reach (e.g. components built
+      inside library code).
+
+STATUS: walkTag injection broadened from 2 files to the whole app UI in ONE SHOT (owner's call:
+one shot, revert to increments if noticeably broken). 86 kt files (ui/** + navigation/AppNavigation.kt),
++928 walkTag calls, idgen 0 dupes, ledger check clean, re-transpile 256/256 files 0 errors, kt<->py
+walkTag count parity 52/52 tagged files exact (the old TodayScreen 90v89 drift did NOT reproduce:
+89/89 now). Report: WFL DevComms/log_139_walktag_broadening.md. Kotlin COMPILE NOT YET VERIFIED --
+sandbox can't run gradle; host run 189 IS the compile check. REVERT SURFACE if 189 fails: git-level,
+258 WFL files (86 kt + 86 py + 86 linemaps); PseudoCoup_v0 untouched.
+
+KNOWN GAP (flagged, owner decision pending): the injector is REWRITE-ONLY (the run-181 fix) -- it
+chains onto an existing modifier= but never ADDS one. AppNavigation's NavigationBarItems/FAB pass no
+modifier, so the walk's dominant interactive nodes are STILL un-inserted (walk_id=None) after this
+broadening. Proposed fix: injector extension that adds `modifier = Modifier.walkTag(...)` as a new
+named arg ONLY when the callee provably accepts a modifier param -- re-opens the run-181 risk class,
+so gate it on 189's compile result. Owner has not yet said go.
+
+QUEUED HOST RUNS (in order): 189 kt walk 200 steps --reset (doubles as compile check) · 190 captures
+kt_walk.json+kt_activations.log into results/ as 189_* · 191 py walk 200 steps --reset · 192 captures
+py artifacts as 191_* · 193 walk_diff. Runs 186-188 (this session, pre-broadening): py walk 40 states/
+188 edges/10 routes at 200 steps, 300 RESOLVEs all ordinal-fallback, 0 missing; only 4 fired actions
+hit tagged nodes (self-loops/known states, so never replayed -> 0 exact-walkid is coherent). walk_diff
+188: 4 shared/3 kt-only/34 py-only/167 edge mismatches. CAUTION (retraction enforced): pre-broadening
+kt-vs-py coverage numbers compare FALLBACK POLICIES (kt discards unresolvable paths; py ordinal-replays
+and never discards), NOT the id mechanism -- do not draw identity conclusions from them.
+
+ALSO THIS SESSION: Phase 5 py side landed + verified (block below). Build bug found: the 2026-07-09
+transpile was made with tree_sitter missing -> ALL enum Cols degraded to text -> sqlite crash at seed;
+rebuilt correctly (build_mixingcenter.py should assert tree_sitter importability -- unfixed). Push
+script now reads DevComms/next_commit_message.txt (arg > file > "update"; file emptied after use).
+walk_service progress bar is a median-of-prior-runs ESTIMATE capped at 99% until child exit -- a
+possible upgrade: count ^STEP lines vs --steps for walker.py runs. 26 pre-existing LookupError
+(ModalBottomSheet/Settings widget-mount) + 2 step timeouts remain open, unrelated.
+
+# Session handoff — 2026-07-09 LATE (Phase 5 PYTHON SIDE LANDED; host runs 186-188 done) (superseded by the block above)
 
 STATUS: Phase 5's Python side is IMPLEMENTED and sandbox-verified; the full host py walk that makes a real
 KT-vs-PY comparison possible is QUEUED as requests 186 (the walk: 200 steps, --reset) + 187 (copies py_walk.json + py_activations.log
