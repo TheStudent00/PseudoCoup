@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import shutil, os; src = 'app/build/walks/pixelprobe'; dst = os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/202_pixelprobe'); shutil.copytree(src, dst, dirs_exist_ok=True); print('captured')
+                                                                                                                                                             ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lucas/anaconda3/lib/python3.13/shutil.py", line 591, in copytree
+    with os.scandir(src) as itr:
+         ~~~~~~~~~~^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'app/build/walks/pixelprobe'

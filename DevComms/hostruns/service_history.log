@@ -44,3 +44,14 @@
 2026-07-10T20:08:23.078782+00:00  RUN 202_pixel_probe: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
 2026-07-10T20:08:57.406129+00:00  DONE 202_pixel_probe: rc=1 (34.3s)
 2026-07-10T20:08:57.421068+00:00  RUN 202_py_walk_exhaust: xvfb-run -a python3 -u walker.py --steps 2000 --resume --out walks/py_walk.json
+2026-07-10T21:29:39.510913+00:00  RUN 202_py_walk_exhaust: xvfb-run -a python3 -u walker.py --steps 2000 --resume --out walks/py_walk.json
+2026-07-10T21:31:58.327234+00:00  RUN 203_pixel_capture: python3 -c import shutil, os; src = 'app/build/walks/pixelprobe'; dst = os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/202_pixelprobe'); shutil.copytree(src, dst, dirs_exist_ok=True); print('captured')
+2026-07-10T21:31:58.391927+00:00  DONE 203_pixel_capture: rc=1 (0.1s)
+2026-07-10T21:31:58.419067+00:00  RUN 204_pixel_probe2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-10T21:32:34.647537+00:00  DONE 204_pixel_probe2: rc=1 (36.3s)
+2026-07-10T21:32:34.662927+00:00  RUN 205_pixel_capture2: python3 -c import shutil, os; src = 'app/build/walks/pixelprobe'; dst = os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/204_pixelprobe'); shutil.copytree(src, dst, dirs_exist_ok=True); print('captured')
+2026-07-10T21:32:34.695289+00:00  DONE 205_pixel_capture2: rc=0 (0.0s)
+2026-07-10T21:32:34.709012+00:00  RUN 206_kt_walk_budget: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
+2026-07-10T21:44:10.017734+00:00  DONE 206_kt_walk_budget: rc=0 (695.3s)
+2026-07-10T21:44:10.030957+00:00  RUN 207_kt_capture_budget: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('app/build/walks/kt_walk.json', d+'/206_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/206_kt_activations.log'); print('captured')
+2026-07-10T21:44:10.063292+00:00  DONE 207_kt_capture_budget: rc=0 (0.0s)

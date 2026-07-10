@@ -18,12 +18,21 @@ MECHANISM (full, no magic):
     The assistant polls the results directory, reads the log, fixes code, writes the
     next request. The user's only job: start this script, and ctrl-C it when done.
 
-PROGRESS DISPLAY (why the terminal now always shows what is happening):
-  * On a TTY, a single live status line (carriage-return updated ~1/s) shows, per run:
-        [hh:mm:ss] > <id> <spinner> <elapsed>s/~<est>s [====----] NN% <KB> | <last log line>
-    The <est> is the MEDIAN of every prior run's recorded seconds, so the bar is a real
-    (if rough) estimate that fills as the run proceeds; it caps at 99% until the child
-    actually exits, then a persistent DONE line is printed (kept in scrollback).
+PROGRESS DISPLAY -- OWNER MANDATE 2026-07-10, LOAD-BEARING, DO NOT WEAKEN OR REMOVE:
+  * A percentage is shown ONLY when it is a real measured fraction: the walk's OWN budget
+    counter ("PROGRESS spent=A/B" lines) divided by its --steps / -Dwalk.steps budget.
+    - py walk (walker.py --steps N): counter lines are on stdout = the run's own logfile.
+    - kt walk (gradle -Dwalk.steps=N): gradle SWALLOWS test stdout, so the counter is read
+      from <cwd>/app/build/walks/kt_activations.log (the walk test's own log file).
+  * Runs with no step budget (captures, diffs, builds) show elapsed time and the median of
+    prior runs' durations, explicitly labeled "no step counter" -- NEVER a percentage.
+    (History: the old time-estimate bar showed "99%" for most of any long run; the owner
+    has had to demand a working progress indicator repeatedly. Hence the mandate.)
+  * ENFORCED: a budgeted walk that exits rc=0 having emitted ZERO counter lines gets a
+    "progress_defect" field in its result json + a loud terminal/history banner. This is
+    what makes the counter non-removable: deleting the emitter makes every green walk
+    scream. tools/test_walk_service_progress.py fails if this enforcement is removed.
+  * A persistent DONE line is printed on exit (kept in scrollback).
   * When idle (no pending requests) it shows a slow "idle -- watching (last <id> rc=..)"
     line, so an idle service reads as idle, not as a hang.
   * Every RUN start and DONE/REFUSE is ALSO appended to DevComms/hostruns/service_history.log
@@ -108,20 +117,35 @@ def _bar(frac, width=22):
     return "█" * full + "░" * (width - full)
 
 
-def _step_budget(cmd):
-    """If this request is a walker.py run with an explicit --steps N budget, return N, else None.
-    This is the real progress denominator: the walker prints one 'STEP ' line per consumed step,
-    so completed-steps / budget is an actual completion fraction, unlike the time estimate."""
+def _progress_source(cmd, cwd, logfile):
+    """Return (budget, counter_file) for a budgeted walk run, else (None, None).
+
+    OWNER MANDATE 2026-07-10 (non-removable; see module docstring + test_walk_service_progress.py):
+    the progress denominator is always the walk's OWN declared budget, and the numerator is
+    always the walk's OWN counter lines ("PROGRESS spent=A/B") -- never a proxy, never a guess.
+
+    py walk:  walker.py --steps N      -> counter lines land on stdout = the run's own logfile.
+    kt walk:  gradle -Dwalk.steps=N    -> gradle swallows test stdout; WalkRecorderTest writes
+              its counter into <cwd>/app/build/walks/kt_activations.log, so read THAT file.
+    """
     names = [os.path.basename(str(a)) for a in cmd]
-    if not any(n == "walker.py" for n in names):
-        return None
-    for i, a in enumerate(cmd):
-        if a == "--steps" and i + 1 < len(cmd):
+    if any(n == "walker.py" for n in names):
+        for i, a in enumerate(cmd):
+            if a == "--steps" and i + 1 < len(cmd):
+                try:
+                    return int(cmd[i + 1]), logfile
+                except ValueError:
+                    return None, None
+        return None, None
+    for a in cmd:
+        a = str(a)
+        if a.startswith("-Dwalk.steps="):
             try:
-                return int(cmd[i + 1])
+                return (int(a.split("=", 1)[1]),
+                        os.path.join(cwd, "app", "build", "walks", "kt_activations.log"))
             except ValueError:
-                return None
-    return None
+                return None, None
+    return None, None
 
 
 class _StepCounter:
@@ -132,13 +156,19 @@ class _StepCounter:
     Falls back to counting 'STEP ' lines only if the log has no PROGRESS lines (older walker).
     Also tracks when the log last grew, so the status line can announce a stall."""
     def __init__(self, logfile):
-        self.logfile, self.offset = logfile, 0
+        self.logfile = logfile
+        try:                                # kt_activations.log persists across runs: skip stale
+            self.offset = os.path.getsize(logfile)   # content, count only bytes this run appends
+        except OSError:
+            self.offset = 0                 # file doesn't exist yet (created by the run itself)
         self.step_count, self.spent = 0, None       # spent stays None until a PROGRESS line appears
         self.last_growth = time.time()
         self._partial = b""
     def poll(self):
         try:
             size = os.path.getsize(self.logfile)
+            if size < self.offset:          # file truncated/recreated by the new run: start over
+                self.offset, self._partial = 0, b""
             if size > self.offset:
                 self.last_growth = time.time()
                 with open(self.logfile, "rb") as rf:
@@ -225,8 +255,8 @@ def run_request(path):
     env = dict(os.environ, **{k: str(v) for k, v in req.get("env", {}).items()})
     spin = 0
     last_beat = time.time()
-    budget = _step_budget(cmd)
-    stepper = _StepCounter(logfile) if budget else None
+    budget, counter_file = _progress_source(cmd, cwd, logfile)
+    stepper = _StepCounter(counter_file) if budget else None
     with open(logfile, "w") as lf:
         try:
             proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=lf, stderr=subprocess.STDOUT)
@@ -247,12 +277,12 @@ def run_request(path):
                 size = os.path.getsize(logfile)
                 if stepper:
                     done, quiet = stepper.poll()
-                    frac = min(done / budget, 0.99) if budget > 0 else 0.0
+                    frac = min(done / budget, 1.0) if budget > 0 else 0.0
                     stall = f" ⚠ log quiet {int(quiet)}s" if quiet >= 30 else ""
                     prog = f"step {done}/{budget} [{_bar(frac)}] {int(frac * 100):>2}%{stall}"
                 else:
-                    frac = min(el / est, 0.99) if est > 0 else 0.0
-                    prog = f"~{int(est)}s-est [{_bar(frac)}] {int(frac * 100):>2}%"
+                    # OWNER MANDATE: no counter -> no percentage. Elapsed + prior-median only.
+                    prog = f"no step counter: {int(el)}s elapsed (prior runs' median ~{int(est)}s)"
                 if IS_TTY:
                     status(f"[{_ts()}] ▶ {req_id} {SPINNER[spin]} {int(el)}s "
                            f"{prog} {size // 1024}KB | {_tail(logfile)}")
@@ -263,12 +293,32 @@ def run_request(path):
             rc = -1
             lf.write(f"\nwalk_service: LAUNCH FAILED: {type(e).__name__}: {e}\n")
     secs = round(time.time() - t0, 1)
+    result = {"id": req_id, "returncode": rc, "seconds": secs,
+              "started": started, "finished": datetime.now(timezone.utc).isoformat()}
+    # OWNER MANDATE 2026-07-10 -- PROGRESS ENFORCEMENT, NON-REMOVABLE (guarded by
+    # tools/test_walk_service_progress.py; removing this block fails that test):
+    # a budgeted walk that finishes green without ever printing its own counter means the
+    # PROGRESS emitter was removed (py: walker.py stdout; kt: WalkRecorderTest ->
+    # kt_activations.log). That must scream, not silently degrade to a time estimate.
+    if stepper is not None:
+        done, _ = stepper.poll()                     # final read: fast runs may beat the 1s poll
+        result["steps"] = {"spent": stepper.spent, "budget": budget,
+                           "counter_file": stepper.logfile}
+        if rc == 0 and stepper.spent is None and stepper.step_count == 0:
+            result["progress_defect"] = (
+                "budgeted walk exited rc=0 with ZERO progress-counter lines "
+                f"(searched {stepper.logfile} for 'PROGRESS spent=A/B'). The emitter has been "
+                "removed or the walk never ran. OWNER MANDATE 2026-07-10: restore the emitter; "
+                "do not delete this check.")
     with open(os.path.join(RES_DIR, req_id + ".json"), "w") as f:
-        json.dump({"id": req_id, "returncode": rc, "seconds": secs,
-                   "started": started, "finished": datetime.now(timezone.utc).isoformat()},
-                  f, indent=2)
-    log(f"DONE {req_id}: rc={rc} ({secs}s) -> results/{req_id}.log")
-    history(f"DONE {req_id}: rc={rc} ({secs}s)")
+        json.dump(result, f, indent=2)
+    if result.get("progress_defect"):
+        log(f"⚠⚠ PROGRESS DEFECT {req_id}: {result['progress_defect']}")
+        history(f"PROGRESS DEFECT {req_id}: {result['progress_defect']}")
+    spent_note = (f" steps {stepper.spent}/{budget}" if stepper is not None
+                  and stepper.spent is not None else "")
+    log(f"DONE {req_id}: rc={rc} ({secs}s){spent_note} -> results/{req_id}.log")
+    history(f"DONE {req_id}: rc={rc} ({secs}s){spent_note}")
     return (req_id, rc)
 
 
