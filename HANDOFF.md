@@ -1,4 +1,47 @@
-# Session handoff — 2026-07-09 (post-run 184) UNIFIED LEDGER / UNIQUE-ID REDESIGN, Phases 1-5 (read this block first)
+# Session handoff — 2026-07-09 LATE (Phase 5 PYTHON SIDE LANDED; host run 185 queued) (read this block first)
+
+STATUS: Phase 5's Python side is IMPLEMENTED and sandbox-verified; the full host py walk that makes a real
+KT-vs-PY comparison possible is QUEUED as request 185 (200 steps, --reset, tees py_walk.json +
+py_activations.log into results/ per the run-176 capture lesson). Report: WFL_MixingCenter
+DevComms/log_138_py_walkid_wiring.md.
+
+WHAT LANDED (committed: PseudoCoup_v0 runtime/compose.py + WFL_MixingCenter render/walker.py):
+  - runtime/compose.py: Node.walk_id extracted from the .walkTag(...) op in the modifier chain at Node
+    construction (walkTag was previously autostub-swallowed by _Mod.__getattr__ and ignored). Last-wins on
+    multiple tags, WALKTAG-MULTI logged. One Node per composable call on py -- tag lands on the SAME node
+    that owns the handler, so NO nearestWalkId neighborhood search needed (unlike Compose's wrapper split).
+  - walker.py: enumerate_interactive assigns base#rank positionally (rank = position among same-base-id
+    nodes in enumeration order -- same scheme run 184 proved on kt); duplicate final ids nulled + logged.
+    Steps persist {ordinal, label, handler_kind, bounds_key, walk_id} (snake_case, matches kt progress
+    keys; owner decision). Replay: walkId FIRST (exactly 1 match = fire; 0 or >1 = Missing, path discarded,
+    MISSING-RESOLVE-CONTEXT/-ENTRY logging); walk_id null = today's raw-ordinal behavior UNCHANGED (owner
+    decision: no (label,handlerKind,boundsKey) port to py). Old bare-int progress paths load fine.
+    py_walk.json edges[].action now carries walk_id + bounds_key.
+  - VERIFIED (Opus reviewer, real sandbox walk): all spec items pass; exact-walkid fires (proven by
+    injection), ordinal-fallback fires, missing path logs, old progress loads, walk files restored
+    byte-identical after smoke runs.
+
+BUILD BUG FOUND AND FIXED IN PASSING (the real reason walker boots crashed): the 2026-07-09 transpiled
+build was produced with python tree_sitter MISSING, so resolve.app_enums() returned empty and EVERY enum
+column in the data layer degraded to plain text (sqlite3 InterfaceError binding CardioType at seed).
+Rebuilt with tree_sitter installed: 256 files, 0 errors, 19 entity files regained typed enum Cols,
+walker boots clean with no shim. Build outputs left UNCOMMITTED per standing policy (regenerate via
+build_mixingcenter.py). LESSON: build_mixingcenter.py should probably assert tree_sitter importability.
+
+KNOWN, EXPECTED, NOT DEFECTS:
+  - Boot-state interactive nodes (nav Surface/NavigationBarItems/FAB) all have walk_id=None -- they live in
+    untagged nav/AppNavigation (the known instrumentation-coverage gap). Tagged ids on the today screen
+    currently land on Card/Column containers, not the interactives; broadening walkTag to clickables is the
+    same pending INSTRUMENTATION COVERAGE item as before.
+  - walkTag count drift: TodayScreen.py has 89, TodayScreen.kt now has 90 (was byte-identical at 89 in
+    phase 3). 1-off, cause not chased this session -- check whether a kt-side injector re-run added one.
+  - 26 pre-existing LookupError widget-mount issues (Settings/Dropdown) surfaced in the smoke walk,
+    unrelated to this change.
+
+NEXT (in order): host runs 185 (py walk) then walk_diff for the FIRST real KT-vs-PY walkId comparison;
+Phase 6 id cross-check; emitId-statement cleanup in TodayScreen.kt; broaden walkTag instrumentation.
+
+# Session handoff — 2026-07-09 (post-run 184) UNIFIED LEDGER / UNIQUE-ID REDESIGN, Phases 1-5 (superseded by the block above)
 
 STATUS: a new redesign is underway, superseding the boundsKey identity work below. FULL PLAN:
 DevComms/log_137_unified_ledger_plan.md. AUDIT that motivated it: DevComms/log_136_ledger_id_uniqueness_audit.md.
