@@ -1,4 +1,66 @@
-# Session handoff — 2026-07-09 (post-run 176–178) VERIFICATION: KT RE-FIX 664017d FAILED ON HOST (read this block first)
+# Session handoff — 2026-07-09 (post-run 184) UNIFIED LEDGER / UNIQUE-ID REDESIGN, Phases 1-5 (read this block first)
+
+STATUS: a new redesign is underway, superseding the boundsKey identity work below. FULL PLAN:
+DevComms/log_137_unified_ledger_plan.md. AUDIT that motivated it: DevComms/log_136_ledger_id_uniqueness_audit.md.
+CORE IDEA (owner's design): every callable emits a UNIQUE id, born from tree-sitter on the KOTLIN side,
+injected into Kotlin source, carried into Python by the transpile for free, and the walker matches on that
+id instead of reconstructing identity from (label, handlerKind, boundsKey). One id space spans both apps.
+
+PHASES 1-4 -- DONE and verified this session:
+  (1) idgen.py (tools/pseudokotlin/) -- assigns a UNIQUE positional-path id to every Kotlin source node
+      (segment = "<childIndex>:<nodeKind>", index at EVERY node). Whole-app: 16979 nodes, 0 duplicate ids.
+  (2) Injection + runtime emission. Host run 180 PROVED emission fires at runtime with a per-instance
+      counter (one source id fired as instance 0..N).
+  (3) Transpile carries the ids 1:1 into Python. Re-ran the transpile after the Phase-5 change: e.g.
+      ui/today/TodayScreen.py now has 89 walkTag ids, BYTE-IDENTICAL to TodayScreen.kt. IMPORTANT: the
+      Python the walker runs is the TRANSPILED MIRROR (WFL_MixingCenter/ui/*.py via run_app), NOT the
+      separate hand-written kit at WFL_PseudoCoup/src -- that kit is only for the fidelity ledger, ignore it.
+  (4) ledger_unified.py -- ONE ledger keyed by id, one record per node, whole app (16979 entries, asserted:
+      entry_count == node_count, 0 dupes). Collapses the old ledger.py/ui_ledger.py/kit_ledger.py record-
+      keeping. (ledger.py's PYTHON exec-introspect cross-check deferred to Phase 6.)
+
+PHASE 5 -- walker matches on the id. KOTLIN SIDE IN PROGRESS, PYTHON SIDE NOT STARTED.
+  Mechanism landed (WFL_MixingCenter): core/debug/WalkEmit.kt defines `WalkId` (a Compose SemanticsPropertyKey)
+  and `Modifier.walkTag(id)` which stamps the BASE id onto the node's semantics. WalkRecorderTest.kt reads it:
+  `nearestWalkId` searches the node + parents(<=3) + children(<=3) for the tag (because Compose puts the tag
+  on a WRAPPER node, not the clickable, in the unmerged tree), then INTERPRETS the instance as "base#rank"
+  where rank = the node's position among same-id nodes in enumeration order. resolveTarget matches walkId
+  FIRST, falls back to (label, handlerKind, boundsKey) for untagged nodes (no regression).
+  Two hard-won facts (do NOT re-litigate): (a) the tag lands on a wrapper node -> neighborhood search needed
+  (runs 182/183); (b) the instance index MUST be interpreted positionally (base#rank), NOT a running counter
+  -- the counter drifts across recompositions so record-time id != replay-time id (run 183 had exact-walkid=0
+  for exactly this reason; run 184 fixed it).
+
+WHERE RUN 184 ACTUALLY LANDS (and an earlier overclaim CORRECTED):
+  184: BUILD ok, exact-walkid resolves now HAPPEN (3), AMBIGUOUS resolves = 0 (the specific bug the redesign
+  targets is gone), BUT 6 MISSING resolves remain (a recorded node not re-found at replay -- still an
+  identity failure that drops paths), and coverage is still 7 states / 10 edges.
+  CORRECTION: an earlier note in-session claimed "coverage is a navigation problem, not identity" by
+  comparing KT's 7 states to "Python's 35". That 35 came from an OLD pre-walkId Python walk (py-side identity,
+  render/walks/py_walk.json) -- NOT a comparable run. There is NO live Python walk with walkId yet, so that
+  comparison is INVALID and is retracted. Honest position: the ambiguity class is fixed; missing resolves
+  remain; what caps KT coverage at 7 is NOT yet determined and needs a real KT-vs-PY comparison.
+
+PENDING (in order):
+  - Phase 5 PYTHON side: wire walker.py to install + read walkId (the analog of WalkRecorderTest's wiring),
+    then run a Python walk. Only THEN is a real Kotlin-vs-Python comparison possible.
+  - Phase 6: id cross-check (KT emits == PY emits == ledger).
+  - CLEANUP: TodayScreen.kt currently has a MIX of legacy `WalkEmit.emitId(...)` statements AND `walkTag(...)`
+    -- the emitId statements are now redundant, remove them.
+  - INSTRUMENTATION COVERAGE: only ui/today + ui/progress screen BODIES are walkTagged; nav/AppNavigation is
+    not, so most interactive nodes still use the fallback identity. Broaden once the mechanism is trusted.
+
+RUN LEDGER this arc: 179-180 emitId smoke (180 proved emission) · 181 walkTag compile FAIL (modifier added to
+non-widgets like PaddingValues/Stroke -> fixed to _is_widget + rewrite-only) · 182 compiled but walkId=null
+(wrapper-node issue) · 183 walkId found but unstable (counter drift) · 184 base#rank stable, exact-walkid
+works, coverage flat at 7.
+
+TOOLING: walk_service.py got a live progress bar + idle status + persistent DevComms/hostruns/service_history.log
+(runs no longer look hung). git: the recurring commit block is a stale .git/index.lock left by sandbox git
+(the mount can create but not delete it); WFL_and_PseudoCoup_v0_git_push.sh was hardened to clear it. No
+background processes started or left running.
+
+# Session handoff — 2026-07-09 (post-run 176–178) VERIFICATION: KT RE-FIX 664017d FAILED ON HOST (superseded by the block above; kept as the pre-redesign record)
 
 STATUS: the re-run the block below left QUEUED has now executed. The walk service ran the queued batch --
 176 (kt walk, re-fix 664017d, 200-step budget), 177 (walk_diff.py), 178 (mount_diff.py); results in
