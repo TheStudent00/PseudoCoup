@@ -1,0 +1,1 @@
+{"id": "205_pixel_capture2", "cwd": "~/Programming/WFL_MixingCenter/WFL", "cmd": ["python3", "-c", "import shutil, os; src = 'app/build/walks/pixelprobe'; dst = os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/204_pixelprobe'); shutil.copytree(src, dst, dirs_exist_ok=True); print('captured')"], "timeout": 120}
