@@ -1,0 +1,2 @@
+{"id": "185_py_walk_walkid", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["bash", "-lc", "xvfb-run -a python3 -u walker.py --steps 200 --reset && cp walks/py_walk.json ~/Programming/PseudoCoup_v0/DevComms/hostruns/results/185_py_walk.json && cp walks/py_activations.log ~/Programming/PseudoCoup_v0/DevComms/hostruns/results/185_py_activations.log"], "timeout": 7200}
