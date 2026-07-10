@@ -1,4 +1,43 @@
-# Session handoff — 2026-07-10 (walkTag BROADENED app-wide; host runs 189-193 queued) (read this block first)
+# Session handoff — 2026-07-10 LATE (KT CEILING ROOT-CAUSED: mount drift, NOT identity; runs 194-198 queued) (read this block first)
+
+THE BIG FINDING (Opus diagnosis, DevComms/log_140_kt_ceiling_diagnosis.md -- read it): the kt walker's
+7-state ceiling that survived THREE identity redesigns is NOT an identity problem. Run 189's captured
+RESOLVE trail proves: discovery works (all 7 boot ordinals fire), but every subsequent fresh replay mount
+NAVIGATES TO THE WRONG SCREEN -- the same "This workout has no exercises / Go back / Finish" execution
+dead-end -- regardless of which path prefix it should reproduce. The recorded node isn't on the screen
+that actually rendered, so NO identity key (however unique) can match; walkApp drops each failed frame,
+frontier empties at 10/200 steps (kt_walk.json meta steps_this_run=10 -- budget was never exhausted).
+Ranked hypotheses: H1 stale nav/coroutine/Room-flow state bleeding across mounts (most likely), H2 FAB
+nondeterminism, H3 unsettled lazy tree (largely ruled out). Identity work is DOWNSTREAM of this; do not
+invest further in identity until mount reproducibility is fixed.
+PROBE LANDED (additive logging only, WalkRecorderTest.kt replayTo): REPLAY-MOUNT (route + expected first
+step) + REPLAY-MOUNT-ENUM (settled enumeration head) lines -- grep both in 194_kt_activations.log. If
+boot route varies per mount -> H1 confirmed; fix = hermetic per-replay mount (test-source only). This
+mirrors the py walker's hermeticity scar (di.reset() per Session, 2026-07-08 block) -- same disease, kt flavor.
+
+INJECTOR EXTENSION LANDED (--add-modifier flag, off by default; DevComms/log_141_injector_add_modifier.md):
+adds `modifier = Modifier.walkTag(...)` as a NEW named arg ONLY where the callee provably accepts modifier
+(app composables: tree-sitter declaration check; library widgets: curated M3 allowlist; any doubt = skip).
+973 added across 49 files; idgen/ledger clean; transpile 256/256; parity 53/53; sandbox smoke shows
+NavigationBarItems firing with non-null walk_id. Mid-run the agent caught + fixed a stale-id duplicate-chain
+bug and added an _already_walktagged guard (idempotent now). CAVEAT flagged: the today FAB was NOT tagged --
+agent claimed TodayScreen.kt "outside the 86-file scope", which contradicts ui/** scoping; bookkeeping
+suspect, chase next session. Run 181's risk class re-opened deliberately; run 194 IS the compile check.
+
+BROADENING RESULTS (runs 189-193, pre-extension): py 40 states/188 edges, 96 exact-walkid / 204
+ordinal-fallback / 0 missing / 0 collisions at 200 steps -- base#rank holds under real replay load on py.
+kt flat at 7/10 (now explained by the mount drift above). walk_diff 4 shared / 3 kt-only / 34 py-only /
+166 edge mismatches -- still mostly comparing fallback policies + coverage, not identity.
+
+QUEUED (in order): 194 kt walk (compile check for extension + probe; REPLAY-MOUNT answers H1) · 195 kt
+capture · 196 py walk · 197 py capture · 198 walk_diff.
+
+TOOLING THIS BLOCK: walk_service progress bar now REAL for walker.py runs (counts STEP lines vs --steps,
+incremental tail reads; shows "step N/M"; "⚠ log quiet Ns" stall indicator after 30s; non-walker runs keep
+the estimate, labeled "~Ns-est"). Push script reads DevComms/next_commit_message.txt. Caveat: walker
+prints slightly more STEP lines than budget (213 vs 200 in run 191), so the bar can touch 99% early.
+
+# Session handoff — 2026-07-10 (walkTag BROADENED app-wide; runs 189-193 done, superseded by the block above)
 
 GLOSSARY (owner-anchored; do not collapse these two layers again -- doing so cost trust this session):
   Ledger id
