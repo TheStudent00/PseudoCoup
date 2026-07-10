@@ -1,8 +1,10 @@
 # Session handoff — 2026-07-09 LATE (Phase 5 PYTHON SIDE LANDED; host run 185 queued) (read this block first)
 
 STATUS: Phase 5's Python side is IMPLEMENTED and sandbox-verified; the full host py walk that makes a real
-KT-vs-PY comparison possible is QUEUED as request 185 (200 steps, --reset, tees py_walk.json +
-py_activations.log into results/ per the run-176 capture lesson). Report: WFL_MixingCenter
+KT-vs-PY comparison possible is QUEUED as requests 186 (the walk: 200 steps, --reset) + 187 (copies py_walk.json + py_activations.log
+into results/ as 186_*, per the run-176 capture lesson). Request 185 was REFUSED by walk_service
+(cmd[0]="bash" not on ALLOWED list) and could not be deleted from the sandbox (mount can't unlink) --
+it is dead, ignore it; 186/187 replace it. Report: WFL_MixingCenter
 DevComms/log_138_py_walkid_wiring.md.
 
 WHAT LANDED (committed: PseudoCoup_v0 runtime/compose.py + WFL_MixingCenter render/walker.py):
@@ -38,7 +40,7 @@ KNOWN, EXPECTED, NOT DEFECTS:
   - 26 pre-existing LookupError widget-mount issues (Settings/Dropdown) surfaced in the smoke walk,
     unrelated to this change.
 
-NEXT (in order): host runs 185 (py walk) then walk_diff for the FIRST real KT-vs-PY walkId comparison;
+NEXT (in order): host runs 186+187 (py walk + capture) then walk_diff for the FIRST real KT-vs-PY walkId comparison;
 Phase 6 id cross-check; emitId-statement cleanup in TodayScreen.kt; broaden walkTag instrumentation.
 
 # Session handoff — 2026-07-09 (post-run 184) UNIFIED LEDGER / UNIQUE-ID REDESIGN, Phases 1-5 (superseded by the block above)

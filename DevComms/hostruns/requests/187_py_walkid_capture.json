@@ -1,0 +1,2 @@
+{"id": "187_py_walkid_capture", "cwd": "~/Programming/WFL_MixingCenter/render",
+ "cmd": ["python3", "-c", "import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('walks/py_walk.json', d+'/186_py_walk.json'); shutil.copy('walks/py_activations.log', d+'/186_py_activations.log'); print('captured')"], "timeout": 120}
