@@ -1,0 +1,1 @@
+{"id": "202_py_walk_exhaust", "returncode": null, "refused": "CANCELLED by owner (ctrl-C mid-run 2026-07-10); request file was of unaccounted origin (see HANDOFF) and could not be deleted from the sandbox; this result file exists solely to stop walk_service from re-running it on restart"}

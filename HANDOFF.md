@@ -1,52 +1,116 @@
-# Session handoff — 2026-07-10 LATEST (CEILING BROKEN: kt 7->33 states; both engines id-dominant) (read this block first)
+# HANDOFF — read this whole top document before doing anything (updated 2026-07-10)
 
-RUN 199 (hermetic-mount fix VERIFIED ON HOST): kt walk 33 states / 60 edges (was 7/10 across three
-identity redesigns). ALL 67 REPLAY-MOUNT lines route=today; 59 exact-walkid; 0 missing; 0 ReplayErrors.
-RETRACTION (an in-session claim that 199 "completed its reachable expansion / legitimate finish" was
-WRONG and is withdrawn): only 7 of kt's 33 states were ever expanded (have outgoing edges); 26 states
-were discovered and never expanded, and the walk stopped at 60/200 steps anyway. WHY kt's loop stops
-enqueueing/looping is UNDETERMINED -- read walkApp's frontier bookkeeping against 199_kt_activations.log
-before believing any kt coverage number.
-RUN 196 (py, post add-modifier): 274 exact-walkid vs 26 ordinal-fallback (was 96/204) -- py identity now
-id-dominant. 40 states / 188 edges.
-RUN 201 (walk_diff): 5 shared / 23 kt-only / 33 py-only / 203 edge mismatches. FIRST diff where both
-engines resolve mostly on the same inserted ids -- it now measures twin behavior, and what it shows is
-MUTUAL REACHABILITY (each explores territory the other doesn't) = the frontier/BFS-alignment question
-(owner approved scoped-diff-first then alignment, 2026-07-08 block), NOT identity.
+## What this project is
 
-TWO REAL DEFECTS, FOUND BY READING THE 196/199 ARTIFACTS DIRECTLY (these are the next work, order =
-owner's call; the earlier "frontier/BFS alignment" framing UNDERSOLD finding 1 and is dropped):
-  FINDING 1 (py twin divergence -- the kind of bug this instrument exists to catch): the SAME action,
-  label='Exercises / Browse, favourite...' handler=onClick fired on route=settings, NAVIGATES on kt
-  (settings -> exercises) but does NOTHING on py (settings -> settings, no error, fired twice in run
-  196). py therefore never sees exercises/gym_list/settings_notifications/wins or anything behind them.
-  Probably related: the 26 pre-existing LookupErrors cluster on Settings/ModalBottomSheet.
-  FINDING 2 -- ROOT CAUSE FOUND (2026-07-10 late, via the pixel-probe failure of all things): NOT a
-  frontier defect. WFL/app/build.gradle.kts had NO systemProperty forwarding into the forked test JVM,
-  so -Dwalk.steps/-Dwalk.reset NEVER reached WalkRecorderTest on ANY run this arc -- the test always
-  used its internal default budget of 60 (and reset/resume flags likely never arrived either -- what
-  each kt run actually resumed from deserves a skeptical read). Run 199's "death at 60/200" was a
-  60-budget walk exhausting normally mid-BFS. FIX: testOptions unitTests.all systemProperty forwarding
-  added (walk.steps/resume/reset + robolectric.pixelCopyRenderMode=hardware default, which the pixel
-  probe needed -- captureToImage hangs without it, run 202's ComposeTimeoutException). VERIFICATION
-  QUEUED: run 206 (kt walk, 200 steps, reset) must now actually spend up to 200 steps; 207 captures.
-  Pixel probe requeued as 204 (window captures now always saved before any compose-path failure
-  rethrows; 205 copies PNGs to results/204_pixelprobe).
-  UNACCOUNTED REQUEST FILE: requests/202_py_walk_exhaust.json (--steps 2000 --resume, created 12:56
-  2026-07-10) was written by no reporting agent and not by the orchestrator -- owner asked about it,
-  origin unresolved. Content benign (resumed py exhaustion walk) but the accounting failure is noted.
-NEW INSTRUMENT PLANNED (owner design session, full record: WFL DevComms/log_143_tap_grid_atlas_plan.md):
-dense tap-grid boundary mapping (real taps, log-as-sensor via the inserted ids, branches never followed,
-navigation undone by SAVED-STATE restore: fork() on py, qemu/kvm microVM snapshot on kt -- owner chose
-the microVM; 48GB swap available, limited RAM) + frozen kt ground-truth bundle vs regenerating py bundle
-+ side-by-side HTML atlas (screenshot + observed-boundary overlay per state, clickable edges). OWNER
-DECIDED ORDER: map every screen/overlay one tap deep FIRST, only then navigate deeper. Main unknown:
-Robolectric pixel fidelity (needs a probe run).
+The Kotlin app (~/Programming/WFL_MixingCenter/WFL) is GROUND TRUTH. The Python app is its transpiled
+twin (built by PseudoCoup_v0's KtToPy transpiler, run via WFL_MixingCenter/render/run_app.py) and must
+be PROVEN to behave identically. Where it doesn't, the system itself must say so, precisely, with no
+human archaeology. Standing spec underneath everything, owner's words: EVERYTHING IS TRACKED — no UI
+component exists, gets touched, or disappears at runtime without being named in the live log and
+cross-checked against the ledger. No mysteries, ever.
 
-STILL PENDING (behind the two findings): Phase 6 id cross-check (kt emits == py emits == ledger, the
-EVERYTHING IS TRACKED gate); cleanup pile (legacy WalkEmit.emitId statements in TodayScreen.kt; untagged
-today FAB, log_141 caveat; injector nav-file gate hardening, log_139; build_mixingcenter.py should
-assert tree_sitter importability).
+Two id concepts, do NOT collapse them (this confusion cost owner trust once already):
+  Ledger id — computed by parsing (idgen.py); every Kotlin source node has one; never injected.
+  walkTag insertion — inject_emitid.py writes `.walkTag("<ledger id>")` into Kotlin source so the SAME
+  id is visible at runtime; the transpile carries it into Python for free. Insertion is a replay-stable
+  handle, NOT the tracking itself — the tracking catch-all is the runtime construction hook
+  (identity.py on py, semantics enumeration on kt) + loud ledger cross-check (ORACLE UNKNOWN).
+
+## The plan (owner's design, decided 2026-07-10; full records: WFL DevComms/log_143 + log_144)
+
+Build a side-by-side HTML ATLAS of both apps. One page per screen-state: kt screenshot beside py
+screenshot, each overlaid with the OBSERVED boundaries of its interactive components, differences
+visible, interactive regions clickable — a click follows the recorded edge to the destination state's
+page. A clickable twin of both apps at once.
+
+How, per owner decisions:
+1. MAP BEFORE NAVIGATING: every screen gets its full one-tap-deep map before any deeper exploration.
+   Overlays (dialogs/sheets) are just states — the settled-tree hash already distinguishes them.
+2. BOUNDARIES BY REAL TAPS, LOG AS SENSOR: a tap either makes a component announce its inserted id in
+   the log, or it hit nothing. Boundaries found by SEARCH, not brute force: the live mount log says
+   what's on screen and roughly where; a few taps confirm; bisection finds edges; nested components
+   same logic. NO randomness — a tap answering with an id the mount list didn't predict is itself a
+   loud defect (the mystery detector comes free from the cross-check).
+3. SAVED STATES make taps constant-time: py = fork() (child takes the tap and dies, parent keeps the
+   screen); kt = qemu/kvm microVM snapshot (owner's choice; laptop RAM is tight, 48GB swap available).
+4. ASYMMETRIC BUNDLES: kt is walked/screenshotted/boundary-mapped ONCE into a frozen in-repo bundle
+   stamped with the kt commit hash (flat-UI PNGs, whole bundle ~MBs). py regenerates its bundle every
+   iteration and is diffed against the frozen kt bundle.
+5. Defects handled as they surface — no separate defect phase.
+
+## Where it stands right now
+
+DONE and host-verified this arc: walkTag insertion is app-wide on both engines (86 files + 973
+added-modifier args; runs 189/194 prove it compiles); both walkers resolve actions by inserted id
+(py run 196: 274 exact-walkid vs 26 ordinal-fallback; kt run 199: 59 exact-walkid, 0 missing); kt's
+replay-mount contamination is FIXED (NavController back stack restored across scenario.recreate() —
+mountFreshApp now pops to start destination; all 67 replay mounts landed route=today in run 199).
+
+IN FLIGHT (queued host runs — owner runs `python3 tools/walk_service.py`, results land in
+DevComms/hostruns/results/):
+  204/205 pixel probe rerun — the atlas's screenshot mechanism. First try (202) timed out inside
+  captureToImage: Robolectric needs robolectric.pixelCopyRenderMode=hardware in the TEST JVM.
+  204 must yield real PNGs in results/204_pixelprobe/.
+  206/207 kt walk, 200 steps — the first kt walk whose budget flags actually arrive (see next line).
+  202_py_walk_exhaust (running/ran) — 2000-step resumed py walk. ORIGIN UNACCOUNTED: written by no
+  reporting agent nor the orchestrator; content benign; accounting failure on record.
+
+CRITICAL CORRECTION discovered via the pixel-probe failure: WFL/app/build.gradle.kts NEVER forwarded
+-D properties into the forked test JVM. Every kt walk this arc ran the test's internal 60-step default;
+-Dwalk.steps/-Dwalk.reset never arrived. So there is NO trustworthy kt state graph yet — run 199's
+33 states / 60 edges is a 60-budget walk exhausting normally (its earlier readings as "frontier defect"
+and "legitimate completion" are both retracted). Forwarding is now added (walk.* + pixelCopyRenderMode);
+run 206 is the verification. Treat ALL prior kt coverage numbers as 60-budget artifacts.
+
+KNOWN OPEN DEFECT (py twin divergence, the kind this project exists to catch): on route=settings, the
+action label='Exercises / Browse, favourite...' handler=onClick NAVIGATES on kt (settings->exercises)
+but does NOTHING on py (settings->settings, silent, reproduced twice in run 196). Blocks py from
+exercises/gym_list/settings_notifications/wins. Possibly related: 26 LookupErrors clustered on
+Settings/ModalBottomSheet.
+
+## Next steps, in order
+
+1. Read 204's PNGs (results/204_pixelprobe/) — screenshot mechanism proven or diagnose.
+2. Read 206's walk (results/206_*) — first honest kt graph; check REPLAY-MOUNT all route=today and
+   steps actually spent.
+3. Build the frozen kt bundle: walk + screenshot per state + boundary maps (tap-grid per log_143).
+4. py bundle, same shape; first atlas pages; diff.
+5. En route: the settings divergence defect; Phase 6 id cross-check (kt emits == py emits == ledger);
+   cleanup pile (legacy WalkEmit.emitId statements in TodayScreen.kt; today FAB untagged, log_141;
+   injector nav-gate hardening, log_139; build_mixingcenter.py should assert tree_sitter importable).
+
+## Operational (how to actually work here — scars included)
+
+Host-run loop: write request JSON to DevComms/hostruns/requests/NNN_name.json {"id","cwd","cmd",
+"timeout"} — id must equal filename; cmd[0] must be one of gradlew/python3/xvfb-run/adb/git; owner runs
+tools/walk_service.py; results/NNN.log+.json appear; a request with no result file re-runs on service
+restart. Tee/copy artifacts you need into results/ via a follow-up python3 -c request (gradle swallows
+test stdout; build dirs are not results).
+Commits: owner runs ~/Programming/PseudoCoup_v0/WFL_and_PseudoCoup_v0_git_push.sh after turns; write
+the message to DevComms/next_commit_message.txt (script consumes it; arg overrides; fallback "update").
+Sandbox: bash 45s hard cap; mounts can CREATE but not DELETE files (stale .git/index.lock = owner's
+push script clears it; never bypass with plumbing); host paths differ from file-tool paths; kivy runs
+in-sandbox (xvfb-run -a; ~/Programming symlinks needed); NEVER hand-edit transpiled py — regenerate
+via tools/pseudokotlin/build_mixingcenter.py (which requires python tree_sitter INSTALLED, else every
+enum column silently degrades to text — this happened, run 186 era).
+Owner communication protocol is saved and binding: direct answers first, keep the owner's words, anchor
+every abstraction, no unexplained jargon, SHOW with smallest-example evidence rather than describe,
+never present your own inventions as settled decisions — proposals are labeled proposals, and
+architecture/ontology/naming decisions are the OWNER'S. Subagent briefs must carry file fences, exact
+gates, stop-rules, and a no-silent-actions rule (see UNACCOUNTED file above for why).
+Walk budgets + progress display — OWNER MANDATE 2026-07-10, NON-REMOVABLE (owner has had to
+re-demand a working progress indicator repeatedly; it eroded because nothing failed when the counter
+vanished — that is now closed): a percentage is shown ONLY as the walk's own "PROGRESS spent=A/B"
+counter over its own --steps/-Dwalk.steps budget. py counter = walker.py stdout; kt counter = read
+from <cwd>/app/build/walks/kt_activations.log (gradle swallows test stdout). Unbudgeted runs show
+elapsed + prior-median, labeled "no step counter", NEVER a percentage. ENFORCED: a budgeted walk
+exiting rc=0 with zero counter lines gets "progress_defect" in its result json + terminal/history
+banner; tools/test_walk_service_progress.py fails if the enforcement or counter plumbing is removed —
+run it before touching walk_service.py. KT EMITTER STATUS: WalkRecorderTest must print
+"PROGRESS spent=A/B" into kt_activations.log each loop iteration — until that lands (WFL repo),
+every green kt walk will correctly flag PROGRESS DEFECT.
+
+# ===================== HISTORY BELOW (chronological, newest first; superseded) =====================
 
 # Session handoff — 2026-07-10 LATE (KT CEILING ROOT-CAUSED: mount drift, NOT identity; runs 194-201 done, superseded by the block above)
 
