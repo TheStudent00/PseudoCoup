@@ -10,7 +10,18 @@
 # Usage:  ./WFL_and_PseudoCoup_v0_git_push.sh ["commit message"]   (message defaults to "update")
 
 set +e
-MSG="${1:-update}"
+# Message priority: explicit arg > DevComms/next_commit_message.txt (written by the sandbox
+# session at end of a turn) > "update". The file is emptied after use so a stale message
+# never labels an unrelated later commit.
+MSGFILE=~/Programming/PseudoCoup_v0/DevComms/next_commit_message.txt
+if [ -n "$1" ]; then
+    MSG="$1"
+elif [ -s "$MSGFILE" ]; then
+    MSG="$(cat "$MSGFILE")"
+    : > "$MSGFILE"
+else
+    MSG="update"
+fi
 
 for repo in ~/Programming/WFL_MixingCenter ~/Programming/PseudoCoup_v0; do
     echo "=== $repo ==="
