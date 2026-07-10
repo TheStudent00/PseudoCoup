@@ -37,6 +37,10 @@ class Node:
                                 # recorded here so the kit can APPLY them (the wrapper records, the kit draws)
         self.src = _call_site()  # (file, line) in the TRANSPILED app code that emitted this node -- the
                                  # inspector's link from a live component back to the code that declared it
+        self.walk_id = None      # PHASE 5: base walkId string stamped by `.walkTag(id)` on this node's
+                                 # modifier chain (see _promote_modifier_handlers), or None if untagged.
+                                 # This is the BASE id -- walker.py's enumerate_interactive() derives the
+                                 # ranked instance id "<base>#<rank>" from positional enumeration order.
 
     def tree(self, depth=0):
         line = "  " * depth + self.kind + (f": {self.text!r}" if isinstance(self.text, str) else "")
@@ -88,14 +92,28 @@ def _promote_modifier_handlers(node, mod):
       * any callable kwarg named on* on any op -> handlers[that name]  (clickable(onClick=f) etc.)
       * clickable/combinedClickable with a bare positional callable (Kotlin trailing lambda,
         `.clickable { ... }`) -> handlers["onClick"]
-    Composable-kwarg handlers keep priority (setdefault -- never clobber)."""
+    Composable-kwarg handlers keep priority (setdefault -- never clobber).
+
+    PHASE 5 (walkId): also stamps `node.walk_id` from any `.walkTag(id)` op on this same modifier chain.
+    Unlike Kotlin's compose_ui.py, there is exactly ONE Node per composable call here -- modifier and
+    handlers land on the SAME node, so no neighborhood/nearestWalkId search is needed (see VERIFIED
+    CONTEXT). If multiple walkTag ops appear on one node's chain, the LAST one wins (mirrors "last
+    modifier wins" semantics elsewhere in this file) -- this is flagged as a rare edge case, not an
+    error, since a real screen should only ever stamp one walkTag per composable call site."""
     def ops_of(m):
         for op in (getattr(m, "_ops", ()) or ()):
             if op[0] == "then" and op[1] and hasattr(op[1][0], "_ops"):
                 yield from ops_of(op[1][0])
             else:
                 yield op
-    for name, a, k in ops_of(mod):
+    ops = list(ops_of(mod))
+    walk_tag_ids = [a[0] for name, a, k in ops if name == "walkTag" and a]
+    if walk_tag_ids:
+        if len(walk_tag_ids) > 1:
+            print(f"WALKTAG-MULTI node={node.kind} src={node.src} ids={walk_tag_ids} -- "
+                  f"last one wins: {walk_tag_ids[-1]!r}", file=sys.stderr)
+        node.walk_id = walk_tag_ids[-1]
+    for name, a, k in ops:
         for kw, v in k.items():
             if kw.startswith("on") and callable(v):
                 node.handlers.setdefault(kw, v)
