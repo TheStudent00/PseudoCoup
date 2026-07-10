@@ -23,3 +23,9 @@
 2026-07-10T06:06:19.136274+00:00  DONE 192_py_capture: rc=0 (0.1s)
 2026-07-10T06:06:19.201186+00:00  RUN 193_walk_diff_broadened: python3 walk_diff.py
 2026-07-10T06:06:19.315321+00:00  DONE 193_walk_diff_broadened: rc=0 (0.2s)
+2026-07-10T13:42:31.010084+00:00  RUN 194_kt_walk_addmod: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
+2026-07-10T13:43:30.894864+00:00  DONE 194_kt_walk_addmod: rc=0 (59.9s)
+2026-07-10T13:43:30.934706+00:00  RUN 195_kt_capture_addmod: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy(os.path.expanduser('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_walk.json'), d+'/194_kt_walk.json'); shutil.copy(os.path.expanduser('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log'), d+'/194_kt_activations.log'); print('captured')
+2026-07-10T13:43:30.950624+00:00  DONE 195_kt_capture_addmod: rc=0 (0.1s)
+2026-07-10T13:43:30.959211+00:00  RUN 196_py_walk_addmod: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json
+2026-07-10T14:14:26.101024+00:00  RUN 196_py_walk_addmod: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json

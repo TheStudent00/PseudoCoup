@@ -29,8 +29,27 @@ ordinal-fallback / 0 missing / 0 collisions at 200 steps -- base#rank holds unde
 kt flat at 7/10 (now explained by the mount drift above). walk_diff 4 shared / 3 kt-only / 34 py-only /
 166 edge mismatches -- still mostly comparing fallback policies + coverage, not identity.
 
-QUEUED (in order): 194 kt walk (compile check for extension + probe; REPLAY-MOUNT answers H1) · 195 kt
-capture · 196 py walk · 197 py capture · 198 walk_diff.
+RUN 194 RESULTS (H1 CONFIRMED + compile green): rc=0 -- the 973 added modifier args COMPILE (run-181 risk
+retired); nav items now carry real walk_ids on kt. THE PROBE: 17 REPLAY-MOUNT lines, only 8 route=today;
+6 route=execution/{sessionId}, 1 each my_program/paths/progress -- INCLUDING pathLen=0 boot mounts already
+sitting on non-boot screens. Stale state across mounts confirmed as THE ceiling cause.
+ROOT OBJECT (log_142): the NavController BACK STACK, restored via Android saved-instance-state --
+mountFreshApp() uses scenario.recreate(), which runs onSaveInstanceState/onRestore, and AppNavigation's
+rememberNavController() persists its back stack through SavedStateRegistry. "Fresh" mounts booted onto
+whatever screen the last replay left. Same disease as py's di._DB leak (2026-07-08), kt flavor.
+FIX LANDED (test sources only, WalkRecorderTest.kt): mountFreshApp pops the restored back stack to the
+graph start destination (public NavController API, only on the test-captured controller; production
+MainActivity never passes onNavControllerReady -> app behavior untouched). REPLAY-MOUNT probes kept as
+proof. NOT YET HOST-VERIFIED -- run 199 is the check. SUCCESS CRITERIA for 199: every REPLAY-MOUNT
+route=today; steps_this_run near 200; states >> 7.
+
+QUEUED (in order): 196 py walk (was killed mid-run by an accidental ctrl-C -- no result file, so the
+service re-runs it from --reset on restart, safe) · 197 py capture · 198 walk_diff · 199 kt walk
+HERMETIC (the fix's verification) · 200 kt capture · 201 walk_diff again.
+PROGRESS BAR v2: walker.py now prints "PROGRESS spent=A/B" (its actual budget counter) each loop
+iteration; walk_service reads the LAST of those (falls back to STEP-counting only on old logs). The v1
+bar counted "STEP " lines and overcounted (202/200 shown to owner -- STEP-prefixed non-budget markers
+like crash tracebacks/frame-exhausted inflated it).
 
 TOOLING THIS BLOCK: walk_service progress bar now REAL for walker.py runs (counts STEP lines vs --steps,
 incremental tail reads; shows "step N/M"; "⚠ log quiet Ns" stall indicator after 30s; non-walker runs keep
