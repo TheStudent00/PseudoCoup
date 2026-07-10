@@ -125,11 +125,15 @@ def _step_budget(cmd):
 
 
 class _StepCounter:
-    """Incrementally counts 'STEP ' lines in the growing logfile (reads only appended bytes,
-    so polling every second stays cheap on multi-MB logs). Also tracks when the log last grew,
-    so the status line can announce a stall instead of silently spinning."""
+    """Reads the walker's own 'PROGRESS spent=A/B' lines from the growing logfile (appended bytes
+    only, so 1s polling stays cheap on multi-MB logs) -- the walker prints its ACTUAL budget
+    counter, so this can never disagree with the walk (unlike counting 'STEP ' lines, which
+    overcounted: some STEP-prefixed lines are non-budget markers like crash tracebacks).
+    Falls back to counting 'STEP ' lines only if the log has no PROGRESS lines (older walker).
+    Also tracks when the log last grew, so the status line can announce a stall."""
     def __init__(self, logfile):
-        self.logfile, self.offset, self.count = logfile, 0, 0
+        self.logfile, self.offset = logfile, 0
+        self.step_count, self.spent = 0, None       # spent stays None until a PROGRESS line appears
         self.last_growth = time.time()
         self._partial = b""
     def poll(self):
@@ -143,10 +147,18 @@ class _StepCounter:
                 self.offset = size
                 lines = chunk.split(b"\n")
                 self._partial = lines.pop()            # tail may be a half-written line
-                self.count += sum(1 for l in lines if l.startswith(b"STEP "))
+                for l in lines:
+                    if l.startswith(b"PROGRESS spent="):
+                        try:
+                            self.spent = int(l[len(b"PROGRESS spent="):].split(b"/")[0])
+                        except ValueError:
+                            pass
+                    elif l.startswith(b"STEP "):
+                        self.step_count += 1
         except Exception:                  # noqa: BLE001 -- display must never kill the run
             pass
-        return self.count, time.time() - self.last_growth
+        done = self.spent if self.spent is not None else self.step_count
+        return done, time.time() - self.last_growth
 
 
 def _estimate_seconds():
