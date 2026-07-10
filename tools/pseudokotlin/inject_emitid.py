@@ -80,12 +80,66 @@ USAGE:
     python3 inject_emitid.py FILE.kt                  # instrument one file IN PLACE, print a report
     python3 inject_emitid.py FILE.kt --dry-run         # report only, no write
     python3 inject_emitid.py FILE.kt --out OTHER.kt    # write instrumented source elsewhere
+    python3 inject_emitid.py FILE.kt --add-modifier    # ALSO fabricate a NEW `modifier =` argument
+                                                        # on provably-eligible calls (see ADD-MODIFIER
+                                                        # EXTENSION below); omitted entirely = today's
+                                                        # byte-for-byte rewrite-only behavior, unchanged.
 
 This module deliberately instruments ONE file per invocation -- same single-screen scope as its Phase 2
 predecessor; a whole-app sweep is future work, not attempted here.
+
+ADD-MODIFIER EXTENSION (`--add-modifier`, task "run 194"/log_141): closes the specific coverage gap
+log_139_walktag_broadening.md's smoke test flagged -- `NavigationBarItem`/`FloatingActionButton` call
+sites in `AppNavigation.kt` (and similar) that pass NO `modifier` argument at all (named or positional)
+are, by design, always SKIPPED by the REWRITE-ONLY `classify()` path above (`SkipReason.NO_MODIFIER_ARG`)
+-- that path is completely unchanged by this flag. `--add-modifier` adds a THIRD, entirely separate,
+opt-in pass that runs ONLY over calls `classify()` already skipped for that exact reason, and only
+fabricates a new `modifier = Modifier.walkTag("<id>")` NAMED argument when the callee can be PROVEN, by
+one of two purely-syntactic/structural signals, to actually declare a `modifier` parameter -- never
+guessed at, exactly the same "positive evidence or skip" discipline `classify()` already applies, extended
+one level further:
+
+  (a) LOCAL COMPOSABLE, PROVEN BY PARSING THE DECLARATION: if the callee name resolves to an
+      `@Composable fun <Name>(...)` declared somewhere under this codebase's own Kotlin source (scanned
+      via tree-sitter across `ui/` AND `navigation/` -- see `_local_composable_has_modifier_param()`),
+      and that declaration's OWN `function_value_parameters` contains a `parameter` node whose bound
+      identifier is literally `modifier`, the callee is proven eligible. This is not a guess: the
+      declaration is actually parsed and its parameter list actually inspected, not inferred from the
+      call site or from naming convention.
+  (b) LIBRARY WIDGET, PROVEN BY ALLOWLIST: if the callee name is not locally declared (so (a) can't
+      apply -- it's a Material3/Compose Foundation builtin, whose source this codebase does not carry),
+      it is checked against `ADD_MODIFIER_LIBRARY_ALLOWLIST` below, a SMALL, hand-curated, conservative
+      subset of `BUILTIN_COMPOSE_WIDGETS` restricted to names this file's author is confident about from
+      the current, stable Material3/Compose Foundation API surface (NavigationBarItem,
+      FloatingActionButton, ExtendedFloatingActionButton, Button/OutlinedButton/TextButton/
+      ElevatedButton/FilledTonalButton/IconButton/IconToggleButton, Card/ElevatedCard/OutlinedCard,
+      Scaffold, Text, Icon, Row, Column, Box, LazyColumn, LazyRow, Surface, TopAppBar). When in doubt a
+      name is LEFT OUT of this list -- false positives here are exactly host-run 181's failure mode
+      (`NavigationBar`, `NavigationRail`, dialogs, chips, dividers, sliders, progress indicators etc. are
+      all deliberately NOT included, even though many of them likely do take `modifier`, because "likely"
+      is not "proven" and this extension inherits the same "no positive evidence, no edit" discipline).
+
+  Both signals still additionally require everything `classify()`'s REWRITE-ONLY path already required to
+  even reach `SkipReason.NO_MODIFIER_ARG` in the first place: a bare PascalCase identifier callee (not a
+  navigation_expression), a real parenthesized `value_arguments` list (`NO_ARG_LIST` calls are still never
+  touched -- inserting a fresh `()` pair is still out of scope for this extension too, same reasoning as
+  the module doc's original `NO_ARG_LIST` skip), not already on `NO_MODIFIER_PARAM`, and (inside `ui/`)
+  already confirmed a real widget by `_is_real_widget()`. `--add-modifier` narrows further, it never
+  widens what `classify()` would otherwise consider.
+
+  IDEMPOTENCY: guaranteed the same way the existing rewrite passes already are -- `plan_injections()`
+  reclassifies from a fresh parse of the CURRENT file contents every run, and a call site that already has
+  ANY `modifier = <expr>` argument (whether hand-written, rewritten by a prior pass, or fabricated by a
+  prior `--add-modifier` run) is picked up by `_existing_modifier_arg()` and routed to the ordinary
+  REWRITE-named path (which itself checks the expression does not already end in `.walkTag(` -- see
+  `_already_walktagged()`) instead of the add-new-argument path -- so a second `--add-modifier` run over
+  an already-modified file finds NO remaining `NO_MODIFIER_ARG` sites to fabricate against and produces
+  zero further diff, by construction, without any separate "have I run before" flag or marker being
+  needed.
 """
 import argparse
 import os
+import re
 import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
@@ -94,7 +148,25 @@ import idgen as I                            # noqa: E402
 import ui_ledger as UL                       # noqa: E402  (_is_widget -- REUSED, the exact predicate
                                               # Phase 4's ledger_unified.py used for UI-enrichment
                                               # eligibility; see WIDGET GATING below)
+import oracle as O                           # noqa: E402  (MAIN -- app source root, for scanning
+                                              # local @Composable declarations under ui/ AND navigation/)
 from parse import parse                      # noqa: E402
+
+# Allowlist consulted ONLY by the opt-in `--add-modifier` pass (see module doc "ADD-MODIFIER EXTENSION")
+# -- confirmed-by-author-knowledge subset of stable Material3/Compose Foundation widgets known to declare
+# a `modifier: Modifier = Modifier` parameter. Deliberately smaller than `BUILTIN_COMPOSE_WIDGETS` above;
+# names left out when there is any doubt (see module doc).
+ADD_MODIFIER_LIBRARY_ALLOWLIST = frozenset({
+    "NavigationBarItem", "FloatingActionButton", "ExtendedFloatingActionButton",
+    "Button", "OutlinedButton", "TextButton", "ElevatedButton", "FilledTonalButton",
+    "IconButton", "IconToggleButton",
+    "Card", "ElevatedCard", "OutlinedCard",
+    "Scaffold", "TopAppBar",
+    "Text", "Icon",
+    "Row", "Column", "Box",
+    "LazyColumn", "LazyRow",
+    "Surface",
+})
 
 WALKEMIT_IMPORT = "import com.sara.workoutforlife.core.debug.WalkEmit"
 WALKTAG_IMPORT = "import com.sara.workoutforlife.core.debug.walkTag"
@@ -200,6 +272,17 @@ class SkipReason:
     UNRESOLVED_NODE = "id did not resolve to a live tree-sitter node (should not happen; defensive)"
     INNER_TRAILING_LAMBDA_WRAPPER = ("inner call_expression of a Foo(...) { } trailing-lambda wrapper "
                                       "(same node/args the outer wrapper's own record already targets)")
+    # --add-modifier-only skip reasons (never produced when that flag is not passed):
+    NOT_PROVEN_MODIFIER_PARAM = ("--add-modifier: callee has no existing modifier arg, and this file "
+                                  "could not PROVE (local @Composable declaration parse, or library "
+                                  "allowlist) that the callee accepts a `modifier` parameter -- left "
+                                  "alone rather than guessed at")
+    ALREADY_WALKTAGGED = ("existing modifier expression already ends in a `.walkTag(...)` call -- "
+                           "this file has already been run through this injector before; re-stamping "
+                           "would produce a double `.walkTag(id1).walkTag(id2)` chain (the SECOND call "
+                           "silently overwrites the FIRST's WalkId at runtime -- see WalkEmit.kt's "
+                           "`this[WalkId] = id` -- and pollutes WalkEmit's own tag registry, exactly the "
+                           "WALKTAG-MULTI symptom log_141 observed) -- skipped, never re-stamped")
 
 
 def _line_indent(src_text, start_byte):
@@ -291,9 +374,160 @@ def _positional_modifier_arg(va_node):
     return None
 
 
-def classify(record, node, file_path):
+# ── --add-modifier support (see module doc "ADD-MODIFIER EXTENSION") ─────────────────────────────
+
+# {file_path -> {name -> bool}}, lazily built, memoized for the process. PER-FILE, not a single global
+# name -> bool union -- Kotlin `private fun` composables are FILE-SCOPED, and this codebase genuinely has
+# same-named `private fun SelectionCard(...)` / `private fun SectionHeader(...)` declared independently
+# in multiple files with DIFFERENT parameter lists (some with a `modifier` param, some without --
+# confirmed directly: `GymCreateWizardScreen.kt`'s private `SelectionCard` has one,
+# `UpdateProgramWizardScreen.kt`'s private `SelectionCard` does not). A single cross-file name -> bool
+# union would misattribute one file's modifier param onto another file's differently-shaped private
+# function of the same name -- a real false-positive risk of exactly host-run 181's kind. Resolution is
+# therefore always scoped to "declarations visible from THIS call site's own file": that file's own
+# declarations first (covers `private fun` correctly, and also non-private local overrides), falling back
+# to declarations in OTHER files only for names not declared at all in the calling file itself (covers
+# genuinely shared/non-private composables imported from elsewhere in the module).
+_LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE = None
+
+
+def _function_has_modifier_param(fn_node):
+    """-> True iff `fn_node` (a function_declaration node) declares a bare `modifier` parameter in its
+    `function_value_parameters` list -- i.e. an actual `parameter` child whose own leading `identifier`
+    is literally "modifier". This is a real parse of the declaration's parameter list, not a name/type
+    guess."""
+    params = next((k for k in fn_node.children if k.type == "function_value_parameters"), None)
+    if params is None:
+        return False
+    for p in params.children:
+        if p.type != "parameter":
+            continue
+        idc = next((k for k in p.children if k.type == "identifier"), None)
+        if idc is not None and idc.text.decode() == "modifier":
+            return True
+    return False
+
+
+def _scan_file_composable_modifier_params(fpath):
+    """-> {composable name -> bool} for every `@Composable fun Name(...)` declared IN THIS ONE FILE
+    (per `_function_has_modifier_param`). One file's own answer only -- see the module-level comment
+    above `_LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE` for why this must stay file-scoped rather than a
+    single cross-file union."""
+    out = {}
+    try:
+        tree = parse(open(fpath, "rb").read())
+    except Exception:                          # noqa: BLE001
+        return out
+    stack = [tree.root_node]
+    while stack:
+        n = stack.pop()
+        if n.type == "function_declaration":
+            mods = next((k for k in n.children if k.type == "modifiers"), None)
+            if mods and "@Composable" in mods.text.decode():
+                idc = next((k for k in n.children if k.type == "identifier"), None)
+                if idc is not None:
+                    name = idc.text.decode()
+                    has_mod = _function_has_modifier_param(n)
+                    # if multiple same-named overloads exist even within one file, any-has-it wins --
+                    # still real syntactic evidence drawn from that exact file, not a guess.
+                    out[name] = out.get(name, False) or has_mod
+        stack.extend(n.children)
+    return out
+
+
+def _scan_all_composable_modifier_params():
+    """-> {file_path -> {name -> bool}} across this codebase's own Kotlin source (`ui/` AND
+    `navigation/`). Memoized process-wide (mirrors `ui_ledger.composable_names()`'s own memoization
+    pattern) -- scanning is a one-time cost regardless of how many files/calls consult it. Deliberately
+    keeps every file's answer SEPARATE (see module-level comment above
+    `_LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE`)."""
+    global _LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE
+    if _LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE is not None:
+        return _LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE
+    by_file = {}
+    roots = [UL.UIROOT, os.path.join(O.MAIN, "java", "com", "sara", "workoutforlife", "navigation")]
+    seen_files = set()
+    for root in roots:
+        if not os.path.isdir(root):
+            continue
+        for dp, _dirs, fs in os.walk(root):
+            for f in fs:
+                if not f.endswith(".kt"):
+                    continue
+                fpath = os.path.join(dp, f)
+                if fpath in seen_files:
+                    continue
+                seen_files.add(fpath)
+                by_file[fpath] = _scan_file_composable_modifier_params(fpath)
+    _LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE = by_file
+    return by_file
+
+
+def _add_modifier_eligible(name, file_path):
+    """-> True iff `--add-modifier` may fabricate a new `modifier = Modifier.walkTag(id)` argument for a
+    bare-identifier callee named `name`, called from `file_path` -- signal (a) (local @Composable
+    declaration, PROVEN by parsing its own parameter list, resolved FILE-LOCALLY FIRST -- see module doc
+    "ADD-MODIFIER EXTENSION" and the comment above `_LOCAL_COMPOSABLE_MODIFIER_PARAM_BY_FILE`) OR signal
+    (b) (library allowlist). Resolution order:
+      1. `name` declared as a local @Composable in `file_path` itself -> use THAT file's own answer
+         (correctly handles `private fun` name collisions across different files, e.g. `SelectionCard`).
+      2. else, `name` declared as a local @Composable in ANY other scanned file -> use that file's answer
+         (covers a genuinely shared, non-private composable called from a different file than its own
+         declaration).
+      3. else, library allowlist.
+    Neither signal is consulted unless the caller has already established every OTHER precondition
+    `classify()`'s REWRITE-ONLY path already requires (PascalCase bare identifier, real value_arguments,
+    not on NO_MODIFIER_PARAM, widget-gated inside ui/) -- this function only answers the ADDITIONAL
+    "does the callee actually take a modifier param" question."""
+    by_file = _scan_all_composable_modifier_params()
+    own_file_names = by_file.get(file_path, {})
+    if name in own_file_names:
+        return own_file_names[name]
+    for fpath, names in by_file.items():
+        if fpath == file_path:
+            continue
+        if name in names:
+            return names[name]
+    return name in ADD_MODIFIER_LIBRARY_ALLOWLIST
+
+
+def _already_walktagged(modifier_arg_node):
+    """-> True iff `modifier_arg_node` (a `value_argument` node already classified as carrying a named
+    OR positional modifier expression) ends in a `.walkTag(...)` call already -- i.e. this exact call
+    site was already stamped by a previous run of this injector (this run or an earlier one). REAL BUG
+    THIS GUARDS AGAINST (found and fixed during log_141's `--add-modifier` run): before this guard
+    existed, `classify()`'s rewrite-named/rewrite-positional paths blindly re-appended a FRESH
+    `.walkTag("<newId>")` onto an expression that already ended in `.walkTag("<staleId>")` from an
+    earlier pass, whenever that earlier id had gone POSITIONALLY STALE (idgen ids are baked as string
+    literals computed at injection time; inserting new source elsewhere in the same file -- e.g. a new
+    `modifier = ...` argument fabricated by `--add-modifier` on an EARLIER call site in the same file --
+    shifts every LATER node's positional index, so a previously-embedded id no longer matches a fresh
+    parse's own numbering for that same call. `classify()` cannot tell "was this call already stamped"
+    from source shape alone without this explicit suffix check -- the modifier EXPRESSION text is the
+    only signal available, and any modifier chain already ending in a `.walkTag(...)` call, however
+    stale that call's OWN id argument may now be, must never be re-stamped: doing so does not
+    literally fail to compile (`Modifier.walkTag()` chains freely), but the SECOND `.walkTag()` call
+    silently overwrites `WalkId` in the semantics node (see `WalkEmit.kt`'s `this[WalkId] = id`) and
+    pollutes `WalkEmit`'s own runtime tag registry -- confirmed directly via the `WALKTAG-MULTI ...
+    last one wins` warnings this bug produced during this file's own smoke test before the fix. A
+    STALE id already embedded on a call site is out of THIS injector's scope to repair (that requires a
+    dedicated full re-stamp pass across the whole file/tree, a bigger and more deliberate operation than
+    a single-call-site rewrite) -- it is simply left alone here, exactly like every other
+    already-satisfied precondition this function skips past."""
+    expr_node = modifier_arg_node.children[-1]
+    text = expr_node.text.decode("utf-8", errors="replace").rstrip()
+    return bool(re.search(r'\.walkTag\("[^"]*"\)$', text))
+
+
+def classify(record, node, file_path, add_modifier=False):
     """-> ("rewrite-named", value_argument_node) | ("rewrite-positional", value_argument_node)
-         | ("skip", SkipReason)
+         | ("add-modifier", value_arguments_node) | ("skip", SkipReason)
+
+    `add_modifier=False` (default): behavior IDENTICAL to before this flag existed -- no "add-modifier"
+    outcome is ever produced, this function's control flow through every other branch is byte-for-byte
+    unchanged. `add_modifier=True`: ADDS one more chance, ONLY for a call that would otherwise fall
+    through to `SkipReason.NO_MODIFIER_ARG` (i.e. every existing precondition it already required to get
+    there is still required) -- see `_add_modifier_eligible()`.
 
     Classifies ONE CALL_KIND record+node for the STAMP-not-STATEMENT, REWRITE-ONLY injection scheme --
     see module doc. There is NO "add" outcome any more (bugfix vs. an earlier version of this function
@@ -345,9 +579,13 @@ def classify(record, node, file_path):
 
     named = _existing_modifier_arg(va)
     if named is not None:
+        if _already_walktagged(named):
+            return ("skip", SkipReason.ALREADY_WALKTAGGED)
         return ("rewrite-named", named)
     positional = _positional_modifier_arg(va)
     if positional is not None:
+        if _already_walktagged(positional):
+            return ("skip", SkipReason.ALREADY_WALKTAGGED)
         return ("rewrite-positional", positional)
 
     # REWRITE-ONLY: no existing modifier argument (named or positional) -- never fabricate one, even
@@ -361,21 +599,28 @@ def classify(record, node, file_path):
         return ("skip", SkipReason.NOT_PASCAL_CASE)
     if name in NO_MODIFIER_PARAM:
         return ("skip", SkipReason.KNOWN_NO_MODIFIER_PARAM)
-    return ("skip", SkipReason.NO_MODIFIER_ARG)
+    if add_modifier and _add_modifier_eligible(name, file_path):
+        return ("add-modifier", va)
+    return ("skip", SkipReason.NO_MODIFIER_ARG if not add_modifier else SkipReason.NOT_PROVEN_MODIFIER_PARAM)
 
 
-def plan_injections(path):
+def plan_injections(path, add_modifier=False):
     """-> (to_rewrite_named: [(Record, value_argument_node)],
            to_rewrite_positional: [(Record, value_argument_node)],
+           to_add_modifier: [(Record, value_arguments_node)],
            skipped: [(Record, reason)])
 
     Re-walks the SAME tree idgen.gen_ids_for_file() walks (single-file mode: ids are local to this
     file, exactly like idgen.py's own single-file CLI path -- root_prefix_segs=None), this time also
     classifying each CALL_KIND node's modifier-arg shape (see `classify`). Every CALL_KIND record from
     idgen's real id assignment is preserved verbatim (same id string) -- this function only ADDS the
-    injectability classification, it does not recompute or renumber ids. NOTE: no "to_add" list any
-    more -- this injector is REWRITE-ONLY (see `classify`'s own doc); a call site with no existing
-    modifier argument is always in `skipped` (SkipReason.NO_MODIFIER_ARG), never fabricated.
+    injectability classification, it does not recompute or renumber ids.
+
+    `add_modifier=False` (default): `to_add_modifier` is always `[]` and every other list is IDENTICAL
+    to before this flag existed (this injector is REWRITE-ONLY unless the flag is passed) -- a call site
+    with no existing modifier argument is in `skipped` (SkipReason.NO_MODIFIER_ARG), never fabricated.
+    `add_modifier=True`: `to_add_modifier` additionally collects calls `classify()` proved eligible for a
+    brand-new `modifier =` argument (see module doc "ADD-MODIFIER EXTENSION").
     """
     src = open(path, "rb").read()
     tree = parse(src)
@@ -395,39 +640,81 @@ def plan_injections(path):
     records = I.gen_ids_for_file(path)  # authoritative id list (unchanged from Phase 1)
     to_rewrite_named = []
     to_rewrite_positional = []
+    to_add_modifier = []
     skipped = []
     for r in records:
         if r.node_kind != I.CALL_KIND:
             continue
         node = node_by_id.get(r.id)
-        kind, payload = classify(r, node, path)
+        kind, payload = classify(r, node, path, add_modifier=add_modifier)
         if kind == "rewrite-named":
             to_rewrite_named.append((r, payload))
         elif kind == "rewrite-positional":
             to_rewrite_positional.append((r, payload))
+        elif kind == "add-modifier":
+            to_add_modifier.append((r, payload))
         else:
             skipped.append((r, payload))
-    return to_rewrite_named, to_rewrite_positional, skipped
+    return to_rewrite_named, to_rewrite_positional, to_add_modifier, skipped
 
 
-def inject_file(path, out_path=None, dry_run=False):
+def _has_trailing_comma_before(va_node, close_paren_byte):
+    """-> True iff the LAST non-`)` token inside `va_node` (a value_arguments node) is itself a literal
+    `,` -- i.e. the argument list already ends in a trailing comma before its closing paren. Consulted
+    only by the `--add-modifier` new-argument-insertion path (see `_add_modifier_insertion`)."""
+    for c in reversed(va_node.children):
+        if c.end_byte >= close_paren_byte and c.type == ")":
+            continue
+        return c.type == ","
+    return False
+
+
+def _add_modifier_insertion(va_node, walk_id):
+    """-> (byte_offset, text) for inserting a brand-new `modifier = Modifier.walkTag("<id>")` NAMED
+    argument into `va_node` (a `value_arguments` node PROVEN, by `classify()`'s add-modifier branch, to
+    belong to a callee that accepts a `modifier` parameter). Two shapes:
+
+      - EMPTY arg list, `Foo()`: insert directly between `(` and `)`, no comma needed --
+        `Foo(modifier = Modifier.walkTag("id"))`.
+      - NON-EMPTY arg list, `Foo(a, b)` or `Foo(a, b,)`: insert immediately before the closing `)`,
+        respecting whatever trailing-comma convention is already present at that exact call site (if the
+        last real token before `)` is already a `,`, no comma is added -- e.g. `Foo(a, b, modifier = ...)`
+        for `Foo(a, b,)` sources vs `Foo(a, b, modifier = ...)` with a leading `, ` for `Foo(a, b)`
+        sources). Never assumes a project-wide trailing-comma STYLE; only ever mirrors what this call
+        site's own author already did.
+    """
+    close_paren = next((c for c in reversed(va_node.children) if c.type == ")"), None)
+    assert close_paren is not None, "value_arguments node with no closing paren (should not happen)"
+    has_named_child = any(c.type == "value_argument" for c in va_node.children)
+    text = f'modifier = Modifier.walkTag("{walk_id}")'
+    if not has_named_child:
+        return (close_paren.start_byte, text)
+    if _has_trailing_comma_before(va_node, close_paren.start_byte):
+        return (close_paren.start_byte, f" {text}")
+    return (close_paren.start_byte, f", {text}")
+
+
+def inject_file(path, out_path=None, dry_run=False, add_modifier=False):
     """Instrument one .kt file in place (or write to `out_path`).
     -> (n_injected, skipped, out_text, report)
 
-    `n_injected` = len(to_rewrite_named) + len(to_rewrite_positional), matching the old single-count
-    return shape callers/tests already expect. `report` is a dict of per-kind/per-reason COUNTS (see
-    `build_report`) -- the minimal tracking mechanism task step 2.4 asked for, layered on top of the
-    `skipped` list this function already returned (that list itself is unchanged: [(Record, reason)]).
+    `n_injected` = len(to_rewrite_named) + len(to_rewrite_positional) [+ len(to_add_modifier) when
+    `add_modifier=True`], matching the old single-count return shape callers/tests already expect.
+    `report` is a dict of per-kind/per-reason COUNTS (see `build_report`) -- the minimal tracking
+    mechanism task step 2.4 asked for, layered on top of the `skipped` list this function already
+    returned (that list itself is unchanged in shape: [(Record, reason)]).
 
-    REWRITE-ONLY (bugfix vs. an earlier version of this function): there is no more "add" edit path --
-    a widget call site with no existing modifier argument is left COMPLETELY untouched (it shows up in
-    `skipped` with SkipReason.NO_MODIFIER_ARG, not in any edit list). The TRAILING-COMMA handling the
-    old "add" path needed (inserting a brand new argument before `)`, which had to worry about whether
-    a preceding trailing comma was already present) is gone WITH that path -- a same-in-place rewrite of
-    an existing argument's expression never inserts a new argument, so there is no comma to get right or
-    wrong any more.
+    `add_modifier=False` (default): behavior BYTE-FOR-BYTE IDENTICAL to before this flag existed -- no
+    "add" edit path runs, a widget call site with no existing modifier argument is left COMPLETELY
+    untouched (it shows up in `skipped` with SkipReason.NO_MODIFIER_ARG, not in any edit list).
+    `add_modifier=True`: ADDITIONALLY splices a brand-new `modifier = Modifier.walkTag(id)` argument at
+    every call site `plan_injections()` proved eligible (see `_add_modifier_insertion`), in the SAME
+    single highest-offset-first edit pass as the two REWRITE paths (safe to mix: every edit here is
+    still a pure insertion, nothing is ever deleted, so applying rewrite + add edits in one offset-sorted
+    pass is exactly as safe as the rewrite-only pass already was).
     """
-    to_rewrite_named, to_rewrite_positional, skipped = plan_injections(path)
+    to_rewrite_named, to_rewrite_positional, to_add_modifier, skipped = plan_injections(
+        path, add_modifier=add_modifier)
 
     src_bytes = open(path, "rb").read()
 
@@ -442,6 +729,8 @@ def inject_file(path, out_path=None, dry_run=False):
         # regardless of what the expression is.
         expr_node = modifier_arg_node.children[-1]
         edits.append((expr_node.end_byte, f'.walkTag("{r.id}")'))
+    for r, va_node in to_add_modifier:
+        edits.append(_add_modifier_insertion(va_node, r.id))
 
     edits.sort(key=lambda e: e[0], reverse=True)
     out_bytes = src_bytes
@@ -456,23 +745,26 @@ def inject_file(path, out_path=None, dry_run=False):
         with open(target, "w", encoding="utf-8") as f:
             f.write(out_text)
 
-    report = build_report(to_rewrite_named, to_rewrite_positional, skipped)
-    return len(to_rewrite_named) + len(to_rewrite_positional), skipped, out_text, report
+    report = build_report(to_rewrite_named, to_rewrite_positional, to_add_modifier, skipped)
+    return (len(to_rewrite_named) + len(to_rewrite_positional) + len(to_add_modifier),
+            skipped, out_text, report)
 
 
-def build_report(to_rewrite_named, to_rewrite_positional, skipped):
-    """-> {"rewrite_named": n, "rewrite_positional": n, "skipped_total": n,
+def build_report(to_rewrite_named, to_rewrite_positional, to_add_modifier, skipped):
+    """-> {"rewrite_named": n, "rewrite_positional": n, "add_modifier": n, "skipped_total": n,
            "skipped_by_reason": {reason_str: n, ...}}
 
     The minimal per-file counts mechanism task step 2.4 asked for: named-rewrite vs positional-rewrite
-    vs skipped-by-reason (in particular NOT_A_WIDGET and NO_MODIFIER_ARG, called out explicitly, but
-    every SkipReason is tallied here, not just those two)."""
+    vs add-modifier vs skipped-by-reason (in particular NOT_A_WIDGET and NO_MODIFIER_ARG, called out
+    explicitly, but every SkipReason is tallied here, not just those two). `add_modifier` count is
+    always 0 when the CLI flag was not passed (see `plan_injections`)."""
     by_reason = {}
     for _r, reason in skipped:
         by_reason[reason] = by_reason.get(reason, 0) + 1
     return {
         "rewrite_named": len(to_rewrite_named),
         "rewrite_positional": len(to_rewrite_positional),
+        "add_modifier": len(to_add_modifier),
         "skipped_total": len(skipped),
         "skipped_by_reason": by_reason,
     }
@@ -505,16 +797,25 @@ def main():
     ap.add_argument("file", help="a single .kt file (absolute or relative to cwd)")
     ap.add_argument("--dry-run", action="store_true", help="report only, do not write")
     ap.add_argument("--out", default=None, help="write instrumented source to a different path")
+    ap.add_argument("--add-modifier", action="store_true",
+                     help="ALSO fabricate a new `modifier = Modifier.walkTag(id)` argument on calls "
+                          "PROVEN eligible (local @Composable modifier-param parse, or a small library "
+                          "allowlist) that would otherwise be skipped as NO_MODIFIER_ARG. Omitted: "
+                          "behavior is unchanged (rewrite-only).")
     args = ap.parse_args()
 
     path = args.file if os.path.isabs(args.file) else os.path.abspath(args.file)
-    n_injected, skipped, _out_text, report = inject_file(path, out_path=args.out, dry_run=args.dry_run)
+    n_injected, skipped, _out_text, report = inject_file(path, out_path=args.out, dry_run=args.dry_run,
+                                                           add_modifier=args.add_modifier)
 
     print(f"inject_emitid: {path}")
     print(f"inject_emitid: injected (stamped) {n_injected} call site(s) with walkTag")
     print(f"inject_emitid:   {report['rewrite_named']}x rewrite-named (existing `modifier = <expr>`)")
     print(f"inject_emitid:   {report['rewrite_positional']}x rewrite-positional "
           f"(existing leading positional Modifier arg)")
+    if args.add_modifier:
+        print(f"inject_emitid:   {report['add_modifier']}x add-modifier (new `modifier =` argument "
+              f"fabricated)")
     by_reason = {}
     for r, reason in skipped:
         by_reason.setdefault(reason, []).append(r)
