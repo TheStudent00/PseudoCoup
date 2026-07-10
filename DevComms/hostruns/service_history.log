@@ -13,3 +13,13 @@
 2026-07-10T03:00:25.948363+00:00  DONE 187_py_walkid_capture: rc=0 (0.1s)
 2026-07-10T03:18:57.570461+00:00  RUN 188_walk_diff_walkid: python3 walk_diff.py
 2026-07-10T03:18:57.734983+00:00  DONE 188_walk_diff_walkid: rc=0 (0.2s)
+2026-07-10T05:32:21.416737+00:00  RUN 189_kt_walk_broadened: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
+2026-07-10T05:33:26.102906+00:00  DONE 189_kt_walk_broadened: rc=0 (64.7s)
+2026-07-10T05:33:26.110458+00:00  RUN 190_kt_capture: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy(os.path.expanduser('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_walk.json'), d+'/189_kt_walk.json'); shutil.copy(os.path.expanduser('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log'), d+'/189_kt_activations.log'); print('captured')
+2026-07-10T05:33:26.142732+00:00  DONE 190_kt_capture: rc=0 (0.0s)
+2026-07-10T05:33:26.150059+00:00  RUN 191_py_walk_broadened: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json
+2026-07-10T06:06:18.978323+00:00  DONE 191_py_walk_broadened: rc=0 (1972.8s)
+2026-07-10T06:06:19.059852+00:00  RUN 192_py_capture: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('walks/py_walk.json', d+'/191_py_walk.json'); shutil.copy('walks/py_activations.log', d+'/191_py_activations.log'); print('captured')
+2026-07-10T06:06:19.136274+00:00  DONE 192_py_capture: rc=0 (0.1s)
+2026-07-10T06:06:19.201186+00:00  RUN 193_walk_diff_broadened: python3 walk_diff.py
+2026-07-10T06:06:19.315321+00:00  DONE 193_walk_diff_broadened: rc=0 (0.2s)

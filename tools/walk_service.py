@@ -108,6 +108,47 @@ def _bar(frac, width=22):
     return "█" * full + "░" * (width - full)
 
 
+def _step_budget(cmd):
+    """If this request is a walker.py run with an explicit --steps N budget, return N, else None.
+    This is the real progress denominator: the walker prints one 'STEP ' line per consumed step,
+    so completed-steps / budget is an actual completion fraction, unlike the time estimate."""
+    names = [os.path.basename(str(a)) for a in cmd]
+    if not any(n == "walker.py" for n in names):
+        return None
+    for i, a in enumerate(cmd):
+        if a == "--steps" and i + 1 < len(cmd):
+            try:
+                return int(cmd[i + 1])
+            except ValueError:
+                return None
+    return None
+
+
+class _StepCounter:
+    """Incrementally counts 'STEP ' lines in the growing logfile (reads only appended bytes,
+    so polling every second stays cheap on multi-MB logs). Also tracks when the log last grew,
+    so the status line can announce a stall instead of silently spinning."""
+    def __init__(self, logfile):
+        self.logfile, self.offset, self.count = logfile, 0, 0
+        self.last_growth = time.time()
+        self._partial = b""
+    def poll(self):
+        try:
+            size = os.path.getsize(self.logfile)
+            if size > self.offset:
+                self.last_growth = time.time()
+                with open(self.logfile, "rb") as rf:
+                    rf.seek(self.offset)
+                    chunk = self._partial + rf.read(size - self.offset)
+                self.offset = size
+                lines = chunk.split(b"\n")
+                self._partial = lines.pop()            # tail may be a half-written line
+                self.count += sum(1 for l in lines if l.startswith(b"STEP "))
+        except Exception:                  # noqa: BLE001 -- display must never kill the run
+            pass
+        return self.count, time.time() - self.last_growth
+
+
 def _estimate_seconds():
     """Median of every prior run's recorded seconds -- the progress-bar denominator."""
     vals = []
@@ -172,6 +213,8 @@ def run_request(path):
     env = dict(os.environ, **{k: str(v) for k, v in req.get("env", {}).items()})
     spin = 0
     last_beat = time.time()
+    budget = _step_budget(cmd)
+    stepper = _StepCounter(logfile) if budget else None
     with open(logfile, "w") as lf:
         try:
             proc = subprocess.Popen(cmd, cwd=cwd, env=env, stdout=lf, stderr=subprocess.STDOUT)
@@ -190,13 +233,20 @@ def run_request(path):
                     break
                 spin = (spin + 1) % len(SPINNER)
                 size = os.path.getsize(logfile)
-                if IS_TTY:
+                if stepper:
+                    done, quiet = stepper.poll()
+                    frac = min(done / budget, 0.99) if budget > 0 else 0.0
+                    stall = f" ⚠ log quiet {int(quiet)}s" if quiet >= 30 else ""
+                    prog = f"step {done}/{budget} [{_bar(frac)}] {int(frac * 100):>2}%{stall}"
+                else:
                     frac = min(el / est, 0.99) if est > 0 else 0.0
-                    status(f"[{_ts()}] ▶ {req_id} {SPINNER[spin]} {int(el)}s/~{int(est)}s "
-                           f"[{_bar(frac)}] {int(frac * 100):>2}% {size // 1024}KB | {_tail(logfile)}")
+                    prog = f"~{int(est)}s-est [{_bar(frac)}] {int(frac * 100):>2}%"
+                if IS_TTY:
+                    status(f"[{_ts()}] ▶ {req_id} {SPINNER[spin]} {int(el)}s "
+                           f"{prog} {size // 1024}KB | {_tail(logfile)}")
                 elif time.time() - last_beat >= 20:      # non-TTY fallback: sparse newline heartbeat
                     last_beat = time.time()
-                    log(f"  … {req_id} {int(el)}s  {size}B  | {_tail(logfile)}")
+                    log(f"  … {req_id} {int(el)}s  {prog}  {size}B  | {_tail(logfile)}")
         except Exception as e:                            # noqa: BLE001
             rc = -1
             lf.write(f"\nwalk_service: LAUNCH FAILED: {type(e).__name__}: {e}\n")
