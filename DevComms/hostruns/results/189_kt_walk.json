@@ -1,0 +1,766 @@
+{
+ "meta": {
+  "format": "wfl-decision-tree-walk\/v2",
+  "generator": "kt_walker",
+  "steps_this_run": 10
+ },
+ "states": {
+  "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649": {
+   "state_id": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "This week's workouts",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Set up a program to see your week here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No program enrolled yet. Head to Paths to get started.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Saturday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    }
+   ]
+  },
+  "538ab9510db5128cde46c3609c3a5ae368ca1f8ede4341523e2d7a7bbca77f2e": {
+   "state_id": "538ab9510db5128cde46c3609c3a5ae368ca1f8ede4341523e2d7a7bbca77f2e",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "This week's workouts",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Set up a program to see your week here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "No program enrolled yet. Head to Paths to get started.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "New mobility session",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Log a Win",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Log other exercise",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Saturday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    }
+   ]
+  },
+  "ed8c74ce7ae503c5725b5cb9d4777545b2a5ff09f7a726897b80172761b9a067": {
+   "state_id": "ed8c74ce7ae503c5725b5cb9d4777545b2a5ff09f7a726897b80172761b9a067",
+   "route": "today",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Notifications",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Settings",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "You're all caught up.",
+     "interactive": false
+    }
+   ]
+  },
+  "7febad7aa3c2949454f8216421566480e68b3e88f6fe8c7bd3719d44def3d608": {
+   "state_id": "7febad7aa3c2949454f8216421566480e68b3e88f6fe8c7bd3719d44def3d608",
+   "route": "my_program",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "No program yet",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Join a program to see your training roadmap here.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Browse programs",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Saturday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    }
+   ]
+  },
+  "422072bda39cbee603e82c4fc00e2db1735ade50326114cb824f16d7f3776cca": {
+   "state_id": "422072bda39cbee603e82c4fc00e2db1735ade50326114cb824f16d7f3776cca",
+   "route": "paths",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "Start with your why.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "A Path connects your training to what actually matters — evidence-backed goals for mental health, bone strength, brain function, and more.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Find your path",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Saturday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    }
+   ]
+  },
+  "d0569105b59166c7b6a0a3835b1f21a63e3543f635f6670a5626573f9b8e3689": {
+   "state_id": "d0569105b59166c7b6a0a3835b1f21a63e3543f635f6670a5626573f9b8e3689",
+   "route": "progress",
+   "tree_summary": [
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Analytics",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Bests",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "History",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Your wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "0",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "wins",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "More than the numbers — the real-life wins training makes possible.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Log a win",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Log your first workout to see strength, volume and training-time analytics here.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Saturday",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Hey, User",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Home",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Program",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Paths",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Progress",
+     "interactive": false
+    },
+    {
+     "kind": "Tab",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "You",
+     "interactive": false
+    }
+   ]
+  },
+  "d7c4f9562475e397a9997e1aec707c7ef4a1018e382d9988ddfaf84971aee1bb": {
+   "state_id": "d7c4f9562475e397a9997e1aec707c7ef4a1018e382d9988ddfaf84971aee1bb",
+   "route": "execution\/{sessionId}",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "This workout has no exercises",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Its program day came back empty. Go back and try again — if it keeps happening, repair the program from Settings → Developer.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Go back",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Mobility session",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Finish",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    }
+   ]
+  }
+ },
+ "edges": [
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Button",
+    "label": "Button",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "538ab9510db5128cde46c3609c3a5ae368ca1f8ede4341523e2d7a7bbca77f2e",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Node",
+    "label": "Node",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "ed8c74ce7ae503c5725b5cb9d4777545b2a5ff09f7a726897b80172761b9a067",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Tab",
+    "label": "Home",
+    "handler_kind": "onClick",
+    "ordinal": 2
+   },
+   "destination": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Tab",
+    "label": "Program",
+    "handler_kind": "onClick",
+    "ordinal": 3
+   },
+   "destination": "7febad7aa3c2949454f8216421566480e68b3e88f6fe8c7bd3719d44def3d608",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Tab",
+    "label": "Paths",
+    "handler_kind": "onClick",
+    "ordinal": 4
+   },
+   "destination": "422072bda39cbee603e82c4fc00e2db1735ade50326114cb824f16d7f3776cca",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Tab",
+    "label": "Progress",
+    "handler_kind": "onClick",
+    "ordinal": 5
+   },
+   "destination": "d0569105b59166c7b6a0a3835b1f21a63e3543f635f6670a5626573f9b8e3689",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "action": {
+    "kind": "Tab",
+    "label": "Home",
+    "handler_kind": "onClick",
+    "ordinal": 6
+   },
+   "destination": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "538ab9510db5128cde46c3609c3a5ae368ca1f8ede4341523e2d7a7bbca77f2e",
+   "action": {
+    "kind": "Node",
+    "label": "Node",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "bc11c828af125b9ca078a782a4e536ed0a6c496ac04ccaa2fd0bb4641af1b649",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": "538ab9510db5128cde46c3609c3a5ae368ca1f8ede4341523e2d7a7bbca77f2e",
+   "action": {
+    "kind": "Button",
+    "label": "New mobility session",
+    "handler_kind": "onClick",
+    "ordinal": 1
+   },
+   "destination": "d7c4f9562475e397a9997e1aec707c7ef4a1018e382d9988ddfaf84971aee1bb",
+   "error": null,
+   "unsettled": false
+  },
+  {
+   "source": null,
+   "action": null,
+   "destination": null,
+   "error": {
+    "type": "ReplayError",
+    "message": "replay failed for path [0]"
+   },
+   "unsettled": false
+  }
+ ]
+}
