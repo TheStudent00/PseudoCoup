@@ -1,4 +1,54 @@
-# Session handoff — 2026-07-10 LATE (KT CEILING ROOT-CAUSED: mount drift, NOT identity; runs 194-198 queued) (read this block first)
+# Session handoff — 2026-07-10 LATEST (CEILING BROKEN: kt 7->33 states; both engines id-dominant) (read this block first)
+
+RUN 199 (hermetic-mount fix VERIFIED ON HOST): kt walk 33 states / 60 edges (was 7/10 across three
+identity redesigns). ALL 67 REPLAY-MOUNT lines route=today; 59 exact-walkid; 0 missing; 0 ReplayErrors.
+RETRACTION (an in-session claim that 199 "completed its reachable expansion / legitimate finish" was
+WRONG and is withdrawn): only 7 of kt's 33 states were ever expanded (have outgoing edges); 26 states
+were discovered and never expanded, and the walk stopped at 60/200 steps anyway. WHY kt's loop stops
+enqueueing/looping is UNDETERMINED -- read walkApp's frontier bookkeeping against 199_kt_activations.log
+before believing any kt coverage number.
+RUN 196 (py, post add-modifier): 274 exact-walkid vs 26 ordinal-fallback (was 96/204) -- py identity now
+id-dominant. 40 states / 188 edges.
+RUN 201 (walk_diff): 5 shared / 23 kt-only / 33 py-only / 203 edge mismatches. FIRST diff where both
+engines resolve mostly on the same inserted ids -- it now measures twin behavior, and what it shows is
+MUTUAL REACHABILITY (each explores territory the other doesn't) = the frontier/BFS-alignment question
+(owner approved scoped-diff-first then alignment, 2026-07-08 block), NOT identity.
+
+TWO REAL DEFECTS, FOUND BY READING THE 196/199 ARTIFACTS DIRECTLY (these are the next work, order =
+owner's call; the earlier "frontier/BFS alignment" framing UNDERSOLD finding 1 and is dropped):
+  FINDING 1 (py twin divergence -- the kind of bug this instrument exists to catch): the SAME action,
+  label='Exercises / Browse, favourite...' handler=onClick fired on route=settings, NAVIGATES on kt
+  (settings -> exercises) but does NOTHING on py (settings -> settings, no error, fired twice in run
+  196). py therefore never sees exercises/gym_list/settings_notifications/wins or anything behind them.
+  Probably related: the 26 pre-existing LookupErrors cluster on Settings/ModalBottomSheet.
+  FINDING 2 -- ROOT CAUSE FOUND (2026-07-10 late, via the pixel-probe failure of all things): NOT a
+  frontier defect. WFL/app/build.gradle.kts had NO systemProperty forwarding into the forked test JVM,
+  so -Dwalk.steps/-Dwalk.reset NEVER reached WalkRecorderTest on ANY run this arc -- the test always
+  used its internal default budget of 60 (and reset/resume flags likely never arrived either -- what
+  each kt run actually resumed from deserves a skeptical read). Run 199's "death at 60/200" was a
+  60-budget walk exhausting normally mid-BFS. FIX: testOptions unitTests.all systemProperty forwarding
+  added (walk.steps/resume/reset + robolectric.pixelCopyRenderMode=hardware default, which the pixel
+  probe needed -- captureToImage hangs without it, run 202's ComposeTimeoutException). VERIFICATION
+  QUEUED: run 206 (kt walk, 200 steps, reset) must now actually spend up to 200 steps; 207 captures.
+  Pixel probe requeued as 204 (window captures now always saved before any compose-path failure
+  rethrows; 205 copies PNGs to results/204_pixelprobe).
+  UNACCOUNTED REQUEST FILE: requests/202_py_walk_exhaust.json (--steps 2000 --resume, created 12:56
+  2026-07-10) was written by no reporting agent and not by the orchestrator -- owner asked about it,
+  origin unresolved. Content benign (resumed py exhaustion walk) but the accounting failure is noted.
+NEW INSTRUMENT PLANNED (owner design session, full record: WFL DevComms/log_143_tap_grid_atlas_plan.md):
+dense tap-grid boundary mapping (real taps, log-as-sensor via the inserted ids, branches never followed,
+navigation undone by SAVED-STATE restore: fork() on py, qemu/kvm microVM snapshot on kt -- owner chose
+the microVM; 48GB swap available, limited RAM) + frozen kt ground-truth bundle vs regenerating py bundle
++ side-by-side HTML atlas (screenshot + observed-boundary overlay per state, clickable edges). OWNER
+DECIDED ORDER: map every screen/overlay one tap deep FIRST, only then navigate deeper. Main unknown:
+Robolectric pixel fidelity (needs a probe run).
+
+STILL PENDING (behind the two findings): Phase 6 id cross-check (kt emits == py emits == ledger, the
+EVERYTHING IS TRACKED gate); cleanup pile (legacy WalkEmit.emitId statements in TodayScreen.kt; untagged
+today FAB, log_141 caveat; injector nav-file gate hardening, log_139; build_mixingcenter.py should
+assert tree_sitter importability).
+
+# Session handoff — 2026-07-10 LATE (KT CEILING ROOT-CAUSED: mount drift, NOT identity; runs 194-201 done, superseded by the block above)
 
 THE BIG FINDING (Opus diagnosis, DevComms/log_140_kt_ceiling_diagnosis.md -- read it): the kt walker's
 7-state ceiling that survived THREE identity redesigns is NOT an identity problem. Run 189's captured

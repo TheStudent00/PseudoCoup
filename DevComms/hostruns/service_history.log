@@ -29,3 +29,18 @@
 2026-07-10T13:43:30.950624+00:00  DONE 195_kt_capture_addmod: rc=0 (0.1s)
 2026-07-10T13:43:30.959211+00:00  RUN 196_py_walk_addmod: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json
 2026-07-10T14:14:26.101024+00:00  RUN 196_py_walk_addmod: xvfb-run -a python3 -u walker.py --steps 200 --reset --out walks/py_walk.json
+2026-07-10T14:45:48.174284+00:00  DONE 196_py_walk_addmod: rc=0 (1882.1s)
+2026-07-10T14:45:48.270265+00:00  RUN 197_py_capture_addmod: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('walks/py_walk.json', d+'/196_py_walk.json'); shutil.copy('walks/py_activations.log', d+'/196_py_activations.log'); print('captured')
+2026-07-10T14:45:48.396830+00:00  DONE 197_py_capture_addmod: rc=0 (0.2s)
+2026-07-10T14:45:48.460204+00:00  RUN 198_walk_diff_addmod: python3 walk_diff.py
+2026-07-10T14:45:48.574681+00:00  DONE 198_walk_diff_addmod: rc=0 (0.2s)
+2026-07-10T14:45:48.588802+00:00  RUN 199_kt_walk_hermetic: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
+2026-07-10T14:50:06.395373+00:00  DONE 199_kt_walk_hermetic: rc=0 (257.8s)
+2026-07-10T14:50:06.408759+00:00  RUN 200_kt_capture_hermetic: python3 -c import os,shutil; e=os.path.expanduser; shutil.copy(e('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_walk.json'), e('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/199_kt_walk.json')); shutil.copy(e('~/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log'), e('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/199_kt_activations.log'))
+2026-07-10T14:50:06.441136+00:00  DONE 200_kt_capture_hermetic: rc=0 (0.0s)
+2026-07-10T14:50:06.456866+00:00  RUN 201_walk_diff_hermetic: python3 walk_diff.py
+2026-07-10T14:50:06.571427+00:00  DONE 201_walk_diff_hermetic: rc=0 (0.1s)
+2026-07-10T20:00:20.672912+00:00  RUN 202_py_walk_exhaust: xvfb-run -a python3 -u walker.py --steps 2000 --resume --out walks/py_walk.json
+2026-07-10T20:08:23.078782+00:00  RUN 202_pixel_probe: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-10T20:08:57.406129+00:00  DONE 202_pixel_probe: rc=1 (34.3s)
+2026-07-10T20:08:57.421068+00:00  RUN 202_py_walk_exhaust: xvfb-run -a python3 -u walker.py --steps 2000 --resume --out walks/py_walk.json
