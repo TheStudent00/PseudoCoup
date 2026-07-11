@@ -1,182 +1,133 @@
-import argparse
 import sys
+import argparse
 import os
 
-from .core.parser import build_parser
-from .core.builder import IRBuilder
-from .core.extractor import ContextExtractor
-from .graph.cfg_builder import CFGBuilder
-from .graph.ssa import SSABuilder
-from .semantic.type_prop import TypePropagator
-from .semantic.registry import WrapperRegistry
-from .egress.emitter import GraphEmitter
-from .egress.python import PythonGenerator
-from .egress.dart import DartGenerator
-from .core.diagnostics import GraphVizExporter
-
-class Compiler:
-    def __init__(self):
-        self.registry = WrapperRegistry()
-
-    def compile(self, file_path: str, source_lang: str, target_lang: str, emit_dot: bool = False):
-        if not os.path.exists(file_path):
-            print(f"Error: Source file '{file_path}' not found.")
-            sys.exit(1)
-            
-        self.registry.load_defaults(source_lang, target_lang)
-            
-        with open(file_path, "rb") as f:
-            src_bytes = f.read()
-
-        # 1. Parse AST
-        parser = build_parser(source_lang)
-        tree = parser.parse(src_bytes)
-        root_node = tree.root_node
-
-        # 2. Extract Global Context
-        extractor = ContextExtractor()
-        sym_table = extractor.extract(root_node)
-
-        # 3. Flatten AST to Linear IR
-        builder = IRBuilder()
-        if source_lang == "python":
-            from .ingress.python import PythonFlattener
-            flattener = PythonFlattener(builder)
-        elif source_lang == "dart":
-            from .ingress.dart import DartFlattener
-            flattener = DartFlattener(builder)
-        elif source_lang == "kotlin":
-            from .ingress.kotlin import KotlinFlattener
-            flattener = KotlinFlattener(builder)
-        elif source_lang == "rust":
-            from .ingress.rust import RustFlattener
-            flattener = RustFlattener(builder)
-        elif source_lang == "go":
-            from .ingress.go import GoFlattener
-            flattener = GoFlattener(builder)
-        elif source_lang == "typescript":
-            from .ingress.typescript import TypeScriptFlattener
-            flattener = TypeScriptFlattener(builder)
-        elif source_lang == "c_sharp":
-            from .ingress.c_sharp import CSharpFlattener
-            flattener = CSharpFlattener(builder)
-        elif source_lang == "cpp":
-            from .ingress.cpp import CppFlattener
-            flattener = CppFlattener(builder)
-        elif source_lang == "c":
-            from .ingress.c import CFlattener
-            flattener = CFlattener(builder)
-        elif source_lang == "java":
-            from .ingress.java import JavaFlattener
-            flattener = JavaFlattener(builder)
-        elif source_lang == "swift":
-            from .ingress.swift import SwiftFlattener
-            flattener = SwiftFlattener(builder)
-        elif source_lang == "ruby":
-            from .ingress.ruby import RubyFlattener
-            flattener = RubyFlattener(builder)
-        elif source_lang == "php":
-            from .ingress.php import PhpFlattener
-            flattener = PhpFlattener(builder)
-        else:
-            print(f"Error: Ingress lang '{source_lang}' not supported in V2.")
-            sys.exit(1)
-            
-        flattener.flatten(root_node)
-
-        # 4. Construct CFG
-        cfg_builder = CFGBuilder(builder.instructions)
-        cfg = cfg_builder.build()
-
-        # 5. Transform to SSA
-        ssa_builder = SSABuilder(cfg)
-        ssa_builder.transform()
-
-        # 6. Type Propagation and Registry Intercept
-        type_prop = TypePropagator(cfg, sym_table, registry=self.registry)
-        type_prop.propagate()
-
-        # Output diagnostics if requested
-        if emit_dot:
-            diag = GraphVizExporter(cfg)
-            dot_path = file_path + ".dot"
-            png_path = file_path + ".png"
-            diag.export_dot(dot_path)
-            diag.render_png(dot_path, png_path)
-            print(f"Diagnostic CFG exported to: {png_path}")
-
-        # 7. Egress Emission (Deconstruct SSA and reconstruct AST)
-        emitter = GraphEmitter(cfg)
-        emitter.emit()
-        ast_output = emitter.export_decorated_ast()
-        
-        if target_lang == "python":
-            gen = PythonGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "dart":
-            gen = DartGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "kotlin":
-            from .egress.kotlin import KotlinGenerator
-            gen = KotlinGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "rust":
-            from .egress.rust import RustGenerator
-            gen = RustGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "go":
-            from .egress.go import GoGenerator
-            gen = GoGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "typescript":
-            from .egress.typescript import TypeScriptGenerator
-            gen = TypeScriptGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "c_sharp":
-            from .egress.c_sharp import CSharpGenerator
-            gen = CSharpGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "cpp":
-            from .egress.cpp import CppGenerator
-            gen = CppGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "c":
-            from .egress.c import CGenerator
-            gen = CGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "java":
-            from .egress.java import JavaGenerator
-            gen = JavaGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "swift":
-            from .egress.swift import SwiftGenerator
-            gen = SwiftGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "ruby":
-            from .egress.ruby import RubyGenerator
-            gen = RubyGenerator()
-            output_code = gen.generate(ast_output)
-        elif target_lang == "php":
-            from .egress.php import PhpGenerator
-            gen = PhpGenerator()
-            output_code = gen.generate(ast_output)
-        else:
-            print(f"Error: Target language '{target_lang}' is not yet supported in V2.")
-            sys.exit(1)
-            
-        print(output_code)
+from pseudocoup.core.ledger import Ledger
+from pseudocoup.ingress.python import PythonIngestor
+from pseudocoup.ingress.dart import DartIngestor
+from pseudocoup.egress.dart import DartEmitter
+from pseudocoup.egress.go import GoEmitter
+from pseudocoup.egress.python import PythonEmitter
+from pseudocoup.ingress.kotlin import KotlinIngestor
+from pseudocoup.egress.kotlin import KotlinEmitter
+from pseudocoup.ingress.java import JavaIngestor
+from pseudocoup.egress.java import JavaEmitter
+from pseudocoup.ingress.csharp import CSharpIngestor
+from pseudocoup.egress.csharp import CSharpEmitter
+from pseudocoup.ingress.typescript import TypeScriptIngestor
+from pseudocoup.egress.typescript import TypeScriptEmitter
+from pseudocoup.ingress.swift import SwiftIngestor
+from pseudocoup.egress.swift import SwiftEmitter
+from pseudocoup.ingress.rust import RustIngestor
+from pseudocoup.egress.rust import RustEmitter
+from pseudocoup.ingress.cpp import CppIngestor
+from pseudocoup.egress.cpp import CppEmitter
+from pseudocoup.ingress.ruby import RubyIngestor
+from pseudocoup.egress.ruby import RubyEmitter
+from pseudocoup.ingress.php import PhpIngestor
+from pseudocoup.egress.php import PhpEmitter
 
 def main():
-    parser = argparse.ArgumentParser(description="PseudoCoup V2 True Compiler")
-    parser.add_argument("--source", required=True, help="Path to the source file")
-    parser.add_argument("--source-lang", default="python", help="Source language (default: python)")
-    parser.add_argument("--target-lang", required=True, help="Target language (e.g. kotlin, go, rust)")
-    parser.add_argument("--emit-dot", action="store_true", help="Generate a GraphViz .dot file and PNG of the CFG")
-
+    parser = argparse.ArgumentParser(description="PseudoCoup V3 CLI")
+    parser.add_argument("--source", required=True, help="The path to the source file")
+    parser.add_argument("--source-lang", default="python", help="The input language")
+    parser.add_argument("--target-lang", default="dart", help="The output language")
+    
     args = parser.parse_args()
-
-    compiler = Compiler()
-    compiler.compile(args.source, args.source_lang, args.target_lang, args.emit_dot)
+    
+    source_path = args.source
+    if not os.path.exists(source_path):
+        print(f"Error: Source file '{source_path}' does not exist.")
+        sys.exit(1)
+        
+    # 1. Determine the path of the companion ledger.
+    base_name, _ = os.path.splitext(source_path)
+    ledger_path = f"{base_name}.ledger.json"
+    
+    # 2. Instantiate a Ledger and call load()
+    ledger = Ledger()
+    ledger.load(ledger_path)
+    
+    # 3. Instantiate the proper Ingestor, pass it the Ledger. Call parse()
+    with open(source_path, 'rb') as f:
+        source_bytes = f.read()
+        
+    if args.source_lang.lower() == "dart":
+        ingestor = DartIngestor(ledger)
+    elif args.source_lang.lower() == "kotlin" or args.source_lang.lower() == "kt":
+        ingestor = KotlinIngestor(ledger)
+    elif args.source_lang.lower() == "java":
+        ingestor = JavaIngestor(ledger)
+    elif args.source_lang.lower() in ("csharp", "cs", "c#"):
+        ingestor = CSharpIngestor(ledger)
+    elif args.source_lang.lower() in ("typescript", "ts"):
+        ingestor = TypeScriptIngestor(ledger)
+    elif args.source_lang.lower() == "swift":
+        ingestor = SwiftIngestor(ledger)
+    elif args.source_lang.lower() == "rust":
+        ingestor = RustIngestor(ledger)
+    elif args.source_lang.lower() in ("cpp", "c++"):
+        ingestor = CppIngestor(ledger)
+    elif args.source_lang.lower() in ("ruby", "rb"):
+        ingestor = RubyIngestor(ledger)
+    elif args.source_lang.lower() == "php":
+        ingestor = PhpIngestor(ledger)
+    else:
+        ingestor = PythonIngestor(ledger)
+        
+    module_node = ingestor.parse(source_bytes)
+    
+    # 4. Instantiate the correct Emitter and call generate()
+    if args.target_lang.lower() == "dart":
+        emitter = DartEmitter(ledger)
+        output_path = f"{base_name}.dart"
+    elif args.target_lang.lower() == "go":
+        emitter = GoEmitter(ledger)
+        output_path = f"{base_name}.go"
+    elif args.target_lang.lower() == "python":
+        emitter = PythonEmitter(ledger)
+        output_path = f"{base_name}.python"
+    elif args.target_lang.lower() == "kotlin" or args.target_lang.lower() == "kt":
+        emitter = KotlinEmitter(ledger)
+        output_path = f"{base_name}.kt"
+    elif args.target_lang.lower() == "java":
+        emitter = JavaEmitter(ledger)
+        output_path = f"{base_name}.java"
+    elif args.target_lang.lower() in ("csharp", "cs", "c#"):
+        emitter = CSharpEmitter(ledger)
+        output_path = f"{base_name}.cs"
+    elif args.target_lang.lower() in ("typescript", "ts"):
+        emitter = TypeScriptEmitter(ledger)
+        output_path = f"{base_name}.ts"
+    elif args.target_lang.lower() == "swift":
+        emitter = SwiftEmitter(ledger)
+        output_path = f"{base_name}.swift"
+    elif args.target_lang.lower() == "rust":
+        emitter = RustEmitter(ledger)
+        output_path = f"{base_name}.rs"
+    elif args.target_lang.lower() in ("cpp", "c++"):
+        emitter = CppEmitter(ledger)
+        output_path = f"{base_name}.cpp"
+    elif args.target_lang.lower() in ("ruby", "rb"):
+        emitter = RubyEmitter(ledger)
+        output_path = f"{base_name}.rb"
+    elif args.target_lang.lower() == "php":
+        emitter = PhpEmitter(ledger)
+        output_path = f"{base_name}.php"
+    else:
+        print(f"Error: Unsupported target language '{args.target_lang}'")
+        sys.exit(1)
+        
+    output_code = emitter.generate(module_node)
+    
+    # 5. Save the output string to a new file
+    with open(output_path, 'w', encoding='utf-8') as f:
+        f.write(output_code)
+        
+    # 6. Call dump() on the Ledger
+    ledger.dump(ledger_path)
+    
+    print(f"Successfully transpiled '{source_path}' to '{output_path}'.")
 
 if __name__ == "__main__":
     main()

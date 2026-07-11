@@ -1,156 +1,351 @@
-from tree_sitter import Node
-from ..core.builder import IRBuilder
-from ..core.models import Instruction, OpCode
-from ..core.constants import (
-    NODE_EXPRESSION_STATEMENT, NODE_ASSIGNMENT, NODE_CALL, 
-    NODE_ATTRIBUTE, NODE_IDENTIFIER, NODE_INTEGER, NODE_STRING,
-    NODE_IF_STATEMENT, NODE_WHILE_STATEMENT, NODE_FOR_STATEMENT,
-    NODE_TRY_STATEMENT
+from tree_sitter import Parser, Language
+import tree_sitter_python as tspython
+from pseudocoup.core.ledger import Ledger
+from pseudocoup.core.ur_ast import (
+    URNode, ModuleNode, FunctionDefNode, ClassDefNode, MethodDefNode,
+    AssignmentNode, ReturnNode, BinaryOpNode, CallNode,
+    IdentifierNode, LiteralNode,
+    IfNode, WhileNode, ForNode, TryCatchNode,
+    ListNode, DictNode, SubscriptNode, AttributeNode
 )
 
-class PythonFlattener:
-    def __init__(self, builder: IRBuilder):
-        self.builder = builder
+class PythonIngestor:
+    def __init__(self, ledger: Ledger):
+        self.ledger = ledger
+        self.parser = Parser()
+        
+        # Determine tree-sitter version compat
+        try:
+            # For tree-sitter < 0.22
+            self.language = Language(tspython.language(), "python")
+            self.parser.set_language(self.language)
+        except Exception:
+            # For tree-sitter >= 0.22
+            self.language = Language(tspython.language())
+            try:
+                self.parser.set_language(self.language)
+            except AttributeError:
+                self.parser.language = self.language
 
-    def flatten(self, root_node: Node):
-        """Walks the AST and emits linear IR instructions."""
-        self._visit(root_node)
+    def parse(self, source_bytes: bytes) -> ModuleNode:
+        tree = self.parser.parse(source_bytes)
+        root_node = tree.root_node
+        return self._map_node(root_node, source_bytes, "main")
 
-    def _visit(self, node: Node) -> str:
-        """Visits a node, emits instructions, and returns the temp variable holding its value."""
-        if node.type == NODE_ASSIGNMENT:
-            left = node.child_by_field_name('left')
-            right = node.child_by_field_name('right')
-            if left and right:
-                dest = left.text.decode('utf8') # Assuming simple identifier for now
-                val = self._visit(right)
-                self.builder.emit_assign(dest, [val])
-                return dest
-                
-        elif node.type == NODE_CALL:
-            func_node = node.child_by_field_name('function')
-            args_node = node.child_by_field_name('arguments')
+    def _map_node(self, node, source_bytes: bytes, scope: str = "main") -> URNode:
+        if node is None:
+            return None
+
+        if node.type == 'module':
+            body = []
+            for child in node.named_children:
+                mapped = self._map_node(child, source_bytes, scope)
+                if mapped:
+                    body.append(mapped)
+            return ModuleNode(body)
+
+        elif node.type == 'function_definition':
+            name_node = node.child_by_field_name('name')
+            name = name_node.text.decode('utf-8') if name_node else ""
             
-            func_name = self._visit(func_node) if func_node else ""
+            new_scope = name if scope == "main" else f"{scope}.{name}"
+
+            return_type_node = node.child_by_field_name('return_type')
+            return_type = return_type_node.text.decode('utf-8') if return_type_node else None
+
             args = []
-            if args_node:
-                # Naive argument extraction
-                for arg in args_node.named_children:
-                    args.append(self._visit(arg))
+            parameters_node = node.child_by_field_name('parameters')
+            if parameters_node:
+                for child in parameters_node.named_children:
+                    if child.type == 'identifier':
+                        args.append(self._map_node(child, source_bytes, scope))
+                    elif child.type == 'typed_parameter':
+                        ident_node = child.child(0)
+                        type_node = child.child_by_field_name('type')
+                        if type_node and ident_node:
+                            ident_name = ident_node.text.decode('utf-8')
+                            type_str = type_node.text.decode('utf-8')
+                            self.ledger.register_type(new_scope, ident_name, type_str)
+                        if ident_node:
+                            args.append(self._map_node(ident_node, source_bytes, new_scope))
+
+            body = []
+            body_node = node.child_by_field_name('body')
+            if body_node:
+                for child in body_node.named_children:
+                    mapped = self._map_node(child, source_bytes, new_scope)
+                    if mapped:
+                        body.append(mapped)
+
+            func_node = FunctionDefNode(name, args, body, return_type)
+            if return_type:
+                func_node.metadata['type'] = return_type
+            return func_node
+
+        elif node.type == 'class_definition':
+            name_node = node.child_by_field_name('name')
+            name = name_node.text.decode('utf-8') if name_node else ""
             
-            return self.builder.emit_temp_call(func_name, args)
-            
-        elif node.type == NODE_ATTRIBUTE:
-            obj = node.child_by_field_name('object')
-            attr = node.child_by_field_name('attribute')
-            
-            obj_val = self._visit(obj) if obj else ""
-            attr_name = attr.text.decode('utf8') if attr else ""
-            
-            dest = self.builder._next_temp()
-            self.builder.emit(Instruction(OpCode.ATTR, dest=dest, args=[obj_val, attr_name]))
-            return dest
-            
-        elif node.type == NODE_IDENTIFIER:
-            return node.text.decode('utf8')
-            
-        elif node.type in (NODE_INTEGER, NODE_STRING, 'true', 'false'):
-            # For literals, emit an assignment to a temp
-            return self.builder.emit_temp_assign([node.text.decode('utf8')])
-            
-        elif node.type == NODE_IF_STATEMENT:
-            cond_node = node.child_by_field_name('condition')
-            cond_var = self._visit(cond_node) if cond_node else ""
-            
-            # Emit BRANCH with dummy targets
-            branch_instr = Instruction(OpCode.BRANCH, args=[cond_var, -1, -1])
-            self.builder.emit(branch_instr)
-            
-            # Visit true block
-            true_idx = len(self.builder.instructions)
-            consequence = node.child_by_field_name('consequence')
-            if consequence:
-                self._visit(consequence)
-                
-            # Emit JUMP to merge point
-            jump_merge_true = Instruction(OpCode.JUMP, args=[-1])
-            self.builder.emit(jump_merge_true)
-            
-            # Visit false block (elif/else)
-            false_idx = len(self.builder.instructions)
-            alternative = node.child_by_field_name('alternative')
-            if alternative:
-                self._visit(alternative)
-                
-            # Emit JUMP to merge point
-            jump_merge_false = Instruction(OpCode.JUMP, args=[-1])
-            self.builder.emit(jump_merge_false)
-            
-            merge_idx = len(self.builder.instructions)
-            
-            # Backpatch target indices
-            branch_instr.args[1] = true_idx
-            branch_instr.args[2] = false_idx
-            jump_merge_true.args[0] = merge_idx
-            jump_merge_false.args[0] = merge_idx
-            
-            return ""
-            
-        elif node.type in (NODE_WHILE_STATEMENT, NODE_FOR_STATEMENT):
-            # Emit LOOP_HEADER JUMP target (this instruction itself doesn't execute, it's just the index)
-            loop_header_idx = len(self.builder.instructions)
-            
-            # Condition
-            cond_var = ""
-            if node.type == NODE_WHILE_STATEMENT:
-                cond_node = node.child_by_field_name('condition')
-                cond_var = self._visit(cond_node) if cond_node else ""
+            new_scope = name if scope == "main" else f"{scope}.{name}"
+
+            superclasses_node = node.child_by_field_name('superclasses')
+            bases = []
+            if superclasses_node:
+                for child in superclasses_node.named_children:
+                    bases.append(child.text.decode('utf-8'))
+
+            methods = []
+            fields = []
+            body_node = node.child_by_field_name('body')
+            if body_node:
+                for child in body_node.named_children:
+                    mapped = self._map_node(child, source_bytes, new_scope)
+                    if isinstance(mapped, FunctionDefNode):
+                        method = MethodDefNode(mapped.name, mapped.args, mapped.body, mapped.return_type)
+                        method.metadata = mapped.metadata
+                        methods.append(method)
+                    elif isinstance(mapped, AssignmentNode):
+                        fields.append(mapped)
+
+            return ClassDefNode(name, bases, methods, fields)
+
+        elif node.type in ('expression_statement', 'parenthesized_expression', 'pattern_list'):
+            if node.named_children:
+                return self._map_node(node.named_children[0], source_bytes, scope)
+            return None
+
+        elif node.type == 'assignment':
+            left_node = node.child_by_field_name('left')
+            right_node = node.child_by_field_name('right')
+            type_node = node.child_by_field_name('type')
+
+            if type_node and left_node:
+                left_name = left_node.text.decode('utf-8')
+                type_str = type_node.text.decode('utf-8')
+                self.ledger.register_type(scope, left_name, type_str)
+
+            left = self._map_node(left_node, source_bytes, scope) if left_node else None
+            right = self._map_node(right_node, source_bytes, scope) if right_node else None
+            return AssignmentNode(left, right)
+
+        elif node.type == 'return_statement':
+            if node.named_children:
+                value = self._map_node(node.named_children[0], source_bytes, scope)
+                return ReturnNode(value)
+            return ReturnNode(None)
+
+        elif node.type in ('binary_operator', 'comparison_operator', 'boolean_operator'):
+            left_node = node.child_by_field_name('left') or (node.named_children[0] if len(node.named_children) > 0 else None)
+            right_node = node.child_by_field_name('right') or (node.named_children[1] if len(node.named_children) > 1 else None)
+            operator_node = node.child_by_field_name('operator')
+            if operator_node:
+                operator = operator_node.text.decode('utf-8')
             else:
-                # Naive for-loop handling: assuming condition is just true for now in flat IR
-                cond_var = self.builder.emit_temp_assign(["True"])
-                
-            # Branch to body or exit
-            branch_instr = Instruction(OpCode.BRANCH, args=[cond_var, -1, -1])
-            self.builder.emit(branch_instr)
+                # Find the first unnamed child, which is usually the operator
+                operator = ""
+                for child in node.children:
+                    if not child.is_named:
+                        operator = child.text.decode('utf-8')
+                        break
+                        
+            if operator == 'and': operator = '&&'
+            if operator == 'or': operator = '||'
+            left = self._map_node(left_node, source_bytes, scope) if left_node else None
+            right = self._map_node(right_node, source_bytes, scope) if right_node else None
+            return BinaryOpNode(left, right, operator)
+
+        elif node.type in ('unary_operator', 'not_operator'):
+            operator_node = node.child_by_field_name('operator')
+            if operator_node:
+                operator = operator_node.text.decode('utf-8')
+            else:
+                operator = ""
+                for child in node.children:
+                    if not child.is_named:
+                        operator = child.text.decode('utf-8')
+                        break
+                        
+            if operator == 'not': operator = '!'
+            arg_node = node.child_by_field_name('argument') or (node.named_children[0] if len(node.named_children) > 0 else None)
+            arg = self._map_node(arg_node, source_bytes, scope) if arg_node else None
+            # map unary as binary with empty left side to trick dart emitter
+            return BinaryOpNode(IdentifierNode(""), arg, operator)
+
+        elif node.type == 'call':
+            function_node = node.child_by_field_name('function')
+            func_name = self._map_node(function_node, source_bytes, scope) if function_node else ""
+
+            args = []
+            arguments_node = node.child_by_field_name('arguments')
+            if arguments_node:
+                for child in arguments_node.named_children:
+                    mapped = self._map_node(child, source_bytes, scope)
+                    if mapped:
+                        args.append(mapped)
+
+            return CallNode(func_name, args)
+
+        elif node.type == 'identifier':
+            name = node.text.decode('utf-8')
+            ident_node = IdentifierNode(name)
             
-            body_idx = len(self.builder.instructions)
-            body = node.child_by_field_name('body')
-            if body:
-                self._visit(body)
-                
-            # Jump back to header
-            self.builder.emit(Instruction(OpCode.JUMP, args=[loop_header_idx]))
+            # Fetch from ledger using FQDN
+            ledger_type = self.ledger.get_type(scope, name)
+            if ledger_type:
+                ident_node.metadata['type'] = ledger_type
+            return ident_node
             
-            exit_idx = len(self.builder.instructions)
+        elif node.type == 'none':
+            return IdentifierNode("null")
+
+        elif node.type == 'integer':
+            value = int(node.text.decode('utf-8'))
+            return LiteralNode(value)
+
+        elif node.type == 'float':
+            value = float(node.text.decode('utf-8'))
+            return LiteralNode(value)
+
+        elif node.type in ('string', 'string_content'):
+            value = node.text.decode('utf-8')
+            value = value.strip('\'"')
+            return LiteralNode(value)
+
+        elif node.type in ('true', 'false'):
+            return LiteralNode(node.type == 'true')
+
+        elif node.type == 'if_statement':
+            condition_node = node.child_by_field_name('condition')
+            condition = self._map_node(condition_node, source_bytes, scope) if condition_node else None
+
+            body = []
+            consequence_node = node.child_by_field_name('consequence')
+            if consequence_node:
+                for child in consequence_node.named_children:
+                    mapped = self._map_node(child, source_bytes, scope)
+                    if mapped:
+                        body.append(mapped)
+
+            alternatives = [c for c in node.named_children if c.type in ('elif_clause', 'else_clause')]
             
-            # Backpatch
-            branch_instr.args[1] = body_idx
-            branch_instr.args[2] = exit_idx
-            return ""
-            
-        elif node.type == NODE_TRY_STATEMENT:
-            # For SSA, try block executes sequentially. Complex exception CFG is out of scope for MVP.
-            body = node.child_by_field_name('body')
-            if body:
-                self._visit(body)
-                
-            # Assume implicit JUMP to merge after try
-            jump_merge = Instruction(OpCode.JUMP, args=[-1])
-            self.builder.emit(jump_merge)
-            
-            # except/finally blocks treated linearly for now
-            # In a true compiler, every instruction in the try could jump here.
-            # We omit full exception edges to keep the SSA graph simple in Part 2.
-            for child in node.named_children:
-                if child.type == "except_clause":
-                    self._visit(child.child_by_field_name('body') if child.child_by_field_name('body') else child)
+            # Build nested IfNodes from right to left
+            orelse = None
+            for alt in reversed(alternatives):
+                if alt.type == 'else_clause':
+                    orelse_body = []
+                    else_body_node = alt.child_by_field_name('body')
+                    if else_body_node:
+                        for child in else_body_node.named_children:
+                            mapped = self._map_node(child, source_bytes, scope)
+                            if mapped:
+                                orelse_body.append(mapped)
+                    orelse = IfNode(LiteralNode(True), orelse_body, None)
+                elif alt.type == 'elif_clause':
+                    elif_cond_node = alt.child_by_field_name('condition')
+                    elif_cond = self._map_node(elif_cond_node, source_bytes, scope) if elif_cond_node else None
                     
-            merge_idx = len(self.builder.instructions)
-            jump_merge.args[0] = merge_idx
-            return ""
+                    elif_body = []
+                    elif_cons_node = alt.child_by_field_name('consequence')
+                    if elif_cons_node:
+                        for child in elif_cons_node.named_children:
+                            mapped = self._map_node(child, source_bytes, scope)
+                            if mapped:
+                                elif_body.append(mapped)
+                    orelse = IfNode(elif_cond, elif_body, orelse)
+
+            return IfNode(condition, body, orelse)
+
+        elif node.type == 'while_statement':
+            condition_node = node.child_by_field_name('condition')
+            condition = self._map_node(condition_node, source_bytes, scope) if condition_node else None
             
-        else:
-            # Recursively visit children for block statements
+            body = []
+            body_node = node.child_by_field_name('body')
+            if body_node:
+                for child in body_node.named_children:
+                    mapped = self._map_node(child, source_bytes, scope)
+                    if mapped:
+                        body.append(mapped)
+            return WhileNode(condition, body)
+
+        elif node.type == 'for_statement':
+            target_node = node.child_by_field_name('left')
+            target = self._map_node(target_node, source_bytes, scope) if target_node else None
+            
+            iter_node = node.child_by_field_name('right')
+            iter_mapped = self._map_node(iter_node, source_bytes, scope) if iter_node else None
+            
+            body = []
+            body_node = node.child_by_field_name('body')
+            if body_node:
+                for child in body_node.named_children:
+                    mapped = self._map_node(child, source_bytes, scope)
+                    if mapped:
+                        body.append(mapped)
+            return ForNode(target, iter_mapped, body)
+
+        elif node.type == 'try_statement':
+            body = []
+            body_node = node.child_by_field_name('body')
+            if body_node:
+                for child in body_node.named_children:
+                    mapped = self._map_node(child, source_bytes, scope)
+                    if mapped:
+                        body.append(mapped)
+            
+            handlers = []
             for child in node.named_children:
-                self._visit(child)
-            return ""
+                if child.type == 'except_clause':
+                    exc_body_node = child.child_by_field_name('body')
+                    if exc_body_node:
+                        for exc_child in exc_body_node.named_children:
+                            mapped = self._map_node(exc_child, source_bytes, scope)
+                            if mapped:
+                                handlers.append(mapped)
+                    break
+
+            return TryCatchNode(body, handlers)
+
+        elif node.type in ('list', 'tuple'):
+            elements = []
+            for child in node.named_children:
+                mapped = self._map_node(child, source_bytes, scope)
+                if mapped:
+                    elements.append(mapped)
+            return ListNode(elements)
+
+        elif node.type == 'dictionary':
+            keys = []
+            values = []
+            for child in node.named_children:
+                if child.type == 'pair':
+                    k_node = child.child_by_field_name('key')
+                    v_node = child.child_by_field_name('value')
+                    if k_node and v_node:
+                        keys.append(self._map_node(k_node, source_bytes, scope))
+                        values.append(self._map_node(v_node, source_bytes, scope))
+            return DictNode(keys, values)
+
+        elif node.type == 'subscript':
+            value_node = node.child_by_field_name('value')
+            slice_node = node.child_by_field_name('subscript')
+            value = self._map_node(value_node, source_bytes, scope) if value_node else None
+            slice_mapped = self._map_node(slice_node, source_bytes, scope) if slice_node else None
+            return SubscriptNode(value, slice_mapped)
+
+        elif node.type == 'attribute':
+            value_node = node.child_by_field_name('object')
+            attr_node = node.child_by_field_name('attribute')
+            value = self._map_node(value_node, source_bytes, scope) if value_node else None
+            attr = attr_node.text.decode('utf-8') if attr_node else ""
+            return AttributeNode(value, attr)
+            
+        elif node.type == 'raise_statement':
+            # Map raise to a CallNode for 'throw'
+            exc = None
+            if node.named_children:
+                exc = self._map_node(node.named_children[0], source_bytes, scope)
+            return CallNode("throw", [exc]) if exc else CallNode("throw", [])
+
+        else:
+            return None

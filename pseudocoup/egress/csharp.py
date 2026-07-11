@@ -1,344 +1,461 @@
-import ast
-import json
+from pseudocoup.core.ur_ast import (
+    URNode, ModuleNode, FunctionDefNode, MethodDefNode, ClassDefNode, AssignmentNode,
+    BinaryOpNode, CallNode, IdentifierNode, LiteralNode,
+    ReturnNode, IfNode, WhileNode, ForNode, TryCatchNode, ListNode,
+    DictNode, SubscriptNode, AttributeNode
+)
+from pseudocoup.core.ledger import Ledger
 
-class PythonToCSharpTranspiler(ast.NodeVisitor):
-    def __init__(self, ledger):
+class CSharpEmitter:
+    def __init__(self, ledger: Ledger):
         self.ledger = ledger
-        self.lines = [
-            "using System;",
-            "using System.Collections.Generic;",
-            ""
-        ]
         self.indent_level = 0
-        self.current_class = None
-        self.properties = []
+        self.scopes = [{}]
+        self.injected_wrappers = set()
+        self.current_class_name = None
+        self.is_top_level_func = False
 
-    def add_line(self, text):
-        if text.strip() == "":
-            self.lines.append("")
-        else:
-            self.lines.append("    " * self.indent_level + text)
+    def _indent(self) -> str:
+        return "    " * self.indent_level
 
-    def map_type(self, py_type_node):
-        if isinstance(py_type_node, ast.Name):
-            py_type = py_type_node.id
-            if py_type == "int": return "int"
-            if py_type == "str": return "string"
-            if py_type == "bool": return "bool"
-            if py_type == "float": return "float"
-            if py_type == "None": return "void"
-            return py_type
-        elif isinstance(py_type_node, ast.Subscript):
-            base = py_type_node.value.id
-            if base == "List":
-                inner = self.map_type(py_type_node.slice)
-                return f"List<{inner}>"
-            elif base == "Dict":
-                if isinstance(py_type_node.slice, ast.Tuple):
-                    k = self.map_type(py_type_node.slice.elts[0])
-                    v = self.map_type(py_type_node.slice.elts[1])
-                    return f"Dictionary<{k}, {v}>"
-            elif base == "Optional":
-                inner = self.map_type(py_type_node.slice)
-                # Quick hack for reference types vs value types nullable
-                if inner in ("int", "float", "bool"):
-                    return f"{inner}?"
-                return inner
-        return "object"
+    def push_scope(self):
+        self.scopes.append(set())
 
-    def visit_ClassDef(self, node):
-        self.current_class = node.name
-        self.properties = []
+    def pop_scope(self):
+        self.scopes.pop()
+
+    def declare_var(self, name: str):
+        self.scopes[-1].add(name)
+
+    def is_declared(self, name: str) -> bool:
+        for scope in reversed(self.scopes):
+            if name in scope:
+                return True
+        return False
+
+    def map_type(self, py_type: str) -> str:
+        if not py_type or py_type == 'var' or py_type == 'dynamic' or py_type == 'Any':
+            return 'object'
+        mapping = {
+            'int': 'int',
+            'float': 'double',
+            'bool': 'bool',
+            'str': 'string',
+            'List[str]': 'List<string>',
+            'List[int]': 'List<int>',
+            'List[Any]': 'List<object>',
+            'Dict[str, int]': 'Dictionary<string, int>',
+            'Optional[int]': 'int?',
+            'Optional[Any]': 'object',
+            'Any': 'object',
+            'None': 'void',
+            'Tuple[str, int]': 'List<object>'
+        }
+        return mapping.get(py_type, py_type)
+
+    def _get_default_val(self, var_type: str) -> str:
+        if var_type == "int": return "0"
+        elif var_type == "double": return "0.0"
+        elif var_type == "bool": return "false"
+        elif var_type == "string": return '""'
+        return "null"
+
+    def generate(self, node: URNode) -> str:
+        if node is None:
+            return "/* Unmapped */"
+        method_name = f"visit_{node.__class__.__name__}"
+        visitor = getattr(self, method_name, self.generic_visit)
+        return visitor(node)
+
+    def generic_visit(self, node: URNode) -> str:
+        raise NotImplementedError(f"No visit_{node.__class__.__name__} method in CSharpEmitter")
+
+    def visit_ModuleNode(self, node: ModuleNode) -> str:
+        self.push_scope()
+        self.injected_wrappers.add("builtins_py")
+        lines = []
+        lines.append("using System;")
+        lines.append("using System.Collections.Generic;")
+        for wrapper in sorted(list(self.injected_wrappers)):
+            lines.append(f"using roundtrip.{wrapper};")
+        if self.injected_wrappers:
+            lines.append("")
+            
+        classes_code = []
+        main_class_body = []
+        has_main_call = False
         
-        init_method = None
-        for child in node.body:
-            if isinstance(child, ast.FunctionDef) and child.name == "__init__":
-                init_method = child
-                for stmt in child.body:
-                    if isinstance(stmt, ast.AnnAssign) and isinstance(stmt.target, ast.Attribute) and isinstance(stmt.target.value, ast.Name) and stmt.target.value.id == "self":
-                        target = stmt.target.attr
-                        cs_type = self.map_type(stmt.annotation)
-                        self.properties.append({"name": target, "type": cs_type})
-
-        self.add_line(f"public class {self.current_class}")
-        self.add_line("{")
-        self.indent_level += 1
-        
-        for p in self.properties:
-            self.add_line(f"public {p['type']} {p['name']};")
-            
-        self.add_line("")
-        
-        if init_method:
-            params = []
-            for arg in init_method.args.args:
-                if arg.arg == "self": continue
-                cs_type = self.map_type(arg.annotation)
-                params.append(f"{cs_type} {arg.arg}")
-                
-            self.add_line(f"public {self.current_class}({', '.join(params)})")
-            self.add_line("{")
-            self.indent_level += 1
-            for stmt in init_method.body:
-                self.visit(stmt)
-            self.indent_level -= 1
-            self.add_line("}")
-            self.add_line("")
-            
-        for body_node in node.body:
-            if isinstance(body_node, ast.FunctionDef) and body_node.name != "__init__":
-                self.visit(body_node)
-            
-        self.indent_level -= 1
-        self.add_line("}")
-        self.add_line("")
-        self.current_class = None
-
-    def visit_FunctionDef(self, node):
-        params = []
-        for arg in node.args.args:
-            if arg.arg == "self": continue
-            cs_type = self.map_type(arg.annotation)
-            params.append(f"{cs_type} {arg.arg}")
-            
-        ret_type = "void"
-        if node.returns:
-            if isinstance(node.returns, (ast.Name, ast.Subscript)):
-                ret_type = self.map_type(node.returns)
-            elif isinstance(node.returns, ast.Constant) and node.returns.value is None:
-                ret_type = "void"
-                
-        prefix = "public " if self.current_class else "public static "
-        self.add_line(f"{prefix}{ret_type} {node.name}({', '.join(params)})")
-        self.add_line("{")
-        self.indent_level += 1
-        for body_node in node.body:
-            self.visit(body_node)
-        self.indent_level -= 1
-        self.add_line("}")
-        self.add_line("")
-
-    def visit_AnnAssign(self, node):
-        target = self.get_expr_str(node.target)
-        if target.startswith("this."):
-            value = self.get_expr_str(node.value) if node.value else "null"
-            self.add_line(f"{target} = {value};")
-            return
-        
-        prop_names = [p["name"] for p in self.properties] if self.properties else []
-        if hasattr(node.target, "id") and node.target.id in prop_names:
-            value = self.get_expr_str(node.value) if node.value else "null"
-            self.add_line(f"{target} = {value};")
-            return
-            
-        value = self.get_expr_str(node.value) if node.value else "null"
-        cs_type = self.map_type(node.annotation)
-        self.add_line(f"{cs_type} {target} = {value};")
-
-    def visit_Assign(self, node):
-        target = self.get_expr_str(node.targets[0])
-        value = self.get_expr_str(node.value)
-        self.add_line(f"{target} = {value};")
-
-    def visit_If(self, node):
-        cond = self.get_expr_str(node.test)
-        self.add_line(f"if ({cond})")
-        self.add_line("{")
-        self.indent_level += 1
         for stmt in node.body:
-            self.visit(stmt)
-        self.indent_level -= 1
-        if node.orelse:
-            self.add_line("}")
-            self.add_line("else")
-            self.add_line("{")
-            self.indent_level += 1
-            for stmt in node.orelse:
-                self.visit(stmt)
-            self.indent_level -= 1
-        self.add_line("}")
-        
-    def visit_While(self, node):
-        cond = self.get_expr_str(node.test)
-        self.add_line(f"while ({cond})")
-        self.add_line("{")
-        self.indent_level += 1
-        for stmt in node.body:
-            self.visit(stmt)
-        self.indent_level -= 1
-        self.add_line("}")
-
-    def visit_Try(self, node):
-        self.add_line("try")
-        self.add_line("{")
-        self.indent_level += 1
-        for stmt in node.body:
-            self.visit(stmt)
-        self.indent_level -= 1
-        for handler in node.handlers:
-            self.add_line("}")
-            self.add_line("catch (Exception e)")
-            self.add_line("{")
-            self.indent_level += 1
-            for stmt in handler.body:
-                self.visit(stmt)
-            self.indent_level -= 1
-        self.add_line("}")
-        
-    def visit_Raise(self, node):
-        exc = self.get_expr_str(node.exc)
-        self.add_line(f"throw {exc};")
-        
-    def visit_Break(self, node):
-        self.add_line("break;")
-        
-    def visit_Continue(self, node):
-        self.add_line("continue;")
-
-    def visit_For(self, node):
-        var_name = node.target.id
-        start_val = self.get_expr_str(node.iter.args[0])
-        end_val = self.get_expr_str(node.iter.args[1])
-        
-        self.add_line(f"for (int {var_name} = {start_val}; {var_name} < {end_val}; {var_name}++)")
-        self.add_line("{")
-        self.indent_level += 1
-        for body_node in node.body:
-            self.visit(body_node)
-        self.indent_level -= 1
-        self.add_line("}")
-
-    def visit_Return(self, node):
-        val = self.get_expr_str(node.value) if node.value else ""
-        if val:
-            self.add_line(f"return {val};")
-        else:
-            self.add_line("return;")
-
-    def visit_Expr(self, node):
-        if getattr(node, "value", None) and isinstance(node.value, ast.Constant) and isinstance(node.value.value, str):
-            return
-        expr = self.get_expr_str(node.value)
-        self.add_line(f"{expr};")
-
-    def get_expr_str(self, expr_node):
-        if isinstance(expr_node, ast.Attribute):
-            val = self.get_expr_str(expr_node.value)
-            attr = expr_node.attr
-            if val == "self":
-                return f"this.{attr}"
-            return f"{val}.{attr}"
-        elif isinstance(expr_node, ast.Name):
-            if expr_node.id == "None": return "null"
-            if expr_node.id == "True": return "true"
-            if expr_node.id == "False": return "false"
-            return expr_node.id
-        elif isinstance(expr_node, ast.Constant):
-            if expr_node.value is None: return "null"
-            if isinstance(expr_node.value, bool): return "true" if expr_node.value else "false"
-            if isinstance(expr_node.value, str):
-                return f'"{expr_node.value}"'
-            return str(expr_node.value)
-        elif isinstance(expr_node, ast.UnaryOp):
-            op_map = {ast.USub: "-", ast.UAdd: "+", ast.Not: "!"}
-            op = op_map.get(type(expr_node.op), type(expr_node.op).__name__)
-            operand = self.get_expr_str(expr_node.operand)
-            return f"{op}{operand}"
-        elif isinstance(expr_node, ast.BinOp):
-            left = self.get_expr_str(expr_node.left)
-            right = self.get_expr_str(expr_node.right)
-            if isinstance(expr_node.op, ast.Add): op = "+"
-            elif isinstance(expr_node.op, ast.Sub): op = "-"
-            elif isinstance(expr_node.op, ast.Mult): op = "*"
-            elif isinstance(expr_node.op, ast.Div): op = "/"
-            elif isinstance(expr_node.op, ast.Mod): op = "%"
-            else: op = type(expr_node.op).__name__
-            return f"{left} {op} {right}"
-        elif isinstance(expr_node, ast.Compare):
-            left = self.get_expr_str(expr_node.left)
-            op_node = expr_node.ops[0]
-            right = self.get_expr_str(expr_node.comparators[0])
-            if isinstance(op_node, ast.Lt): op = "<"
-            elif isinstance(op_node, ast.Gt): op = ">"
-            elif isinstance(op_node, ast.Eq): op = "=="
-            elif isinstance(op_node, ast.NotEq): op = "!="
-            elif isinstance(op_node, ast.Is):
-                return f"{left} == {right}"
-            elif isinstance(op_node, ast.IsNot):
-                return f"{left} != {right}"
-            elif isinstance(op_node, ast.In):
-                # "Red" in dict -> dict.ContainsKey("Red")
-                return f"{right}.ContainsKey({left})"
-            else: op = type(op_node).__name__
-            return f"{left} {op} {right}"
-        elif isinstance(expr_node, ast.Dict):
-            pairs = []
-            for k, v in zip(expr_node.keys, expr_node.values):
-                pairs.append(f"{{{self.get_expr_str(k)}, {self.get_expr_str(v)}}}")
-            
-            # Type inferring is hard without context, but C# 9.0 target-typed new() makes it easy!
-            # Example: Dictionary<string, int> x = new() { {"a", 1} };
-            if len(pairs) == 0:
-                return "new()"
-            return f"new() {{{', '.join(pairs)}}}"
-        elif isinstance(expr_node, ast.List):
-            elts = [self.get_expr_str(e) for e in expr_node.elts]
-            if len(elts) == 0:
-                return "new()"
-            return f"new() {{ {', '.join(elts)} }}"
-        elif isinstance(expr_node, ast.Subscript):
-            val = self.get_expr_str(expr_node.value)
-            slc = self.get_expr_str(expr_node.slice)
-            return f"{val}[{slc}]"
-        elif isinstance(expr_node, ast.Call):
-            func_name = self.get_expr_str(expr_node.func)
-            args = [self.get_expr_str(a) for a in expr_node.args]
-            
-            if func_name == "print":
-                if not args: return "Console.WriteLine()"
-                return f"Console.WriteLine({', '.join(args)})"
-            if func_name == "str":
-                return f"{args[0]}.ToString()"
-            if func_name == "len":
-                return f"{args[0]}.Count"
-            if func_name in ("IllegalArgumentException", "Exception", "ValueError"):
-                return f"new Exception({', '.join(args)})"
-                
-            if func_name[0].isupper():
-                return f"new {func_name}({', '.join(args)})"
-            return f"{func_name}({', '.join(args)})"
-            
-        return f"/* unhandled expr {type(expr_node).__name__} */"
-
-
-def transpile(code: str) -> str:
-    import ast
-    tree = ast.parse(code)
-    transpiler = PythonToCSharpTranspiler(ledger={})
-    
-    global_stmts = []
-    
-    for node in tree.body:
-        if isinstance(node, ast.If) and isinstance(node.test, ast.Compare):
-            if getattr(node.test.left, "id", None) == "__name__":
+            if isinstance(stmt, LiteralNode) and isinstance(stmt.value, str):
                 continue
+            if isinstance(stmt, IfNode) and isinstance(stmt.condition, BinaryOpNode):
+                if getattr(stmt.condition.left, 'name', '') == '__name__':
+                    has_main_call = True
+                    continue
+                    
+            if isinstance(stmt, ClassDefNode):
+                classes_code.append(self.generate(stmt))
+            elif isinstance(stmt, (FunctionDefNode, MethodDefNode)):
+                self.is_top_level_func = True
+                main_class_body.append(self.generate(stmt))
+                self.is_top_level_func = False
+            else:
+                stmt_str = self.generate(stmt)
+                if isinstance(stmt, (AssignmentNode, ReturnNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                    main_class_body.append(stmt_str)
+                else:
+                    main_class_body.append(f"{self._indent()}    {stmt_str};")
                 
-        if isinstance(node, (ast.ClassDef, ast.FunctionDef, ast.Import, ast.ImportFrom)):
-            transpiler.visit(node)
-        else:
-            global_stmts.append(node)
+        main_class_code = []
+        main_class_code.append(f"{self._indent()}public class Program {{")
+        self.indent_level += 1
+        
+        for m_body in main_class_body:
+            main_class_code.append(m_body)
             
-    transpiler.add_line("public class Program")
-    transpiler.add_line("{")
-    transpiler.indent_level += 1
-    transpiler.add_line("public static void Main()")
-    transpiler.add_line("{")
-    transpiler.indent_level += 1
-    for stmt in global_stmts:
-        transpiler.visit(stmt)
-    transpiler.indent_level -= 1
-    transpiler.add_line("}")
-    transpiler.indent_level -= 1
-    transpiler.add_line("}")
-    
-    return "\n".join(transpiler.lines)
+        if has_main_call:
+            main_class_code.append(f"{self._indent()}public static void Main(string[] args) {{")
+            self.indent_level += 1
+            main_class_code.append(f"{self._indent()}main();")
+            self.indent_level -= 1
+            main_class_code.append(f"{self._indent()}}}")
+            
+        self.indent_level -= 1
+        main_class_code.append(f"{self._indent()}}}")
+        
+        lines.extend(classes_code)
+        if main_class_body or has_main_call:
+            lines.append("\n".join(main_class_code))
+            
+        self.pop_scope()
+        return "\n\n".join(lines)
+
+    def visit_FunctionDefNode(self, node: FunctionDefNode) -> str:
+        is_static = getattr(self, 'is_top_level_func', False)
+        static_mod = "static " if is_static else ""
+        scope = f"{self.current_class_name}.{node.name}" if getattr(self, 'current_class_name', None) else node.name
+        
+        ret_type = node.metadata.get('type', 'dynamic')
+        ret_type = self.map_type(ret_type)
+        if ret_type == "object" and not getattr(self, 'current_class_name', None):
+            ret_type = "void"
+        
+        args_list = []
+        sugared_args = set()
+        body_statements = node.body[:]
+        
+        if node.name == "__init__" and getattr(self, 'current_class_name', None):
+            idx = 0
+            while idx < len(body_statements):
+                stmt = body_statements[idx]
+                if isinstance(stmt, AssignmentNode):
+                    left = stmt.left
+                    right = stmt.right
+                    if isinstance(left, AttributeNode) and isinstance(left.value, IdentifierNode) and left.value.name in ("self", "this"):
+                        if isinstance(right, IdentifierNode) and right.name == left.attr:
+                            sugared_args.add(right.name)
+                            idx += 1
+                            continue
+                break
+            body_statements = body_statements[idx:]
+            
+        for arg in node.args:
+            if isinstance(node, MethodDefNode) and arg.name in ("self", "this"):
+                continue
+            arg_type = self.ledger.get_type(scope, arg.name)
+            if not arg_type: arg_type = arg.metadata.get('type', 'dynamic')
+            arg_type = self.map_type(arg_type)
+            args_list.append(f"{arg_type} {arg.name}")
+            
+        args_str = ", ".join(args_list)
+        
+        lines = []
+        if node.name == "__init__" and getattr(self, 'current_class_name', None):
+            if not body_statements:
+                lines.append(f"{self._indent()}public {self.current_class_name}({args_str}) {{}}")
+                return "\n".join(lines)
+            else:
+                lines.append(f"{self._indent()}public {self.current_class_name}({args_str}) {{")
+        else:
+            lines.append(f"{self._indent()}public {static_mod}{ret_type} {node.name}({args_str}) {{")
+            
+        self.push_scope()
+        for arg in node.args:
+            if isinstance(node, MethodDefNode) and arg.name in ("self", "this"): continue
+            self.declare_var(arg.name)
+            
+        self.indent_level += 1
+        for stmt in body_statements:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+                
+        self.indent_level -= 1
+        self.pop_scope()
+        lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_MethodDefNode(self, node: MethodDefNode) -> str:
+        return self.visit_FunctionDefNode(node)
+
+    def visit_ClassDefNode(self, node: ClassDefNode) -> str:
+        lines = []
+        bases_str = f" : {node.bases[0]}" if getattr(node, 'bases', None) else ""
+        lines.append(f"{self._indent()}public class {node.name}{bases_str} {{")
+        self.push_scope()
+        self.indent_level += 1
+        
+        prev_class_name = getattr(self, 'current_class_name', None)
+        self.current_class_name = node.name
+        
+        for field in node.fields:
+            if isinstance(field, AssignmentNode) and getattr(field.left, 'name', None):
+                var_type = field.left.metadata.get('type', 'var')
+                var_type = self.map_type(var_type)
+                default = ""
+                if var_type == "int": default = " = 0"
+                elif var_type == "double": default = " = 0.0"
+                elif var_type == "bool": default = " = false"
+                elif var_type == "string": default = ' = ""'
+                else: default = " = null"
+                lines.append(f"{self._indent()}public {var_type} {field.left.name}{default};")
+                self.declare_var(field.left.name)
+
+        for method in node.methods:
+            lines.append(self.generate(method))
+            
+        self.current_class_name = prev_class_name
+        self.indent_level -= 1
+        self.pop_scope()
+        lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_AssignmentNode(self, node: AssignmentNode) -> str:
+        right_str = self.generate(node.right) if node.right else "null"
+        
+        if isinstance(node.left, IdentifierNode) and not self.is_declared(node.left.name):
+            var_type = node.left.metadata.get('type', 'var')
+            var_type = self.map_type(var_type)
+            left_str = f"{var_type} {node.left.name}"
+            self.declare_var(node.left.name)
+            if node.right is None:
+                right_str = self._get_default_val(var_type)
+            else:
+                right_str = self.generate(node.right)
+        else:
+            left_str = self.generate(node.left)
+            
+        return f"{self._indent()}{left_str} = {right_str};"
+
+    def visit_ReturnNode(self, node: ReturnNode) -> str:
+        if node.value is None:
+            return f"{self._indent()}return;"
+        val_str = self.generate(node.value)
+        return f"{self._indent()}return {val_str};"
+
+    def visit_BinaryOpNode(self, node: BinaryOpNode) -> str:
+        left_str = self.generate(node.left)
+        right_str = self.generate(node.right)
+        op = node.operator
+        if op == "in":
+            # Right must be something iterable or Dictionary that has ContainsKey/Contains
+            return f"({right_str}.Contains({left_str}))"
+        if op == "//":
+            return f"((int)({left_str} / {right_str}))"
+        if op == "is":
+            if right_str == "null": op = "=="
+            else: return f"({left_str} is {right_str})"
+        elif op == "is not":
+            if right_str == "null": op = "!="
+            else: return f"!({left_str} is {right_str})"
+            
+        if op == "and": op = "&&"
+        if op == "or": op = "||"
+            
+        if getattr(node.left, 'name', None) == "":
+            if op == "not": op = "!"
+            return f"{op}({right_str})"
+            
+        return f"({left_str} {op} {right_str})"
+
+    def visit_CallNode(self, node: CallNode) -> str:
+        func_val = node.func_name
+        if isinstance(func_val, IdentifierNode):
+            func_str = func_val.name
+        elif isinstance(func_val, str):
+            func_str = func_val
+        else:
+            func_str = self.generate(func_val)
+            
+        if isinstance(func_str, str):
+            if func_str in ("len", "str", "print"):
+                self.injected_wrappers.add("builtins_py")
+                func_str = f"builtins_py.{func_str}"
+            elif func_str == "range" and len(node.args) == 2:
+                # Typically not reached if translated in ForNode, but fallback
+                a = self.generate(node.args[0])
+                b = self.generate(node.args[1])
+                return f"builtins_py.range({a}, {b})"
+            if func_str.startswith("math."):
+                self.injected_wrappers.add("math_py")
+                func_str = func_str.replace("math.", "math_py.", 1)
+            elif func_str.startswith("os."):
+                self.injected_wrappers.add("io_py")
+                func_str = func_str.replace("os.", "io_py.", 1)
+            elif func_str.startswith("requests."):
+                self.injected_wrappers.add("network_py")
+                func_str = func_str.replace("requests.", "network_py.", 1)
+                
+        args_str = ", ".join(self.generate(arg) for arg in node.args)
+        
+        if func_str == "throw":
+            return f"throw {args_str}"
+        elif func_str == "ValueError":
+            return f"new ArgumentException({args_str})"
+            
+        return f"{func_str}({args_str})"
+
+    def visit_IdentifierNode(self, node: IdentifierNode) -> str:
+        if node.name == "self": return "this"
+        if node.name == "Exception": return "Exception"
+        return node.name
+
+    def visit_LiteralNode(self, node: LiteralNode) -> str:
+        if isinstance(node.value, bool):
+            return "true" if node.value else "false"
+        elif isinstance(node.value, str):
+            return f'"{node.value}"'
+        elif node.value is None:
+            return "null"
+        else:
+            return str(node.value)
+
+    def visit_IfNode(self, node: IfNode) -> str:
+        condition_str = self.generate(node.condition)
+        lines = [f"{self._indent()}if ({condition_str}) {{"]
+        self.push_scope()
+        self.indent_level += 1
+        for stmt in node.body:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+        self.indent_level -= 1
+        self.pop_scope()
+        
+        if node.orelse:
+            if isinstance(node.orelse, IfNode):
+                if isinstance(node.orelse.condition, LiteralNode) and node.orelse.condition.value is True:
+                    lines.append(f"{self._indent()}}} else {{")
+                    self.push_scope()
+                    self.indent_level += 1
+                    for stmt in node.orelse.body:
+                        stmt_str = self.generate(stmt)
+                        if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                            lines.append(stmt_str)
+                        else:
+                            lines.append(f"{self._indent()}{stmt_str};")
+                    self.indent_level -= 1
+                    self.pop_scope()
+                    lines.append(f"{self._indent()}}}")
+                else:
+                    orelse_str = self.generate(node.orelse).lstrip()
+                    lines.append(f"{self._indent()}}} else {orelse_str}")
+            else:
+                lines.append(f"{self._indent()}}} else {{")
+                pass
+        else:
+            lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_WhileNode(self, node: WhileNode) -> str:
+        condition_str = self.generate(node.condition)
+        lines = [f"{self._indent()}while ({condition_str}) {{"]
+        self.push_scope()
+        self.indent_level += 1
+        for stmt in node.body:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+        self.indent_level -= 1
+        self.pop_scope()
+        lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_ForNode(self, node: ForNode) -> str:
+        target_str = self.generate(node.target)
+        iter_str = self.generate(node.iter)
+        self.push_scope()
+        
+        if isinstance(node.target, IdentifierNode):
+            if not self.is_declared(node.target.name):
+                target_str = f"var {node.target.name}"
+                self.declare_var(node.target.name)
+                
+        lines = [f"{self._indent()}foreach ({target_str} in {iter_str}) {{"]
+        self.indent_level += 1
+        for stmt in node.body:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+        self.indent_level -= 1
+        self.pop_scope()
+        lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_TryCatchNode(self, node: TryCatchNode) -> str:
+        lines = [f"{self._indent()}try {{"]
+        self.push_scope()
+        self.indent_level += 1
+        for stmt in node.body:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+        self.indent_level -= 1
+        self.pop_scope()
+        
+        lines.append(f"{self._indent()}}} catch (Exception e) {{")
+        self.push_scope()
+        self.declare_var("e")
+        self.indent_level += 1
+        for stmt in node.handlers:
+            stmt_str = self.generate(stmt)
+            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode, IfNode, WhileNode, ForNode, TryCatchNode)):
+                lines.append(stmt_str)
+            else:
+                lines.append(f"{self._indent()}{stmt_str};")
+        self.indent_level -= 1
+        self.pop_scope()
+        lines.append(f"{self._indent()}}}")
+        return "\n".join(lines)
+
+    def visit_ListNode(self, node: ListNode) -> str:
+        elements_str = ", ".join(self.generate(e) for e in node.elements)
+        return f"new List<object> {{ {elements_str} }}"
+
+    def visit_DictNode(self, node: DictNode) -> str:
+        if not node.keys:
+            return "new Dictionary<object, object>()"
+        pairs = []
+        for k, v in zip(node.keys, node.values):
+            pairs.append(f"{{ {self.generate(k)}, {self.generate(v)} }}")
+        pairs_str = ", ".join(pairs)
+        return f"new Dictionary<object, object> {{ {pairs_str} }}"
+
+    def visit_SubscriptNode(self, node: SubscriptNode) -> str:
+        value_str = self.generate(node.value)
+        slice_str = self.generate(node.slice)
+        return f"{value_str}[{slice_str}]"
+
+    def visit_AttributeNode(self, node: AttributeNode) -> str:
+        value_str = self.generate(node.value)
+        return f"{value_str}.{node.attr}"
