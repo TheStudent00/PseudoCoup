@@ -55,3 +55,27 @@
 2026-07-10T21:44:10.017734+00:00  DONE 206_kt_walk_budget: rc=0 (695.3s)
 2026-07-10T21:44:10.030957+00:00  RUN 207_kt_capture_budget: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('app/build/walks/kt_walk.json', d+'/206_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/206_kt_activations.log'); print('captured')
 2026-07-10T21:44:10.063292+00:00  DONE 207_kt_capture_budget: rc=0 (0.0s)
+2026-07-10T22:21:19.009922+00:00  RUN 208_kt_walk_progress_proof: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1
+2026-07-10T22:28:04.184079+00:00  DONE 208_kt_walk_progress_proof: rc=0 (405.2s) steps 200/200
+2026-07-10T22:28:07.199742+00:00  RUN 209_kt_capture_progress_proof: python3 -c import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('app/build/walks/kt_walk.json', d+'/208_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/208_kt_activations.log'); print('captured')
+2026-07-10T22:28:07.264246+00:00  DONE 209_kt_capture_progress_proof: rc=0 (0.1s)
+2026-07-10T22:30:04.320025+00:00  RUN 210_pixel_probe_overlay: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-10T22:30:23.141849+00:00  DONE 210_pixel_probe_overlay: rc=1 (18.8s)
+2026-07-10T22:30:26.161644+00:00  RUN 211_pixel_capture_overlay: python3 -c import shutil, os; src = 'app/build/walks/pixelprobe'; dst = os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/210_pixelprobe'); shutil.copytree(src, dst, dirs_exist_ok=True); print('captured')
+2026-07-10T22:30:26.193791+00:00  DONE 211_pixel_capture_overlay: rc=0 (0.1s)
+2026-07-11T01:36:59.642105+00:00  RUN 212_pixel_probe_overlay2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T01:37:35.218548+00:00  DONE 212_pixel_probe_overlay2: rc=1 (35.6s)
+2026-07-11T01:37:35.241691+00:00  RUN 213_pixel_capture_overlay2: python3 -c import shutil, os, glob; base=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); dst=base+'/212_pixelprobe'; shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T01:37:35.274009+00:00  DONE 213_pixel_capture_overlay2: rc=0 (0.0s)
+2026-07-11T05:07:48.574968+00:00  RUN 214_pixel_probe_wmviews: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T05:08:24.453457+00:00  DONE 214_pixel_probe_wmviews: rc=1 (35.9s)
+2026-07-11T05:08:24.470581+00:00  RUN 215_pixel_capture_wmviews: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/214_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T05:08:24.502595+00:00  DONE 215_pixel_capture_wmviews: rc=0 (0.0s)
+2026-07-11T05:19:43.721891+00:00  RUN 216_pixel_probe_composeroot: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T05:20:03.694192+00:00  DONE 216_pixel_probe_composeroot: rc=1 (20.0s)
+2026-07-11T05:20:03.714378+00:00  RUN 217_pixel_capture_composeroot: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/216_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T05:20:03.746656+00:00  DONE 217_pixel_capture_composeroot: rc=0 (0.1s)
+2026-07-11T05:45:45.828616+00:00  RUN 218_pixel_probe_dialogsemantics: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T05:46:04.835710+00:00  DONE 218_pixel_probe_dialogsemantics: rc=1 (19.0s)
+2026-07-11T05:46:04.853041+00:00  RUN 219_pixel_capture_dialogsemantics: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/218_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T05:46:04.885134+00:00  DONE 219_pixel_capture_dialogsemantics: rc=0 (0.0s)
