@@ -79,3 +79,11 @@
 2026-07-11T05:46:04.835710+00:00  DONE 218_pixel_probe_dialogsemantics: rc=1 (19.0s)
 2026-07-11T05:46:04.853041+00:00  RUN 219_pixel_capture_dialogsemantics: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/218_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
 2026-07-11T05:46:04.885134+00:00  DONE 219_pixel_capture_dialogsemantics: rc=0 (0.0s)
+2026-07-11T05:50:49.506051+00:00  RUN 220_pixel_probe_semanticsclick: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T05:50:51.872165+00:00  DONE 220_pixel_probe_semanticsclick: rc=1 (2.4s)
+2026-07-11T05:50:51.888442+00:00  RUN 221_pixel_capture_semanticsclick: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/220_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T05:50:51.920890+00:00  DONE 221_pixel_capture_semanticsclick: rc=0 (0.0s)
+2026-07-11T05:52:45.207094+00:00  RUN 222_pixel_probe_semanticsclick2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.PixelProbeTest --rerun
+2026-07-11T05:53:02.028173+00:00  DONE 222_pixel_probe_semanticsclick2: rc=0 (16.8s)
+2026-07-11T05:53:02.047475+00:00  RUN 223_pixel_capture_semanticsclick2: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/222_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
+2026-07-11T05:53:02.079553+00:00  DONE 223_pixel_capture_semanticsclick2: rc=0 (0.1s)
