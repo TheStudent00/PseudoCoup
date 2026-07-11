@@ -1,0 +1,2 @@
+{"id": "209_kt_capture_progress_proof", "cwd": "~/Programming/WFL_MixingCenter/WFL",
+ "cmd": ["python3", "-c", "import shutil,os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); shutil.copy('app/build/walks/kt_walk.json', d+'/208_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/208_kt_activations.log'); print('captured')"], "timeout": 120}

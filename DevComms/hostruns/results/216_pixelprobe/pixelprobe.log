@@ -1,0 +1,18 @@
+PROBE-DIAG captureWindow(): attachedTopLevelViews() size=1
+PROBE-DIAG view[0] class=com.android.internal.policy.DecorView width=411 height=915 forcedLayout=false
+PROBE-DIAG composeRoots size=1
+PROBE-DIAG root[0] bounds=Rect.fromLTRB(0.0, 0.0, 411.0, 915.0) rootForTestClass=androidx.compose.ui.platform.AndroidComposeView ownerViewClass=androidx.compose.ui.platform.AndroidComposeView ownerViewWidth=411 ownerViewHeight=915 topViewClass=com.android.internal.policy.DecorView topViewWidth=411 topViewHeight=915 sameAsOwner=false
+PROBE-DIAG captureWindow(): attachedTopLevelViews() size=1
+PROBE-DIAG view[0] class=com.android.internal.policy.DecorView width=411 height=915 forcedLayout=false
+PROBE-DIAG composeRoots size=1
+PROBE-DIAG root[0] bounds=Rect.fromLTRB(0.0, 0.0, 411.0, 915.0) rootForTestClass=androidx.compose.ui.platform.AndroidComposeView ownerViewClass=androidx.compose.ui.platform.AndroidComposeView ownerViewWidth=411 ownerViewHeight=915 topViewClass=com.android.internal.policy.DecorView topViewWidth=411 topViewHeight=915 sameAsOwner=false
+PROBE-DIAG captureWindow(): attachedTopLevelViews() size=1
+PROBE-DIAG view[0] class=com.android.internal.policy.DecorView width=411 height=915 forcedLayout=false
+PROBE-DIAG composeRoots size=1
+PROBE-DIAG root[0] bounds=Rect.fromLTRB(0.0, 0.0, 411.0, 915.0) rootForTestClass=androidx.compose.ui.platform.AndroidComposeView ownerViewClass=androidx.compose.ui.platform.AndroidComposeView ownerViewWidth=411 ownerViewHeight=915 topViewClass=com.android.internal.policy.DecorView topViewWidth=411 topViewHeight=915 sameAsOwner=false
+PROBE-DIAG captureWindow(): attachedTopLevelViews() size=1
+PROBE-DIAG view[0] class=com.android.internal.policy.DecorView width=411 height=915 forcedLayout=false
+PROBE-DIAG composeRoots size=1
+PROBE-DIAG root[0] bounds=Rect.fromLTRB(0.0, 0.0, 411.0, 915.0) rootForTestClass=androidx.compose.ui.platform.AndroidComposeView ownerViewClass=androidx.compose.ui.platform.AndroidComposeView ownerViewWidth=411 ownerViewHeight=915 topViewClass=com.android.internal.policy.DecorView topViewWidth=411 topViewHeight=915 sameAsOwner=false
+PIXELPROBE settings.window.sha256=1de62d4e10c1beb101268c858951854ab118dcc249410e366d4dc29da2412dde dialog.window.sha256=1de62d4e10c1beb101268c858951854ab118dcc249410e366d4dc29da2412dde
+PROBE-HELD compose captureToImage unavailable: compose-path captureToImage() failed for specimen 'Today' (robolectric.pixelCopyRenderMode likely not reaching the test JVM as 'hardware' -- see build.gradle.kts testOptions.unitTests.all) cause=androidx.compose.ui.test.ComposeTimeoutException: Condition still not satisfied after 2000 ms

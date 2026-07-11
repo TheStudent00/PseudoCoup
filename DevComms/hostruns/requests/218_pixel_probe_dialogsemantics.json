@@ -1,0 +1,1 @@
+{"id": "218_pixel_probe_dialogsemantics", "cwd": "~/Programming/WFL_MixingCenter/WFL", "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.walk.PixelProbeTest", "--rerun"], "timeout": 1800}
