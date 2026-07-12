@@ -1,0 +1,1 @@
+{"id": "239_py_capture_bundle", "returncode": 0, "note": "SKIPPED — redundant. 238's bundle + py_walk.json were already copied to results/238_bundle + results/238_py_walk.json by hand when 238 hung in teardown. This tombstone prevents 239 re-running a now-pointless copy on service restart."}

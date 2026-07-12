@@ -1,0 +1,37 @@
+kt scenario screenshots: 18
+  00_home_initial_empty_state.png
+  01_go_to_paths.png
+  02_open_path_picker.png
+  03_select_bone_builders_path.png
+  04_join_program.png
+  05_return_home_verify_enrolled.png
+  06_inspect_program_tab.png
+  07_browse_programs.png
+  08_select_a_program.png
+  09_back_from_programs.png
+  10_return_home_verify_program.png
+  11_start_workout.png
+  12_pre_workout_checkin_lets_go.png
+  13_skip_warmup.png
+  14_increment_weight.png
+  15_log_set_1.png
+  16_log_set_2.png
+  17_finish_early.png
+step None None | found= False | route= today
+step None None | found= True | route= paths
+step None None | found= True | route= paths
+step None None | found= True | route= paths
+step None None | found= True | route= paths
+step None None | found= True | route= today
+step None None | found= True | route= my_program
+step None None | found= True | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs
+step None None | found= False | route= programs

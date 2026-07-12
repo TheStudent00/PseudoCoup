@@ -5,3 +5,9 @@ build/
 __pycache__/
 *.pyc
 .pytest_cache/
+
+# raw walk logs from host runs: regenerable, huge (kt_activations hit 221MB; GitHub hard-rejects >100MB).
+# The small result .json/.log records and the atlas bundles/screenshots STAY tracked -- only the raw
+# walk-log firehoses are ignored (they live on disk / in build dirs for diagnosis, never in git).
+DevComms/hostruns/results/*_activations.log
+DevComms/hostruns/results/*_py_walk_*.log

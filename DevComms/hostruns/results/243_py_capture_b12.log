@@ -1,0 +1,5 @@
+screenshots: 51 states: 51 match: True done: None
+route types: 10
+states per route-base: {'execution': 7, 'log_cardio': 1, 'my_program': 3, 'paths': 5, 'program_editor': 3, 'programs': 5, 'progress': 9, 'settings': 9, 'today': 8, 'workout_cooldown': 1}
+B12 CHECK - execution states (expect FEW, was 22+ concrete): 7
+B07 CHECK - completion screens: ['workout_cooldown/{sessionId}']

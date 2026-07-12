@@ -18,11 +18,78 @@ NON-UI name landing here is a real gap (externals.py asserts that set is empty f
 import builtins as _builtins
 import os
 import sys
+import traceback
 
 sys.path.insert(0, os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 
 STUBBED = {}        # name -> the Stub subclass manufactured for it (the inert inventory)
 _REAL = None        # cached {name -> real wrapper object}, merged across the runtime modules
+
+# DEGRADATIONS tracks when a stub is actually USED AS A VALUE OR ACTION (coerced to a number, or
+# called) -- as opposed to STUBBED, which only records that a name WAS manufactured. A name landing
+# in STUBBED is silent-but-inert; a name landing in DEGRADATIONS actually did something (or nothing,
+# invisibly) at runtime -- e.g. a stubbed PaddingValues' bottom inset coerced to int() -> 0, silently
+# putting a button under the nav bar, or a stubbed onClick handler called -> a dead tap.
+# Keyed by (stub_name, op) -> {"count": int, "where": "basename:lineno", "sample_stack": str}.
+DEGRADATIONS = {}
+
+_RUNTIME_DIR = os.path.dirname(os.path.abspath(__file__))
+
+
+def _loud():
+    return os.environ.get("STUB_LOUD", "").strip().lower() not in ("", "0", "false", "no")
+
+
+def _strict():
+    return os.environ.get("STUB_STRICT", "").strip().lower() not in ("", "0", "false", "no")
+
+
+def _note_degrade(op, stub_obj):
+    """Record that `stub_obj` (an inert Stub instance) degraded via `op` ("num" or "call"). FAST PATH
+    (key already seen): just bump the count -- O(1) dict work, no stack walk, no I/O. SLOW PATH (first
+    occurrence for this (name, op)): walk the stack to find the real transpiled-app/kit call site (the
+    first frame outside this runtime package), record it, and optionally print it (STUB_LOUD)."""
+    name = type(stub_obj).__name__
+    key = (name, op)
+    entry = DEGRADATIONS.get(key)
+    if entry is not None:
+        entry["count"] += 1                 # FAST PATH: no stack walk on repeat hits
+        if _strict():
+            raise RuntimeError(f"stub degrade: {name}.{op} -> inert at {entry['where']}")
+        return
+    # SLOW PATH: first time we've seen this (name, op) -- find the real call site.
+    where = "<unknown>"
+    stack = traceback.extract_stack()
+    for frame in reversed(stack[:-1]):      # skip this frame itself (_note_degrade)
+        fn = frame.filename
+        if fn == os.path.abspath(__file__) or f"{os.sep}runtime{os.sep}" in fn:
+            continue                        # skip frames inside autostub.py / the runtime package
+        where = f"{os.path.basename(fn)}:{frame.lineno}"
+        break
+    entry = DEGRADATIONS[key] = {
+        "count": 1,
+        "where": where,
+        "sample_stack": "".join(traceback.format_list(stack[-6:])),
+    }
+    if _loud():
+        print(f"STUB-DEGRADE {op}: {name} -> inert at {where}", file=sys.stderr)
+    if _strict():
+        raise RuntimeError(f"stub degrade: {name}.{op} -> inert at {where}")
+
+
+def degradation_report():
+    """Sorted list of [{"name", "op", "count", "where"}, ...], most-frequent first."""
+    rows = [
+        {"name": name, "op": op, "count": v["count"], "where": v["where"]}
+        for (name, op), v in DEGRADATIONS.items()
+    ]
+    rows.sort(key=lambda r: r["count"], reverse=True)
+    return rows
+
+
+def reset_degradations():
+    """Clear DEGRADATIONS (for tests)."""
+    DEGRADATIONS.clear()
 
 
 def _real():
@@ -54,6 +121,7 @@ class Stub(metaclass=_StubMeta):
         return stub(name)()
 
     def __call__(self, *a, **k):
+        _note_degrade("call", self)         # a handler/action silently doing nothing -- worth knowing
         return self
 
     def __getitem__(self, _key):
@@ -86,13 +154,23 @@ class Stub(metaclass=_StubMeta):
     __add__ = __radd__ = __sub__ = __rsub__ = __mul__ = __rmul__ = _id
     __truediv__ = __rtruediv__ = __floordiv__ = __mod__ = __neg__ = __pos__ = __abs__ = _id
 
+    # Only "num" (numeric coercion) and "call" are hooked below -- these two ops are the ones that
+    # cause silent WRONG BEHAVIOUR (a layout computed from an inert 0, or a handler that fires but does
+    # nothing). __getattr__/__bool__/__iter__/arithmetic are deliberately left un-hooked: attribute
+    # access and truthiness of a stub are extremely common, mostly-benign CHAINING (e.g. `x.copy().foo`,
+    # `if maybeStub:`) that would make the registry noisy without pinpointing an actual bug; arithmetic
+    # on stubs likewise just propagates another inert stub, not a wrong number, until it's finally
+    # coerced (int/float/index) or invoked (call) -- which is exactly where we hook.
     def __int__(self):
+        _note_degrade("num", self)
         return 0
 
     def __float__(self):
+        _note_degrade("num", self)
         return 0.0
 
     def __index__(self):
+        _note_degrade("num", self)
         return 0
 
     def __lt__(self, _o):
