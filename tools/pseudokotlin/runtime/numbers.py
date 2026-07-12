@@ -91,6 +91,20 @@ class _NumOps:
     def __abs__(self): b, x, _y, _ = self._promote(0); return b(abs(x))
     def __pos__(self): return self
 
+    # Kotlin's NAMED operator methods: a safe-call like `durationSeconds?.div(60)` transpiles to a
+    # literal `.div(...)` METHOD call, not the `/` operator -- these must exist on the wrappers or the
+    # call dies with AttributeError (found live: TodayViewModel's weekly-row duration `.div(Int32(60))`
+    # broke the whole Today recompute the first time a completed session flowed through it). Each simply
+    # delegates to the overridden operator above, so promotion/truncation semantics stay in ONE place.
+    def plus(self, o): return self + o
+    def minus(self, o): return self - o
+    def times(self, o): return self * o
+    def div(self, o): return self / o
+    def rem(self, o): return self % o
+    def unaryMinus(self): return -self
+    def unaryPlus(self): return +self
+    def compareTo(self, o): return Int32((self > o) - (self < o))
+
 
 class _IntN(_NumOps, int):
     BITS = 32

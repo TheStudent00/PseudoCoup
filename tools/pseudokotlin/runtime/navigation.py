@@ -166,17 +166,37 @@ def NavHost(navController=None, startDestination=None, content=None, **k):
     if navController is not None:
         _pattern, args, fn = navController._resolve(current)
     else:
-        args, fn = {}, routes.get(current)
+        _pattern, args, fn = current, {}, routes.get(current)
     if fn is None:
         fn = next(iter(routes.values()), None) if routes else None
     if callable(fn):
         _ARGS_STACK.append(args)                      # the courier's delivery: current_args() while
-        push_slot_scope(_pattern if navController is not None else current)   # per-destination remember
+        push_slot_scope(_pattern)                     # per-destination remember
         try:                                          # this destination (and its ViewModel) builds
-            _call(fn)
+            _call_dest(fn, _BackEntry(_pattern, args))
         finally:
             pop_slot_scope()
             _ARGS_STACK.pop()
+
+
+def _call_dest(fn, entry):
+    """Run a destination's content lambda WITH its live back-stack entry -- androidx semantics:
+    composable(route) { backStackEntry -> ... }. Before this existed, NavHost ran destinations through
+    the generic slot-lambda helper compose._call(fn), whose arity fallback fills a required parameter
+    with a bare Stub() -- so every `backStackEntry.arguments.getString(...)` read inside a transpiled
+    destination silently produced the string "<stub getString>" instead of the route argument. That was
+    B14's root: WorkoutWarmup's sessionId (AppNavigation getString sites, KTSRC 578/620/678) was a stub
+    string, it was interpolated into the execution route ("execution/<stub getString>"), and the
+    execution ViewModel then looked up a session id that could never exist -> "Session not found".
+    Same arity discipline as compose._call: only a call-frame TypeError (no deeper traceback) triggers
+    the no-arg retry (a content lambda that declares no parameter); a TypeError raised INSIDE the body
+    is a real failure and surfaces."""
+    try:
+        return fn(entry)
+    except TypeError as e:
+        if e.__traceback__.tb_next is not None:
+            raise
+        return fn()
 
 
 def composable(route=None, *a, **k):

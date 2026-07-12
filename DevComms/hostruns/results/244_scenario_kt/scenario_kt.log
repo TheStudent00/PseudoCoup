@@ -1,0 +1,19 @@
+SCENARIO-STEP 00 name=home_initial_empty_state kind=noop target=null -> N/A route_after=today error=null
+SCENARIO-STEP 01 name=go_to_paths kind=tap_text target=Paths -> FOUND route_after=paths error=null
+SCENARIO-STEP 02 name=open_path_picker kind=tap_text target=Find your path -> FOUND route_after=paths error=null
+SCENARIO-STEP 03 name=select_bone_builders_path kind=tap_text target=Bone Builders -> FOUND route_after=paths error=null
+SCENARIO-STEP 04 name=join_program kind=tap_text target=Start my Path -> FOUND route_after=paths error=null
+SCENARIO-STEP 05 name=return_home_verify_enrolled kind=tap_text target=Home -> FOUND route_after=today error=null
+SCENARIO-STEP 06 name=inspect_program_tab kind=tap_text target=Program -> FOUND route_after=my_program error=null
+SCENARIO-STEP 07 name=browse_programs kind=tap_text target=Browse programs -> FOUND route_after=programs error=null
+SCENARIO-STEP 08 name=select_a_program kind=tap_text target=Join program -> MISSING route_after=programs error=null
+SCENARIO-STEP 09 name=back_from_programs kind=tap_kind target=IconButton -> MISSING route_after=programs error=null
+SCENARIO-STEP 10 name=return_home_verify_program kind=tap_text target=Home -> MISSING route_after=programs error=null
+SCENARIO-STEP 11 name=start_workout kind=tap_text target=Start Squat -> MISSING route_after=programs error=null
+SCENARIO-STEP 12 name=pre_workout_checkin_lets_go kind=tap_text target=Let's go -> MISSING route_after=programs error=null
+SCENARIO-STEP 13 name=skip_warmup kind=tap_text target=Skip warm-up -> MISSING route_after=programs error=null
+SCENARIO-STEP 14 name=increment_weight kind=tap_kind target=IconButton -> MISSING route_after=programs error=null
+SCENARIO-STEP 15 name=log_set_1 kind=tap_text target=Log set -> MISSING route_after=programs error=null
+SCENARIO-STEP 16 name=log_set_2 kind=tap_text target=Log set -> MISSING route_after=programs error=null
+SCENARIO-STEP 17 name=finish_early kind=tap_text target=Finish -> MISSING route_after=programs error=null
+SCENARIO DONE steps_logged=18/18 wall_clock=3.61s fatal_error=null

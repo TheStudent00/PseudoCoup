@@ -12,6 +12,8 @@ is added — an entry here is cheaper than re-learning the lesson.
   unconsumed message, APPEND below it (blank line between) — never overwrite an unpushed message
   (owner assigned this duty 2026-07-10).
 - HANDOFF.md: keep the top document current; demote superseded blocks to the HISTORY section.
+- BUG_PROFILE.md: the living catalog of kt↔py divergences. Update it whenever a bug is found, fixed,
+  disproven, or reclassified — the point is to spot CLUSTERS (several symptoms, one cause).
 - This file: add scars/mandates/duties as they happen, prune stale ones.
 - Task list (TaskCreate/TaskUpdate) for any multi-step work; verification step included.
 
@@ -64,6 +66,14 @@ Edge (walk graph)
     AssertionError) recorded a fire that threw instead of landing on a destination state.
     example: run 206 = 200 edges because a 200-step budget fires (up to) one action per step;
     206 had 194 clean edges + 6 error edges.
+BFS walker (render/walker.py, WalkRecorderTest.kt)
+    breadth-first explorer: reboots the whole app fresh per edge (hermetic), so app-state never
+    accumulates. Maps the blank seeded app only; slow (~14s/step on py). For BREADTH coverage.
+Directed scenario runner (render/scenario.py, ScenarioTest.kt)
+    stateful, scripted: ONE session, an ordered list of semantic taps (by visible text), screenshot
+    per step. State accumulates across steps, so it reaches rich states the BFS walker cannot.
+    example: it drove enroll-a-program and Home then showed the weekly schedule; 18 steps in ~17s.
+    Output side-by-side: render/atlas/scenario_side_by_side.html (kt|py per step).
 
 ## Operational scars (each one cost a session or worse)
 
@@ -87,15 +97,70 @@ Edge (walk graph)
 - Don't count proxy lines as progress (v1 bar counted "STEP " lines; crash tracebacks inflated it).
   Only the walk's own counter is trusted.
 
-## Current arc (2026-07-10, end of session state — see HANDOFF top block for full detail)
+## Current arc (2026-07-12 — see HANDOFF top block + BUG_PROFILE.md for full detail)
 
-- Run 206 = FIRST honest kt graph: 200/200 steps spent (forwarding fix verified), 63 states /
-  200 edges, all 219 REPLAY-MOUNT route=today, 347 exact-walkid / 199 exact / 1 missing-walkid,
-  6 error edges (5 AssertionError, 1 ReplayError — unexamined). Walk stopped on BUDGET, not
-  frontier exhaustion: more kt territory exists.
-- Progress mandate implemented this session (service + kt emitter + guard test); kt emitter's
-  compile check = next kt run.
-- Next per plan: 204 pixel-probe PNGs -> frozen kt bundle -> py bundle -> atlas. En route:
-  settings->exercises py divergence (kt navigates, py silently doesn't); Phase 6 id cross-check;
-  cleanup pile (legacy WalkEmit.emitId in TodayScreen.kt; today FAB untagged; injector nav-gate;
-  tree_sitter assert in build_mixingcenter.py).
+- B14 FIXED (3 stacked runtime bugs: NavHost stub backStackEntry -> "<stub getString>" session id;
+  Database.execute mid-txn commit whose failed ROLLBACK masked everything; missing named operator
+  methods .div etc. on Int32/Int64/Float32). B08 no longer reproduces (same nav root). The owner's
+  faithful journey runs END-TO-END on py, both 9a and 9b tails. kt mirror queued as run 246/247.
+- NEW INSTRUMENT: kivy_kit.LAST_FIRE_ERROR + FIRE-ERROR lines (handler exceptions were silently
+  swallowed by _fire — B17). scenario.py records fire_error per step. Walker adoption pending.
+- Scenario variants: scenario.py argv[1] = faithful_early_finish / faithful_complete / v1_pathfirst;
+  ScenarioTest.kt = three @Test methods. WALK_SEED=fresh (py) mirrors -Dwalk.seed=fresh (kt).
+- Prior py bundles (238/240/242) predate the runtime fixes — next py capture walk re-baselines.
+
+## Previous arc (2026-07-11/12 — statuses partly superseded above)
+
+- PRIMARY INSTRUMENT CHANGED: aimless BFS walking is superseded for debugging by the DIRECTED SCENARIO
+  RUNNER (render/scenario.py py + ScenarioTest.kt kt). It is STATEFUL (one session, state accumulates:
+  select path -> enroll program -> Home shows the schedule -> start workout) and FAST (~17s vs ~93 min).
+  The BFS walker reboots the whole app per edge, so it CAN'T build app-state (only maps the blank seeded
+  app) and is slow. Use the scenario runner for directed/first-few-taps work; BFS for breadth only.
+- BUG_PROFILE.md is now a standing living artifact — keep it current (see duty below).
+- Bugs FIXED (verified): B07 (SharedFlow emit never notified collectors; coroutines.py; 8 VMs),
+  B12 (py walker read concrete route not pattern; walker.py _route_pattern), py teardown hang (os._exit),
+  B11 loud-stub instrument built (finding: full-app runtime has ZERO degradations). DISPROVEN: B01 (seeds
+  identical), B03 (RPE global = correct).
+- Bugs OPEN, in priority order: B14 (WorkoutExecution "Session not found" read-before-write race — the
+  ROOT of the whole workout-flow cluster, fix NEXT), B09 (Programs: py shows all samples, kt filters by
+  active-path -> empty; py filter unapplied), B08 (settings->exercises dead nav), B15 (path/program dual
+  enrollment), B16 (import walker disables OVERLAYS_ENABLED).
+- Owner's directed journey (run it FAITHFULLY next — my first run distorted it): fresh-seed onboarding
+  (skip questions) -> select path -> select program (NATURAL flow, NOT the buggy Browse-Programs screen)
+  -> Home -> start workout -> increment weight -> log sets -> log-set-and-next -> 9a finish early -> 9b
+  continue to completion.
+- Infra: kt bundle = run 236 (180 states); py bundle = run 242 (51 states). nav_graph.py + log_148:
+  microVM NOT forced for any screen. Progress mandate fully implemented + guard test.
+
+## New scars this session (2026-07-11/12)
+
+- DON'T call a walk HUNG on a short freshness check. Checked the log's mtime over ~7s and declared runs
+  238/240/242 "hung"; 242 was just SLOW and completed 400 steps in ~93 min (~14s/step, per-edge App
+  reboot). Prematurely tombstoned + hand-grabbed partial data. A step can take minutes — wait for the
+  result json, or check `steps.spent` isn't advancing over MINUTES, not seconds, before calling it hung.
+  (238's teardown hang WAS real and is fixed; the mid-walk "hangs" were slowness.)
+- FORWARDING ALLOWLIST is hardcoded in build.gradle.kts testOptions.unitTests.all — a new -Dwalk.X flag
+  is INVISIBLE to the test JVM until added there (bit walk.steps once, walk.capture again this session).
+- Flag values must be `=true`, NOT `=1` — Kotlin String.toBoolean() only accepts "true"/"TRUE".
+- Test-JVM heap: `-Dorg.gradle.jvmargs=-Xmx2g` sizes the GRADLE DAEMON, not the forked test JVM. Set
+  `test.maxHeapSize` in build.gradle.kts testOptions (default heap OOM'd a long walk mid-run).
+- kt taps: a bare performClick taps the node's ON-SCREEN COORDINATES — a scrolled-off node gets a
+  dead tap. Use performSemanticsAction(SemanticsActions.OnClick) (or performScrollTo first). This cost
+  the whole PixelProbeTest overlay saga.
+- Compose one-shot events: LaunchedEffect{ sharedFlow.collect{} } needs MutableSharedFlow.emit to NOTIFY
+  live listeners (not just buffer). Distinct from StateFlow (which the UI reads by value). This class of
+  event-driven navigation was ALL dead on py until B07's fix.
+- `import walker` has an import-time side effect (via interact.py) that disables OVERLAYS_ENABLED — any
+  tool importing walker inherits dead overlay taps (B16).
+
+## New scars (2026-07-12)
+
+- Kivy's Window import REWRITES sys.argv — read CLI args from a copy saved BEFORE any Kivy-importing
+  import (scenario.py._ORIG_ARGV; walker.py already knew). A missed read silently runs defaults.
+- `import scenario` sets WALK_SEED=fresh at import time (its default variant) — a probe wanting the
+  completed-user seed must pop the env var AFTER that import, not before.
+- Handler exceptions must be READ from kivy_kit.LAST_FIRE_ERROR after tap-driving — _fire cannot
+  re-raise into Kivy's touch dispatch, so silence there is structural; the flag is the loud channel.
+- In-sandbox kivy needs python3.13 explicitly (`xvfb-run -a python3.13 ...`); plain python3 lacks kivy.
+- The runtime's kt-parity gap class "named operator methods" (`a?.div(b)` → .div() CALL): check the
+  wrapper types in numbers.py/kotlin_rt.py before assuming an operator exists.

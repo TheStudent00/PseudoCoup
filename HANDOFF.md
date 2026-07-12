@@ -1,4 +1,4 @@
-# HANDOFF — read this whole top document before doing anything (updated 2026-07-10)
+# HANDOFF — read this whole top document before doing anything (updated 2026-07-12)
 
 ## What this project is
 
@@ -15,6 +15,119 @@ Two id concepts, do NOT collapse them (this confusion cost owner trust once alre
   id is visible at runtime; the transpile carries it into Python for free. Insertion is a replay-stable
   handle, NOT the tracking itself — the tracking catch-all is the runtime construction hook
   (identity.py on py, semantics enumeration on kt) + loud ledger cross-check (ORACLE UNKNOWN).
+
+## SESSION 2026-07-12 — B14 + B08 FIXED (workout feature ALIVE on py); faithful journey runs end-to-end
+
+THE HEADLINE: the owner's faithful directed journey now runs END-TO-END on py, both tails: 9a (finish
+early -> workout_cooldown, 24/24 steps) and 9b (log all sets to natural completion -> cooldown ->
+summary -> today, 27/27 steps). B14 was NOT a read-before-write race — it was THREE stacked runtime
+bugs (full detail: BUG_PROFILE.md B14): (1) navigation.py's NavHost handed destination lambdas a Stub
+instead of the live back-stack entry, so backStackEntry.arguments.getString(...) yielded the string
+"<stub getString>" and warmup navigated to literally execution/<stub getString> — the real session row
+sat in the DB under its UUID the whole time (probe evidence; fix: _call_dest passes the real
+_BackEntry, androidx semantics); (2) room.py Database.execute committed mid-withTransaction and the
+resulting failed ROLLBACK masked everything ("cannot rollback - no transaction is active") — this
+killed completeSession/Finish before the nav emit (fix: no commit at _txn_depth>0; a rollback failure
+never replaces the original exception); (3) the numeric wrappers lacked Kotlin's NAMED operator
+methods (`?.div(60)` transpiles to a literal .div() CALL) — AttributeError in Today's weekly recompute
+the first time a completed session flowed through the live combine chain (fix: named operator family
+on _NumOps, numbers.py). B08 (settings->exercises dead nav) NO LONGER REPRODUCES after these fixes
+(probe_b08: route settings -> exercises, clean) — same nav-stub root, closed by the same fix.
+
+NEW INSTRUMENT (B17): kivy_kit._fire swallowed ALL handler exceptions with a bare `pass` — a broken tap
+was indistinguishable from a working one (this hid bug 2 above for a whole arc: Finish "did nothing"
+while its handler was throwing). Now: loud FIRE-ERROR line + kivy_kit.LAST_FIRE_ERROR, recorded per
+scenario step as fire_error. BFS-walker adoption of the same read is a pending follow-up.
+
+FAITHFUL SCENARIO VARIANTS (scenario.py argv[1]; ScenarioTest.kt mirrors as three @Test methods
+runScenario / runScenarioFaithfulEarlyFinish / runScenarioFaithfulComplete): faithful_early_finish
+(default, 9a) / faithful_complete (9b) / v1_pathfirst (old journey verbatim, old output paths). Fresh
+seed: WALK_SEED=fresh env -> run_app.build_app_composition seeds onboardingCompleted=False and nothing
+else (py mirror of kt -Dwalk.seed=fresh, field-for-field; kt side selects fresh per test method, no new
+-D flag needed). New step kinds: set_text ("42" convention; kt performTextReplacement) and
+tap_text_until_gone (repeat-tap until the label leaves the screen; loud runaway guard). Onboarding IS
+the natural path+program enrollment flow (PATH_SELECTION + PROGRAM_SELECTION are onboarding steps — no
+Browse-Programs detour). Discovery corrections that matter: calibration's mode-choice screen is
+BYPASSED when experience is skipped (kt OnboardingScreen.kt:700 effectiveMode — py matches kt, NOT a
+divergence); "Start " needs its trailing space (bare "Start" matched "Starts strong…"); select_program
+pinned to "3-Day Strength" text (kt semantics Roles can't distinguish IconButton/Card kinds, so text
+targets are the cross-engine-stable form; kt tap_kind("IconButton") is mirrored as "icon-only
+clickable, label==kind"). ARGV SCAR: Kivy's Window import rewrites sys.argv — scenario.py reads the
+variant from _ORIG_ARGV saved BEFORE `import walker` (the first faithful_complete invocation silently
+ran the default variant).
+
+QUEUED: 246 kt scenario (all three variants in one run — doubles as the COMPILE CHECK for the
+sandbox-authored ScenarioTest.kt edits) · 247 capture into results/246_*. The kt run is the parity
+check for the whole journey (kt screenshots vs py's render/walks/scenario_faithful_*). Diagnostic
+probes kept in render/: probe_b14.py, probe_finish.py, probe_b08.py. NOTE: the runtime fixes touch
+walking-relevant layers (navigation/room/numbers) — prior py bundles (238/240/242) predate them; the
+next py capture walk re-baselines.
+
+## SESSION 2026-07-11/12 — bug-fixing arc + DIRECTED SCENARIO RUNNER (context still current; B14/B08 statuses below are SUPERSEDED by the block above)
+
+THE BIG SHIFT: the atlas is now REAL and TWO-SIDED, and the primary instrument changed. The aimless BFS
+walker (render/walker.py) reboots the WHOLE Kivy app per edge for hermeticity — which means it can NEVER
+build up app-state (no path selected, no program enrolled, no workout in progress), so it only ever maps
+the blank seeded app, and it is SLOW (~14s/step; a 400-step walk = ~93 min). The fix is the DIRECTED
+SCENARIO RUNNER: one stateful session, a scripted sequence of taps, screenshot per step. render/scenario.py
+(py) ran the full journey in ~17s and REACHED rich states the BFS walker structurally cannot (Home showing
+an enrolled program's weekly schedule). ScenarioTest.kt is the kt mirror (host: `./gradlew :app:test... --tests
+"com.sara.workoutforlife.walk.ScenarioTest"`). render/atlas/scenario_side_by_side.html = kt|py per-step.
+USE THE SCENARIO RUNNER for first-few-taps / directed debugging; the BFS walker is for breadth coverage only.
+
+NEW LIVING ARTIFACT: PseudoCoup_v0/BUG_PROFILE.md — the catalog of every kt↔py divergence, clustered to find
+shared causes. Keep it updated. The model that emerged: most workout-flow "bugs" collapse into ONE root (B14).
+
+BUGS THIS SESSION (full detail + status in BUG_PROFILE.md):
+  FIXED + verified:
+  - B07 "Finish workout does nothing" / ALL one-shot SharedFlow events dead on py. Root: runtime
+    coroutines.py MutableSharedFlow.emit/tryEmit only buffered, never notified registered collectors, so
+    LaunchedEffect{flow.collect} events emitted after subscribe were dropped. Fixed (_deliver notifies
+    listeners). GENERAL: 8 ViewModels. Confirmed: py reached workout_cooldown (impossible before).
+  - B12 workout-flow state explosion. Root: py walker read the CONCRETE route (app.nc.currentRoute() ->
+    execution/abc-123) baking session UUIDs into state_id; kt reads the PATTERN. Fixed: walker.py
+    _route_pattern(app) (currentBackStackEntry.destination.route) at all 6 state-route points. Also erases
+    the concrete-vs-pattern atlas mismatch. Confirmed run 242: 7 execution states (was 22+), pattern routes.
+  - py walker TEARDOWN HANG: Kivy/SDL2 native teardown hangs after ~5 App-restart cycles. Fixed with a
+    guarded os._exit(0) after successful final write (errors still surface nonzero).
+  - B11 loud stub-degradation instrument BUILT (autostub DEGRADATIONS + STUB_LOUD/STUB_STRICT +
+    degradation_report). Finding: the FULL-APP runtime has ZERO degradations — the runtime is fairly
+    complete; remaining bugs are real logic/wiring, not silent stubs.
+  DISPROVEN (not bugs):
+  - B01 "DB mismatch": seed code identical AND py seed result correct/complete (24 programs, 182 exercises).
+  - B03 "RPE buttons": workoutMode is GLOBAL (UserEntity) — RPE controls correct by design.
+  OPEN — the real remaining work:
+  - B14 (HIGH): WorkoutExecutionScreen shows "Session not found" (blank) right after the session row is
+    created — a read-before-write RACE in the transpiled coroutine/data layer. This is the ROOT blocking the
+    whole workout feature (B02 "launch crash", B04/B06/B07-symptoms all trace here). Fix this next.
+  - B09: Programs screen — py lists all 24 sample programs; kt correctly shows "No programs yet" because
+    ProgramsScreen FILTERS by ACTIVE PATH (empty when none selected). py's filter (ProgramsViewModel combine)
+    is not applied. Confirmed visually (kt 236 bundle vs py 242 bundle).
+  - B08: settings->exercises tap does nothing on py (dead nav). Blocks the whole exercises branch.
+  - B15: path-enrollment and program-enrollment are separate systems, can be contradictory. Verify vs kt.
+  - B16 (instrument): `import walker` (via interact.py) disables kivy_kit.OVERLAYS_ENABLED at import time —
+    breaks popup/dialog taps in the BFS walker too. Fix upstream.
+
+OWNER'S DIRECTED JOURNEY (their exact ordered list — the scenario to run FAITHFULLY next; my first run
+DISTORTED it by skipping onboarding, starting at Home, and routing program-selection through the buggy
+Browse-Programs screen — do NOT repeat that):
+  (1) onboarding (skip the questions) (2) select path (3) select program (4) home screen (5) start workout
+  (6) increment weight (7) log sets (8) log set and next exercise (9a) click Finish before the end (verify
+  the button) (9b) continue until the workout finishes. Faithful version = fresh-seed onboarding -> path ->
+  program via the NATURAL enrollment flow -> Home -> workout. walk.seed=fresh gives onboardingCompleted=false.
+
+INFRA changes this session: build.gradle.kts forwards walk.capture + walk.seed (allowlist) and sets test JVM
+maxHeapSize=4g (the -Xmx2g on the gradle line sizes the DAEMON, not the forked test JVM — that caused an OOM
+mid-walk). Flag values MUST be =true, not =1 (Kotlin String.toBoolean() only accepts "true"). kt bundle =
+run 236 (180 states/screenshots, -Dwalk.capture). py bundle = run 242 (51 states, WALK_CAPTURE env).
+nav_graph.py + log_148: static screen graph (29 screens/65 edges) + reachability diff -> microVM NOT forced
+for any screen (all reachable by nav and/or DB seed). Overlay capture SOLVED (PixelProbeTest per-compose-root
+draw + fire OnClick semantics action, NOT a bare performClick which taps off-screen coords).
+
+RUN THE REAL KT APP (emulator, owner-facing): open ~/Programming/WFL_MixingCenter/WFL (the INNER Gradle root
+— settings.gradle.kts is there — NOT the outer Python folder) in Android Studio, Run 'app'. applicationId =
+com.sara.workoutforlife/.MainActivity. `adb shell pm clear com.sara.workoutforlife` for fresh onboarding.
+"cmd: Can't find service: package" on install = emulator not fully booted (wait for sys.boot_completed=1).
 
 ## The plan (owner's design, decided 2026-07-10; full records: WFL DevComms/log_143 + log_144)
 

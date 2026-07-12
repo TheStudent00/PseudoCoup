@@ -1,0 +1,3 @@
+screenshots: 180 states: 180 match: True done: None
+route types: 18
+routes: ['debug_panel', 'execution/{sessionId}', 'exercise_create?exerciseId={exerciseId}', 'exercise_detail/{exerciseId}', 'exercises', 'gym_create_wizard', 'gym_list', 'log_cardio', 'my_program', 'paths', 'program_editor/{programId}', 'programs', 'progress', 'report_bug', 'settings', 'settings_notifications', 'today', 'wins']
