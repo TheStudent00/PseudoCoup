@@ -1,0 +1,12 @@
+{
+  "id": "234_kt_walk_onboarding_smoke",
+  "returncode": 0,
+  "seconds": 8.7,
+  "started": "2026-07-11T15:49:09.487698+00:00",
+  "finished": "2026-07-11T15:49:18.171771+00:00",
+  "steps": {
+    "spent": 1,
+    "budget": 25,
+    "counter_file": "/home/lucas/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log"
+  }
+}

@@ -87,3 +87,89 @@
 2026-07-11T05:53:02.028173+00:00  DONE 222_pixel_probe_semanticsclick2: rc=0 (16.8s)
 2026-07-11T05:53:02.047475+00:00  RUN 223_pixel_capture_semanticsclick2: python3 -c import shutil, os, glob; dst=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results/222_pixelprobe'); shutil.copytree('app/build/walks/pixelprobe', dst, dirs_exist_ok=True); xmls=glob.glob('app/build/test-results/testDebugUnitTest/*.xml'); [shutil.copy(x, dst+'/'+os.path.basename(x)) for x in xmls]; print('captured', len(xmls), 'xml reports')
 2026-07-11T05:53:02.079553+00:00  DONE 223_pixel_capture_semanticsclick2: rc=0 (0.1s)
+2026-07-11T06:33:15.084677+00:00  RUN 224_kt_walk_capture: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1 -Dwalk.capture=1
+2026-07-11T06:49:31.202405+00:00  DONE 224_kt_walk_capture: rc=0 (976.2s) steps 200/200
+2026-07-11T06:49:31.276962+00:00  RUN 225_kt_capture_bundle: python3 -c import shutil, os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); dst=d+'/224_bundle'; shutil.copytree('app/build/walks/bundle', dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/224_kt_walk.json'); n=len(os.listdir(dst+'/screenshots')) if os.path.isdir(dst+'/screenshots') else 0; print('captured bundle:', n, 'screenshots')
+2026-07-11T06:49:31.341624+00:00  DONE 225_kt_capture_bundle: rc=1 (0.1s)
+2026-07-11T07:00:04.615208+00:00  RUN 226_kt_walk_capture2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1 -Dwalk.capture=1
+2026-07-11T07:03:54.762147+00:00  RUN 226_kt_walk_capture2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=1 -Dwalk.capture=1
+2026-07-11T07:18:47.262917+00:00  DONE 226_kt_walk_capture2: rc=0 (892.6s) steps 200/200
+2026-07-11T07:18:47.340926+00:00  RUN 227_kt_capture_bundle2: python3 -c import shutil, os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); dst=d+'/226_bundle'; shutil.copytree('app/build/walks/bundle', dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/226_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/226_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')) if os.path.isdir(dst+'/screenshots') else 0; print('captured bundle:', n, 'screenshots')
+2026-07-11T07:18:47.405317+00:00  DONE 227_kt_capture_bundle2: rc=1 (0.1s)
+2026-07-11T07:30:35.302205+00:00  RUN 228_kt_walk_capture_smoke: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=8 -Dwalk.reset=true -Dwalk.capture=true
+2026-07-11T07:30:52.181699+00:00  DONE 228_kt_walk_capture_smoke: rc=0 (17.0s) steps 8/8
+2026-07-11T07:30:52.200508+00:00  RUN 229_kt_capture_bundle_smoke: python3 -c import shutil, os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); src='app/build/walks/bundle'; 
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR -- capture did not run'); import sys; sys.exit(0)
+dst=d+'/228_bundle'; shutil.copytree(src, dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_activations.log', d+'/228_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')) if os.path.isdir(dst+'/screenshots') else 0; print('captured bundle:', n, 'screenshots')
+2026-07-11T07:30:52.233026+00:00  DONE 229_kt_capture_bundle_smoke: rc=0 (0.1s)
+2026-07-11T07:32:27.093453+00:00  RUN 230_kt_walk_capture_full: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=200 -Dwalk.reset=true -Dwalk.capture=true
+2026-07-11T07:50:05.786636+00:00  DONE 230_kt_walk_capture_full: rc=0 (1058.7s) steps 200/200
+2026-07-11T07:50:05.815437+00:00  RUN 231_kt_capture_bundle_full: python3 -c import shutil, os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); src='app/build/walks/bundle'; 
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR'); import sys; sys.exit(0)
+dst=d+'/230_bundle'; shutil.copytree(src, dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/230_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/230_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')); s=len(__import__('json').load(open('app/build/walks/kt_walk.json'))['states']); print('screenshots:', n, 'graph states:', s, 'match:', n==s)
+2026-07-11T07:50:05.886510+00:00  DONE 231_kt_capture_bundle_full: rc=0 (0.1s)
+2026-07-11T15:33:53.585930+00:00  RUN 232_kt_walk_capture_deep: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=800 -Dwalk.reset=true -Dwalk.capture=true
+2026-07-11T15:49:09.313065+00:00  DONE 232_kt_walk_capture_deep: rc=1 (915.8s) steps 514/800
+2026-07-11T15:49:09.373056+00:00  RUN 233_kt_capture_bundle_deep: python3 -c import shutil, os, json; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); src='app/build/walks/bundle'; 
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR'); import sys; sys.exit(0)
+dst=d+'/232_bundle'; shutil.copytree(src, dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/232_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/232_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')); w=json.load(open('app/build/walks/kt_walk.json')); s=len(w['states']); routes=sorted(set(v['route'] for v in w['states'].values())); print('screenshots:', n, 'states:', s, 'match:', n==s); print('route types:', len(routes)); print('routes:', routes)
+2026-07-11T15:49:09.487500+00:00  DONE 233_kt_capture_bundle_deep: rc=0 (0.2s)
+2026-07-11T15:49:09.501506+00:00  RUN 234_kt_walk_onboarding_smoke: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=25 -Dwalk.reset=true -Dwalk.capture=true -Dwalk.seed=fresh
+2026-07-11T15:49:18.172000+00:00  DONE 234_kt_walk_onboarding_smoke: rc=0 (8.7s) steps 1/25
+2026-07-11T15:49:18.186543+00:00  RUN 235_kt_capture_onboarding_smoke: python3 -c import shutil, os, json; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); src='app/build/walks/bundle'; 
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR'); import sys; sys.exit(0)
+dst=d+'/234_bundle'; shutil.copytree(src, dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/234_kt_walk.json'); w=json.load(open('app/build/walks/kt_walk.json')); routes=sorted(set(v['route'] for v in w['states'].values())); print('states:', len(w['states'])); print('routes:', routes); print('ONBOARDING REACHED:', any('onboarding' in r for r in routes))
+2026-07-11T15:49:18.226942+00:00  DONE 235_kt_capture_onboarding_smoke: rc=0 (0.1s)
+2026-07-11T15:56:02.843831+00:00  RUN 236_kt_walk_capture_deep2: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.WalkRecorderTest --rerun -Dwalk.steps=800 -Dwalk.reset=true -Dwalk.capture=true
+2026-07-11T16:17:09.850278+00:00  DONE 236_kt_walk_capture_deep2: rc=0 (1267.1s) steps 800/800
+2026-07-11T16:17:09.930555+00:00  RUN 237_kt_capture_bundle_deep2: python3 -c import shutil, os, json; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); src='app/build/walks/bundle'; 
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR'); import sys; sys.exit(0)
+dst=d+'/236_bundle'; shutil.copytree(src, dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/236_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/236_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')); w=json.load(open('app/build/walks/kt_walk.json')); s=len(w['states']); routes=sorted(set(v['route'] for v in w['states'].values())); print('screenshots:', n, 'states:', s, 'match:', n==s, 'done:', w.get('done')); print('route types:', len(routes)); print('routes:', routes)
+2026-07-11T16:17:10.153120+00:00  DONE 237_kt_capture_bundle_deep2: rc=0 (0.3s)
+2026-07-11T17:42:00.518567+00:00  RUN 238_py_walk_capture: xvfb-run -a python3 walker.py --steps 300 --reset --out walks/py_walk.json
+2026-07-11T22:11:16.981242+00:00  RUN 240_py_walk_b07: xvfb-run -a python3 walker.py --steps 400 --reset --out walks/py_walk.json
+2026-07-11T23:52:40.519657+00:00  RUN 242_py_walk_b12: xvfb-run -a python3 walker.py --steps 400 --reset --out walks/py_walk.json
+2026-07-12T01:25:26.963463+00:00  DONE 242_py_walk_b12: rc=0 (5566.5s) steps 399/400
+2026-07-12T01:25:27.082234+00:00  RUN 243_py_capture_b12: python3 -c import shutil, os, json
+d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results')
+src='walks/bundle'
+if not os.path.isdir(src):
+    print('NO BUNDLE DIR'); raise SystemExit
+dst=d+'/242_bundle'
+shutil.copytree(src, dst, dirs_exist_ok=True)
+shutil.copy('walks/py_walk.json', d+'/242_py_walk.json')
+w=json.load(open('walks/py_walk.json'))
+n=len(os.listdir(dst+'/screenshots'))
+routes=sorted(set(v['route'] for v in w['states'].values()))
+import collections
+rc=collections.Counter(v['route'].split('/')[0] for v in w['states'].values())
+print('screenshots:', n, 'states:', len(w['states']), 'match:', n==len(w['states']), 'done:', w.get('done'))
+print('route types:', len(routes))
+print('states per route-base:', dict(sorted(rc.items())))
+print('B12 CHECK - execution states (expect FEW, was 22+ concrete):', rc.get('execution',0))
+print('B07 CHECK - completion screens:', [r for r in routes if any(k in r for k in ('cooldown','summary','stretch'))] or 'NONE')
+2026-07-12T01:25:27.204152+00:00  DONE 243_py_capture_b12: rc=0 (0.2s)
+2026-07-12T03:10:11.175674+00:00  RUN 244_kt_scenario: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.ScenarioTest --rerun
+2026-07-12T03:10:41.400534+00:00  DONE 244_kt_scenario: rc=0 (30.3s)
+2026-07-12T03:10:41.426950+00:00  RUN 245_kt_scenario_capture: python3 -c import shutil, os, json
+d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results')
+src='app/build/walks/scenario_kt'
+if not os.path.isdir(src):
+    print('NO SCENARIO_KT DIR'); raise SystemExit
+dst=d+'/244_scenario_kt'
+shutil.copytree(src, dst, dirs_exist_ok=True)
+pngs=sorted(f for f in os.listdir(dst) if f.endswith('.png'))
+print('kt scenario screenshots:', len(pngs))
+for p in pngs: print(' ', p)
+lp=dst+'/scenario_kt_log.json'
+if os.path.exists(lp):
+    L=json.load(open(lp))
+    steps=L if isinstance(L,list) else L.get('steps',[])
+    for s in steps:
+        print('step', s.get('index'), s.get('name'), '| found=', s.get('found'), '| route=', s.get('route_after'))
+2026-07-12T03:10:41.459288+00:00  DONE 245_kt_scenario_capture: rc=0 (0.1s)

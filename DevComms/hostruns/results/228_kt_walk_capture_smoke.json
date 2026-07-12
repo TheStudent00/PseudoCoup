@@ -1,0 +1,12 @@
+{
+  "id": "228_kt_walk_capture_smoke",
+  "returncode": 0,
+  "seconds": 17.0,
+  "started": "2026-07-11T07:30:35.229643+00:00",
+  "finished": "2026-07-11T07:30:52.181160+00:00",
+  "steps": {
+    "spent": 8,
+    "budget": 8,
+    "counter_file": "/home/lucas/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log"
+  }
+}

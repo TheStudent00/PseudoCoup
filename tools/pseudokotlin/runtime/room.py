@@ -152,7 +152,13 @@ class Database:
         except BaseException:               # noqa: BLE001 -- rollback then re-raise, no invalidation
             self._txn_depth -= 1
             if outermost:
-                self._conn.execute("ROLLBACK")
+                try:
+                    self._conn.execute("ROLLBACK")
+                except sqlite3.OperationalError:
+                    # the transaction already ended under us (e.g. a mid-block commit) -- the ORIGINAL
+                    # exception is the story; a failed ROLLBACK must never replace it (it did once:
+                    # "cannot rollback - no transaction is active" masked B14's real tail failure).
+                    pass
                 self._pending_invalidate = set()
             raise
 
@@ -246,9 +252,19 @@ class Database:
         self.invalidate({ent.table})
 
     def execute(self, sql, params=None):
-        """A raw @Query that isn't a row->entity SELECT (UPDATE/DELETE, or a scalar)."""
+        """A raw @Query that isn't a row->entity SELECT (UPDATE/DELETE, or a scalar).
+
+        NO commit while inside withTransaction: sqlite has one flat transaction, so conn.commit() here
+        would END the open "BEGIN" mid-block; withTransaction's terminal COMMIT then raises "cannot
+        commit - no transaction is active", its except path's ROLLBACK raises "cannot rollback - no
+        transaction is active", and THAT surfaces instead of anything real. Found live in B14's tail:
+        WorkoutExecutionRepository.completeSession wraps sessionDao.update + cascadeBlockCompletion
+        (raw-UPDATE @Query methods -> this path) in db.withTransaction; the mid-block commit killed the
+        whole finish-workout chain before _navigateToSummary could emit. Outside a transaction the
+        connection is autocommit (isolation_level=None), so the commit was a no-op there anyway."""
         cur = self._conn.execute(sql, _bind(params))
-        self._conn.commit()
+        if self._txn_depth == 0:
+            self._conn.commit()
         if _re.match(r"\s*(?:UPDATE|DELETE|INSERT)\b", sql, _re.IGNORECASE):
             self.invalidate(_tables_in_sql(sql))
         return cur

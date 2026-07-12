@@ -309,11 +309,26 @@ class MutableSharedFlow(Flow):
         super().__init__([])
 
     def tryEmit(self, v):
-        self._values.append(v)
+        self._deliver(v)
         return True
 
     def emit(self, v):
+        self._deliver(v)
+
+    def _deliver(self, v):
+        # SharedFlow is a HOT, event-style flow: an emit must NOTIFY every currently-registered collector
+        # (a LaunchedEffect { flow.collect { ... } } registers one via Flow.collect -> _add_listener). The
+        # old impl only did `self._values.append(v)`, which buffers but never calls the listeners -- so a
+        # one-shot event emitted AFTER a collector subscribed (the normal case: LaunchedEffect collects at
+        # mount, the emit happens later on a tap) was silently dropped. That killed every SharedFlow-driven
+        # navigation/side-effect on py (e.g. WorkoutExecution's finishEarly -> _navigateToSummary.emit ->
+        # never reached the collector -> "Finish" did nothing). We KEEP the buffer append so the reverse
+        # ordering (emit before a collector subscribes -> drained by the next collect) still works, AND now
+        # notify live listeners so the common collect-then-emit path fires. General fix: one place, every
+        # SharedFlow event.
         self._values.append(v)
+        for cb in list(self._listeners):
+            cb(v)
 
     def asSharedFlow(self):
         return self

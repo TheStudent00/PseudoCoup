@@ -1,0 +1,1 @@
+{"id": "236_kt_walk_capture_deep2", "cwd": "~/Programming/WFL_MixingCenter/WFL", "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.walk.WalkRecorderTest", "--rerun", "-Dwalk.steps=800", "-Dwalk.reset=true", "-Dwalk.capture=true"], "timeout": 10800}

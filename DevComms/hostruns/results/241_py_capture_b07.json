@@ -1,0 +1,1 @@
+{"id": "241_py_capture_b07", "returncode": 0, "note": "SKIPPED — 240 hung before writing the final py_walk.json, so this capture (which reads it) is moot. Partial 240 data grabbed manually to results/240_bundle + 240_py_walk_progress.json. Tombstone prevents a pointless re-run."}

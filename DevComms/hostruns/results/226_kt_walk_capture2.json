@@ -1,0 +1,12 @@
+{
+  "id": "226_kt_walk_capture2",
+  "returncode": 0,
+  "seconds": 892.6,
+  "started": "2026-07-11T07:03:54.680441+00:00",
+  "finished": "2026-07-11T07:18:47.259555+00:00",
+  "steps": {
+    "spent": 200,
+    "budget": 200,
+    "counter_file": "/home/lucas/Programming/WFL_MixingCenter/WFL/app/build/walks/kt_activations.log"
+  }
+}

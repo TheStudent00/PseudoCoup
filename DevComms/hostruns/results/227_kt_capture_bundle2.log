@@ -1,0 +1,8 @@
+Traceback (most recent call last):
+  File "<string>", line 1, in <module>
+    import shutil, os; d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results'); dst=d+'/226_bundle'; shutil.copytree('app/build/walks/bundle', dst, dirs_exist_ok=True); shutil.copy('app/build/walks/kt_walk.json', d+'/226_kt_walk.json'); shutil.copy('app/build/walks/kt_activations.log', d+'/226_kt_activations.log'); n=len(os.listdir(dst+'/screenshots')) if os.path.isdir(dst+'/screenshots') else 0; print('captured bundle:', n, 'screenshots')
+                                                                                                                           ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/home/lucas/anaconda3/lib/python3.13/shutil.py", line 591, in copytree
+    with os.scandir(src) as itr:
+         ~~~~~~~~~~^^^^^
+FileNotFoundError: [Errno 2] No such file or directory: 'app/build/walks/bundle'

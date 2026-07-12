@@ -1,0 +1,1 @@
+{"id": "234_kt_walk_onboarding_smoke", "cwd": "~/Programming/WFL_MixingCenter/WFL", "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.walk.WalkRecorderTest", "--rerun", "-Dwalk.steps=25", "-Dwalk.reset=true", "-Dwalk.capture=true", "-Dwalk.seed=fresh"], "timeout": 1800}

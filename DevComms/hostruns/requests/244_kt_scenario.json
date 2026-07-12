@@ -1,0 +1,1 @@
+{"id": "244_kt_scenario", "cwd": "~/Programming/WFL_MixingCenter/WFL", "cmd": ["./gradlew", ":app:testDebugUnitTest", "--max-workers=1", "-Dorg.gradle.jvmargs=-Xmx2g", "--tests", "com.sara.workoutforlife.walk.ScenarioTest", "--rerun"], "timeout": 1800}

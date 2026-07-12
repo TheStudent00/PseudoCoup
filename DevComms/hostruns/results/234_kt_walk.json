@@ -1,0 +1,90 @@
+{
+ "meta": {
+  "format": "wfl-decision-tree-walk\/v2",
+  "generator": "kt_walker",
+  "steps_this_run": 1
+ },
+ "states": {
+  "dab0c8dc275925cbea37e1303ecdaaccd31b5189f0e042cafe36b25d506389d6": {
+   "state_id": "dab0c8dc275925cbea37e1303ecdaaccd31b5189f0e042cafe36b25d506389d6",
+   "route": "onboarding",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "Workout for Life",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Your workouts. Your way. Built to last.",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Let's go",
+     "interactive": false
+    }
+   ]
+  },
+  "55c550e8117d96b6bbc7ef0723889e830e34287fafc6cb406c6c171c7d4e1bfa": {
+   "state_id": "55c550e8117d96b6bbc7ef0723889e830e34287fafc6cb406c6c171c7d4e1bfa",
+   "route": "onboarding",
+   "tree_summary": [
+    {
+     "kind": "Node",
+     "text": "What should we call you?",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Even just initials work.",
+     "interactive": false
+    },
+    {
+     "kind": "Node",
+     "text": "Your name",
+     "interactive": false
+    },
+    {
+     "kind": "EditableText",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    },
+    {
+     "kind": "Node",
+     "text": "Continue",
+     "interactive": false
+    },
+    {
+     "kind": "Button",
+     "text": "",
+     "interactive": true
+    }
+   ]
+  }
+ },
+ "edges": [
+  {
+   "source": "dab0c8dc275925cbea37e1303ecdaaccd31b5189f0e042cafe36b25d506389d6",
+   "action": {
+    "kind": "Button",
+    "label": "Let's go",
+    "handler_kind": "onClick",
+    "ordinal": 0
+   },
+   "destination": "55c550e8117d96b6bbc7ef0723889e830e34287fafc6cb406c6c171c7d4e1bfa",
+   "error": null,
+   "unsettled": false
+  }
+ ]
+}
