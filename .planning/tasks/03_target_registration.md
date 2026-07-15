@@ -1,23 +1,23 @@
-# Phase 3: AST Lifting & Automated Fill
+# Phase 3: Automated Compilation & Extraction
 
 ## Overview
-Once the IR Opcodes have been mathematically aligned between the Source and Target, we must translate that alignment back into high-level syntax. This phase covers extracting the Target AST node from the verified probe and registering it as automated fill for `PseudoCoup`.
+Once the Full QuickFox Fuzzer has generated the exhaustive target language file, this phase focuses on compiling that file to extract the definitive Intermediate Representation (IR) opcodes. By matching the generated function names back to the `tree-sitter` nodes, we establish a perfect, mechanized mapping.
 
 ## Objectives
-- Parse the verified Target Probe back into a high-level AST.
-- Extract the specific AST node representing the executed logic.
-- Register this node in a format `PseudoCoup` can use for zero-flattening egress.
+- Invoke the target compiler on the generated QuickFox file.
+- Parse the resulting IR dump.
+- Build the definitive mapping dictionary aligning `tree-sitter` nodes to execution opcodes.
 
 ## Sub-Tasks
 
-### 3a: Target Probe Parsing
-- **Task:** Utilize the respective language's `tree-sitter` grammar to parse the Target Probe.
-- **Details:** For example, parsing `[].add(1)` in Dart to produce the structural `MethodInvocation` node.
+### 3a: Target Compiler Hook
+- **Task:** Build an automated execution runner that passes the QuickFox file into the target compiler.
+- **Details:** For Go, this involves running `GOSSAFUNC` on every generated `Probe_` function and intercepting the output (e.g., `ssa.html`).
 
-### 3b: AST Node Extraction & Serialization
-- **Task:** Extract the relevant node and serialize it into an "automated fill" template.
-- **Details:** The extracted node must be parameterized (e.g., separating the base list from the argument `1`) so it can accept generic inputs during transpilation.
+### 3b: IR Dump Parsing
+- **Task:** Write a parser to strip the raw opcodes from the compiler's output dump.
+- **Details:** Extract the flat sequence or Data Flow Graph of operations executed within each `Probe_` function.
 
-### 3c: Automated Registration API
-- **Task:** Build the API that injects this serialized AST node directly into `PseudoCoup`'s Egress registry.
-- **Details:** `PseudoCoup` will query this API. If a match is found for a given Python built-in, it uses the AST template instead of falling back to the strict `Map -> Wrap -> Fail` protocol.
+### 3c: Mechanistic Dictionary Assembly
+- **Task:** Build the final mapping dictionary.
+- **Details:** Since the function name dictates the `tree-sitter` node (e.g., `Probe_BinaryExpression_Add`), map that node directly to the extracted SSA opcodes. Serialize this exhaustive dictionary for use by `PseudoCoup` in Phase 4.
