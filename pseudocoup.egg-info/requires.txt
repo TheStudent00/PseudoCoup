@@ -1,0 +1,15 @@
+pseudoir>=0.1.0
+tree-sitter>=0.22
+tree-sitter-python
+tree-sitter-dart
+tree-sitter-kotlin
+tree-sitter-go
+tree-sitter-typescript
+tree-sitter-c-sharp
+tree-sitter-cpp
+tree-sitter-c
+tree-sitter-java
+tree-sitter-swift
+tree-sitter-rust
+tree-sitter-ruby
+tree-sitter-php

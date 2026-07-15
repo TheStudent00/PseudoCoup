@@ -2,39 +2,38 @@
 language operations, for cross-language (Python vs Kotlin) IR comparison.
 No imports beyond what is unavoidable (none needed here)."""
 
-from typing import List, Dict, Optional, Tuple, Any
 
-def side_effect_marker(tag: str) -> bool:
+def side_effect_marker(tag):
     print("SIDE_EFFECT:" + tag)
     return True
 
 
-def short_circuit_and_demo() -> None:
+def short_circuit_and_demo():
     # right side must NOT run because left side is False
-    result: bool = False and side_effect_marker("AND_RHS")
+    result = False and side_effect_marker("AND_RHS")
     print("and_short_circuit_result=" + bool_str(result))
 
 
-def short_circuit_or_demo() -> None:
+def short_circuit_or_demo():
     # right side must NOT run because left side is True
-    result: bool = True or side_effect_marker("OR_RHS")
+    result = True or side_effect_marker("OR_RHS")
     print("or_short_circuit_result=" + bool_str(result))
 
 
-def bool_str(b: bool) -> str:
+def bool_str(b):
     if b:
         return "True"
     else:
         return "False"
 
 
-def none_str(v: Optional[Any]) -> str:
+def none_str(v):
     if v is None:
         return "None"
     return str(v)
 
 
-def classify_number(n: int) -> str:
+def classify_number(n):
     if n < 0:
         return "negative"
     elif n == 0:
@@ -45,45 +44,42 @@ def classify_number(n: int) -> str:
         return "large"
 
 
-def factorial_recursive(n: int) -> int:
+def factorial_recursive(n):
     if n <= 1:
         return 1
     return n * factorial_recursive(n - 1)
 
 
 class Box:
-    value: int
-    history_len: int
-
-    def __init__(self, value: int) -> None:
+    def __init__(self, value):
         self.value = value
         self.history_len = 0
 
-    def update_value(self, new_value: int) -> None:
+    def update_value(self, new_value):
         self.value = new_value
         self.history_len = self.history_len + 1
 
-    def describe(self) -> str:
+    def describe(self):
         return "Box(value=" + str(self.value) + ", writes=" + str(self.history_len) + ")"
 
 
-def risky_divide(a: float, b: float) -> float:
-    if b == 0.0:
+def risky_divide(a, b):
+    if b == 0:
         raise ValueError("division by zero not allowed")
     return a / b
 
 
-def main() -> None:
+def main():
     # integer & float arithmetic
-    a: int = 17
-    b: int = 5
-    add_i: int = a + b
-    sub_i: int = a - b
-    mul_i: int = a * b
-    div_f: float = a / b
-    div_i: int = a // b
-    mod_i: int = a % b
-    neg_i: int = -a
+    a = 17
+    b = 5
+    add_i = a + b
+    sub_i = a - b
+    mul_i = a * b
+    div_f = a / b
+    div_i = a // b
+    mod_i = a % b
+    neg_i = -a
 
     print("add_i=" + str(add_i))
     print("sub_i=" + str(sub_i))
@@ -93,8 +89,8 @@ def main() -> None:
     print("mod_i=" + str(mod_i))
     print("neg_i=" + str(neg_i))
 
-    fa: float = 9.0
-    fb: float = 2.0
+    fa = 9.0
+    fb = 2.0
     print("float_div=" + str(fa / fb))
     print("float_floordiv=" + str(fa // fb))
 
@@ -112,28 +108,25 @@ def main() -> None:
     print("not_demo=" + bool_str(not (a == b)))
 
     # if / elif / else
-    n: int
     for n in [-3, 0, 4, 42]:
         print("classify(" + str(n) + ")=" + classify_number(n))
 
     # while loop
-    i: int = 0
-    total: int = 0
+    i = 0
+    total = 0
     while i < 5:
         total = total + i
         i = i + 1
     print("while_total=" + str(total))
 
     # for loop over range and over list
-    range_sum: int = 0
-    k: int
+    range_sum = 0
     for k in range(1, 6):
         range_sum = range_sum + k
     print("range_sum=" + str(range_sum))
 
-    words: List[str] = ["quick", "brown", "quickfox"]
-    joined: str = ""
-    w: str
+    words = ["quick", "brown", "fox"]
+    joined = ""
     for w in words:
         joined = joined + w + "-"
     print("joined=" + joined)
@@ -142,43 +135,42 @@ def main() -> None:
     print("factorial5=" + str(factorial_recursive(5)))
 
     # local variable assignment/reassignment
-    counter: int = 0
+    counter = 0
     counter = counter + 1
     counter = counter + 1
     print("counter=" + str(counter))
 
     # list construction/indexing/mutation/append
-    quickfox_list: List[int] = [1, 2, 3]
-    quickfox_list[0] = 100
-    quickfox_list.append(4)
-    print("quickfox_list0=" + str(quickfox_list[0]))
-    print("quickfox_list_len=" + str(len(quickfox_list)))
-    print("quickfox_list_last=" + str(quickfox_list[3]))
+    fox_list = [1, 2, 3]
+    fox_list[0] = 100
+    fox_list.append(4)
+    print("fox_list0=" + str(fox_list[0]))
+    print("fox_list_len=" + str(len(fox_list)))
+    print("fox_list_last=" + str(fox_list[3]))
 
     # dict/map construction/get/put
-    quickfox_map: Dict[str, int] = {}
-    quickfox_map["quick"] = 1
-    quickfox_map["brown"] = 2
-    quickfox_map["quickfox"] = 3
-    print("map_get_brown=" + str(quickfox_map.get("brown")))
-    quickfox_map["quickfox"] = 30
-    print("map_get_quickfox=" + str(quickfox_map.get("quickfox")))
+    fox_map = {}
+    fox_map["quick"] = 1
+    fox_map["brown"] = 2
+    fox_map["fox"] = 3
+    print("map_get_brown=" + str(fox_map.get("brown")))
+    fox_map["fox"] = 30
+    print("map_get_fox=" + str(fox_map.get("fox")))
 
     # string concatenation + interpolation-or-format + length
-    name: str = "fox"
-    speed: int = 12
-    formatted: str = "The {} runs at {} mph".format(name, speed)
+    name = "fox"
+    speed = 12
+    formatted = "The {} runs at {} mph".format(name, speed)
     print(formatted)
     print("name_len=" + str(len(name)))
 
     # tuple construction + destructuring
-    pair: Tuple[str, int] = (name, speed)
-    p_name: str = pair[0]
-    p_speed: int = pair[1]
+    pair = (name, speed)
+    p_name, p_speed = pair
     print("pair_name=" + p_name + " pair_speed=" + str(p_speed))
 
     # class with constructor, attribute read/write, method call
-    box: Box = Box(10)
+    box = Box(10)
     print("box_before=" + box.describe())
     box.update_value(99)
     print("box_after=" + box.describe())
@@ -186,23 +178,23 @@ def main() -> None:
 
     # exception raise + try/catch
     try:
-        risky_divide(10.0, 0.0)
+        risky_divide(10, 0)
     except ValueError as e:
         print("caught=" + str(e))
 
-    safe_result: float = risky_divide(10.0, 4.0)
+    safe_result = risky_divide(10, 4)
     print("safe_result=" + str(safe_result))
 
     # null/None check
-    maybe_value: Optional[int] = None
+    maybe_value = None
     print("maybe_before=" + none_str(maybe_value))
     maybe_value = 7
     print("maybe_after=" + none_str(maybe_value))
 
     # 'in' / contains membership test
-    print("contains_quickfox=" + bool_str("quickfox" in words))
+    print("contains_fox=" + bool_str("fox" in words))
     print("contains_wolf=" + bool_str("wolf" in words))
-    print("contains_key=" + bool_str("quick" in quickfox_map))
+    print("contains_key=" + bool_str("quick" in fox_map))
 
     print("DONE")
 

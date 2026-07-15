@@ -60,8 +60,21 @@
         "main.p_speed": "dynamic",
         "main.box": "dynamic",
         "main.safe_result": "dynamic",
-        "main.maybe_value": "int"
+        "main.maybe_value": "int",
+        "main.fox_list": "dynamic",
+        "main.fox_list[0]": "int",
+        "main.fox_map": "dynamic",
+        "main.fox_map[\"quick\"]": "int",
+        "main.fox_map[\"brown\"]": "int",
+        "main.fox_map[\"fox\"]": "int"
     },
     "wrappers": [],
-    "memory_erasure": {}
+    "memory_erasure": {},
+    "file_map": {},
+    "symbol_owners": {},
+    "param_shapes": {},
+    "param_shapes_scoped": {},
+    "singleton_objects": [],
+    "method_returns": {},
+    "method_suspend": {}
 }
