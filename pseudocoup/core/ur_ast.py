@@ -60,9 +60,13 @@ class IdentifierNode(URNode):
         self.name = name
 
 class LiteralNode(URNode):
-    def __init__(self, value: Any):
+    def __init__(self, value: Any, raw: bool = False):
         super().__init__()
         self.value = value
+        # When raw is True, `value` is a fully-formed target-language string
+        # literal (already quoted/escaped, e.g. an interpolated string) and the
+        # emitter passes it through verbatim.
+        self.raw = raw
 
 class ReturnNode(URNode):
     def __init__(self, value: 'URNode'):
@@ -121,4 +125,18 @@ class AttributeNode(URNode):
         self.value = value
         self.attr = attr
 
+class ModifierNode(URNode):
+    """Represents a single modifier/decorator in a chain (e.g., padding(16.dp))."""
+    def __init__(self, name: str, args: List['URNode']):
+        super().__init__()
+        self.name = name
+        self.args = args
 
+class DeclarativeNode(URNode):
+    """Represents a UI element (e.g., Text, Column)."""
+    def __init__(self, name: str, properties: dict[str, 'URNode'], children: List['URNode'], modifiers: List['ModifierNode'] = None):
+        super().__init__()
+        self.name = name
+        self.properties = properties
+        self.children = children
+        self.modifiers = modifiers or []

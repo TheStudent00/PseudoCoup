@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "pseudocoup"
-version = "3.0.0"
+version = "4.0.0"
 authors = [
   { name="PseudoCoup Contributors" },
 ]
@@ -16,16 +16,24 @@ classifiers = [
     "Operating System :: OS Independent",
 ]
 dependencies = [
-    "tree-sitter==0.21.3",
+    # pseudoir (operator-semantics authority, U1/D1): path/editable dependency on the
+    # sibling repo. PEP 508 direct references cannot express "editable", so install order is:
+    #   pip install -e /home/lucas/Programming/PseudoIR
+    #   pip install -e /home/lucas/Programming/PseudoCoup
+    # The bare name below resolves against the already-installed editable pseudoir.
+    "pseudoir>=0.1.0",
+    # >=0.22 required: under 0.21.3 the CLI fails with current grammar wheels
+    # (ingress/python.py:24 Language(tspython.language()) -> TypeError: missing 'name' arg).
+    # pseudoir requires >=0.21 -- compatible.
+    "tree-sitter>=0.22",
     "tree-sitter-python",
     "tree-sitter-dart",
     "tree-sitter-kotlin",
-    "tree-sitter-go",
+    "tree-sitter-go",  # vestigial: no Go ingress exists (Go is egress-only, needs no grammar); kept pending cleanup decision
     "tree-sitter-typescript",
-    "tree-sitter-dart",
     "tree-sitter-c-sharp",
     "tree-sitter-cpp",
-    "tree-sitter-c",
+    "tree-sitter-c",  # vestigial: no C ingress/egress exists; kept pending cleanup decision
     "tree-sitter-java",
     "tree-sitter-swift",
     "tree-sitter-rust",

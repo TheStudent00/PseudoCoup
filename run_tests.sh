@@ -1,11 +1,20 @@
 #!/bin/bash
-# PseudoCoup V3 Roundtrip Test Runner
+# PseudoCoup Test Runner
+# 1. pytest suite (tests/test_transpile.py smoke + tests/test_snapshot.py byte-diff
+#    against the pre-upgrade snapshot in tests/snapshot_pre_upgrade/).
+# 2. Legacy roundtrip artifact generation into tests/roundtrip/ (no assertions;
+#    kept for manual inspection). Source example is examples/fox.py (formerly
+#    named quickfox.py; there is no examples/fox.ledger.json — the CLI creates
+#    the ledger on first run).
+set -e
 
-mkdir -p tests/roundtrip
+echo "Running pytest suite..."
+python3 -m pytest tests/ -q
 
 echo "Preparing roundtrip directory..."
-cp examples/quickfox.py tests/roundtrip/00_quickfox.py
-cp examples/quickfox.ledger.json tests/roundtrip/00_quickfox.ledger.json
+mkdir -p tests/roundtrip
+cp examples/fox.py tests/roundtrip/00_quickfox.py
+rm -f tests/roundtrip/00_quickfox.ledger.json
 
 echo "Transpiling to Dart..."
 python3 -m pseudocoup.cli --source tests/roundtrip/00_quickfox.py --target-lang dart
@@ -97,5 +106,4 @@ python3 -m pseudocoup.cli --source tests/roundtrip/21_quickfox.php --source-lang
 mv tests/roundtrip/21_quickfox.python tests/roundtrip/22_quickfox_php_roundtrip.py
 
 echo "------------------------------------------------"
-echo "Roundtrip tests completed in tests/roundtrip/"
-ls -la tests/roundtrip/
+echo "All tests passed. Roundtrip artifacts in tests/roundtrip/"
