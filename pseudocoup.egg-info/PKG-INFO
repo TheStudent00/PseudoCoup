@@ -1,0 +1,85 @@
+Metadata-Version: 2.4
+Name: pseudocoup
+Version: 4.0.0
+Summary: A universal intentful architecture transpiler.
+Author: PseudoCoup Contributors
+Classifier: Programming Language :: Python :: 3
+Classifier: Operating System :: OS Independent
+Requires-Python: >=3.10
+Description-Content-Type: text/markdown
+License-File: LICENSE.pdf
+Requires-Dist: pseudoir>=0.1.0
+Requires-Dist: tree-sitter>=0.22
+Requires-Dist: tree-sitter-python
+Requires-Dist: tree-sitter-dart
+Requires-Dist: tree-sitter-kotlin
+Requires-Dist: tree-sitter-go
+Requires-Dist: tree-sitter-typescript
+Requires-Dist: tree-sitter-c-sharp
+Requires-Dist: tree-sitter-cpp
+Requires-Dist: tree-sitter-c
+Requires-Dist: tree-sitter-java
+Requires-Dist: tree-sitter-swift
+Requires-Dist: tree-sitter-rust
+Requires-Dist: tree-sitter-ruby
+Requires-Dist: tree-sitter-php
+Dynamic: license-file
+
+# PseudoCoup
+
+> Write an application **once**, in one good notation—disciplined, intentful pseudo-code—and render it to **any** platform through **any** target, staying completely lossless and future-safe.
+
+PseudoCoup is the umbrella: a coup against un-portable, un-intentful design. It owns nothing technical itself; it is the altitude above all targets. You write *disciplined Python* (one notation, platform-agnostic); each target is a transpiler powered by `tree-sitter` AST evaluation to emit native code.
+
+## The V3 Universal Architecture
+
+PseudoCoup V3 introduces the highly resilient, structure-preserving **Universal Rich AST (UR-AST)** engine, completely dropping the brittle intermediate flattening and SSA stages of older versions.
+
+1. **Ingress (Parsers to Hub):** Source code from *any* of the 12 supported languages is parsed by `tree-sitter` and mapped directly into the hierarchical `UR-AST`. The `Ledger` acts as a cross-language symbol table, hydrating the graph by extracting native type hints dynamically.
+2. **The Hub (UR-AST):** The core engine stores logic not as flattened code blocks, but as a pure, hierarchical tree of operations preserving scoping, loops, and objects.
+3. **Egress (Emitters):** AST visitors walk the `UR-AST` and strictly emit clean, idiomatically formatted target code.
+
+**12 Supported Languages:** Python, Dart, Go, Kotlin, Java, C#, TypeScript, Swift, Rust, C++, Ruby, PHP.
+
+## How to Use (CLI API)
+
+PseudoCoup is fully operable via its centralized command-line interface.
+
+```bash
+python3 -m pseudocoup.cli --source <filepath> --source-lang <lang> --target-lang <lang>
+```
+
+**Parameters:**
+- `--source`: Path to the source code file.
+- `--source-lang`: The language of the source file (default: `python`).
+- `--target-lang`: The target language you wish to transpile to.
+
+**Example: Transpiling Python to Rust**
+```bash
+python3 -m pseudocoup.cli --source tests/roundtrip/00_quickfox.py --source-lang python --target-lang rust
+```
+
+## The Universal Discipline
+
+To achieve lossless transpilation across infinite architectures, developers must adhere to **The Universal Discipline**:
+
+1. **Intent, not Mechanism:** Code describes what the app *wants*, never how a toolkit does it. Intent survives churn because it never names the mechanism.
+2. **Concrete Constructs:** Rely on standard OOP Composition, strictly typed data structures, and concrete control flow logic (`while`, `if`, standard arithmetic, `try/catch`).
+3. **Map -> Wrap -> Fail:** The Golden Rule of translation. 
+   - First, attempt to *Map* logic to a native 1:1 equivalent.
+   - If impossible, *Wrap* the logic in a canonical `builtins_py` semantic registry wrapper.
+   - If wrapping breaks portability, *Fail* loudly. The compiler should never hallucinate approximations.
+
+## True Roundtrip Verification
+
+Because PseudoCoup relies on the hierarchical `UR-AST` and the `Ledger`, it does not suffer from code degradation or graph flattening bloat. 
+
+To prove this, PseudoCoup runs a massive True Roundtrip verification suite on a comprehensive script (`00_quickfox.py`) executing math, conditionals, classes, hashmaps, loops, and exceptions. We compile the script through all 12 languages sequentially:
+
+`Python -> Target -> Python`
+
+The final output Python code returns **perfectly identically formatted and pristine**, proving that lossless, cross-platform Universal Translation is definitively possible. You can run this suite yourself via `./run_tests.sh`.
+
+## License
+
+OTU-GL — see the bundled license PDF.

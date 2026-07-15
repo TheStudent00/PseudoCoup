@@ -1,41 +1,39 @@
 from typing import List, Dict, Optional, Tuple, Any
 
 class Box:
-    value: i32
-    history_len: i32
-    def __init__(self, value: i32) -> Self:
+    def __init__(self, value: Any) -> Self:
         return Self(value, 0)
 
-    def update_value(self, new_value: i32) -> ():
+    def update_value(self, new_value: Any) -> Any:
         self.value = new_value
         self.history_len
 
-    def describe(self) -> String:
+    def describe(self) -> Any:
         pass
 
 
-def side_effect_marker(tag: String) -> bool:
+def side_effect_marker(tag: Any) -> ():
     print()
 
 def short_circuit_and_demo() -> ():
-    result: bool
+    result: Any
     print()
 
 def short_circuit_or_demo() -> ():
-    result: bool
+    result: Any
     print()
 
-def bool_str(b: bool) -> String:
+def bool_str(b: Any) -> ():
     if b:
         pass
     elif True:
         pass
 
-def none_str(v: Option<Any>) -> String:
+def none_str(v: Any) -> ():
     if pass:
         pass
 
-def classify_number(n: i32) -> String:
+def classify_number(n: Any) -> ():
     if pass:
         pass
     elif pass:
@@ -45,24 +43,24 @@ def classify_number(n: i32) -> String:
     elif True:
         pass
 
-def factorial_recursive(n: i32) -> i32:
+def factorial_recursive(n: Any) -> ():
     if pass:
         pass
 
-def risky_divide(a: f64, b: f64) -> f64:
+def risky_divide(a: Any, b: Any) -> ():
     if pass:
         throw()
 
 def main() -> ():
-    a: i32 = 17
-    b: i32 = 5
-    add_i: i32
-    sub_i: i32
-    mul_i: i32
-    div_f: f64
-    div_i: i32
-    mod_i: i32
-    neg_i: i32
+    a: Any = 17
+    b: Any = 5
+    add_i: Any
+    sub_i: Any
+    mul_i: Any
+    div_f: Any
+    div_i: Any
+    mod_i: Any
+    neg_i: Any
     print()
     print()
     print()
@@ -70,8 +68,8 @@ def main() -> ():
     print()
     print()
     print()
-    fa: f64 = 9.0
-    fb: f64 = 2.0
+    fa: Any = 9.0
+    fb: Any = 2.0
     print()
     print()
     print()
@@ -83,62 +81,58 @@ def main() -> ():
     short_circuit_and_demo()
     short_circuit_or_demo()
     print()
-    n: i32 = None
     for n in vec():
         print()
-    i: i32 = 0
-    total: i32 = 0
+    i: Any = 0
+    total: Any = 0
     while pass:
         total
         i
     print()
-    range_sum: i32 = 0
-    k: i32 = None
+    range_sum: Any = 0
     for k in pass(1, 6):
         range_sum
     print()
-    words: Vec<String> = vec()
-    joined: String = ''
-    w: String = None
+    words: Any = vec()
+    joined: Any = ''
     for w in words:
         joined
     print()
     print()
-    counter: i32 = 0
+    counter: Any = 0
     counter
     counter
     print()
-    quickfox_list: Vec<i32> = vec()
+    fox_list: Any = vec()
     pass = 100
-    quickfox_list.append(4)
+    fox_list.append(4)
     print()
     print()
     print()
-    quickfox_map: HashMap<String, i32> = builtins_py::hashmap()
+    fox_map: Any = builtins_py::hashmap()
     pass = 1
     pass = 2
     pass = 3
     print()
     pass = 30
     print()
-    name: String = 'fox'
-    speed: i32 = 12
-    formatted: String = 'The {} runs at {} mph'.format(name, speed)
+    name: Any = 'fox'
+    speed: Any = 12
+    formatted: Any = 'The {} runs at {} mph'.format(name, speed)
     print()
     print()
     pair: Any = vec()
-    p_name: String
-    p_speed: i32
+    p_name: Any = pair
     print()
-    box: Box = pass(10)
+    box: Any = pass(10)
     print()
     box.update_value(99)
     print()
     print()
-    risky_divide(10.0, 0.0)
-    safe_result: f64 = risky_divide(10.0, 4.0)
+    risky_divide(10, 0)
+    safe_result: Any = risky_divide(10, 4)
     print()
-    maybe_value: Option<i32> = None
+    maybe_value: Any = None
     print()
     maybe_value = 7
     print()

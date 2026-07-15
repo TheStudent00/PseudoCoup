@@ -4,8 +4,15 @@ from pseudocoup.core.ur_ast import (
     ReturnNode, IfNode, WhileNode, ForNode, TryCatchNode, ListNode,
     DictNode, SubscriptNode, AttributeNode
 )
+from pseudocoup.egress.hoisting import HoistingMixin
 
-class GoEmitter:
+class GoEmitter(HoistingMixin):
+    # visit_* methods for these node types return already-indented text; every
+    # other statement gets the block loop's indent prefix (including the
+    # historical double-indent on compound-statement first lines, preserved
+    # byte-for-byte from the pre-mixin loops).
+    SELF_INDENTING_NODES = (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)
+
     def __init__(self, ledger):
         self.ledger = ledger
         self.indent_level = 0
@@ -104,12 +111,8 @@ class GoEmitter:
         ]
         
         for stmt in node.body:
-            if isinstance(stmt, (FunctionDefNode, MethodDefNode, ClassDefNode)):
-                stmt_str = self.generate(stmt)
-                lines.append(stmt_str)
-            elif isinstance(stmt, AssignmentNode):
-                stmt_str = self.generate(stmt)
-                lines.append(stmt_str)
+            if isinstance(stmt, (FunctionDefNode, MethodDefNode, ClassDefNode, AssignmentNode)):
+                lines.append(self.emit_stmt(stmt))
         self.pop_scope()
         return "\n".join(lines)
 
@@ -160,12 +163,8 @@ class GoEmitter:
                 
         self.indent_level += 1
         for stmt in node.body:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
-            
+            lines.append(self.emit_stmt(stmt))
+
         if is_method and node.name == "__init__":
             lines.append(f"{self._indent()}return this")
         elif ret_type:
@@ -265,7 +264,13 @@ class GoEmitter:
         if node.operator == "in":
             right_type = node.right.metadata.get('type', '')
             if right_type.startswith('Dict'):
-                return f"func() bool {{ _, ok := {right_str}[{left_str}]; return ok }}()"
+                # Dict membership has no legal Go expression form that binds the
+                # comma-ok result inline; hoist the comma-ok statement into the
+                # enclosing statement's prelude (was: a one-off IIFE).
+                tmp, _ = self.hoister.hoist_stmt(
+                    [f"_, @TMP@ := {right_str}[{left_str}]"], "@TMP@"
+                )
+                return tmp
             return f"Contains({right_str}, {left_str})"
         elif node.operator == "and":
             return f"{left_str} && {right_str}"
@@ -385,16 +390,13 @@ class GoEmitter:
 
     def visit_IfNode(self, node: IfNode) -> str:
         condition_str = self.generate(node.condition)
-        lines = [f"{self._indent()}if {condition_str} {{"]
-        
+        lines = self.prelude_block()  # anything hoisted out of the condition
+        lines.append(f"{self._indent()}if {condition_str} {{")
+
         self.push_scope()
         self.indent_level += 1
         for stmt in node.body:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
+            lines.append(self.emit_stmt(stmt))
         self.indent_level -= 1
         self.pop_scope()
         
@@ -405,11 +407,7 @@ class GoEmitter:
                     self.push_scope()
                     self.indent_level += 1
                     for stmt in node.orelse.body:
-                        stmt_str = self.generate(stmt)
-                        if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                            lines.append(stmt_str)
-                        else:
-                            lines.append(f"{self._indent()}{stmt_str}")
+                        lines.append(self.emit_stmt(stmt))
                     self.indent_level -= 1
                     self.pop_scope()
                     lines.append(f"{self._indent()}}}")
@@ -427,16 +425,15 @@ class GoEmitter:
 
     def visit_WhileNode(self, node: WhileNode) -> str:
         condition_str = self.generate(node.condition)
-        lines = [f"{self._indent()}for {condition_str} {{"]
-        
+        # NOTE: a hoist out of a while condition is evaluated ONCE, before the
+        # loop -- see the known-limitations note in egress/hoisting.py.
+        lines = self.prelude_block()
+        lines.append(f"{self._indent()}for {condition_str} {{")
+
         self.push_scope()
         self.indent_level += 1
         for stmt in node.body:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
+            lines.append(self.emit_stmt(stmt))
         self.indent_level -= 1
         self.pop_scope()
         lines.append(f"{self._indent()}}}")
@@ -454,14 +451,11 @@ class GoEmitter:
             else:
                 self.declare_var(node.target.name)
             
-        lines = [f"{self._indent()}for _, {target_str} {op} range ({iter_str}) {{"]
+        lines = self.prelude_block()  # anything hoisted out of the iterable
+        lines.append(f"{self._indent()}for _, {target_str} {op} range ({iter_str}) {{")
         self.indent_level += 1
         for stmt in node.body:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
+            lines.append(self.emit_stmt(stmt))
         self.indent_level -= 1
         self.pop_scope()
         lines.append(f"{self._indent()}}}")
@@ -478,24 +472,16 @@ class GoEmitter:
         self.indent_level += 1
         
         for stmt in node.handlers:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
-                    
+            lines.append(self.emit_stmt(stmt))
+
         self.indent_level -= 1
         lines.append(f"{self._indent()}}}")
         self.indent_level -= 1
         lines.append(f"{self._indent()}}}()")
-        
+
         for stmt in node.body:
-            stmt_str = self.generate(stmt)
-            if isinstance(stmt, (AssignmentNode, ReturnNode, FunctionDefNode, MethodDefNode, ClassDefNode)):
-                lines.append(stmt_str)
-            else:
-                lines.append(f"{self._indent()}{stmt_str}")
-                
+            lines.append(self.emit_stmt(stmt))
+
         self.indent_level -= 1
         self.pop_scope()
         
