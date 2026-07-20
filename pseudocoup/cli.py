@@ -26,6 +26,7 @@ from pseudocoup.ingress.ruby import RubyIngestor
 from pseudocoup.egress.ruby import RubyEmitter
 from pseudocoup.ingress.php import PhpIngestor
 from pseudocoup.egress.php import PhpEmitter
+from pseudocoup.semantic.polyfill_engine import PolyfillEngine
 
 # ---------------------------------------------------------------------------
 # Egress gate (U4): pseudoir.gate pre-transpile discipline check.
@@ -159,6 +160,10 @@ def main():
         ingestor = PythonIngestor(ledger)
         
     module_node = ingestor.parse(source_bytes)
+    
+    # 3.5. Apply Semantic Polyfill Rewriting
+    engine = PolyfillEngine(ledger, args.target_lang.lower())
+    module_node = engine.apply_polyfills(module_node)
     
     # 4. Instantiate the correct Emitter and call generate()
     if args.target_lang.lower() == "dart":
