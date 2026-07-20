@@ -48,6 +48,18 @@ class BinaryOpNode(URNode):
         self.right = right
         self.operator = operator
 
+class UnaryOpNode(URNode):
+    def __init__(self, operator: str, operand: 'URNode'):
+        super().__init__()
+        self.operator = operator
+        self.operand = operand
+
+class CastNode(URNode):
+    def __init__(self, target_type: str, value: 'URNode'):
+        super().__init__()
+        self.target_type = target_type
+        self.value = value
+
 class CallNode(URNode):
     def __init__(self, func_name: str, args: List['URNode']):
         super().__init__()

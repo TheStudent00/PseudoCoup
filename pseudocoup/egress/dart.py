@@ -2,9 +2,9 @@ from typing import Optional
 
 from pseudocoup.core.ur_ast import (
     URNode, ModuleNode, FunctionDefNode, MethodDefNode, ClassDefNode, AssignmentNode,
-    BinaryOpNode, CallNode, IdentifierNode, LiteralNode,
+    BinaryOpNode, UnaryOpNode, CallNode, IdentifierNode, LiteralNode,
     ReturnNode, IfNode, WhileNode, ForNode, TryCatchNode, ListNode,
-    DictNode, SubscriptNode, AttributeNode
+    DictNode, SubscriptNode, AttributeNode, CastNode
 )
 
 class DartEmitter:
@@ -794,4 +794,12 @@ class DartEmitter:
         value_str = self.generate(node.value)
         return f"{value_str}.{node.attr}"
 
+    def visit_UnaryOpNode(self, node: UnaryOpNode) -> str:
+        operand_str = self.generate(node.operand)
+        return f"{node.operator}{operand_str}"
 
+    def visit_CastNode(self, node: CastNode) -> str:
+        # Dart doesn't have C++ style (type) casts exactly like this without `as`
+        # But we will map it directly or drop it if it's Primitive.
+        val_str = self.generate(node.value)
+        return val_str

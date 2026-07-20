@@ -2,9 +2,9 @@ import tree_sitter_cpp as ts
 from tree_sitter import Parser, Language, Node
 from pseudocoup.core.ur_ast import (
     URNode, ModuleNode, FunctionDefNode, MethodDefNode, ClassDefNode, AssignmentNode,
-    BinaryOpNode, CallNode, IdentifierNode, LiteralNode,
+    BinaryOpNode, UnaryOpNode, CallNode, IdentifierNode, LiteralNode,
     ReturnNode, IfNode, WhileNode, ForNode, TryCatchNode, ListNode,
-    DictNode, SubscriptNode, AttributeNode
+    DictNode, SubscriptNode, AttributeNode, CastNode
 )
 from pseudocoup.core.ledger import Ledger
 
@@ -205,6 +205,26 @@ class CppIngestor:
                 right=self._map_node(right_node, source_bytes, scope)
             )
 
+        elif node.type == 'unary_expression' or node.type == 'pointer_expression':
+            arg_node = node.child_by_field_name('argument')
+            if not arg_node and len(node.named_children) > 0:
+                arg_node = node.named_children[0]
+            op_text = source_bytes[node.start_byte:arg_node.start_byte].decode("utf-8").strip() if arg_node else ""
+            if not op_text:
+                op_text = source_bytes[node.start_byte:node.end_byte].decode("utf-8").strip()[0]
+            return self._create_node(UnaryOpNode,
+                operator=op_text,
+                operand=self._map_node(arg_node, source_bytes, scope)
+            )
+
+        elif node.type == 'cast_expression':
+            type_node = node.child_by_field_name('type')
+            val_node = node.child_by_field_name('value')
+            return self._create_node(CastNode,
+                target_type=self._get_text(type_node, source_bytes),
+                value=self._map_node(val_node, source_bytes, scope)
+            )
+
         elif node.type == 'call_expression':
             func_node = node.child_by_field_name('function')
             func_ast = self._map_node(func_node, source_bytes, scope)
@@ -391,9 +411,10 @@ class CppIngestor:
 
         elif node.type == 'number_literal':
             text = self._get_text(node, source_bytes)
+            clean_text = text.lower().replace('u', '').replace('l', '')
             if '.' in text or 'e' in text.lower():
-                return self._create_node(LiteralNode, value=float(text), metadata={"type": "double"})
-            return self._create_node(LiteralNode, value=int(text), metadata={"type": "int"})
+                return self._create_node(LiteralNode, value=float(clean_text), metadata={"type": "double"})
+            return self._create_node(LiteralNode, value=int(clean_text, 0), metadata={"type": "int"})
 
         elif node.type == 'boolean_literal':
             text = self._get_text(node, source_bytes)
