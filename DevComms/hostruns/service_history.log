@@ -173,3 +173,24 @@ if os.path.exists(lp):
     for s in steps:
         print('step', s.get('index'), s.get('name'), '| found=', s.get('found'), '| route=', s.get('route_after'))
 2026-07-12T03:10:41.459288+00:00  DONE 245_kt_scenario_capture: rc=0 (0.1s)
+2026-07-12T18:20:17.452158+00:00  RUN 246_kt_scenario_faithful: ./gradlew :app:testDebugUnitTest --max-workers=1 -Dorg.gradle.jvmargs=-Xmx2g --tests com.sara.workoutforlife.walk.ScenarioTest --rerun
+2026-07-12T18:21:11.037692+00:00  DONE 246_kt_scenario_faithful: rc=0 (53.7s)
+2026-07-12T18:21:11.069293+00:00  RUN 247_kt_scenario_faithful_capture: python3 -c import shutil, os, json
+d=os.path.expanduser('~/Programming/PseudoCoup_v0/DevComms/hostruns/results')
+for name in ('scenario_kt','scenario_kt_faithful_early_finish','scenario_kt_faithful_complete'):
+    src='app/build/walks/'+name
+    if not os.path.isdir(src):
+        print('MISSING', src); continue
+    dst=d+'/246_'+name
+    shutil.copytree(src, dst, dirs_exist_ok=True)
+    pngs=sorted(f for f in os.listdir(dst) if f.endswith('.png'))
+    print('==', name, len(pngs), 'screenshots')
+    lp=dst+'/scenario_kt_log.json'
+    if os.path.exists(lp):
+        L=json.load(open(lp))
+        steps=L.get('steps',[])
+        for s in steps:
+            print('step %02d %-28s found=%s route=%s err=%s fatal=%s' % (s.get('step_index',-1), s.get('step_name'), s.get('found'), s.get('route_after'), str(s.get('error'))[:60], ''))
+        print('meta:', json.dumps(L.get('meta',{})))
+
+2026-07-12T18:21:11.101762+00:00  DONE 247_kt_scenario_faithful_capture: rc=0 (0.1s)
