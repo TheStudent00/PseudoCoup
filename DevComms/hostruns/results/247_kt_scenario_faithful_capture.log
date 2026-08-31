@@ -1,0 +1,75 @@
+== scenario_kt 18 screenshots
+step 00 home_initial_empty_state     found=False route=today err=None fatal=
+step 01 go_to_paths                  found=True route=paths err=None fatal=
+step 02 open_path_picker             found=True route=paths err=None fatal=
+step 03 select_bone_builders_path    found=True route=paths err=None fatal=
+step 04 join_program                 found=True route=paths err=None fatal=
+step 05 return_home_verify_enrolled  found=True route=today err=None fatal=
+step 06 inspect_program_tab          found=True route=my_program err=None fatal=
+step 07 browse_programs              found=True route=programs err=None fatal=
+step 08 select_a_program             found=False route=programs err=None fatal=
+step 09 back_from_programs           found=True route=my_program err=None fatal=
+step 10 return_home_verify_program   found=True route=today err=None fatal=
+step 11 start_workout                found=False route=today err=None fatal=
+step 12 pre_workout_checkin_lets_go  found=False route=today err=None fatal=
+step 13 skip_warmup                  found=False route=today err=None fatal=
+step 14 increment_weight             found=True route=today err=None fatal=
+step 15 log_set_1                    found=False route=today err=None fatal=
+step 16 log_set_2                    found=False route=today err=None fatal=
+step 17 finish_early                 found=False route=today err=None fatal=
+meta: {"format": "wfl-scenario-runner/v1", "generator": "ScenarioTest.kt", "variant": "v1_pathfirst", "seed": "completed-user (default)", "total_steps": 18, "steps_logged": 18, "wall_clock_seconds": 12.607, "boot_error": null, "fatal_error": null}
+== scenario_kt_faithful_early_finish 24 screenshots
+step 00 onboarding_welcome           found=False route=onboarding err=None fatal=
+step 01 welcome_lets_go              found=True route=onboarding err=None fatal=
+step 02 enter_name                   found=True route=onboarding err=None fatal=
+step 03 name_continue                found=True route=onboarding err=None fatal=
+step 04 skip_experience              found=True route=onboarding err=None fatal=
+step 05 skip_training_status         found=True route=onboarding err=None fatal=
+step 06 weight_unit_kg               found=True route=onboarding err=None fatal=
+step 07 skip_starting_strength       found=True route=onboarding err=None fatal=
+step 08 skip_calibration             found=True route=onboarding err=None fatal=
+step 09 skip_gym_setup               found=True route=onboarding err=None fatal=
+step 10 select_path                  found=True route=onboarding err=None fatal=
+step 11 path_continue                found=True route=onboarding err=None fatal=
+step 12 select_program               found=False route=onboarding err=None fatal=
+step 13 program_lets_go              found=False route=onboarding err=None fatal=
+step 14 home_after_onboarding        found=False route=onboarding err=None fatal=
+step 15 start_workout                found=False route=onboarding err=None fatal=
+step 16 pre_workout_checkin_lets_go  found=False route=onboarding err=None fatal=
+step 17 skip_warmup                  found=False route=onboarding err=None fatal=
+step 18 execution_screen             found=False route=onboarding err=None fatal=
+step 19 increment_weight             found=True route=onboarding err=None fatal=
+step 20 log_set_1                    found=False route=onboarding err=None fatal=
+step 21 log_set_2                    found=False route=onboarding err=None fatal=
+step 22 finish_early                 found=False route=onboarding err=None fatal=
+step 23 after_finish                 found=False route=onboarding err=None fatal=
+meta: {"format": "wfl-scenario-runner/v1", "generator": "ScenarioTest.kt", "variant": "faithful_early_finish", "seed": "fresh", "total_steps": 24, "steps_logged": 24, "wall_clock_seconds": 4.322, "boot_error": null, "fatal_error": null}
+== scenario_kt_faithful_complete 27 screenshots
+step 00 onboarding_welcome           found=False route=onboarding err=None fatal=
+step 01 welcome_lets_go              found=True route=onboarding err=None fatal=
+step 02 enter_name                   found=True route=onboarding err=None fatal=
+step 03 name_continue                found=True route=onboarding err=None fatal=
+step 04 skip_experience              found=True route=onboarding err=None fatal=
+step 05 skip_training_status         found=True route=onboarding err=None fatal=
+step 06 weight_unit_kg               found=True route=onboarding err=None fatal=
+step 07 skip_starting_strength       found=True route=onboarding err=None fatal=
+step 08 skip_calibration             found=True route=onboarding err=None fatal=
+step 09 skip_gym_setup               found=True route=onboarding err=None fatal=
+step 10 select_path                  found=True route=onboarding err=None fatal=
+step 11 path_continue                found=True route=onboarding err=None fatal=
+step 12 select_program               found=False route=onboarding err=None fatal=
+step 13 program_lets_go              found=False route=onboarding err=None fatal=
+step 14 home_after_onboarding        found=False route=onboarding err=None fatal=
+step 15 start_workout                found=False route=onboarding err=None fatal=
+step 16 pre_workout_checkin_lets_go  found=False route=onboarding err=None fatal=
+step 17 skip_warmup                  found=False route=onboarding err=None fatal=
+step 18 execution_screen             found=False route=onboarding err=None fatal=
+step 19 increment_weight             found=False route=onboarding err=None fatal=
+step 20 log_set_1                    found=False route=onboarding err=None fatal=
+step 21 log_set_2                    found=False route=onboarding err=None fatal=
+step 22 log_all_sets                 found=False route=onboarding err=None fatal=
+step 23 cooldown_wrap_up             found=False route=onboarding err=None fatal=
+step 24 cooldown_finish              found=False route=onboarding err=None fatal=
+step 25 summary_done                 found=False route=onboarding err=None fatal=
+step 26 home_after_workout           found=False route=onboarding err=None fatal=
+meta: {"format": "wfl-scenario-runner/v1", "generator": "ScenarioTest.kt", "variant": "faithful_complete", "seed": "fresh", "total_steps": 27, "steps_logged": 27, "wall_clock_seconds": 2.524, "boot_error": null, "fatal_error": null}

@@ -1,0 +1,659 @@
+{
+  "meta": {
+    "format": "wfl-scenario-runner\/v1",
+    "generator": "ScenarioTest.kt",
+    "variant": "faithful_complete",
+    "seed": "fresh",
+    "total_steps": 27,
+    "steps_logged": 27,
+    "wall_clock_seconds": 2.524,
+    "boot_error": null,
+    "fatal_error": null
+  },
+  "steps": [
+    {
+      "step_index": 0,
+      "step_name": "onboarding_welcome",
+      "kind": "noop",
+      "target": null,
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/00_onboarding_welcome.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Let's go"
+      ]
+    },
+    {
+      "step_index": 1,
+      "step_name": "welcome_lets_go",
+      "kind": "tap_text",
+      "target": "Let's go",
+      "found": true,
+      "action_label": "Let's go",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/01_welcome_lets_go.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "EditableText",
+        "Continue",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 2,
+      "step_name": "enter_name",
+      "kind": "set_text",
+      "target": null,
+      "found": true,
+      "action_label": "EditableText",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/02_enter_name.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "42",
+        "Continue",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 3,
+      "step_name": "name_continue",
+      "kind": "tap_text",
+      "target": "Continue",
+      "found": true,
+      "action_label": "Continue",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/03_name_continue.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "🌱 \/ New to this \/ Less than a year. Still figuring it out.…",
+        "💪 \/ Getting there \/ Roughly 1–5 years in. I know what I'm …",
+        "🏆 \/ Been at it a while \/ 5+ years. I speak in percentages.…",
+        "I'll set this later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 4,
+      "step_name": "skip_experience",
+      "kind": "tap_text",
+      "target": "set this later",
+      "found": true,
+      "action_label": "I'll set this later",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/04_skip_experience.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "🔥 \/ I'm training right now \/ Lifting consistently these pa…",
+        "🌤️ \/ A few weeks off \/ A holiday or a busy stretch — but r…",
+        "🌥️ \/ A couple of months off \/ Out of the groove for a whil…",
+        "🌙 \/ Many months off \/ Coming back after a long layoff, or …",
+        "I'll set this later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 5,
+      "step_name": "skip_training_status",
+      "kind": "tap_text",
+      "target": "set this later",
+      "found": true,
+      "action_label": "I'll set this later",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/05_skip_training_status.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "⚖️ \/ KG",
+        "⚖️ \/ LB",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 6,
+      "step_name": "weight_unit_kg",
+      "kind": "tap_text",
+      "target": "KG",
+      "found": true,
+      "action_label": "⚖️ \/ KG",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/06_weight_unit_kg.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "EditableText",
+        "🚀 \/ Faster strength gains \/ Starts stronger and builds qui…",
+        "🌿 \/ More gradual strength gains \/ Starts lighter and build…",
+        "Continue",
+        "Skip for now",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 7,
+      "step_name": "skip_starting_strength",
+      "kind": "tap_text",
+      "target": "Skip for now",
+      "found": true,
+      "action_label": "Skip for now",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/07_skip_starting_strength.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "EditableText",
+        "EditableText",
+        "EditableText",
+        "EditableText",
+        "EditableText",
+        "EditableText",
+        "Save my numbers",
+        "Skip for now",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 8,
+      "step_name": "skip_calibration",
+      "kind": "tap_text",
+      "target": "Skip",
+      "found": true,
+      "action_label": "Skip for now",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/08_skip_calibration.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "My Gym",
+        "🏠 \/ Home Gym \/ Equipment you own or share a space.",
+        "🏢 \/ Big Box Gym \/ Chains, full rack rooms, cardio floors.",
+        "🏋️ \/ Strength Gym \/ Lifting-focused. Chalk probably welcom…",
+        "Skip gym setup for now",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 9,
+      "step_name": "skip_gym_setup",
+      "kind": "tap_text",
+      "target": "Skip gym setup",
+      "found": true,
+      "action_label": "Skip gym setup for now",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/09_skip_gym_setup.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Continue →",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 10,
+      "step_name": "select_path",
+      "kind": "tap_text",
+      "target": "Bone Builders",
+      "found": true,
+      "action_label": "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/10_select_path.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Continue →",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 11,
+      "step_name": "path_continue",
+      "kind": "tap_text",
+      "target": "Continue",
+      "found": true,
+      "action_label": "Continue →",
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/11_path_continue.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 12,
+      "step_name": "select_program",
+      "kind": "tap_text",
+      "target": "3-Day Strength",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/12_select_program.png",
+      "searched_labels_at_failure": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 13,
+      "step_name": "program_lets_go",
+      "kind": "tap_text",
+      "target": "Let's go",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/13_program_lets_go.png",
+      "searched_labels_at_failure": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 14,
+      "step_name": "home_after_onboarding",
+      "kind": "noop",
+      "target": null,
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/14_home_after_onboarding.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 15,
+      "step_name": "start_workout",
+      "kind": "tap_text",
+      "target": "Start ",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/15_start_workout.png",
+      "searched_labels_at_failure": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 16,
+      "step_name": "pre_workout_checkin_lets_go",
+      "kind": "tap_text",
+      "target": "Let's go",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/16_pre_workout_checkin_lets_go.png",
+      "searched_labels_at_failure": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 17,
+      "step_name": "skip_warmup",
+      "kind": "tap_text",
+      "target": "Skip warm-up",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/17_skip_warmup.png",
+      "searched_labels_at_failure": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "Just Show Up \/ Any workout beats no workout. \/ 2–7 sessions…",
+        "Balanced Fitness \/ A little of everything, done well — stro…",
+        "Moving Through \/ Exercise is one of the most evidence-backe…",
+        "Anxiety Movers \/ Movement rewires the anxiety response. \/ 2…",
+        "Bone Builders \/ Load your bones to keep them. \/ 2–4 session…",
+        "Brain Builders \/ Resistance training builds brain, not just…",
+        "Button",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 18,
+      "step_name": "execution_screen",
+      "kind": "noop",
+      "target": null,
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/18_execution_screen.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 19,
+      "step_name": "increment_weight",
+      "kind": "tap_kind",
+      "target": "IconButton",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/19_increment_weight.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 20,
+      "step_name": "log_set_1",
+      "kind": "tap_text",
+      "target": "Log set",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/20_log_set_1.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 21,
+      "step_name": "log_set_2",
+      "kind": "tap_text",
+      "target": "Log set",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/21_log_set_2.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 22,
+      "step_name": "log_all_sets",
+      "kind": "tap_text_until_gone",
+      "target": "Log set",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/22_log_all_sets.png",
+      "searched_labels_at_failure": [],
+      "taps_fired": 0,
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 23,
+      "step_name": "cooldown_wrap_up",
+      "kind": "tap_text",
+      "target": "wrap up",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/23_cooldown_wrap_up.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 24,
+      "step_name": "cooldown_finish",
+      "kind": "tap_text",
+      "target": "Finish",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/24_cooldown_finish.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 25,
+      "step_name": "summary_done",
+      "kind": "tap_text",
+      "target": "Done",
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/25_summary_done.png",
+      "searched_labels_at_failure": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    },
+    {
+      "step_index": 26,
+      "step_name": "home_after_workout",
+      "kind": "noop",
+      "target": null,
+      "found": false,
+      "action_label": null,
+      "error": null,
+      "route_before": "onboarding",
+      "route_after": "onboarding",
+      "screenshot": "build\/walks\/scenario_kt_faithful_complete\/26_home_after_workout.png",
+      "searched_labels_at_failure": [],
+      "tappable_labels_after": [
+        "3-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "4-Day Strength — Compound Focus \/ Two macrocycles that buil…",
+        "Let's go →",
+        "Skip for now — I'll choose later",
+        "Button"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,28 @@
+SCENARIO-STEP 00 name=onboarding_welcome kind=noop target=null -> N/A route_after=onboarding error=null
+SCENARIO-STEP 01 name=welcome_lets_go kind=tap_text target=Let's go -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 02 name=enter_name kind=set_text target=null -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 03 name=name_continue kind=tap_text target=Continue -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 04 name=skip_experience kind=tap_text target=set this later -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 05 name=skip_training_status kind=tap_text target=set this later -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 06 name=weight_unit_kg kind=tap_text target=KG -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 07 name=skip_starting_strength kind=tap_text target=Skip for now -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 08 name=skip_calibration kind=tap_text target=Skip -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 09 name=skip_gym_setup kind=tap_text target=Skip gym setup -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 10 name=select_path kind=tap_text target=Bone Builders -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 11 name=path_continue kind=tap_text target=Continue -> FOUND route_after=onboarding error=null
+SCENARIO-STEP 12 name=select_program kind=tap_text target=3-Day Strength -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 13 name=program_lets_go kind=tap_text target=Let's go -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 14 name=home_after_onboarding kind=noop target=null -> N/A route_after=onboarding error=null
+SCENARIO-STEP 15 name=start_workout kind=tap_text target=Start  -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 16 name=pre_workout_checkin_lets_go kind=tap_text target=Let's go -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 17 name=skip_warmup kind=tap_text target=Skip warm-up -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 18 name=execution_screen kind=noop target=null -> N/A route_after=onboarding error=null
+SCENARIO-STEP 19 name=increment_weight kind=tap_kind target=IconButton -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 20 name=log_set_1 kind=tap_text target=Log set -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 21 name=log_set_2 kind=tap_text target=Log set -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 22 name=log_all_sets kind=tap_text_until_gone target=Log set -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 23 name=cooldown_wrap_up kind=tap_text target=wrap up -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 24 name=cooldown_finish kind=tap_text target=Finish -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 25 name=summary_done kind=tap_text target=Done -> MISSING route_after=onboarding error=null
+SCENARIO-STEP 26 name=home_after_workout kind=noop target=null -> N/A route_after=onboarding error=null
+SCENARIO DONE variant=faithful_complete steps_logged=27/27 wall_clock=2.52s fatal_error=null
