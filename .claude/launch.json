@@ -5,8 +5,8 @@
       "name": "dashboard-test-server",
       "runtimeExecutable": "/tmp/reconnect_venv/bin/python3",
       "runtimeArgs": [
-        "~/Programming/PseudoCoupHQ/Research/op_pipeline/dashboard_test_server.py",
-        "~/Programming/PseudoCoupHQ/Research",
+        "../../PRIVATE/PseudoCoupHQ/Research/op_pipeline/dashboard_test_server.py",
+        "../../PRIVATE/PseudoCoupHQ/Research",
         "8791"
       ],
       "port": 8791
