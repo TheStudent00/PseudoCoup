@@ -18,8 +18,8 @@ classifiers = [
 dependencies = [
     # pseudoir (operator-semantics authority, U1/D1): path/editable dependency on the
     # sibling repo. PEP 508 direct references cannot express "editable", so install order is:
-    #   pip install -e ~/Programming/PseudoIR
-    #   pip install -e ~/Programming/PseudoCoup
+    #   pip install -e ~/Programming/PRIVATE/PseudoIR
+    #   pip install -e ~/Programming/PUBLIC/PseudoCoup
     # The bare name below resolves against the already-installed editable pseudoir.
     "pseudoir>=0.1.0",
     # >=0.22 required: under 0.21.3 the CLI fails with current grammar wheels

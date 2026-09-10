@@ -31,4 +31,4 @@ As per the `PseudoIR v3` Master Plan, Phase 1 focuses on extracting Source IR Op
 - **Archive Protocol**: When complete, move this task document into the `.archive` directory within the tasks folder.
 
 ## 4. Work Environment
-You will be working in the `PseudoIR` codebase (`~/Programming/PseudoIR`). Ensure `pseudoir/core/` is structured correctly as a Python package.
+You will be working in the `PseudoIR` codebase (`~/Programming/PRIVATE/PseudoIR`). Ensure `pseudoir/core/` is structured correctly as a Python package.

@@ -24,16 +24,16 @@ path, count, and decision needed is stated inline here.
 
 Formatting note (binding on every executor of this plan): tabular data goes in markdown pipe
 tables or prose — NEVER in whitespace-aligned code blocks. This is per
-`~/Programming/WFL_PseudoCoup/.DevComms/LLM_communication_protocol.md` §3. Code blocks
+`~/Programming/PRIVATE/WFL_PseudoCoup/.DevComms/LLM_communication_protocol.md` §3. Code blocks
 are for actual code only. See "Standing rules" below.
 
 ---
 
 ## Mission
 
-`pseudocoup` (the V3 transpiler at `~/Programming/PseudoCoup`) currently hardcodes
+`pseudocoup` (the V3 transpiler at `~/Programming/PUBLIC/PseudoCoup`) currently hardcodes
 operator-lowering semantics independently inside all 12 egress emitters. `pseudoir` (the
-productized package at `~/Programming/PseudoIR/v2/pseudoir`, version 0.1.0, landed
+productized package at `~/Programming/PRIVATE/PseudoIR/v2/pseudoir`, version 0.1.0, landed
 2026-07-14) exists as the machine-confirmed authority for exactly that knowledge: which source
 operator lowers to which target strategy, backed by recorded runtime confirmation per language
 column.
@@ -46,7 +46,7 @@ Hub-authored source.
 
 This upgrade plan IS the concrete realization of what PseudoIR's own plan called "X1 —
 cross-pollination back to WFL_PseudoCoup." See `20_PseudoIR_X1_supersession_note.md` in this
-directory and the updated X1 stub in `~/Programming/PseudoIR/v2/PLAN.md`.
+directory and the updated X1 stub in `~/Programming/PRIVATE/PseudoIR/v2/PLAN.md`.
 
 ---
 
@@ -88,18 +88,18 @@ Gate
 
 Coverage gate (WFL)
     A DIFFERENT gate, living in the vendored WFL copy at
-    `~/Programming/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`. It instruments the
+    `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`. It instruments the
     Kotlin INGRESS parser and reports which tree-sitter nodes were dropped/unvisited during
     parsing. It checks the ingress direction (did we understand the source?), whereas the
     `pseudoir` gate checks the egress direction (can every construct be realized in every target?).
     Keeping these two straight is the whole content of work unit U4.
 
 Base PseudoCoup
-    `~/Programming/PseudoCoup` — the repo this plan upgrades. Git repo, branch `master`,
+    `~/Programming/PUBLIC/PseudoCoup` — the repo this plan upgrades. Git repo, branch `master`,
     package import name `pseudocoup`, version 3.0.0.
 
 Vendored PseudoCoup
-    `~/Programming/WFL_PseudoCoup/pseudocoup/` — a copy that diverged during the "WFL
+    `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/` — a copy that diverged during the "WFL
     push," gaining a coverage gate, param-shape ledger, Kotlin object-model handling, and a much
     larger Kotlin-ingress / Dart-egress. Divergence inventory is work unit U5.
 
@@ -209,10 +209,10 @@ grammars (note `tree-sitter-dart` is listed twice — a duplicate; and `tree-sit
 
 ### PseudoIR v2 — the package being imported (for U1/U2/U3/U4)
 
-Package root `~/Programming/PseudoIR/v2/pseudoir`, `pyproject.toml` name `pseudoir`
+Package root `~/Programming/PRIVATE/PseudoIR/v2/pseudoir`, `pyproject.toml` name `pseudoir`
 version `0.1.0`, `requires-python >=3.10`, deps `tree-sitter>=0.21` + `tree-sitter-python`,
 console script `pseudoir = "pseudoir.__main__:main"`. Installed editable via
-`pip install -e ~/Programming/PseudoIR/v2/pseudoir`. Import name `import pseudoir`.
+`pip install -e ~/Programming/PRIVATE/PseudoIR/v2/pseudoir`. Import name `import pseudoir`.
 
 The consumer API surface (from `pseudoir/INTEGRATION.md`), with exact signatures:
 
@@ -247,7 +247,7 @@ realizability. It does NOT check target code against source.
 
 Tests: exactly **17 pytest items** (verified against the cached nodeids) —
 `tests/test_gate_fixtures.py` (3), `tests/test_probers.py` (1 parametrized × 9 = 9),
-`tests/test_roundtrip.py` (5). Run with `cd ~/Programming/PseudoIR/v2/pseudoir &&
+`tests/test_roundtrip.py` (5). Run with `cd ~/Programming/PRIVATE/PseudoIR/v2/pseudoir &&
 python -m pytest`. Caveat: `test_probers.py`/`test_roundtrip.py` reach sibling dirs under `v2/`
 (`registry/`, `prober/`, `gate/fixtures/`) via a `..`/`..` path — the suite is NOT self-contained
 to the `pseudoir/` subpackage. This matters for U1 if `pseudoir` is relocated out of `v2/`
@@ -255,8 +255,8 @@ to the `pseudoir/` subpackage. This matters for U1 if `pseudoir` is relocated ou
 
 ### Base-vs-vendored divergence (the U5 input)
 
-Comparing `~/Programming/PseudoCoup/pseudocoup/` (base) against
-`~/Programming/WFL_PseudoCoup/pseudocoup/` (vendored). The divergence is surgically
+Comparing `~/Programming/PUBLIC/PseudoCoup/pseudocoup/` (base) against
+`~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/` (vendored). The divergence is surgically
 scoped: every non-Kotlin/non-Dart file is byte-identical between the two copies. Confirmed
 byte-identical: all `egress/*` except `dart.py`, all `ingress/*` except `kotlin.py`,
 `core/__init__.py`, `cli.py`, `__init__.py`.
@@ -321,13 +321,13 @@ check) / Escalation triggers.
 
 **What.** Make `pseudoir` importable inside the `pseudocoup` package so U2-U4 can call it. Two
 options exist; the owner decides (decision D1). Wire whichever is chosen into
-`~/Programming/PseudoCoup/pyproject.toml` `[project] dependencies`, and add an
+`~/Programming/PUBLIC/PseudoCoup/pyproject.toml` `[project] dependencies`, and add an
 integration smoke import.
 
 Option A — **path/editable dependency**: `pseudocoup` declares a dependency on `pseudoir` pointing
-at `~/Programming/PseudoIR/v2/pseudoir` (or wherever it is relocated). Executor documents
-the exact install line: `pip install -e ~/Programming/PseudoIR/v2/pseudoir` then
-`pip install -e ~/Programming/PseudoCoup`. Pro: single source of truth, pseudoir
+at `~/Programming/PRIVATE/PseudoIR/v2/pseudoir` (or wherever it is relocated). Executor documents
+the exact install line: `pip install -e ~/Programming/PRIVATE/PseudoIR/v2/pseudoir` then
+`pip install -e ~/Programming/PUBLIC/PseudoCoup`. Pro: single source of truth, pseudoir
 improvements flow automatically. Con: PseudoCoup's build now depends on a sibling repo path;
 `pseudoir`'s test suite is not self-contained to its subpackage (it reaches `v2/registry`,
 `v2/prober`, `v2/gate/fixtures` via `..`) — relocating `pseudoir` out of `v2/` would break
@@ -339,7 +339,7 @@ version/commit. Pro: PseudoCoup builds standalone; no cross-repo path. Con: a se
 to keep in sync (the project already has one painful vendoring relationship — WFL's copy of
 PseudoCoup); registry JSON updates in PseudoIR must be re-synced manually.
 
-**Where.** `~/Programming/PseudoCoup/pyproject.toml` (`dependencies` list — also fix the
+**Where.** `~/Programming/PUBLIC/PseudoCoup/pyproject.toml` (`dependencies` list — also fix the
 duplicate `tree-sitter-dart` entry on lines 21 and 25 while here, and note the vestigial
 `tree-sitter-c`/`tree-sitter-go`). A new smoke test file (path decided in U6). No emitter code
 changes in U1.
@@ -389,7 +389,7 @@ The op-to-emitter mapping (this is the survey deliverable that drives the work):
 | destructuring (tuple targets) | not cleanly modeled | `op.destructure` |
 | match/when/switch | not modeled | `op.match_expr` |
 
-**Where.** All 12 files under `~/Programming/PseudoCoup/pseudocoup/egress/`, primarily
+**Where.** All 12 files under `~/Programming/PUBLIC/PseudoCoup/pseudocoup/egress/`, primarily
 their `visit_BinaryOpNode` and `visit_CallNode` methods (line ranges in the survey table above).
 The registry gives per-target answers, so the emitter passes its own target name (e.g. the Dart
 emitter passes `"dart"`). Note only 4 targets are in `SUPPORTED_TARGETS` for pseudoir's own
@@ -430,8 +430,8 @@ a prelude of hoisted statements and emits them before the statement that needed 
 migrating the two existing one-off workarounds onto it.
 
 **Where.** The two existing workarounds to migrate:
-`~/Programming/PseudoCoup/pseudocoup/egress/go.py` `visit_BinaryOpNode` (dict-`in` IIFE,
-~lines 262-285) and `~/Programming/PseudoCoup/pseudocoup/egress/swift.py`
+`~/Programming/PUBLIC/PseudoCoup/pseudocoup/egress/go.py` `visit_BinaryOpNode` (dict-`in` IIFE,
+~lines 262-285) and `~/Programming/PUBLIC/PseudoCoup/pseudocoup/egress/swift.py`
 `visit_TryCatchNode` (shallow `try`-prepend, ~lines 349-369). The new prelude-accumulation
 mechanism touches each emitter's statement-emission sites (the block-body emission loops that
 already exist in every emitter). Because base emitters return self-contained strings with no
@@ -467,7 +467,7 @@ source to a target set, run the gate first; on FAIL, surface the report and refu
 to the WFL coverage gate.
 
 The two gates check DIFFERENT DIRECTIONS — this is the load-bearing documentation deliverable of
-U4, and it must be written into `~/Programming/PseudoCoup/.planning/` (a short
+U4, and it must be written into `~/Programming/PUBLIC/PseudoCoup/.planning/` (a short
 `21_two_gates.md` note) and referenced from PseudoCoup's own docs:
 
 - **pseudoir gate** (EGRESS direction, for Hub-source inputs): source is a Hub Python-notation
@@ -475,7 +475,7 @@ U4, and it must be written into `~/Programming/PseudoCoup/.planning/` (a short
   confirmed, non-`fail` realization in EVERY target I named?" It is a pre-EMIT check. Failure means
   a target can't realize a construct.
 - **WFL coverage gate** (INGRESS direction, for Kotlin-source inputs): lives in the VENDORED copy
-  at `~/Programming/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`; it instruments the
+  at `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`; it instruments the
   Kotlin PARSER and asks "did we UNDERSTAND every node in the source — was anything dropped or
   silently skipped during ingest?" It is a post-PARSE / pre-anything check on the ingress side.
   Failure means the parser didn't handle a source construct.
@@ -485,16 +485,16 @@ output is realizable." Neither subsumes the other. U4 wires in the pseudoir (egr
 inputs; it does NOT move or modify the WFL coverage gate (that lives in the vendored copy and is
 governed by U5's upstreaming decision, D2).
 
-**Where.** PseudoCoup's transpile entry path — `~/Programming/PseudoCoup/pseudocoup/cli.py`
+**Where.** PseudoCoup's transpile entry path — `~/Programming/PUBLIC/PseudoCoup/pseudocoup/cli.py`
 (the `main()` dispatch) and/or a new pre-transpile hook. The gate call is
 `pseudoir.gate.check(src_bytes, targets)`; the target set is whatever the CLI `--target-lang`
 resolves to (note: currently one target per invocation; the gate takes a LIST — decide whether to
 pass a singleton list or the full 12). The direction-documentation note goes to
-`~/Programming/PseudoCoup/.planning/21_two_gates.md`.
+`~/Programming/PUBLIC/PseudoCoup/.planning/21_two_gates.md`.
 
 **Evidence.** `pseudoir.gate.check` signature and semantics confirmed (survey + `INTEGRATION.md` +
 `DISCIPLINE_CHECK.md`). WFL coverage gate confirmed at
-`~/Programming/WFL_PseudoCoup/pseudocoup/ingress/coverage.py` (82 lines, `CoverageRecorder`
+`~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/ingress/coverage.py` (82 lines, `CoverageRecorder`
 class, hooks in `kotlin.py` `_map_node`/`parse`). The gate only makes sense for Hub-notation input
 (Python with `U.` + annotations); PseudoCoup's other 10 ingress languages are NOT Hub notation, so
 the gate applies to the Python-Hub ingress path specifically — flag this scoping (E4a).
@@ -538,10 +538,10 @@ Starting classification (from the survey; U5 refines and the owner ratifies):
 | Dart Compose→Flutter declarative UI + `dart_compose_vocab.py` | vendored `egress/dart.py`, `egress/dart_compose_vocab.py` | APP-SPECIFIC (100% WFL data) — declare, do not upstream |
 | WFL driver/baseline (`tools/transpile_wfl.py`, `coverage_baseline.json`, `sync_wfl_src.sh`) | vendored `tools/` (outside package) | APP-SPECIFIC — not upstream candidates |
 
-**Where.** Reading from `~/Programming/WFL_PseudoCoup/pseudocoup/` (bash mount works
+**Where.** Reading from `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/` (bash mount works
 there) and writing (for approved upstream items) to
-`~/Programming/PseudoCoup/pseudocoup/`. The classified inventory note goes to
-`~/Programming/PseudoCoup/.planning/22_divergence_inventory.md`.
+`~/Programming/PUBLIC/PseudoCoup/pseudocoup/`. The classified inventory note goes to
+`~/Programming/PUBLIC/PseudoCoup/.planning/22_divergence_inventory.md`.
 
 **Evidence.** Byte-level diff confirms divergence is scoped to 4 files + 2 new files (survey table).
 Every other file is identical, so upstreaming a generic item (e.g. the coverage gate) into base
@@ -574,9 +574,9 @@ it with a real pytest harness; (2) pseudoir's 17-test suite must still pass (run
 with the emitted operator forms checked against the registry's recorded lowerings, and (for the
 pseudoir-runnable targets python/typescript) executed and compared against the CPython oracle.
 
-**Where.** `~/Programming/PseudoCoup/run_tests.sh` (repair or replace); a new test
-location under `~/Programming/PseudoCoup/tests/` (real pytest, since none exists today);
-pseudoir's suite runs at `~/Programming/PseudoIR/v2/pseudoir` via `python -m pytest`.
+**Where.** `~/Programming/PUBLIC/PseudoCoup/run_tests.sh` (repair or replace); a new test
+location under `~/Programming/PUBLIC/PseudoCoup/tests/` (real pytest, since none exists today);
+pseudoir's suite runs at `~/Programming/PRIVATE/PseudoIR/v2/pseudoir` via `python -m pytest`.
 
 **Evidence.** Base has zero pytest tests (survey), a broken `run_tests.sh`, a stale broken
 `emitted_fox/08_c.c`. pseudoir has exactly 17 passing tests (verified nodeids). pseudoir's suite is
@@ -586,7 +586,7 @@ proves python+typescript byte-match the CPython oracle for a program using U-ops
 Vector2-operators/range/interp/match.
 
 **Acceptance.** (1) `run_tests.sh` (or its replacement) runs green — no reference to nonexistent
-files, produces a pass/fail signal. (2) `cd ~/Programming/PseudoIR/v2/pseudoir &&
+files, produces a pass/fail signal. (2) `cd ~/Programming/PRIVATE/PseudoIR/v2/pseudoir &&
 python -m pytest` = 17 passing (unchanged by this upgrade — pseudoir is imported, not modified). (3)
 The new cross-integration round-trip: at least one Hub program transpiled through
 PseudoCoup-with-pseudoir to python and typescript, both executed, both matching the CPython oracle;
@@ -677,7 +677,7 @@ tests. Each unit ends with its Acceptance check re-run before being reported com
   execute vectors on available runtimes, honest pending elsewhere). All OTHER pseudoir
   modifications remain out of scope (notably: flipping swift/csharp pending columns — D3 keeps
   those hardcoded until confirmed; new op families beyond D4's four; U-API surface changes).
-- Modifying the WFL vendored copy (`~/Programming/WFL_PseudoCoup/pseudocoup/`). U5
+- Modifying the WFL vendored copy (`~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/`). U5
   upstreams FROM it INTO base; it does not edit the vendored copy. The vendored copy's own
   WFL-specific pieces (Compose vocab, transpile driver) stay where they are.
 - Building the Compose→Flutter declarative-UI path into base PseudoCoup — that is declared
@@ -692,7 +692,7 @@ tests. Each unit ends with its Acceptance check re-run before being reported com
 
 ## Standing rules
 
-- **Delegation hierarchy** (from `~/Programming/WFL_PseudoCoup/.planning/AGENT_DELEGATION.md`,
+- **Delegation hierarchy** (from `~/Programming/PRIVATE/WFL_PseudoCoup/.planning/AGENT_DELEGATION.md`,
   applies here by reference): the owner (human principal, ultimate decision + escalation endpoint) →
   top-level agent (high-level triage/ordering/architecture/review/planning updates only, no heavy
   lifting inline) → Opus sub-agents (own one unit each, break into work items, verify before
@@ -700,7 +700,7 @@ tests. Each unit ends with its Acceptance check re-run before being reported com
   Decisions that introduce new names, files, abstractions, or structure go UP the chain (ultimately
   to the owner), never invented downward. Each unit ends with a verification step before being reported
   complete.
-- **Communication protocol** (from `~/Programming/WFL_PseudoCoup/.DevComms/LLM_communication_protocol.md`,
+- **Communication protocol** (from `~/Programming/PRIVATE/WFL_PseudoCoup/.DevComms/LLM_communication_protocol.md`,
   binding on every executor and every report/planning doc): tabular data goes in markdown pipe
   tables or prose — NEVER whitespace-aligned code blocks (the ban is explicit and applies to chat,
   planning docs, reports, and sub-agent output alike). Code blocks are for actual code and bordered
@@ -721,7 +721,7 @@ tests. Each unit ends with its Acceptance check re-run before being reported com
 
 - `00_Upgrade_Plan.md` — this file (mission, survey, U1-U6, decisions, dispatch, rules).
 - `20_PseudoIR_X1_supersession_note.md` — records that this plan realizes PseudoIR's X1; mirror of
-  the X1 stub update in `~/Programming/PseudoIR/v2/PLAN.md`.
+  the X1 stub update in `~/Programming/PRIVATE/PseudoIR/v2/PLAN.md`.
 - `21_two_gates.md` — (to be authored in U4) the pseudoir-egress-gate vs WFL-ingress-coverage-gate
   direction documentation.
 - `22_divergence_inventory.md` — (to be authored in U5) the classified base-vs-vendored divergence

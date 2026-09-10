@@ -4,7 +4,7 @@ Status date: 2026-07-14. Planning note only — no code changed to produce it.
 
 ## What X1 was
 
-`~/Programming/PseudoIR/v2/PLAN.md` (lines 76-77) carried a forward work-unit stub:
+`~/Programming/PRIVATE/PseudoIR/v2/PLAN.md` (lines 76-77) carried a forward work-unit stub:
 
 > ### X1 — Cross-pollination back to WFL_PseudoCoup (when its Phase 3 closes)
 > The V3 transpiler's informal ops (`__range__`, `__spread__`, string-interp parts) migrate to
@@ -14,16 +14,16 @@ Status date: 2026-07-14. Planning note only — no code changed to produce it.
 
 X1 was described (never executed) as: migrate a V3 transpiler's informal operator markers to
 `pseudoir.registry` references, and collapse its ad-hoc hoisting onto the R4 shared hoister
-(`pseudoir.hoist`). It was previewed in `~/Programming/PseudoIR/v2/pseudoir/INTEGRATION.md`
+(`pseudoir.hoist`). It was previewed in `~/Programming/PRIVATE/PseudoIR/v2/pseudoir/INTEGRATION.md`
 lines ~195-300 against `pseudocoup/egress/dart.py` (`DartEmitter.visit_BinaryOpNode` at dart.py:2179,
 `_hoist_nested_classes` at dart.py:522 — line numbers refer to the VENDORED WFL copy at
-`~/Programming/WFL_PseudoCoup/pseudocoup/egress/dart.py`, which is 3562 lines; base
+`~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/egress/dart.py`, which is 3562 lines; base
 PseudoCoup's `dart.py` is 411 lines and has no such methods).
 
 ## How this plan supersedes / realizes it
 
-`~/Programming/PseudoCoup/.planning/00_Upgrade_Plan.md` is the concrete realization of X1,
-but scoped to the BASE PseudoCoup repo (`~/Programming/PseudoCoup`) as the primary target
+`~/Programming/PUBLIC/PseudoCoup/.planning/00_Upgrade_Plan.md` is the concrete realization of X1,
+but scoped to the BASE PseudoCoup repo (`~/Programming/PUBLIC/PseudoCoup`) as the primary target
 rather than the WFL vendored copy. The correspondence:
 
 - X1's "informal ops → registry references" = this plan's **U2 (registry consultation in egress)**.

@@ -42,7 +42,7 @@ alone: everything in the source was seen, and everything seen can be realized in
 ## Coverage-gate location note (post-U5)
 
 Since U5's ratified port (D2), `ingress/coverage.py` exists in BASE PseudoCoup, byte-identical to
-the vendored original at `~/Programming/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`,
+the vendored original at `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/ingress/coverage.py`,
 with its hooks wired into base `ingress/kotlin.py`. The vendored copy remains untouched and
 authoritative for the WFL project's own phases. References in older docs to the coverage gate
 "living only in the vendored copy" describe the pre-U5 state.

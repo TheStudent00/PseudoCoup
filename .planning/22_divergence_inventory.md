@@ -4,7 +4,7 @@ Status date: 2026-07-14. Classification ratified by the owner as decision D2 (se
 `00_Upgrade_Plan.md`, "Decision queue — ALL DECIDED"); this note records the classification and
 the per-row execution status after the U5 ports landed. Rule applied (per D2): framework-agnostic
 = UPSTREAM, Compose/WFL-shaped = APP-SPECIFIC. Upstreaming was copy-forward only — the vendored
-copy at `~/Programming/WFL_PseudoCoup/pseudocoup/` was not modified.
+copy at `~/Programming/PRIVATE/WFL_PseudoCoup/pseudocoup/` was not modified.
 
 Divergence scope (verified byte-level, survey of 2026-07-14): confined to `core/ledger.py`,
 `core/ur_ast.py`, `ingress/kotlin.py`, `egress/dart.py`, plus two vendored-only files
@@ -43,7 +43,7 @@ out of the ratified three-concern scope rather than escalated as a fork.
 
 | Check | Result |
 |---|---|
-| `python3 -m pytest tests/ -q` in `~/Programming/PseudoCoup` | 48 passed (24 smoke + 24 snapshot vs `tests/snapshot_pre_upgrade/`) |
+| `python3 -m pytest tests/ -q` in `~/Programming/PUBLIC/PseudoCoup` | 48 passed (24 smoke + 24 snapshot vs `tests/snapshot_pre_upgrade/`) |
 | Snapshot byte-compare after the `egress/dart.py` port | No diffs — python-ingress dart output (fox.py, space_station.py) unchanged; the base emitter's imports-before-body assembly order was deliberately preserved so single-file output stays byte-identical |
 | Base vs vendored `ingress/coverage.py`, `core/ledger.py`, `core/ur_ast.py` | Byte-identical (full copy-forward) |
 | Base vs vendored `ingress/kotlin.py` | Differs ONLY by the excluded app-specific pieces in rows 9-10 (verified by diff) |
@@ -51,5 +51,5 @@ out of the ratified three-concern scope rather than escalated as a fork.
 | kotlin→dart smoke (data class + suspend + transitive caller) | `copy()` synthesized; `Future<R> ... async` emitted; `await` injected including fixpoint-promoted second-order caller |
 | Import-hide unit check | Two owners of symbol `Foo` (`mod_a`, `mod_b`, last-writer `mod_b`) with both imported yields `{'mod_a': {'Foo'}}` — canonical owner stays visible, other hidden |
 
-The vendored copy at `~/Programming/WFL_PseudoCoup/` was not modified (binding D2
+The vendored copy at `~/Programming/PRIVATE/WFL_PseudoCoup/` was not modified (binding D2
 constraint: copy-forward only).
