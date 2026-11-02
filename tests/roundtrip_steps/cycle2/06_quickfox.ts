@@ -27,7 +27,7 @@ function factorial_iter(n: number): number {
 }
 
 function euclid_step(a: number, b: number): number {
-    let q: number = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a / b) - 1) : (a / b));
+    let q: number = ((((a ^ b) < 0) && ((a % b) != 0)) ? (Math.trunc(a / b) - 1) : Math.trunc(a / b));
     let r: number = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a % b) + b) : (a % b));
     let out: number = 0;
     if (((q < 0) && (r != 0))) {
