@@ -98,3 +98,82 @@ class GPULedgerLowerer:
                 adj = _op(lang, "&", _op(lang, "<", _op(lang, "^", a, b), c0), _op(lang, "!=", r, c0))
                 return _op(lang, "+", r, _op(lang, "&", b, _op(lang, "-", c0, adj)))
         return _op(lang, op, *args, holder=expr.holder)
+
+    @classmethod
+    def _extract_branch_assigns(cls, stmts: list[Any], lang: str, cur_vals: dict[str, Any]) -> dict[str, Any]:
+        env = dict(cur_vals)
+        for s in stmts:
+            if isinstance(s, URAssign):
+                env[s.target] = cls.lower_expr_branchless(s.expr, lang)
+            elif isinstance(s, URIf):
+                c = cls.lower_expr_branchless(s.cond, lang)
+                t_env = cls._extract_branch_assigns(s.then_body, lang, env)
+                e_env = cls._extract_branch_assigns(s.else_body, lang, env)
+                for k in set(t_env) | set(e_env):
+                    tv = t_env.get(k, URVar(k, "i64"))
+                    ev = e_env.get(k, URVar(k, "i64"))
+                    if tv is not ev:
+                        env[k] = _select(lang, c, tv, ev)
+        return env
+
+    @classmethod
+    def _if_convert_stmts(cls, stmts: list[Any], lang: str) -> list[Any]:
+        out: list[Any] = []
+        early_returns: list[tuple[Any, Any]] = []
+        declared: set[str] = set()
+
+        for s in stmts:
+            if isinstance(s, URAssign):
+                declared.add(s.target)
+                out.append(URAssign(s.target, s.holder, cls.lower_expr_branchless(s.expr, lang), s.is_decl))
+            elif isinstance(s, URWhile):
+                out.append(URWhile(
+                    cls.lower_expr_branchless(s.cond, lang),
+                    cls._if_convert_stmts(s.body, lang),
+                ))
+            elif isinstance(s, URIf):
+                c = cls.lower_expr_branchless(s.cond, lang)
+                if len(s.then_body) == 1 and isinstance(s.then_body[0], URReturn) and not s.else_body:
+                    early_returns.append((c, cls.lower_expr_branchless(s.then_body[0].expr, lang)))
+                else:
+                    t_env = cls._extract_branch_assigns(s.then_body, lang, {})
+                    e_env = cls._extract_branch_assigns(s.else_body, lang, {})
+                    for k in sorted(set(t_env) | set(e_env)):
+                        tv = t_env.get(k, URVar(k, "i64"))
+                        ev = e_env.get(k, URVar(k, "i64"))
+                        merged = _select(lang, c, tv, ev)
+                        is_decl = k not in declared
+                        declared.add(k)
+                        out.append(URAssign(k, "i64", merged, is_decl))
+            elif isinstance(s, URReturn):
+                ret_e = cls.lower_expr_branchless(s.expr, lang)
+                for cond_e, early_e in reversed(early_returns):
+                    ret_e = _select(lang, cond_e, early_e, ret_e)
+                out.append(URReturn(ret_e))
+        return out
+
+    @classmethod
+    def lower_ledger_to_gpu(cls, ledger: URLedger, lang: str = "c") -> URLedger:
+        """Return a new URLedger with 0 URIf statements and 0 `ite` / Tier-2 branch ops."""
+        gpu_funcs: list[URFunc] = []
+        for fn in ledger.functions:
+            new_body = cls._if_convert_stmts(fn.body, lang)
+            gpu_funcs.append(URFunc(
+                fn.func_name,
+                fn.source_lang,
+                copy.deepcopy(fn.params),
+                copy.deepcopy(fn.locals),
+                fn.return_holder,
+                new_body,
+            ))
+        main_fn = gpu_funcs[-1]
+        return URLedger(
+            func_name=main_fn.func_name,
+            source_lang=lang,
+            params=main_fn.params,
+            locals=main_fn.locals,
+            return_holder=main_fn.return_holder,
+            body=main_fn.body,
+            functions=gpu_funcs,
+            bridge_events=list(ledger.bridge_events),
+        )
