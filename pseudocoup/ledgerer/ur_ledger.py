@@ -582,20 +582,18 @@ def link_ledgers(ledgers: list[URLedger]) -> URLedger:
             if isinstance(s, URAssign):
                 s.expr = link_expr(s.expr, fn.func_name, known_holders)
                 expr_h = getattr(s.expr, "holder", "i64")
+                explicit_sub64 = s.holder in ("u32", "i32", "u16", "i16", "u8", "i8")
                 if s.is_decl:
-                    if s.holder in ("u32", "i32", "u16", "i16", "u8", "i8"):
-                        target_h = s.holder
-                    else:
-                        target_h = expr_h
+                    target_h = s.holder if explicit_sub64 else expr_h
                     s.holder = target_h
                     known_holders[s.target] = target_h
                     fn.locals[s.target] = HolderDecl.from_type(s.target, target_h)
-                    if (target_h in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)) or target_h != expr_h:
+                    if explicit_sub64 and isinstance(s.expr, URHiOpCall):
                         s.expr = build_holder_cast_node(s.expr, "i64", target_h)
                 else:
                     target_h = known_holders.get(s.target, s.holder)
                     s.holder = target_h
-                    if (target_h in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)) or target_h != expr_h:
+                    if (target_h in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)):
                         s.expr = build_holder_cast_node(s.expr, "i64", target_h)
                 out.append(s)
             elif isinstance(s, URIf):
