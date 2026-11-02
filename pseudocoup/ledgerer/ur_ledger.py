@@ -389,11 +389,11 @@ class ScriptToLedger:
             ln = _normalize_inline_cond_and_div(ln, lang)
             ln = ln.replace("&&", " and ").replace("||", " or ")
             if ln.startswith("if ") or ln.startswith("if("):
-                cond = re.sub(r"^if\s*\(?(.*?)\)?\s*(?:\{|:)?$", r"\1", ln)
+                cond = re.sub(r"^if\s*(.*?)\s*(?:\{|:)?$", r"\1", ln)
                 body_lines.append("    " * indent + f"if {cond}:")
                 indent += 1
             elif ln.startswith("while ") or ln.startswith("while("):
-                cond = re.sub(r"^while\s*\(?(.*?)\)?\s*(?:\{|:)?$", r"\1", ln)
+                cond = re.sub(r"^while\s*(.*?)\s*(?:\{|:)?$", r"\1", ln)
                 body_lines.append("    " * indent + f"while {cond}:")
                 indent += 1
             else:
