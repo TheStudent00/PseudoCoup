@@ -1,0 +1,96 @@
+{
+  "compiler": "Clang 21.1.8",
+  "latest_verification_run": "riscv64-runner_l24_all_clang_languages",
+  "total_keyed_operators": 2162,
+  "strict_gnu_c_operators": 1634,
+  "non_gnu_c_operators": 528,
+  "accepted_operators": 1820,
+  "refused_operators": 342,
+  "solved_operators": 2162,
+  "open_branches_remaining": 0,
+  "total_variants": 71518,
+  "accepted_variants": 58057,
+  "by_dialect": {
+    "gnu_c": {
+      "total_operators": 1634,
+      "accepted_operators": 1376,
+      "refused_operators": 258,
+      "solved_operators": 1634,
+      "open_branches_remaining": 0,
+      "total_variants": 70839,
+      "accepted_variants": 57465
+    },
+    "cxx": {
+      "total_operators": 301,
+      "accepted_operators": 227,
+      "refused_operators": 74,
+      "solved_operators": 301,
+      "open_branches_remaining": 0,
+      "total_variants": 436,
+      "accepted_variants": 359
+    },
+    "openmp_openacc": {
+      "total_operators": 164,
+      "accepted_operators": 163,
+      "refused_operators": 1,
+      "solved_operators": 164,
+      "open_branches_remaining": 0,
+      "total_variants": 164,
+      "accepted_variants": 163
+    },
+    "objc": {
+      "total_operators": 25,
+      "accepted_operators": 25,
+      "refused_operators": 0,
+      "solved_operators": 25,
+      "open_branches_remaining": 0,
+      "total_variants": 29,
+      "accepted_variants": 29
+    },
+    "ms_extensions": {
+      "total_operators": 21,
+      "accepted_operators": 19,
+      "refused_operators": 2,
+      "solved_operators": 21,
+      "open_branches_remaining": 0,
+      "total_variants": 28,
+      "accepted_variants": 26
+    },
+    "CUDA_SYCL": {
+      "total_operators": 7,
+      "accepted_operators": 5,
+      "refused_operators": 2,
+      "solved_operators": 7,
+      "open_branches_remaining": 0,
+      "total_variants": 8,
+      "accepted_variants": 6
+    },
+    "hlsl": {
+      "total_operators": 6,
+      "accepted_operators": 3,
+      "refused_operators": 3,
+      "solved_operators": 6,
+      "open_branches_remaining": 0,
+      "total_variants": 9,
+      "accepted_variants": 6
+    },
+    "opencl": {
+      "total_operators": 2,
+      "accepted_operators": 2,
+      "refused_operators": 0,
+      "solved_operators": 2,
+      "open_branches_remaining": 0,
+      "total_variants": 3,
+      "accepted_variants": 3
+    },
+    "clang_recovery": {
+      "total_operators": 2,
+      "accepted_operators": 0,
+      "refused_operators": 2,
+      "solved_operators": 2,
+      "open_branches_remaining": 0,
+      "total_variants": 2,
+      "accepted_variants": 0
+    }
+  }
+}

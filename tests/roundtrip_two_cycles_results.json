@@ -1,0 +1,124 @@
+{
+  "suites": [
+    {
+      "name": "Go <-> C (Saturating Shift + Overflow-Safe Division + Control Flow)",
+      "lang_x": "go",
+      "lang_y": "c",
+      "S_0": "func shift_and_div(a int64, b int64, c int64) int64 {\n    shifted := a << b\n    quot := shifted / c\n    if quot > 0 {\n        quot = quot + 1\n    } else {\n        quot = quot - 1\n    }\n    return quot\n}",
+      "T_1": "int64_t shift_and_div(int64_t a, int64_t b, int64_t c) {\n    int64_t shifted = (((b >= 0) && (b < 64)) ? (a << (b & 63)) : 0);\n    int64_t quot = (((shifted == -9223372036854775808) && (c == -1)) ? -9223372036854775808 : (shifted / c));\n    if ((quot > 0)) {\n        quot = (quot + 1);\n    } else {\n        quot = (quot - 1);\n    }\n    return quot;\n}",
+      "S_1": "func shift_and_div(a int64, b int64, c int64) int64 {\n    shifted := func() int64 { if ((b >= 0) && (b < 64)) { return (a << (b & 63)) } else { return 0 } }()\n    quot := func() int64 { if ((shifted == -9223372036854775808) && (c == -1)) { return -9223372036854775808 } else { return (shifted / c) } }()\n    if ((quot > 0)) {\n        quot = (quot + 1)\n    } else {\n        quot = (quot - 1)\n    }\n    return quot\n}",
+      "T_2": "int64_t shift_and_div(int64_t a, int64_t b, int64_t c) {\n    int64_t shifted = (((b >= 0) && (b < 64)) ? (a << (b & 63)) : 0);\n    int64_t quot = (((shifted == -9223372036854775808) && (c == -1)) ? -9223372036854775808 : (shifted / c));\n    if ((quot > 0)) {\n        quot = (quot + 1);\n    } else {\n        quot = (quot - 1);\n    }\n    return quot;\n}",
+      "S_2": "func shift_and_div(a int64, b int64, c int64) int64 {\n    shifted := func() int64 { if ((b >= 0) && (b < 64)) { return (a << (b & 63)) } else { return 0 } }()\n    quot := func() int64 { if ((shifted == -9223372036854775808) && (c == -1)) { return -9223372036854775808 } else { return (shifted / c) } }()\n    if ((quot > 0)) {\n        quot = (quot + 1)\n    } else {\n        quot = (quot - 1)\n    }\n    return quot\n}",
+      "S0_changed_to_S1": true,
+      "T1_equals_T2": true,
+      "S1_equals_S2": true,
+      "eval_checks": [
+        {
+          "inputs": {
+            "a": 10,
+            "b": 3,
+            "c": 5
+          },
+          "output": 17,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "a": 10,
+            "b": 70,
+            "c": 5
+          },
+          "output": -1,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "a": -9223372036854775808,
+            "b": 0,
+            "c": -1
+          },
+          "output": 9223372036854775807,
+          "all_5_stages_equal": true
+        }
+      ]
+    },
+    {
+      "name": "Python <-> Rust (Floor Division + Floor Modulo + Branch)",
+      "lang_x": "python",
+      "lang_y": "rust",
+      "S_0": "def floor_step(a, b):\n    q = a // b\n    r = a % b\n    if r != 0:\n        q = q + r\n    return q",
+      "T_1": "fn floor_step(a: i64, b: i64) -> i64 {\n    let mut q: i64 = (if (((a ^ b) < 0) && ((a % b) != 0)) { ((a / b) - 1) } else { (a / b) });\n    let mut r: i64 = (if (((a ^ b) < 0) && ((a % b) != 0)) { ((a % b) + b) } else { (a % b) });\n    if ((r != 0)) {\n        q = (q + r);\n    }\n    return q;\n}",
+      "S_1": "def floor_step(a, b):\n    q = ((int(a / b) - 1) if (((a ^ b) < 0) and ((a - (int(a / b) * b)) != 0)) else int(a / b))\n    r = (((a - (int(a / b) * b)) + b) if (((a ^ b) < 0) and ((a - (int(a / b) * b)) != 0)) else (a - (int(a / b) * b)))\n    if (r != 0):\n        q = (q + r)\n    return q",
+      "T_2": "fn floor_step(a: i64, b: i64) -> i64 {\n    let mut q: i64 = (if (((a ^ b) < 0) && ((a % b) != 0)) { ((a / b) - 1) } else { (a / b) });\n    let mut r: i64 = (if (((a ^ b) < 0) && ((a % b) != 0)) { ((a % b) + b) } else { (a % b) });\n    if ((r != 0)) {\n        q = (q + r);\n    }\n    return q;\n}",
+      "S_2": "def floor_step(a, b):\n    q = ((int(a / b) - 1) if (((a ^ b) < 0) and ((a - (int(a / b) * b)) != 0)) else int(a / b))\n    r = (((a - (int(a / b) * b)) + b) if (((a ^ b) < 0) and ((a - (int(a / b) * b)) != 0)) else (a - (int(a / b) * b)))\n    if (r != 0):\n        q = (q + r)\n    return q",
+      "S0_changed_to_S1": true,
+      "T1_equals_T2": true,
+      "S1_equals_S2": true,
+      "eval_checks": [
+        {
+          "inputs": {
+            "a": 17,
+            "b": 5
+          },
+          "output": 5,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "a": -17,
+            "b": 5
+          },
+          "output": -1,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "a": 17,
+            "b": -5
+          },
+          "output": -7,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "a": -20,
+            "b": 5
+          },
+          "output": -4,
+          "all_5_stages_equal": true
+        }
+      ]
+    },
+    {
+      "name": "TypeScript <-> Java (While Loop + Bitwise XOR + Shift)",
+      "lang_x": "typescript",
+      "lang_y": "java",
+      "S_0": "function bit_accum(n: number, step: number): number {\n    let acc: number = 0;\n    let i: number = 0;\n    while (i < n) {\n        acc = acc ^ (i << step);\n        i = i + 1;\n    }\n    return acc;\n}",
+      "T_1": "long bit_accum(long n, long step) {\n    long acc = 0;\n    long i = 0;\n    while ((i < n)) {\n        acc = (acc ^ (i << (step & 63)));\n        i = (i + 1);\n    }\n    return acc;\n}",
+      "S_1": "function bit_accum(n: number, step: number): number {\n    let acc: number = 0;\n    let i: number = 0;\n    while ((i < n)) {\n        acc = (acc ^ (i << (step & 63)));\n        i = (i + 1);\n    }\n    return acc;\n}",
+      "T_2": "long bit_accum(long n, long step) {\n    long acc = 0;\n    long i = 0;\n    while ((i < n)) {\n        acc = (acc ^ (i << (step & 63)));\n        i = (i + 1);\n    }\n    return acc;\n}",
+      "S_2": "function bit_accum(n: number, step: number): number {\n    let acc: number = 0;\n    let i: number = 0;\n    while ((i < n)) {\n        acc = (acc ^ (i << (step & 63)));\n        i = (i + 1);\n    }\n    return acc;\n}",
+      "S0_changed_to_S1": true,
+      "T1_equals_T2": true,
+      "S1_equals_S2": true,
+      "eval_checks": [
+        {
+          "inputs": {
+            "n": 5,
+            "step": 2
+          },
+          "output": 16,
+          "all_5_stages_equal": true
+        },
+        {
+          "inputs": {
+            "n": 6,
+            "step": 68
+          },
+          "output": 16,
+          "all_5_stages_equal": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,7 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+*.egg-info/
+.repo-daemon.conf
+# sharded by repo-daemon (over GitHub's per-file line); the parts are tracked, the whole file is rebuilt from them
+/pseudocoup/pseudoarch/map_HiOp_to_unit/lang_models/python/consolidated_python_vocabulary.json

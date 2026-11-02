@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fetch and Add Walk</title>
+<!--
+  PCHQ, 2026-10-14, log 471 (after logs 465 to 468). One run of
+  SUPPORT_gnu_c_sync_fetch_and_add_walk.py, the Python beside this page,
+  recorded with Python's tracer. Each step is one line that ran, with memory
+  and the values after it. read_number and write_number run as one step each.
+-->
+<style>
+:root {
+	--bg: #fbfaf7;
+	--fg: #1d1c1a;
+	--dim: #6b6862;
+	--line: #e3e0d8;
+	--panel: #ffffff;
+	--codebg: #f3f1ec;
+	--now-bg: #fff0c7;
+	--read: #2f5bd3;
+	--write-bg: #fde4e1;
+	--write-fg: #a3271b;
+	--a: #1f7a4d;
+	--b: #8a3fb8;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--bg: #17171a;
+		--fg: #e9e7e2;
+		--dim: #a29f98;
+		--line: #34343a;
+		--panel: #202026;
+		--codebg: #1f1f24;
+		--now-bg: #463812;
+		--read: #8fb0ff;
+		--write-bg: #4a1f1c;
+		--write-fg: #ff9d8f;
+		--a: #6fd3a0;
+		--b: #d1a4f0;
+	}
+}
+:root[data-theme="dark"] {
+	--bg: #17171a;
+	--fg: #e9e7e2;
+	--dim: #a29f98;
+	--line: #34343a;
+	--panel: #202026;
+	--codebg: #1f1f24;
+	--now-bg: #463812;
+	--read: #8fb0ff;
+	--write-bg: #4a1f1c;
+	--write-fg: #ff9d8f;
+	--a: #6fd3a0;
+	--b: #d1a4f0;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; height: 100%; }
+body { background: var(--bg); color: var(--fg); font-family: system-ui, sans-serif; line-height: 1.45; display: flex; flex-direction: column; height: 100vh; height: 100dvh; }
+header { flex: none; padding: 10px 16px 8px; border-bottom: 1px solid var(--line); }
+h1 { font-size: 1.15rem; margin: 0 0 4px; }
+code { font-family: ui-monospace, monospace; }
+.caption { color: var(--dim); font-size: 0.9rem; margin: 0 0 8px; }
+.bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+button { font: inherit; border: 1px solid var(--line); background: var(--panel); color: var(--fg); border-radius: 6px; padding: 4px 16px; cursor: pointer; }
+button:hover, button:focus-visible { border-color: var(--read); outline: none; }
+button:disabled { opacity: 0.4; cursor: default; }
+.count { color: var(--dim); font-size: 0.9rem; }
+.thread { font-size: 0.9rem; font-weight: 600; padding: 1px 8px; border-radius: 10px; border: 1px solid currentColor; }
+.thread.A { color: var(--a); }
+.thread.B { color: var(--b); }
+.state { flex: none; display: grid; grid-template-columns: max-content minmax(0, 1fr); gap: 6px 14px; padding: 8px 16px 10px; border-bottom: 1px solid var(--line); align-items: start; }
+@media (max-width: 520px) { .state { grid-template-columns: minmax(0, 1fr); gap: 2px; } .state .label { margin-top: 6px; } }
+.state .label { color: var(--dim); font-size: 0.85rem; padding-top: 2px; }
+.state .label small { display: block; font-size: 0.75rem; }
+.mono { font-family: ui-monospace, monospace; font-size: 0.95rem; overflow-wrap: anywhere; }
+.memory { display: flex; flex-wrap: wrap; gap: 6px; }
+.byte { text-align: center; border: 1px solid var(--line); border-radius: 6px; background: var(--panel); padding: 2px 8px; }
+.byte .value { font-family: ui-monospace, monospace; font-size: 1.2rem; }
+.byte .name { font-size: 0.72rem; color: var(--dim); font-family: ui-monospace, monospace; }
+.byte.read { outline: 3px solid var(--read); outline-offset: 1px; }
+.byte.written { background: var(--write-bg); color: var(--write-fg); border-color: var(--write-fg); }
+.helper { font-family: ui-monospace, monospace; font-size: 0.85rem; margin-top: 4px; min-height: 1.3em; overflow-wrap: anywhere; }
+.vars { display: flex; flex-wrap: wrap; gap: 2px 18px; min-height: 1.4em; }
+.vars .changed { color: var(--write-fg); font-weight: 600; }
+.vars .none { color: var(--dim); font-family: system-ui, sans-serif; font-size: 0.85rem; }
+.vars .where { color: var(--dim); font-family: system-ui, sans-serif; font-size: 0.85rem; }
+.out { font-family: ui-monospace, monospace; font-size: 0.85rem; white-space: pre-wrap; background: var(--codebg); border-radius: 6px; padding: 3px 8px; min-height: 3.2em; overflow-wrap: anywhere; }
+.code { position: relative; flex: 1 1 auto; min-height: 10em; overflow: auto; }
+.code pre { margin: 0; padding: 6px 0 24px; font-family: ui-monospace, monospace; font-size: 0.85rem; }
+.code .ln { display: block; padding: 0 12px; white-space: pre; }
+.code .ln .no { color: var(--dim); display: inline-block; width: 2.4em; user-select: none; }
+.code .ln .comment { color: var(--dim); }
+.code .ln.now { background: var(--now-bg); }
+</style>
+</head>
+<body>
+<header>
+	<h1><code>fetch_and_add</code>, step by step</h1>
+	<p class="caption">One run of the Python beside this page. Each ▶ runs one line; the marked line is the one that just ran.</p>
+	<div class="bar">
+		<button id="back" aria-label="back one step">◀</button>
+		<button id="next" aria-label="next step">▶</button>
+		<span class="count" id="count"></span>
+		<span id="thread"></span>
+	</div>
+</header>
+<div class="state">
+	<div class="label">ran</div>
+	<div class="mono" id="note"></div>
+	<div class="label">memory<small>outlined: read</small><small>filled: written</small></div>
+	<div>
+		<div class="memory" id="memory"></div>
+		<div class="helper" id="helpers"></div>
+	</div>
+	<div class="label">values</div>
+	<div class="vars mono" id="vars"></div>
+	<div class="label">printed</div>
+	<div class="out" id="out"></div>
+</div>
+<div class="code" id="codebox"><pre id="code"></pre></div>
+<script>
+const DATA = {"source": ["\"\"\"What GNU C's __sync_fetch_and_add_4(p, v) does, in Python.", "", "memory is a row of bytes; each byte holds a whole number from 0 to 255.", "p is a position in it. size is how many bytes, from p on, hold one number:", "the _4 in __sync_fetch_and_add_4 is size 4.        # 4 bytes, all 0", "", "", "def read_number(p, size):", "    # the number held in memory[p : p + size], the size bytes from p on.", "    # The byte at p counts as it is, the next one times 256, the next one", "    # times 256 * 256, and the next one times 256 * 256 * 256.", "    number = 0", "    for i in range(size):", "        number = number + memory[p + i] * (256 ** i)", "    return number", "", "", "def write_number(p, size, number):", "    # the number, put into memory[p : p + size], in the same order read_number reads it", "    for i in range(size):", "        memory[p + i] = (number // (256 ** i)) % 256", "", "", "def fetch_and_add(p, size, v):", "    old = read_number(p, size)      # the number at p, size bytes long", "    total = old + v                 # the add", "    kept = total % (256 ** size)    # what fits back into size bytes", "    write_number(p, size, kept)     # the sum, written back at p", "    return old                      # given back: the number as it was", "", "", "# Threads A and B run at the same time, each on its own processor core. They", "# share two files to work on, and next_file: the 4 bytes memory[0 : 4], the", "# number of the next file nobody has taken. Python runs one line at a time,", "# so the two threads' steps are written below in the order the cores did them.", "files = [\"a.txt\", \"b.txt\"]", "", "# 1. Without fetch_and_add: each thread takes a file by reading next_file,", "# then writing next_file + 1.", "write_number(0, 4, 0)                   # next_file = 0", "a = read_number(0, 4)                   # A reads 0", "b = read_number(0, 4)                   # B reads 0: A has not written yet", "write_number(0, 4, a + 1)               # A writes 1", "write_number(0, 4, b + 1)               # B writes 1", "next_file = read_number(0, 4)", "print(f\"read, then write: A takes {files[a]}, B takes {files[b]}, next_file is {next_file}\")", "", "# 2. With fetch_and_add: each thread's read and write are one step, so B's", "# step comes after A's, never between A's read and A's write.", "write_number(0, 4, 0)                   # next_file = 0", "a = fetch_and_add(0, 4, 1)              # A gets 0, and next_file becomes 1", "b = fetch_and_add(0, 4, 1)              # B gets 1, and next_file becomes 2", "next_file = read_number(0, 4)", "print(f\"fetch_and_add:    A takes {files[a]}, B takes {files[b]}, next_file is {next_file}\")"], "steps": [{"line": null, "fn": null, "thread": null, "note": "start: memory is 4 bytes, all 0", "state": {"memory": [0, 0, 0, 0], "values": [], "printed": ""}, "helpers": []}, {"line": 43, "fn": null, "thread": null, "note": null, "state": {"memory": [0, 0, 0, 0], "values": [], "printed": ""}, "helpers": [{"at": 0, "kind": "write_number", "p": 0, "size": 4, "number": 0, "result": null}]}, {"line": 44, "fn": null, "thread": "A", "note": null, "state": {"memory": [0, 0, 0, 0], "values": [["a", 0]], "printed": ""}, "helpers": [{"at": 1, "kind": "read_number", "p": 0, "size": 4, "result": 0}]}, {"line": 45, "fn": null, "thread": "B", "note": null, "state": {"memory": [0, 0, 0, 0], "values": [["a", 0], ["b", 0]], "printed": ""}, "helpers": [{"at": 2, "kind": "read_number", "p": 0, "size": 4, "result": 0}]}, {"line": 46, "fn": null, "thread": "A", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["a", 0], ["b", 0]], "printed": ""}, "helpers": [{"at": 3, "kind": "write_number", "p": 0, "size": 4, "number": 1, "result": null}]}, {"line": 47, "fn": null, "thread": "B", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["a", 0], ["b", 0]], "printed": ""}, "helpers": [{"at": 4, "kind": "write_number", "p": 0, "size": 4, "number": 1, "result": null}]}, {"line": 48, "fn": null, "thread": null, "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["a", 0], ["b", 0], ["next_file", 1]], "printed": ""}, "helpers": [{"at": 5, "kind": "read_number", "p": 0, "size": 4, "result": 1}]}, {"line": 49, "fn": null, "thread": null, "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["a", 0], ["b", 0], ["next_file", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 53, "fn": null, "thread": null, "note": null, "state": {"memory": [0, 0, 0, 0], "values": [], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 7, "kind": "write_number", "p": 0, "size": 4, "number": 0, "result": null}]}, {"line": 54, "fn": "fetch_and_add", "thread": "A", "note": "calls fetch_and_add(p = 0, size = 4, v = 1)", "state": {"memory": [0, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 28, "fn": "fetch_and_add", "thread": "A", "note": null, "state": {"memory": [0, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 0]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 10, "kind": "read_number", "p": 0, "size": 4, "result": 0}]}, {"line": 29, "fn": "fetch_and_add", "thread": "A", "note": null, "state": {"memory": [0, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 0], ["total", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 30, "fn": "fetch_and_add", "thread": "A", "note": null, "state": {"memory": [0, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 0], ["total", 1], ["kept", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 31, "fn": "fetch_and_add", "thread": "A", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 0], ["total", 1], ["kept", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 13, "kind": "write_number", "p": 0, "size": 4, "number": 1, "result": null}]}, {"line": 32, "fn": "fetch_and_add", "thread": "A", "note": "fetch_and_add gives back 0", "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 0], ["total", 1], ["kept", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 54, "fn": null, "thread": "A", "note": "back: a = 0", "state": {"memory": [1, 0, 0, 0], "values": [["a", 0]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 55, "fn": "fetch_and_add", "thread": "B", "note": "calls fetch_and_add(p = 0, size = 4, v = 1)", "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 28, "fn": "fetch_and_add", "thread": "B", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 18, "kind": "read_number", "p": 0, "size": 4, "result": 1}]}, {"line": 29, "fn": "fetch_and_add", "thread": "B", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 1], ["total", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 30, "fn": "fetch_and_add", "thread": "B", "note": null, "state": {"memory": [1, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 1], ["total", 2], ["kept", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 31, "fn": "fetch_and_add", "thread": "B", "note": null, "state": {"memory": [2, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 1], ["total", 2], ["kept", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 21, "kind": "write_number", "p": 0, "size": 4, "number": 2, "result": null}]}, {"line": 32, "fn": "fetch_and_add", "thread": "B", "note": "fetch_and_add gives back 1", "state": {"memory": [2, 0, 0, 0], "values": [["p", 0], ["size", 4], ["v", 1], ["old", 1], ["total", 2], ["kept", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 55, "fn": null, "thread": "B", "note": "back: b = 1", "state": {"memory": [2, 0, 0, 0], "values": [["a", 0], ["b", 1]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": []}, {"line": 56, "fn": null, "thread": null, "note": null, "state": {"memory": [2, 0, 0, 0], "values": [["a", 0], ["b", 1], ["next_file", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\n"}, "helpers": [{"at": 24, "kind": "read_number", "p": 0, "size": 4, "result": 2}]}, {"line": 57, "fn": null, "thread": null, "note": null, "state": {"memory": [2, 0, 0, 0], "values": [["a", 0], ["b", 1], ["next_file", 2]], "printed": "read, then write: A takes a.txt, B takes a.txt, next_file is 1\nfetch_and_add:    A takes a.txt, B takes b.txt, next_file is 2\n"}, "helpers": []}]};
+const steps = DATA.steps;
+let at = 0;
+
+function esc(text) {
+	return String(text).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function drawCode() {
+	const pre = document.getElementById("code");
+	let html = "";
+	for (let i = 0; i < DATA.source.length; i++) {
+		const text = DATA.source[i];
+		const cut = text.indexOf("#");
+		let body = esc(text);
+		if (cut >= 0) {
+			body = esc(text.slice(0, cut)) + '<span class="comment">' + esc(text.slice(cut)) + "</span>";
+		}
+		html += '<span class="ln" id="ln' + (i + 1) + '"><span class="no">' + (i + 1) + "</span>" + body + "</span>";
+	}
+	pre.innerHTML = html;
+}
+
+function sameContext(a, b) {
+	return a && b && a.fn === b.fn && a.thread === b.thread;
+}
+
+function noteOf(step) {
+	let note = step.note;
+	if (note || !step.line) return note || "";
+	note = DATA.source[step.line - 1].split("#")[0].trim();
+	const name = note.split("=")[0].trim();
+	if (note.indexOf(" = ") > 0 && /^[a-z_]+$/.test(name)) {
+		for (const pair of step.state.values) {
+			if (pair[0] === name) note += "  →  " + name + " = " + pair[1];
+		}
+	}
+	if (note.startsWith("print(")) note += "  →  prints one line";
+	return note;
+}
+
+function show(k) {
+	at = Math.max(0, Math.min(steps.length - 1, k));
+	const step = steps[at];
+	const before = at > 0 ? steps[at - 1] : null;
+	document.getElementById("count").textContent = "step " + at + " of " + (steps.length - 1);
+	document.getElementById("back").disabled = at === 0;
+	document.getElementById("next").disabled = at === steps.length - 1;
+	document.getElementById("thread").innerHTML = step.thread ? '<span class="thread ' + step.thread + '">thread ' + step.thread + "</span>" : "";
+
+	document.querySelectorAll(".ln.now").forEach(function (el) { el.classList.remove("now"); });
+	if (step.line) {
+		const el = document.getElementById("ln" + step.line);
+		el.classList.add("now");
+		const box = document.getElementById("codebox");
+		box.scrollTop = Math.max(0, el.offsetTop - box.clientHeight / 3);
+	}
+	document.getElementById("note").textContent = noteOf(step);
+
+	const read = new Set();
+	const written = new Set();
+	let helperHtml = "";
+	for (const h of step.helpers) {
+		const slice = step.state.memory.slice(h.p, h.p + h.size);
+		for (let i = h.p; i < h.p + h.size; i++) {
+			if (h.kind === "read_number") read.add(i); else written.add(i);
+		}
+		if (h.kind === "read_number") {
+			helperHtml += "<div>read_number(" + h.p + ", " + h.size + "): memory[" + h.p + " : " + (h.p + h.size) + "] is [" + slice.join(", ") + "], so " + h.result + "</div>";
+		} else {
+			helperHtml += "<div>write_number(" + h.p + ", " + h.size + ", " + h.number + "): memory[" + h.p + " : " + (h.p + h.size) + "] is now [" + slice.join(", ") + "]</div>";
+		}
+	}
+	let memHtml = "";
+	for (let i = 0; i < step.state.memory.length; i++) {
+		let cls = "byte";
+		if (read.has(i)) cls += " read";
+		if (written.has(i)) cls += " written";
+		memHtml += '<div class="' + cls + '"><div class="value">' + step.state.memory[i] + '</div><div class="name">memory[' + i + "]</div></div>";
+	}
+	document.getElementById("memory").innerHTML = memHtml;
+	document.getElementById("helpers").innerHTML = helperHtml;
+
+	const old = {};
+	if (before && sameContext(before, step)) {
+		for (const pair of before.state.values) old[pair[0]] = pair[1];
+	}
+	let varHtml = step.fn ? '<span class="where">in ' + step.fn + ":</span>" : "";
+	let count = 0;
+	for (const pair of step.state.values) {
+		const changed = at > 0 && (!(pair[0] in old) || old[pair[0]] !== pair[1]);
+		varHtml += '<span class="' + (changed ? "changed" : "") + '">' + esc(pair[0]) + " = " + pair[1] + "</span>";
+		count += 1;
+	}
+	if (count === 0) varHtml += '<span class="none">none yet</span>';
+	document.getElementById("vars").innerHTML = varHtml;
+	document.getElementById("out").textContent = step.state.printed;
+}
+
+drawCode();
+document.getElementById("back").addEventListener("click", function () { show(at - 1); });
+document.getElementById("next").addEventListener("click", function () { show(at + 1); });
+document.addEventListener("keydown", function (e) {
+	if (e.key === "ArrowRight") { show(at + 1); e.preventDefault(); }
+	if (e.key === "ArrowLeft") { show(at - 1); e.preventDefault(); }
+});
+show(0);
+</script>
+</body>
+</html>

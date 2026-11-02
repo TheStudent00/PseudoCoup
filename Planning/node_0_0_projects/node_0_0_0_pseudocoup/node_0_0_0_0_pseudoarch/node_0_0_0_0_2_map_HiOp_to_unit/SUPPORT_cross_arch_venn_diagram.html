@@ -1,0 +1,678 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Cross-Architecture Lowering Venn Diagram: riscv64, x86_64, and aarch64</title>
+<style>
+:root {
+  color-scheme: light dark;
+  --bg: #fbfbfd; --fg: #1d1d22; --muted: #5d5d68; --line: #d9d9e0;
+  --value-bg: #f0f0f3; --stack-bg: #f6f6f9; --panel-bg: #ffffff;
+  --layer-bg: #eef3ff; --layer-border: #4361ee; --active: #2b44c2;
+  --focus: #2f6fdb;
+  --arch-riscv: #15803d; /* Emerald */
+  --arch-x86: #2563eb;   /* Royal blue */
+  --arch-arm: #dc2626;   /* Crimson / coral */
+  --badge-bg: #ede9fe; --badge-fg: #5b21b6;
+  --refused-border: #94a3b8;
+  --pass: #16a34a; --fail: #dc2626;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #16161a; --fg: #ececf1; --muted: #a9a9b6; --line: #34343e;
+    --value-bg: #25252c; --stack-bg: #1b1b21; --panel-bg: #1d1d23;
+    --layer-bg: #1e2640; --layer-border: #7aa7ff; --active: #a5c2ff;
+    --focus: #7aa7ff;
+    --arch-riscv: #4ade80;
+    --arch-x86: #60a5fa;
+    --arch-arm: #f87171;
+    --badge-bg: #312e81; --badge-fg: #c4b5fd;
+    --refused-border: #64748b;
+    --pass: #4ade80; --fail: #f87171;
+  }
+}
+* { box-sizing: border-box; }
+body {
+  margin: 0; padding: 10px 12px; background: var(--bg); color: var(--fg);
+  font-family: system-ui, -apple-system, sans-serif; line-height: 1.4;
+  display: flex; flex-direction: column; align-items: center;
+}
+.venn-container {
+  width: 100%; max-width: 760px; display: flex; flex-direction: column; align-items: center;
+}
+.venn-header {
+  width: 100%; margin-bottom: 8px; text-align: center;
+}
+.venn-title {
+  font-size: 1.05rem; font-weight: 700; margin: 0 0 2px; color: var(--fg);
+}
+.venn-hint {
+  font-size: 0.8rem; color: var(--muted); margin: 0;
+}
+
+/* Segmented mode toggle */
+.seg-bar {
+  display: flex; justify-content: center; margin: 6px 0 8px; width: 100%;
+}
+.seg-control {
+  display: inline-flex; background: var(--stack-bg); border: 1px solid var(--line);
+  border-radius: 8px; padding: 2px; gap: 2px;
+}
+.seg-btn {
+  border: none; background: transparent; color: var(--muted);
+  padding: 5px 14px; border-radius: 6px; font-size: 12.5px; font-weight: 600;
+  cursor: pointer; transition: all 0.15s ease; display: flex; flex-direction: column; align-items: center;
+}
+.seg-btn:hover { color: var(--fg); }
+.seg-btn.active {
+  background: var(--panel-bg); color: var(--fg);
+  box-shadow: 0 2px 5px rgba(0,0,0,0.08);
+}
+.seg-sub { font-size: 10.5px; font-weight: 400; opacity: 0.85; }
+
+/* Quick chips bar */
+.chips-bar {
+  display: flex; flex-wrap: wrap; justify-content: center; gap: 4px;
+  margin-bottom: 6px; width: 100%;
+}
+.chip {
+  border: 1px solid var(--line); background: var(--panel-bg); color: var(--fg);
+  border-radius: 12px; padding: 2px 8px; font-size: 11px; font-weight: 500;
+  cursor: pointer; transition: all 0.15s ease; display: inline-flex; align-items: center; gap: 4px;
+}
+.chip:hover { background: var(--stack-bg); border-color: var(--muted); }
+.chip.active {
+  border-color: var(--layer-border); background: var(--layer-bg); color: var(--active);
+  font-weight: 700;
+}
+.chip-cnt {
+  background: var(--value-bg); padding: 1px 4px; border-radius: 6px;
+  font-size: 10px; font-family: ui-monospace, monospace;
+}
+.chip.active .chip-cnt {
+  background: var(--layer-border); color: #fff;
+}
+
+/* SVG Venn Diagram */
+.venn-wrap {
+  width: 100%; max-width: 760px; display: flex; justify-content: center;
+}
+svg {
+  width: 100%; height: auto; max-width: 760px; display: block; user-select: none;
+}
+svg text { fill: var(--fg); font-family: system-ui, -apple-system, sans-serif; }
+
+.pc-circle { fill: none; stroke-width: 2.5; pointer-events: none; }
+.pc-riscv { stroke: var(--arch-riscv); }
+.pc-x86 { stroke: var(--arch-x86); }
+.pc-arm { stroke: var(--arch-arm); }
+
+.pc-triscv { fill: var(--arch-riscv); font-weight: 700; font-size: 14px; }
+.pc-tx86 { fill: var(--arch-x86); font-weight: 700; font-size: 14px; }
+.pc-tarm { fill: var(--arch-arm); font-weight: 700; font-size: 14px; }
+.pc-arch-stat { font-size: 11px; fill: var(--muted); font-weight: 500; }
+
+.pc-region { fill: var(--panel-bg); stroke: none; cursor: pointer; transition: fill 0.1s ease; }
+.pc-region:hover { fill: var(--stack-bg); }
+.pc-region.on { fill: var(--layer-bg); }
+
+.pc-cnt { font-size: 13px; font-weight: 700; fill: var(--fg); pointer-events: none; text-anchor: middle; }
+.pc-pct { font-size: 10px; font-weight: 500; fill: var(--muted); pointer-events: none; text-anchor: middle; }
+.pc-lbl { font-size: 9.5px; font-weight: 600; fill: var(--muted); pointer-events: none; text-anchor: middle; text-transform: uppercase; }
+.pc-cnt.on { fill: var(--active); font-size: 14.5px; }
+.pc-pct.on { fill: var(--active); font-weight: 700; }
+.pc-lbl.on { fill: var(--active); }
+
+/* Clickable Refused Box inside SVG */
+.pc-refused-rect {
+  fill: var(--panel-bg); stroke: var(--refused-border); stroke-dasharray: 4,3;
+  stroke-width: 1.5; cursor: pointer; transition: all 0.15s ease;
+}
+.pc-refused-rect:hover { fill: var(--stack-bg); }
+.pc-refused-box.on .pc-refused-rect {
+  fill: var(--layer-bg); stroke: var(--layer-border); stroke-dasharray: none;
+}
+.pc-refused-title { font-size: 11px; font-weight: 600; fill: var(--muted); pointer-events: none; }
+.pc-refused-sub { font-size: 10.5px; font-weight: 700; fill: var(--fg); pointer-events: none; }
+.pc-refused-box.on .pc-refused-title, .pc-refused-box.on .pc-refused-sub { fill: var(--active); }
+
+/* HTML card inside foreignObject */
+.pc-htmlcard {
+  background: var(--panel-bg); border: 1.5px solid var(--layer-border); border-radius: 10px;
+  padding: 10px 12px; font-size: 12px; line-height: 1.4; color: var(--fg);
+  box-shadow: 0 4px 14px rgba(0,0,0,0.08); position: relative;
+  max-height: 380px; overflow-y: auto;
+}
+.pc-htmlcard::-webkit-scrollbar { width: 5px; }
+.pc-htmlcard::-webkit-scrollbar-thumb { background: var(--line); border-radius: 4px; }
+.pc-close {
+  position: absolute; top: 6px; right: 8px; border: none; background: transparent;
+  color: var(--muted); cursor: pointer; font-size: 16px; line-height: 1; padding: 2px 4px;
+}
+.pc-close:hover { color: var(--fg); }
+.card-header { margin-right: 18px; margin-bottom: 6px; }
+.card-title { font-size: 13.5px; font-weight: 700; color: var(--active); line-height: 1.25; margin-bottom: 2px; }
+.card-pills { display: flex; gap: 4px; margin-top: 4px; flex-wrap: wrap; }
+.arch-tag {
+  font-size: 10px; font-weight: 600; border-radius: 4px; padding: 1px 5px;
+  display: inline-flex; align-items: center; gap: 2px; font-family: ui-monospace, monospace;
+}
+.arch-tag.pass { background: rgba(34, 197, 94, 0.15); color: var(--pass); }
+.arch-tag.fail { background: rgba(220, 38, 38, 0.15); color: var(--fail); }
+
+.card-stat {
+  display: flex; align-items: baseline; gap: 6px; margin: 6px 0;
+  background: var(--value-bg); padding: 5px 8px; border-radius: 6px;
+}
+.stat-num { font-size: 15px; font-weight: 700; color: var(--fg); font-family: ui-monospace, monospace; }
+.stat-pct { font-size: 12px; font-weight: 600; color: var(--muted); }
+.stat-mode { font-size: 10px; color: var(--muted); margin-left: auto; text-transform: uppercase; }
+
+.card-section { margin-top: 7px; }
+.section-label { font-size: 10.5px; font-weight: 700; text-transform: uppercase; color: var(--muted); letter-spacing: 0.5px; margin-bottom: 2px; }
+.card-desc { font-size: 12px; color: var(--fg); }
+.card-examples {
+  display: flex; flex-wrap: wrap; gap: 3px; margin-top: 3px;
+}
+.code-chip {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 10.5px;
+  background: var(--value-bg); border: 1px solid var(--line); border-radius: 4px;
+  padding: 1px 5px; color: var(--fg); word-break: break-all;
+}
+.card-source {
+  font-size: 10.5px; color: var(--muted); margin-top: 8px; border-top: 1px solid var(--line); padding-top: 4px;
+}
+</style>
+</head>
+<body data-tight-width="740">
+<div class="venn-container">
+  <div class="venn-header">
+    <div class="venn-title">GNU C Lowering Across Three Architectures</div>
+    <p class="venn-hint">Click any of the 7 Venn regions, quick chips, or the Refused box to inspect architectural root causes and concrete operators.</p>
+  </div>
+
+  <div class="seg-bar">
+    <div class="seg-control" role="tablist">
+      <button class="seg-btn active" id="btn-variants" role="tab" aria-selected="true">
+        <span>All 57,480 Variants</span>
+        <span class="seg-sub">99.87% Lowered (57,404)</span>
+      </button>
+      <button class="seg-btn" id="btn-probes" role="tab" aria-selected="false">
+        <span>1,379 Operator Probes</span>
+        <span class="seg-sub">99.64% Lowered (1,374)</span>
+      </button>
+    </div>
+  </div>
+
+  <div class="chips-bar" id="chips-bar"></div>
+
+  <div class="venn-wrap" id="venn-stage"></div>
+</div>
+
+<script>
+let currentMode = "variants"; // "variants" or "probes"
+let activeId = "all";         // default highlighted region
+
+const TOTALS = {
+  variants: {
+    total: 57480,
+    lowered: 57404,
+    pct: "99.87%",
+    circles: {
+      riscv64: {count: 57370, pct: "99.81%"},
+      x86_64:  {count: 56526, pct: "98.34%"},
+      aarch64: {count: 52656, pct: "91.61%"}
+    }
+  },
+  probes: {
+    total: 1379,
+    lowered: 1374,
+    pct: "99.64%",
+    circles: {
+      riscv64: {count: 1373, pct: "99.56%"},
+      x86_64:  {count: 1281, pct: "92.89%"},
+      aarch64: {count: 1175, pct: "85.21%"}
+    }
+  }
+};
+
+const REGIONS = [
+  {
+    id: "all",
+    classes: ["riscv64", "x86_64", "aarch64"],
+    label: "All 3",
+    chipLabel: "All 3 (R ∩ X ∩ A)",
+    title: "Universal Core: R ∩ X ∩ A",
+    targets: {riscv64: true, x86_64: true, aarch64: true},
+    variants: {count: 52580, pct: "91.48%"},
+    probes: {count: 1170, pct: "84.84%"},
+    desc: "Universal GNU C core vocabulary lowered across all three target architectures: standard arithmetic, logic, pointer arithmetic, control flow, struct/array access, and common Clang/GCC builtins.",
+    examples: [
+      "BinaryOperator.Add(int, int)",
+      "UnaryOperator.Deref(*p)",
+      "CallExpr.BI__builtin_clz(u32)",
+      "AtomicExpr.Load(int)",
+      "MemberExpr(s.field)",
+      "ReturnStmt",
+      "ForStmt"
+    ],
+    rootCause: "Pure architecture-neutral C expressions and universal LLVM SelectionDAG target lowering patterns."
+  },
+  {
+    id: "r-x",
+    classes: ["riscv64", "x86_64"],
+    label: "R ∩ X",
+    chipLabel: "R ∩ X only",
+    title: "R ∩ X: AAPCS64 va_list ABI Incompatibility",
+    targets: {riscv64: true, x86_64: true, aarch64: false},
+    variants: {count: 3919, pct: "6.82%"},
+    probes: {count: 110, pct: "7.98%"},
+    desc: "Lowered on RISC-V 64 and x86-64, but rejected on AArch64. The SysV (x86-64) and RISC-V ABIs treat va_list as a pointer/array type. On ARM64 (AAPCS64 ABI), __builtin_va_list is defined as a non-scalar composite struct, which Clang Sema rejects when passed to atomic address or pointer-expecting builtins.",
+    examples: [
+      "__atomic_load_n(__builtin_va_list*)",
+      "__c11_atomic_fetch_add(__builtin_va_list*)",
+      "__atomic_compare_exchange_n",
+      "__atomic_xor_fetch"
+    ],
+    rootCause: "AAPCS64 struct __va_list accounts for 4,680 of 4,824 total AArch64 refusals (97.0%)."
+  },
+  {
+    id: "r-a",
+    classes: ["riscv64", "aarch64"],
+    label: "R ∩ A",
+    chipLabel: "R ∩ A only",
+    title: "R ∩ A: x86 Dedicated SP & 80-bit Registers",
+    targets: {riscv64: true, x86_64: false, aarch64: true},
+    variants: {count: 43, pct: "0.07%"},
+    probes: {count: 4, pct: "0.29%"},
+    desc: "Lowered on RISC-V 64 and AArch64, but rejected on x86-64. Rejections stem from x86 dedicated stack pointer register binding constraints (register void *sp asm(\"esp\")), non-temporal vector stores, and 128-bit float operations that bypass x86's 80-bit x87 long double soften requirements.",
+    examples: [
+      "ArraySubscriptExpr (SP register binding)",
+      "CallExpr.BI__builtin___memcpy_chk",
+      "CallExpr.BI__builtin___memmove_chk",
+      "CallExpr.BI__builtin___memset_chk"
+    ],
+    rootCause: "x86 fixed-register constraints and Fortify buffer-check intrinsic bindings."
+  },
+  {
+    id: "x-a",
+    classes: ["x86_64", "aarch64"],
+    label: "X ∩ A",
+    chipLabel: "X ∩ A only",
+    title: "X ∩ A: RISC-V Soft-Float Canonicalize Gap",
+    targets: {riscv64: false, x86_64: true, aarch64: true},
+    variants: {count: 26, pct: "0.05%"},
+    probes: {count: 1, pct: "0.07%"},
+    desc: "Lowered on x86-64 and AArch64, but refused on RISC-V 64. RISC-V lacks native hardware support and SelectionDAG soft-float soften patterns for IEEE-754 canonicalization and FP elementwise operations on 128-bit long double.",
+    examples: [
+      "CallExpr.BI__builtin_canonicalizel(long double)",
+      "CallExpr.BI__builtin_elementwise_canonicalize",
+      "CallExpr.__builtin_canonicalizef128"
+    ],
+    rootCause: "fatal error: error in backend: Do not know how to soften the result of this operator!"
+  },
+  {
+    id: "r",
+    classes: ["riscv64"],
+    label: "R only",
+    chipLabel: "R only",
+    title: "riscv64 Unique: Orthogonal Registers & ABI",
+    targets: {riscv64: true, x86_64: false, aarch64: false},
+    variants: {count: 828, pct: "1.44%"},
+    probes: {count: 89, pct: "6.45%"},
+    desc: "Lowered solely on RISC-V 64. RISC-V's orthogonal 32-register integer file and uniform pointer ABI cleanly compile complex atomic builtins and vector forms that simultaneously trigger x86 stack-pointer constraints and AArch64 composite struct va_list rejections.",
+    examples: [
+      "Atomic fetch-and-modify on compound operands",
+      "Atomic flag operations",
+      "RISC-V target-specific builtins & vector/atomic forms"
+    ],
+    rootCause: "Clean register uniformity accepting expressions rejected by x86 and ARM64 frontends."
+  },
+  {
+    id: "x",
+    classes: ["x86_64"],
+    label: "X only",
+    chipLabel: "X only",
+    title: "x86_64 Unique: Extended Precision Pattern",
+    targets: {riscv64: false, x86_64: true, aarch64: false},
+    variants: {count: 1, pct: "0.00%"},
+    probes: {count: 0, pct: "0.00%"},
+    desc: "Exactly one variant lowers uniquely on x86-64: op_5712 CallExpr.BI__builtin_canonicalizel(a). Lowered via x87 80-bit extended precision instruction selection in the x86 backend; unsupported on RISC-V and AArch64.",
+    examples: [
+      "op_5712 CallExpr.BI__builtin_canonicalizel(a)",
+      "(0 in first-of-each probe suite)"
+    ],
+    rootCause: "Target-specific x87 80-bit float canonicalize pattern."
+  },
+  {
+    id: "a",
+    classes: ["aarch64"],
+    label: "A only",
+    chipLabel: "A only",
+    title: "aarch64 Unique: Native LSE Zero-Extend Atomics",
+    targets: {riscv64: false, x86_64: false, aarch64: true},
+    variants: {count: 7, pct: "0.01%"},
+    probes: {count: 0, pct: "0.00%"},
+    desc: "Exactly 7 atomic fetch builtins lower uniquely on AArch64 (op_516, op_550, op_1213, op_1220, op_1221, op_1280, op_1295). AArch64 provides native LSE ldadd/stadd instructions with zero-extended return ISel patterns; x86-64 and RISC-V SelectionDAG backends crash with 'Cannot select: zero_extend'.",
+    examples: [
+      "op_516 __scoped_atomic_fetch_add_1",
+      "op_550 __scoped_atomic_fetch_sub_1",
+      "op_1213 __atomic_fetch_and_1",
+      "op_1220 __atomic_fetch_or_1"
+    ],
+    rootCause: "ARM64 LSE atomic sub-word zero-extended return instruction selection."
+  },
+  {
+    id: "refused",
+    classes: [],
+    label: "Refused",
+    chipLabel: "Refused (all 3)",
+    title: "Refused on All 3: SelectionDAG Limitations",
+    targets: {riscv64: false, x86_64: false, aarch64: false},
+    variants: {count: 76, pct: "0.13%"},
+    probes: {count: 5, pct: "0.36%"},
+    desc: "Genuine LLVM SelectionDAG backend limits across all 3 targets: BPF-specific %llvm.preserve.struct.access.index (29 variants), Half-precision FP16 soft-promotion failures without hardware FP16 (32 variants), __builtin_elementwise_abs (9 variants), non-temporal loads (3 variants), and OffsetOfExpr (3 variants).",
+    examples: [
+      "__builtin_preserve_access_index (BPF only)",
+      "Half-precision FP16 arithmetic",
+      "__builtin_elementwise_abs",
+      "__builtin_nontemporal_load",
+      "OffsetOfExpr"
+    ],
+    rootCause: "LLVM SelectionDAG backend limitations where no host target pattern match exists."
+  }
+];
+
+const CIRCLES = [
+  {name: "riscv64", cls: "riscv", x: 275, y: 148, r: 115},
+  {name: "x86_64",  cls: "x86",   x: 210, y: 260, r: 115},
+  {name: "aarch64", cls: "arm",   x: 340, y: 260, r: 115}
+];
+
+function el(tag, attrs, text) {
+  const ns = (tag === "svg" || tag === "path" || tag === "circle" || tag === "text" || tag === "foreignObject" || tag === "g" || tag === "rect")
+    ? "http://www.w3.org/2000/svg" : "http://www.w3.org/1999/xhtml";
+  const node = document.createElementNS(ns, tag);
+  if (attrs) {
+    for (const k in attrs) node.setAttribute(k, attrs[k]);
+  }
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function inside(point, circle) {
+  return Math.hypot(point.x - circle.x, point.y - circle.y) <= circle.r;
+}
+
+function computeShapes() {
+  const cell = 4;
+  return REGIONS.filter(r => r.id !== "refused").map((region) => {
+    let d = "", sx = 0, sy = 0, n = 0;
+    for (let y = 20; y < 400; y += cell) {
+      let run = -1;
+      for (let x = 80; x <= 480; x += cell) {
+        const pt = {x: x + cell / 2, y: y + cell / 2};
+        const match = CIRCLES.every((c) => inside(pt, c) === (region.classes.indexOf(c.name) >= 0));
+        if (match) { sx += pt.x; sy += pt.y; n += 1; }
+        if (match && run < 0) run = x;
+        if ((!match || x >= 480 - cell) && run >= 0) {
+          const end = match ? x + cell : x;
+          d += "M" + run + "," + y + "h" + (end - run) + "v" + cell + "h" + (run - end) + "z";
+          run = -1;
+        }
+      }
+    }
+    return {id: region.id, path: d, x: sx / n, y: sy / n};
+  });
+}
+
+const SHAPES = computeShapes();
+
+function syncFrameSize() {
+  const h = Math.ceil(document.body.getBoundingClientRect().height);
+  if (h > 40 && window.parent && window.parent !== window) {
+    try { window.parent.postMessage({type: "plan-embed-size", width: 740, height: h}, "*"); } catch (e) {}
+  }
+  try {
+    if (!window.frameElement) return;
+    window.frameElement.style.width = "740px";
+    window.frameElement.style.maxWidth = "100%";
+    if (h > 40) window.frameElement.style.height = (h + 2) + "px";
+  } catch (e) {}
+}
+
+function renderChips() {
+  const bar = document.getElementById("chips-bar");
+  bar.replaceChildren();
+  REGIONS.forEach((reg) => {
+    const data = reg[currentMode];
+    const btn = document.createElement("button");
+    btn.className = "chip" + (reg.id === activeId ? " active" : "");
+    btn.setAttribute("data-region", reg.id);
+    btn.innerHTML = reg.chipLabel + ' <span class="chip-cnt">' + data.count.toLocaleString() + '</span>';
+    bar.appendChild(btn);
+  });
+}
+
+function render() {
+  renderChips();
+  const t = TOTALS[currentMode];
+  const root = el("svg", {
+    viewBox: "70 8 720 405",
+    role: "img",
+    "aria-label": "Three overlapping circles showing GNU C lowering across riscv64, x86_64, and aarch64"
+  });
+
+  // 1. Venn Regions (Clickable fill paths)
+  SHAPES.forEach((shape) => {
+    const isOn = shape.id === activeId;
+    root.appendChild(el("path", {
+      class: "pc-region" + (isOn ? " on" : ""),
+      d: shape.path,
+      "data-region": shape.id
+    }));
+  });
+
+  // 2. Refused Box (Top-Left)
+  const isRefusedOn = activeId === "refused";
+  const refGroup = el("g", {
+    class: "pc-refused-box" + (isRefusedOn ? " on" : ""),
+    "data-region": "refused",
+    cursor: "pointer"
+  });
+  refGroup.appendChild(el("rect", {
+    class: "pc-refused-rect",
+    x: 75, y: 16, width: 120, height: 42, rx: 6
+  }));
+  refGroup.appendChild(el("text", {class: "pc-refused-title", x: 135, y: 32, "text-anchor": "middle"}, "Refused on all 3"));
+  const refData = REGIONS.find(r => r.id === "refused")[currentMode];
+  refGroup.appendChild(el("text", {class: "pc-refused-sub", x: 135, y: 47, "text-anchor": "middle"},
+    refData.count.toLocaleString() + " (" + refData.pct + ")"));
+  root.appendChild(refGroup);
+
+  // 3. Circle outlines
+  for (const c of CIRCLES) {
+    root.appendChild(el("circle", {class: "pc-circle pc-" + c.cls, cx: c.x, cy: c.y, r: c.r}));
+  }
+
+  // 4. Circle Architecture Headers
+  // riscv64 (Top Center)
+  root.appendChild(el("text", {class: "pc-triscv", x: CIRCLES[0].x, y: 22, "text-anchor": "middle"}, "riscv64"));
+  root.appendChild(el("text", {class: "pc-arch-stat", x: CIRCLES[0].x, y: 34, "text-anchor": "middle"},
+    t.circles.riscv64.count.toLocaleString() + " (" + t.circles.riscv64.pct + ")"));
+
+  // x86_64 (Bottom Left)
+  root.appendChild(el("text", {class: "pc-tx86", x: 110, y: 382, "text-anchor": "start"}, "x86_64"));
+  root.appendChild(el("text", {class: "pc-arch-stat", x: 110, y: 395, "text-anchor": "start"},
+    t.circles.x86_64.count.toLocaleString() + " (" + t.circles.x86_64.pct + ")"));
+
+  // aarch64 (Bottom Right)
+  root.appendChild(el("text", {class: "pc-tarm", x: 440, y: 382, "text-anchor": "end"}, "aarch64"));
+  root.appendChild(el("text", {class: "pc-arch-stat", x: 440, y: 395, "text-anchor": "end"},
+    t.circles.aarch64.count.toLocaleString() + " (" + t.circles.aarch64.pct + ")"));
+
+  // 5. Region text labels & counts inside centroids
+  SHAPES.forEach((shape) => {
+    const reg = REGIONS.find(r => r.id === shape.id);
+    const isOn = shape.id === activeId;
+    const data = reg[currentMode];
+
+    // Label
+    root.appendChild(el("text", {
+      class: "pc-lbl" + (isOn ? " on" : ""),
+      x: shape.x, y: shape.y - 12
+    }, reg.label));
+
+    // Count
+    root.appendChild(el("text", {
+      class: "pc-cnt" + (isOn ? " on" : ""),
+      x: shape.x, y: shape.y + 3
+    }, data.count.toLocaleString()));
+
+    // Percentage
+    root.appendChild(el("text", {
+      class: "pc-pct" + (isOn ? " on" : ""),
+      x: shape.x, y: shape.y + 15
+    }, data.pct));
+  });
+
+  // 6. Right Inspector Card (foreignObject)
+  const box = el("foreignObject", {x: 475, y: 15, width: 310, height: 385});
+  const card = document.createElement("div");
+  card.className = "pc-htmlcard";
+
+  if (activeId) {
+    const region = REGIONS.find((r) => r.id === activeId);
+    const data = region[currentMode];
+    const modeLabel = (currentMode === "variants") ? "Variants" : "Operators";
+
+    let targetsHtml = "";
+    if (region.id === "refused") {
+      targetsHtml = '<span class="arch-tag fail">riscv64 ✗</span>' +
+                    '<span class="arch-tag fail">x86_64 ✗</span>' +
+                    '<span class="arch-tag fail">aarch64 ✗</span>';
+    } else {
+      targetsHtml =
+        '<span class="arch-tag ' + (region.targets.riscv64 ? "pass" : "fail") + '">riscv64 ' + (region.targets.riscv64 ? "✓" : "✗") + '</span>' +
+        '<span class="arch-tag ' + (region.targets.x86_64 ? "pass" : "fail") + '">x86_64 ' + (region.targets.x86_64 ? "✓" : "✗") + '</span>' +
+        '<span class="arch-tag ' + (region.targets.aarch64 ? "pass" : "fail") + '">aarch64 ' + (region.targets.aarch64 ? "✓" : "✗") + '</span>';
+    }
+
+    let examplesHtml = "";
+    if (region.examples && region.examples.length) {
+      examplesHtml = region.examples.map(ex => '<span class="code-chip">' + ex + '</span>').join("");
+    }
+
+    card.innerHTML =
+      '<button class="pc-close" title="Close inspector (Esc)" aria-label="Close">×</button>' +
+      '<div class="card-header">' +
+        '<div class="card-title">' + region.title + '</div>' +
+        '<div class="card-pills">' + targetsHtml + '</div>' +
+      '</div>' +
+      '<div class="card-stat">' +
+        '<span class="stat-num">' + data.count.toLocaleString() + '</span>' +
+        '<span class="stat-pct">(' + data.pct + ')</span>' +
+        '<span class="stat-mode">' + modeLabel + '</span>' +
+      '</div>' +
+      '<div class="card-section">' +
+        '<div class="section-label">Architectural Root Cause</div>' +
+        '<div class="card-desc">' + region.desc + '</div>' +
+      '</div>' +
+      '<div class="card-section">' +
+        '<div class="section-label">Example Operators / Symbols</div>' +
+        '<div class="card-examples">' + examplesHtml + '</div>' +
+      '</div>' +
+      '<div class="card-source">' + region.rootCause + '</div>';
+  } else {
+    // Default Overview Card
+    const modeLabel = (currentMode === "variants") ? "57,480 Variants" : "1,379 Operators";
+    card.innerHTML =
+      '<div class="card-header">' +
+        '<div class="card-title">Cross-Architecture Lowering Inspector</div>' +
+      '</div>' +
+      '<div class="card-stat">' +
+        '<span class="stat-num">' + t.lowered.toLocaleString() + ' / ' + t.total.toLocaleString() + '</span>' +
+        '<span class="stat-pct">(' + t.pct + ')</span>' +
+        '<span class="stat-mode">' + modeLabel + '</span>' +
+      '</div>' +
+      '<div class="card-section">' +
+        '<div class="section-label">Architecture Coverage</div>' +
+        '<div class="card-desc">' +
+          '• <b>riscv64:</b> ' + t.circles.riscv64.count.toLocaleString() + ' (' + t.circles.riscv64.pct + ')<br>' +
+          '• <b>x86_64:</b> ' + t.circles.x86_64.count.toLocaleString() + ' (' + t.circles.x86_64.pct + ')<br>' +
+          '• <b>aarch64:</b> ' + t.circles.aarch64.count.toLocaleString() + ' (' + t.circles.aarch64.pct + ')<br>' +
+          '• <b>Universal (All 3):</b> ' + REGIONS[0][currentMode].count.toLocaleString() + ' (' + REGIONS[0][currentMode].pct + ')' +
+        '</div>' +
+      '</div>' +
+      '<div class="card-section" style="margin-top:10px;">' +
+        '<div class="card-desc" style="color:var(--muted); font-size:11px;">' +
+          'Click any region in the Venn diagram or a chip above to inspect why variants pass or fail on each architecture.' +
+        '</div>' +
+      '</div>';
+  }
+
+  box.appendChild(card);
+  root.appendChild(box);
+
+  document.getElementById("venn-stage").replaceChildren(root);
+  syncFrameSize();
+}
+
+// Event Listeners
+document.getElementById("btn-variants").addEventListener("click", () => {
+  if (currentMode === "variants") return;
+  currentMode = "variants";
+  document.getElementById("btn-variants").classList.add("active");
+  document.getElementById("btn-variants").setAttribute("aria-selected", "true");
+  document.getElementById("btn-probes").classList.remove("active");
+  document.getElementById("btn-probes").setAttribute("aria-selected", "false");
+  render();
+});
+
+document.getElementById("btn-probes").addEventListener("click", () => {
+  if (currentMode === "probes") return;
+  currentMode = "probes";
+  document.getElementById("btn-probes").classList.add("active");
+  document.getElementById("btn-probes").setAttribute("aria-selected", "true");
+  document.getElementById("btn-variants").classList.remove("active");
+  document.getElementById("btn-variants").setAttribute("aria-selected", "false");
+  render();
+});
+
+document.getElementById("chips-bar").addEventListener("click", (event) => {
+  const chip = event.target.closest("[data-region]");
+  if (chip) {
+    const clicked = chip.getAttribute("data-region");
+    activeId = (activeId === clicked) ? null : clicked;
+    render();
+  }
+});
+
+document.getElementById("venn-stage").addEventListener("click", (event) => {
+  if (event.target.closest(".pc-close")) {
+    activeId = null;
+    render();
+    return;
+  }
+  const reg = event.target.closest("[data-region]");
+  if (reg) {
+    const clicked = reg.getAttribute("data-region");
+    activeId = (activeId === clicked) ? null : clicked;
+    render();
+  }
+});
+
+document.addEventListener("keydown", (event) => {
+  if (event.key === "Escape" && activeId !== null) {
+    activeId = null;
+    render();
+  }
+});
+
+window.addEventListener("resize", syncFrameSize);
+if (window.ResizeObserver) new ResizeObserver(syncFrameSize).observe(document.body);
+render();
+</script>
+</body>
+</html>

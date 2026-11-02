@@ -1,0 +1,1265 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>GNU C Work Remaining</title>
+<!--
+  PCHQ, 2026-10-13, log 445. Dee: "i would like to use Python to represent the C
+  code ... one example for each remaining problem ... an html support page for
+  showing the code and the places highlighted". The same content, as text, is
+  SUPPORT_gnu_c_work_remaining.md beside this file. The riscv64 words in the
+  cards are from compiling the same program as GNU C
+  (Research/lower_HiOp/samples_l154/program.c, run elv2_l154).
+-->
+<style>
+:root {
+	--bg: #fbfaf7;
+	--fg: #1d1c1a;
+	--dim: #6b6862;
+	--line: #e3e0d8;
+	--codebg: #f3f1ec;
+	--panel: #ffffff;
+	--focus: #2f5bd3;
+	--open-bg: #fde4e1;
+	--open-fg: #a3271b;
+	--next-bg: #fff0c7;
+	--next-fg: #8a5a00;
+	--solved-bg: #dcf5e3;
+	--solved-fg: #17703a;
+	--out-bg: #e9e7e2;
+	--out-fg: #5d5a54;
+	--done-bg: #e1e9f7;
+	--done-fg: #2f4f8a;
+	--later-bg: #ece6f5;
+	--later-fg: #5b3f8c;
+	--hand-bg: #dcf1ef;
+	--hand-fg: #1d6b64;
+	--kw: #7a3e9d;
+	--str: #2a6f6b;
+	--com: #8a867e;
+	--num: #9a4a12;
+}
+@media (prefers-color-scheme: dark) {
+	:root:not([data-theme="light"]) {
+		--bg: #17171a;
+		--fg: #e9e7e2;
+		--dim: #a29f98;
+		--line: #34343a;
+		--codebg: #1f1f24;
+		--panel: #202026;
+		--focus: #8fb0ff;
+		--open-bg: #4a1f1c;
+		--open-fg: #ff9d8f;
+		--next-bg: #463812;
+		--next-fg: #ffd36b;
+		--solved-bg: #173a24;
+		--solved-fg: #7fe0a2;
+		--out-bg: #33332f;
+		--out-fg: #bdb9b0;
+		--done-bg: #22314d;
+		--done-fg: #a9c3ff;
+		--later-bg: #352a4a;
+		--later-fg: #cdb8f5;
+		--hand-bg: #163a37;
+		--hand-fg: #7fd6cc;
+		--kw: #d6a6f2;
+		--str: #8fd6cf;
+		--com: #8d8a84;
+		--num: #f0a774;
+	}
+}
+:root[data-theme="dark"] {
+	--bg: #17171a;
+	--fg: #e9e7e2;
+	--dim: #a29f98;
+	--line: #34343a;
+	--codebg: #1f1f24;
+	--panel: #202026;
+	--focus: #8fb0ff;
+	--open-bg: #4a1f1c;
+	--open-fg: #ff9d8f;
+	--next-bg: #463812;
+	--next-fg: #ffd36b;
+	--solved-bg: #173a24;
+	--solved-fg: #7fe0a2;
+	--out-bg: #33332f;
+	--out-fg: #bdb9b0;
+	--done-bg: #22314d;
+	--done-fg: #a9c3ff;
+	--later-bg: #352a4a;
+	--later-fg: #cdb8f5;
+	--hand-bg: #163a37;
+	--hand-fg: #7fd6cc;
+	--kw: #d6a6f2;
+	--str: #8fd6cf;
+	--com: #8d8a84;
+	--num: #f0a774;
+}
+* { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+body {
+	background: var(--bg);
+	color: var(--fg);
+	font-family: system-ui, sans-serif;
+	line-height: 1.45;
+}
+header {
+	padding: 12px 16px 8px;
+	border-bottom: 1px solid var(--line);
+}
+h1 { font-size: 1.25rem; margin: 0 0 4px; }
+.caption { color: var(--dim); font-size: 0.9rem; margin: 0 0 8px; }
+.bar { display: flex; flex-wrap: wrap; gap: 6px 10px; align-items: center; }
+.chip {
+	display: inline-block;
+	padding: 1px 8px;
+	border-radius: 999px;
+	font-size: 0.85rem;
+	white-space: nowrap;
+}
+.open { background: var(--open-bg); color: var(--open-fg); }
+.next { background: var(--next-bg); color: var(--next-fg); }
+.solved { background: var(--solved-bg); color: var(--solved-fg); }
+.out { background: var(--out-bg); color: var(--out-fg); }
+.done { background: var(--done-bg); color: var(--done-fg); }
+.later { background: var(--later-bg); color: var(--later-fg); }
+.hand { background: var(--hand-bg); color: var(--hand-fg); }
+button {
+	font: inherit;
+	color: var(--fg);
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	padding: 2px 10px;
+	cursor: pointer;
+}
+button:focus-visible, .mk:focus-visible, .entry:focus-visible { outline: 2px solid var(--focus); outline-offset: 1px; }
+button[aria-pressed="true"] { border-color: var(--focus); }
+.views { margin-left: auto; display: flex; gap: 4px; }
+#helpbox {
+	margin-top: 8px;
+	padding: 10px 12px;
+	background: var(--panel);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	font-size: 0.92rem;
+	max-width: 70ch;
+}
+#helpbox p { margin: 0 0 6px; }
+main {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr);
+	gap: 0;
+}
+@media (min-width: 980px) {
+	main { grid-template-columns: minmax(0, 1.25fr) minmax(320px, 1fr); }
+	#panel { position: sticky; top: 0; height: 100vh; overflow: auto; border-left: 1px solid var(--line); }
+}
+#codebox { padding: 12px 16px 24px; min-width: 0; }
+pre#code {
+	margin: 0;
+	background: var(--codebg);
+	border: 1px solid var(--line);
+	border-radius: 8px;
+	padding: 10px 0;
+	overflow-x: auto;
+	tab-size: 4;
+	-moz-tab-size: 4;
+	font-family: ui-monospace, monospace;
+	font-size: 0.9rem;
+	line-height: 1.6;
+}
+.ln { display: block; padding: 0 12px 0 0; white-space: pre; }
+.no {
+	display: inline-block;
+	width: 3.2em;
+	padding-right: 0.8em;
+	text-align: right;
+	color: var(--dim);
+	user-select: none;
+}
+.kw { color: var(--kw); }
+.str { color: var(--str); }
+.com { color: var(--com); }
+.num { color: var(--num); }
+.mk {
+	border-radius: 3px;
+	padding: 1px 1px;
+	cursor: pointer;
+	border-bottom: 2px solid currentColor;
+}
+.mk.open { color: var(--open-fg); background: var(--open-bg); }
+.mk.next { color: var(--next-fg); background: var(--next-bg); }
+.mk.solved { color: var(--solved-fg); background: var(--solved-bg); }
+.mk.later { color: var(--later-fg); background: var(--later-bg); }
+.mk.hand { color: var(--hand-fg); background: var(--hand-bg); }
+.mk.out { color: var(--out-fg); background: var(--out-bg); }
+.mk.picked { outline: 2px solid var(--focus); outline-offset: 1px; }
+.mk.flash { animation: flash 1.2s ease-out 1; }
+@keyframes flash { 0% { outline: 3px solid var(--focus); } 100% { outline: 2px solid transparent; } }
+.tag { font-size: 0.7em; vertical-align: super; color: var(--dim); margin-left: 1px; }
+#panel { background: var(--panel); min-width: 0; }
+#card { padding: 12px 16px; border-bottom: 1px solid var(--line); }
+#card .hint { color: var(--dim); margin: 0; }
+.card + .card { margin-top: 14px; padding-top: 12px; border-top: 1px dashed var(--line); }
+.card h2 { font-size: 1.05rem; margin: 0 0 4px; }
+.card .meta { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin-bottom: 8px; font-size: 0.85rem; color: var(--dim); }
+.card pre {
+	margin: 4px 0 8px;
+	padding: 6px 8px;
+	background: var(--codebg);
+	border: 1px solid var(--line);
+	border-radius: 6px;
+	white-space: pre-wrap;
+	word-break: break-word;
+	font-family: ui-monospace, monospace;
+	font-size: 0.85rem;
+}
+.card .label { font-size: 0.8rem; color: var(--dim); margin: 6px 0 0; }
+.card p { margin: 4px 0 6px; }
+.card code { font-family: ui-monospace, monospace; font-size: 0.92em; }
+.card table { border-collapse: collapse; margin: 6px 0 8px; font-size: 0.9rem; }
+.card th, .card td { text-align: left; padding: 3px 8px 3px 0; border-bottom: 1px solid var(--line); vertical-align: top; }
+.card th { color: var(--dim); font-weight: normal; }
+.card td.same { color: var(--dim); }
+#close { display: none; float: right; }
+#index { padding: 10px 16px 24px; }
+#settled { margin: 2px 0 6px; font-size: 0.85rem; }
+#index h3 { font-size: 0.9rem; margin: 12px 0 4px; }
+#index h3 .node { color: var(--dim); font-weight: normal; }
+#index ul { list-style: none; margin: 0; padding: 0; }
+.entry {
+	display: flex;
+	gap: 8px;
+	align-items: baseline;
+	padding: 2px 4px;
+	border-radius: 4px;
+	cursor: pointer;
+}
+.entry:hover { background: var(--codebg); }
+.dot { width: 0.7em; height: 0.7em; border-radius: 50%; flex: none; display: inline-block; }
+.dot.open { background: var(--open-fg); }
+.dot.next { background: var(--next-fg); }
+.dot.solved { background: var(--solved-fg); }
+.dot.out { background: var(--out-fg); }
+.dot.done { background: var(--done-fg); }
+.dot.later { background: var(--later-fg); }
+.dot.hand { background: var(--hand-fg); }
+.entry .items { color: var(--dim); font-size: 0.8rem; margin-left: auto; white-space: nowrap; }
+.sub { color: var(--dim); font-size: 0.8rem; margin: 6px 0 2px 4px; }
+@media (max-width: 979px) {
+	#card.shown {
+		position: fixed;
+		left: 0;
+		right: 0;
+		bottom: 0;
+		max-height: 55vh;
+		overflow: auto;
+		background: var(--panel);
+		border-top: 2px solid var(--focus);
+		box-shadow: 0 -4px 16px rgba(0, 0, 0, 0.18);
+		z-index: 5;
+	}
+	#card:not(.shown) { display: none; }
+	#close { display: inline-block; }
+	#index { border-top: 1px solid var(--line); }
+}
+</style>
+</head>
+<body>
+<header>
+	<h1>GNU C work remaining</h1>
+	<p class="caption">Figure 1. The list's problems, each marked once in one small program. It shows what the model captures, not how long each takes.</p>
+	<div class="bar" id="bar">
+		<button id="help" aria-expanded="false" aria-controls="helpbox">?</button>
+		<div class="views" role="group" aria-label="view">
+			<button data-view="py" aria-pressed="true">Python</button>
+			<button data-view="c" aria-pressed="false">GNU C</button>
+		</div>
+	</div>
+	<div id="helpbox" hidden>
+		<p>GNU C, written in Python's syntax. Holders are C's types under ctypes' names: <code>c_int</code> is <code>int</code>, <code>c_char</code> plain <code>char</code>, <code>c_longdouble</code> <code>long double</code>, <code>POINTER(Point)</code> a <code>struct point *</code>, <code>byref(x)</code> is <code>&amp;x</code>. Operators keep C's meaning: <code>/</code> on two <code>c_int</code> is C's division. An import stands for an <code>#include</code>; <code>libc</code> is the C library, <code>stdatomic</code> is <code>&lt;stdatomic.h&gt;</code>. A comment after <code>#</code> says in plain words what its line does.</p>
+		<p>A mark is one problem. Click or tap it, or a line of the list on the right, for its card. Each problem is marked once; the same problem comes back unmarked elsewhere (every first assignment is a declaration, every literal a constant, every variable a name).</p>
+		<p>Colours: remains; done (some by hand now, maybe modelled later, at Dee's word); later, with our own optimizing of arch-opcodes; out: by the all-three-architectures rule, outside our configuration (GNU C, <code>-O0 -g</code>), clang's own gap, or closed as needing nothing more. The list shows what remains; its button shows the rest.</p>
+		<p>Unmarked code: HiOps that <code>held_HiOp_wrapper</code> held and <code>map_HiOp_to_unit()</code> lowered and cut, among the 321,882 that clang lowered for riscv64 (run elv2_l156). The riscv64 words in the cards come from run elv2_l154, which compiled the same program as GNU C (the GNU C button), less the 9 lines added on 2026-10-14 for the cards on the two faults and the other clang.</p>
+	</div>
+</header>
+<main>
+	<section id="codebox" aria-label="the program">
+		<pre id="code"></pre>
+	</section>
+	<aside id="panel" aria-label="the problems">
+		<div id="card" aria-live="polite"></div>
+		<nav id="index"></nav>
+	</aside>
+</main>
+<script>
+"use strict";
+
+// The program, in Python's syntax. «card ids|text» marks a problem.
+const PYTHON = [
+	"«c37|# the Units: -std=gnu17 -O0 -g, riscv64»",
+	"from ctypes import *  # c_int is C's int",
+	"from typing import NoReturn",
+	"from stdatomic import *  # C's <stdatomic.h>",
+	"# the C library's functions",
+	"from libc import fopen, fprintf, strlen",
+	"",
+	"«c20|class Point(Structure):»  # C: struct point",
+	"\t«c20|_fields_ = [(\"x\", c_int), (\"y\", c_int)]»",
+	"",
+	"class Mode(Structure):  # C: struct mode",
+	"\t# level is 13 bits wide",
+	"\t_fields_ = [«c40|(\"level\", c_int, 13)»]",
+	"",
+	"«c5|calls: c_int = 0»  # a global int, first 0",
+	"hits = atomic_int(0)  # a global atomic_int, first 0",
+	"flag = c_char(0)  # a global char: 1 byte",
+	"",
+	"«c21|def mean(total: c_int, count: c_int) -> c_int:»",
+	"\t# C's int division: 7 / 2 is 3",
+	"\taverage = «c33ab|total / count»",
+	"\treturn average",
+	"",
+	"def bump(c: c_char) -> c_int:",
+	"\tbumped = «c31|c + 1»  # c: a plain char, 1 byte",
+	"\treturn bumped",
+	"",
+	"def blend(a: c_double, b: c_double,",
+	"\t\tc: c_double) -> c_double:",
+	"\tfused = «c15|a * b + c»",
+	"\tscaled = «c38|fused / b»",
+	"\treturn scaled",
+	"",
+	"def widen(x: c_longdouble,",
+	"\t\ty: c_longdouble) -> c_longdouble:",
+	"\t# a long double: 16 bytes on riscv64",
+	"\ttotal = «c32|x + y»",
+	"\treturn total",
+	"",
+	"def classify(x: c_double) -> c_int:",
+	"\t# gives 0 if x is NaN, 1 if infinite,",
+	"\t# 4 if normal, 3 if subnormal, 2 if zero",
+	"\tkind = «c48|fpclassify(0, 1, 4, 3, 2, x)»",
+	"\treturn kind",
+	"",
+	"def move(p: POINTER(Point)) -> None:",
+	"\t# p.contents: the Point p points to (*p)",
+	"\t«c12|p.contents.x += p.contents.y»",
+	"",
+	"def seen() -> c_int:",
+	"\tnow = «c13,c22|calls»  # reads the global calls",
+	"\treturn now",
+	"",
+	"def build(n: c_int) -> None:",
+	"\tbuf = «c17|(c_int * n)()»  # an array of n ints",
+	"\torigin = Point(«c5,c19|y=1»)  # x is 0, y is 1",
+	"\tmode = Mode()",
+	"\t# level keeps 13 bits: 5000 becomes -3192",
+	"\t«c40|mode.level = 5000»",
+	"\t«c33c|count: c_int»  # declared, given no value",
+	"\tcount = «c33c|count» + «c14|1»",
+	"\t# GNU C's ({ ... }): a block whose",
+	"\t# last line gives its value",
+	"\t«c11|def block():»",
+	"\t\t«c11|t = n * 2»",
+	"\t\t«c11|return t + 1»",
+	"\tk = «c11|block()»  # with n = 5, k is 11",
+	"\tcallback = «c18|mean»  # mean itself, not a call",
+	"",
+	"def share(order: c_int) -> None:",
+	"\t# byref(x) hands over where x lives,",
+	"\t# so the call changes x itself. Each add",
+	"\t# is one step no other thread can split,",
+	"\t# and gives back x's old value, which",
+	"\t# this program doesn't keep.",
+	"\t# hits += 1",
+	"\t«c1|atomic_fetch_add(byref(hits), 1)»",
+	"\t# flag += 1",
+	"\t«c47|sync_fetch_and_add_4(byref(flag), 1)»",
+	"\t# gives back nothing; memory reads and",
+	"\t# writes may not cross this line",
+	"\t«c34|atomic_thread_fence(order)»",
+	"",
+	"def report(path: bytes, name: bytes) -> c_int:",
+	"\t# opens the file at path, to write",
+	"\tf = fopen(path, b\"w\")",
+	"\tsize = strlen(name)  # the bytes in name",
+	"\t# fprintf writes size into the file f, and",
+	"\t# gives back a byte count, dropped here",
+	"\tfprintf(f, b\"%d\\n\", size)",
+	"\treturn size",
+	"",
+	"# never returns to its caller",
+	"def stop() -> «c39|NoReturn»:",
+	"\twhile True:  # loops forever",
+	"\t\tpass",
+];
+
+// The same program as GNU C: Research/lower_HiOp/samples_l154/program.c, line for line,
+// plus 7 lines added on 2026-10-14 for cards c47 and c48 (flag, classify and the
+// __sync line). program.c doesn't have them, so their cards show no riscv64 words
+// from it.
+const GNU_C = [
+	"/* The example program of 
+	"   Planning/node_0_0_projects/node_0_0_0_pseudocoup/SUPPORT_gnu_c_work_remaining_in_python.html;",
+	"   each function here is the function of the same name there. */",
+	"#include <stdatomic.h>",
+	"",
+	"/* What <stdio.h> and <string.h> declare, written out: the Units are lowered",
+	"   with -nostdlibinc, which keeps only clang's own headers. */",
+	"typedef struct FILE FILE;",
+	"FILE *fopen(const char *path, const char *mode);",
+	"int fprintf(FILE *f, const char *format, ...);",
+	"unsigned long strlen(const char *s);",
+	"",
+	"«c20|struct point { int x; int y; };»",
+	"struct mode { «c40|int level : 13;» };",
+	"",
+	"«c5|int calls = 0;»",
+	"atomic_int hits = 0;",
+	"char flag = 0;",
+	"",
+	"«c21|int mean(int total, int count) {»",
+	"\tint average = «c33ab|total / count»;",
+	"\treturn average;",
+	"}",
+	"",
+	"int bump(char c) {",
+	"\tint bumped = «c31|c + 1»;",
+	"\treturn bumped;",
+	"}",
+	"",
+	"double blend(double a, double b, double c) {",
+	"\tdouble fused = «c15|a * b + c»;",
+	"\tdouble scaled = «c38|fused / b»;",
+	"\treturn scaled;",
+	"}",
+	"",
+	"long double widen(long double x, long double y) {",
+	"\tlong double total = «c32|x + y»;",
+	"\treturn total;",
+	"}",
+	"",
+	"int classify(double x) {",
+	"\tint kind = «c48|__builtin_fpclassify(0, 1, 4, 3, 2, x)»;",
+	"\treturn kind;",
+	"}",
+	"",
+	"void move(struct point *p) {",
+	"\t«c12|p->x += p->y;»",
+	"}",
+	"",
+	"int seen(void) {",
+	"\tint now = «c13,c22|calls»;",
+	"\treturn now;",
+	"}",
+	"",
+	"void build(int n) {",
+	"\tint buf«c17|[n]»;",
+	"\tstruct point origin = { «c5,c19|.y = 1» };",
+	"\tstruct mode mode;",
+	"\t«c40|mode.level = 5000;»",
+	"\t«c33c|int count;»",
+	"\tcount = «c33c|count» + «c14|1»;",
+	"\tint k = «c11|({ int t = n * 2; t + 1; })»;",
+	"\tint (*callback)(int, int) = «c18|mean»;",
+	"}",
+	"",
+	"void share(int order) {",
+	"\t«c1|atomic_fetch_add(&hits, 1);»",
+	"\t«c47|__sync_fetch_and_add_4(&flag, 1);»",
+	"\t«c34|atomic_thread_fence(order);»",
+	"}",
+	"",
+	"int report(const char *path, const char *name) {",
+	"\tFILE *f = fopen(path, \"w\");",
+	"\tint size = strlen(name);",
+	"\tfprintf(f, \"%d\\n\", size);",
+	"\treturn size;",
+	"}",
+	"",
+	"«c39|__attribute__((noreturn))» void stop(void) {",
+	"\twhile (1)",
+	"\t\t;",
+	"}",
+];
+
+// One card per problem. status: open, next, solved, out, done.
+// rv: the riscv64 words clang wrote for the marked line (run elv2_l154).
+const CARDS = {
+	c33ab: {
+		title: "Divide by zero", items: "33", part: "its first two cases", status: "solved",
+		node: "map_LoOp_to_lean",
+		c: "int average = total / count;",
+		rv: "lw · lw · divw · sw",
+		text: ["<code>total / count</code> divides one int by another. When <code>count</code> is 0, C gives no answer: the C standard leaves it undefined, so each machine does what it does.",
+			"riscv64 does give an answer. Its divide word, <code>divw</code>, gives -1 when it divides by 0, and the program carries on; it never stops with an error. So on riscv64, 7 / 0 is -1. Sail, the definition of riscv64 we run, writes this down in its <code>DIVW</code> clause (<code>mext_insts.sail</code>, line 126).",
+			"AutoPoly's emulation runs Sail's definition, so it gives -1 too, the same as riscv64. In other words: where C says nothing, the machine decides, and we follow the machine. A float too big for an int is the same case: turning a double that holds 1e20 into an int has no answer in C, and riscv64's conversion word gives 2,147,483,647, the largest int, as SoftFloat's riscv64 file says (SoftFloat is the code Sail's float words are written with)."],
+		size: "every divide, remainder, shift and float-to-integer conversion",
+		src: "log 444; run elv2_l154",
+	},
+	c31: {
+		title: "Plain char", items: "31", status: "solved",
+		node: "map_LoOp_to_lean",
+		c: "char c;  …  int bumped = c + 1;",
+		rv: "lbu · c.addiw · sw",
+		text: ["<code>c</code> is a plain <code>char</code>: written with no <code>signed</code> or <code>unsigned</code>. C lets each machine choose whether a plain char can be negative.",
+			"riscv64 chose no: its plain char holds 0 to 255. So the byte 0xC8 (200) plus 1 is 201. x86-64 chose yes (-128 to 127): there the same byte is -56, and plus 1 is -55. Same program, same byte, two answers.",
+			"The Unit clang wrote already carries riscv64's choice: its load word is <code>lbu</code>, riscv64's word that loads a byte as unsigned. AutoPoly emulates riscv64's words, so it gives 201, as riscv64 does. Nothing more to model."],
+		size: "38,465 of the 307,820 kept HiOps hold a plain char or a long double",
+		src: "logs 434, 444; run elv2_l154",
+	},
+	c38: {
+		title: "Rounding mode", items: "38", status: "solved",
+		node: "map_LoOp_to_lean",
+		c: "double scaled = fused / b;",
+		rv: "fld · fld · fdiv.d fa5, fa5, fa4, dyn · fsd",
+		text: ["<code>fused / b</code> divides two doubles. Most answers don't fit in a double exactly, so the last bit is rounded, and riscv64 has five rounding rules: to nearest, toward zero, down, up, and to nearest with ties away from zero. The rule in use is the rounding mode.",
+			"Clang writes the divide as the word <code>fdiv.d fa5, fa5, fa4, dyn</code>. <code>dyn</code> means: round by the mode stored right now in the machine's float control register, <code>fcsr</code>. The same word records in <code>fcsr</code> whether it had to round (its flags). So the answer depends on a setting kept outside the program's values.",
+			"Sail's float words read and set <code>fcsr</code> just as riscv64's do, and the SoftFloat slices we made cover all five modes, so AutoPoly's emulation can follow whatever mode is set. So far we have emulated mode 1 (toward zero) only. Mode 0 (to nearest), which C uses unless a program changes it, we have sliced but not yet emulated."],
+		size: "every float HiOp",
+		src: "logs 435, 444; softfloat_slices/emulations/README.md",
+	},
+	c1: {
+		title: "C11 atomic", items: "1, 2", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "atomic_fetch_add(&hits, 1);",
+		rv: "auipc [hits] · addi · amoadd.w.aqrl · sw",
+		text: ["<code>atomic_fetch_add(byref(hits), 1)</code> adds 1 to <code>hits</code> as one step that no other thread can split, and gives back the value <code>hits</code> had before. <code>byref(hits)</code> hands over where <code>hits</code> lives (C: <code>&amp;hits</code>), so the call changes <code>hits</code> itself. This line doesn't keep the value the call gives back: the line is there for the add.",
+			"I held these by hand: 20 builtins, the 18 atomic ones (14 <code>__c11_atomic_*</code> builtins behind <code>&lt;stdatomic.h&gt;</code>, and 4 of GNU's <code>__atomic_*</code>) and 2 others (<code>__builtin_va_start</code>, <code>__builtin_assume_aligned</code>). A memory order says how strictly other threads must see a step in order. I wrote each of the 17 that take a memory order twice, once with the order as a holder and once with the order written as the strictest, <code>seq_cst</code>, and each of the 3 without one once: 3 + 17 × 2 = 37 held functions. The product's own code then lowered and cut them on all three machines (run elv2_l158).",
+			"On riscv64, clang lowers <code>atomic_fetch_add</code> to one word, <code>amoadd.w.aqrl</code>: an add done in memory as one step, ordered against the words before and after it. Clang lowers a compare-and-exchange, a <code>nand</code> and an exchange of one byte to a small loop instead: <code>lr.w</code> reads the place and watches it, <code>sc.w</code> writes only if no other thread wrote there in between, and the loop tries again if one did."],
+		size: "20 builtins, 37 held functions",
+		src: "run elv2_l158; log 449",
+	},
+	c15: {
+		title: "Fused multiply-add", items: "15", status: "later",
+		node: "map_HiOp_to_unit",
+		c: "double fused = a * b + c;",
+		rv: "fld · fld · fld · fmadd.d fa5, fa5, fa4, fa3, dyn · fsd",
+		text: ["<code>a * b + c</code> on doubles is two HiOps, a multiply then an add, and each rounds its answer to fit a double. Clang writes the pair as one riscv64 word, <code>fmadd.d</code>, which multiplies and adds and rounds only once, at the end.",
+			"Rounding once and rounding twice can give different numbers. With a = 1.0000000000000002, b = 0.9999999999999998 and c = -1: rounding twice gives 0.0 (a × b rounds to exactly 1, and 1 - 1 is 0); rounding once gives -4.93 × 10<sup>-32</sup>, the exact answer (I checked both in Python 3.13, with <code>math.fma</code>). So our Units for <code>*</code> then <code>+</code> don't give clang's word, and can give another number.",
+			"Later, at your word: \"we will get it later when we find a way to optimize arch-opcodes.\" Until then, PseudoCoup composes <code>*</code>'s Unit and <code>+</code>'s Unit, rounding twice, so a transpiled <code>a * b + c</code> can differ in its last bits from clang's compiled one."],
+		size: "4 operators (a * b + c, a * b - c, and += and -= with a product), on each float holder",
+		src: "log 432; run elv2_l154",
+	},
+	c40: {
+		title: "Bit-field", items: "40", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "struct mode { int level : 13; };  …  mode.level = 5000;",
+		rv: "lhu · c.lui · c.and · addi · sh2add · sh: the store keeps the low 13 bits",
+		text: ["<code>(\"level\", c_int, 13)</code> makes <code>level</code> a bit-field: an <code>int</code> kept in 13 bits of the <code>int</code> that holds it (C: <code>int level : 13</code>). The field is where its holder lives, a context: clang keeps the width out of the type. 13 bits hold -4,096 to 4,095.",
+			"5,000 doesn't fit. The store word clang writes keeps only the low 13 bits, and as a signed 13-bit number those bits mean 5,000 - 8,192 = -3,192. So after <code>mode.level = 5000</code>, <code>mode.level</code> is -3,192 (my reading of the bits; Python's ctypes gives the same).",
+			"Solved: a complex HiOp, made of HiOps we have. Clang's words for the store do five things, each a HiOp we have: load the <code>int</code> that holds the field; clear the field's 13 bits with <code>&amp;</code>; move the new value into place with <code>&lt;&lt;</code>; join the two with <code>|</code>; store the <code>int</code> back. Where the field sits inside its struct is the struct's layout, which the declarations' rules give (by hand).",
+			"2026-10-15, log 479: modelled as a context, by automation. The field's fetch and its store are each lowered alone, once, and put where a plain field's access stood; every operator keeps its own Unit. C's value in 1,092 of 1,092 riscv64 functions (runs elv2_l171, elv2_l172). Code: <code>model_HiOps/model_contexts</code>."],
+		size: "one fetch and one store per field, lowered alone; no operator is lowered again",
+		src: "log 443; run elv2_l154; log 479, runs elv2_l171 and elv2_l172",
+	},
+	c17: {
+		title: "Run-time array", items: "17", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "int buf[n];",
+		rv: "lwu · c.mv · sd · slli · c.addi · andi · c.mv · c.sub · c.mv sp, a1: it moves the stack pointer",
+		text: ["<code>(c_int * n)()</code> makes an array of <code>n</code> ints (C: <code>int buf[n];</code>), where <code>n</code> is known only while the program runs, not while it is compiled.",
+			"Clang's riscv64 words for that line make room for the array on the stack, the memory where a function keeps its locals: the words move the stack pointer (the register that marks where that memory ends) down by 4 × n bytes. In other words, the array gets its room when its line runs.",
+			"I handled it by hand, as a declaration under the ledger's rules (the ledgerer's <code>SUPPORT_gnu_c_declarations_by_hand.md</code>): the ledger gives the array its room when that line runs."],
+		size: "3 of GNU C's 14 type kinds",
+		src: "log 431; run elv2_l154",
+	},
+	c18: {
+		title: "Function as pointer", items: "18", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "int (*callback)(int, int) = mean;",
+		rv: "auipc [mean] · addi · sd",
+		text: ["<code>callback = mean</code> stores the function <code>mean</code> itself, not a call to it. What the line stores is where <code>mean</code>'s code sits in memory: its address. C turns the function into that address without being asked; clang calls such silent changes conversions.",
+			"This card holds three such conversions. Run elv2_l155 lowered each, and found each needs nothing. A function's name becomes its address: here clang's words <code>auipc</code> and <code>addi</code> build the address through a relocation, a blank in the address that the ledger fills (see the card Relocation). <code>(void)p-&gt;a;</code> throws a value away: clang writes no word for it. <code>p-&gt;result = 0;</code> stores a constant, 0.",
+			"So none of the three is a problem once lowered: each is either no word at all, or words we already have."],
+		size: "3 of clang's 69 conversion kinds, and 2 unsure",
+		src: "log 431; run elv2_l154",
+	},
+	c19: {
+		title: "Designated initializer", items: "19", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "v.x  is  v[0]   ·   __builtin_choose_expr(1, a, b)  is  a   ·   __builtin_LINE()  is a constant",
+		rv: "v[0] on the extended vector ev4si is a kept HiOp: 23 variants lowered (log 424's run)",
+		text: ["<code>Point(y=1)</code> sets <code>y</code> by its name and leaves <code>x</code> at 0, so <code>origin</code> is (0, 1). In C this is a designated initializer, <code>{ .y = 1 }</code>. I handled it by hand, with the declarations.",
+			"This card holds 7 kinds that looked new; each is a HiOp we have, or nothing at all. <code>v.x</code> on a vector <code>v</code> is <code>v[0]</code>: the same subscript, with the constant 0. <code>__builtin_choose_expr(1, a, b)</code> is just <code>a</code>: clang picks while compiling and writes no word for the choice; clang writes no word for GNU's <code>fallthrough</code> (a note between the cases of a switch) either (run elv2_l155). <code>__builtin_LINE()</code> is the line's number, a constant. <code>__FUNCTION__</code> is another name for <code>__func__</code>, the function's name as text.",
+			"<code>asm</code> (machine words a programmer writes into C by hand) is out by the rule of all three machines: its words belong to one machine."],
+		size: "7 kinds",
+		src: "logs 367, 431",
+	},
+	c11: {
+		title: "Statement expression", items: "11", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "int k = ({ int t = n * 2; t + 1; });",
+		rv: "lw · slliw · sw · lw · c.addiw · sw · lw · sw",
+		text: ["<code>block()</code> stands for GNU C's statement expression, <code>({ int t = n * 2; t + 1; })</code>: a block of statements whose last statement gives the block's value. With n = 5, t is 10, the block's value is 11, and k is 11.",
+			"When run elv2_l155 held the block inside a function, clang lowered it on all three machines into words we already have: the reads and the multiply of <code>n * 2</code>, the add of <code>t + 1</code>, a copy of the value through a slot on the stack, and the store into <code>k</code>.",
+			"So nothing new to model. Clang had refused it in the grid, but the fault was ours: the code that wrote the grid's held sources (now <code>held_HiOp_wrapper</code>) put the block outside any function, to take its type for the result field, and GNU C doesn't allow a statement expression there."],
+		size: "2 variants",
+		src: "log 413; run elv2_l154",
+	},
+	c39: {
+		title: "Attribute", items: "39", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "__attribute__((noreturn)) void stop(void) { while (1) ; }",
+		rv: null,
+		text: ["<code>NoReturn</code> (C: <code>__attribute__((noreturn))</code>) says <code>stop</code> never comes back to its caller; here <code>stop</code> loops forever. GNU C has 113 attributes like this one. I sorted them by hand, each by what it changes (the ledgerer's <code>SUPPORT_gnu_c_declarations_by_hand.md</code>, Table 3).",
+			"<code>noreturn</code> changes no value. Its one effect is on the caller: since <code>stop</code> never returns, clang leaves out the caller's words that would run after the call (on riscv64, 7 words instead of 12). Those are the caller's own words, already in the caller's Units, so the ledger has nothing to keep."],
+		size: "113 attributes",
+		src: "logs 430, 436",
+	},
+	c37: {
+		title: "Build flags", items: "37", status: "out",
+		node: "map_HiOp_to_unit",
+		c: "clang -std=gnu17 -O0 -g --target=riscv64-unknown-linux-gnu -c",
+		rv: "with -ffp-contract=off, blend's a * b + c is fmul.d · fadd.d (two words, not one fmadd.d); with -fsigned-char, bump's c + 1 reads the byte with lb, so 0xC8 + 1 is -55",
+		text: ["A program is compiled with flags, and some flags change what the program computes. Our configuration is fixed: GNU C (<code>-std=gnu17</code>), no optimizing (<code>-O0</code>), with debugging (<code>-g</code>), for riscv64.",
+			"Two flags as examples, which run elv2_l154 compiled: with <code>-ffp-contract=off</code>, clang writes <code>blend</code>'s <code>a * b + c</code> as two words, <code>fmul.d</code> then <code>fadd.d</code>, rounding twice; with <code>-fsigned-char</code>, a plain char can be negative, so <code>bump</code>'s 0xC8 + 1 is -55, not 201.",
+			"Out, at your words: \"if it changes the computational natural of the program, thats on clang.\" A program built with other flags is outside our configuration. These two flags change what C means rather than optimize, and your rule covers them the same."],
+		size: "329 language options in clang, not sorted; the five code bases' build files not read",
+		src: "logs 435, 436; run elv2_l154",
+	},
+	c32: {
+		title: "Runtime routine", items: "32", status: "solved",
+		node: "map_HiOp_to_unit",
+		c: "long double total = x + y;",
+		rv: "ld · ld · ld · ld · call __addtf3 · sd · sd",
+		text: ["<code>x + y</code> on <code>long double</code>s: on riscv64 a long double is 16 bytes, and riscv64 has no word that adds two of them. So clang writes a call, <code>call __addtf3</code>, to a routine that adds them with ordinary integer words.",
+			"Such routines are compiler-rt: LLVM's library of the small routines that compiled code calls for what the machine can't do in one word. Done: run elv2_l159 lowered compiler-rt whole for riscv64, optimized: 155 of its 159 files. It left the other 4 out, because they need the C library's headers.",
+			"The 54 routines that riscv64's Units call, with the routines those call in turn, are 58 in all: 5,830 words, using 144 different arch-opcodes. AutoPoly runs them whole, as it runs every Unit."],
+		size: "99,150 of the 321,882 riscv64 Units call a compiler-rt routine",
+		src: "run elv2_l159; log 449",
+	},
+	c21: {
+		title: "The frame", items: "21", status: "solved",
+		node: "extract_unit_from_LoHiOp",
+		c: "int mean(int total, int count) {  …  }",
+		rv: "mean, 16 words: c.addi · c.sdsp · c.sdsp · c.addi4spn · sw · sw · lw · lw · divw · sw · lw · addi · c.ldsp · c.ldsp · c.addi16sp · c.jr. The Unit of total / count: lw · lw · divw · sw",
+		text: ["A function's words open and close with its frame: words that make room for its locals and save registers, then at the end put them back and return. In <code>mean</code>'s 16 words, the 4 words <code>lw · lw · divw · sw</code> are <code>total / count</code>: load total, load count, divide, store the answer. The other 12 open and close the frame, store the two parameters, and return.",
+			"<code>cut</code> (in <code>extract_unit_from_LoHiOp</code>) takes the HiOp's words out from among the rest. <code>held_HiOp_wrapper</code> writes the HiOp on a line of its own; clang's debug table (written with <code>-g</code>: which source line each word came from) says which words came from that line; <code>cut</code> keeps those words, and they are the Unit.",
+			"Run elv2_l156 cut every GNU C HiOp this way, on all three machines. On riscv64, of the 7,161,872 words, 3,180,502 are frames (with <code>p</code>'s store when it arrives) and 3,981,370 sit on the HiOps' lines; of those, 509,236 are loads of <code>p</code> (next card), which <code>cut</code> leaves out, so 3,472,134 are Units' words. No Unit holds a word that opens a frame, on any machine."],
+		size: "307,820 kept HiOps; 34,874 of them hold parts",
+		src: "logs 405, 406, 440; run elv2_l154",
+	},
+	cp: {
+		title: "The loads of p, taken out", items: "", status: "solved",
+		node: "extract_unit_from_LoHiOp",
+		c: "p->result = (p->a + p->b);   (a + b, as the held-form writes it)",
+		rv: "c.lw · c.lw · c.addw · c.sw, with a1 holding p: log 440's 4 words",
+		text: ["<code>held_HiOp_wrapper</code> hands each held HiOp its holders through one pointer, <code>p</code>: <code>p-&gt;a</code> and <code>p-&gt;b</code> are holders a and b. So <code>held_HiOp_wrapper</code> holds <code>a + b</code> as <code>p-&gt;result = (p-&gt;a + p-&gt;b);</code>, and <code>p</code> is part of our holding, not of <code>a + b</code>.",
+			"At <code>-O0</code>, clang keeps <code>p</code> in the frame and loads it into a register before each use. Those loads sat on the HiOp's line, so <code>cut</code> took them into the Unit (Gemini found this, log 450). Your log 440 says a Unit is the holders' fetches, the operation and the result's store, and nothing else.",
+			"Done: <code>cut</code> now leaves each load of <code>p</code> out of the Unit, and keeps its place as a note, \"from here, this register holds p\". I had <code>cut</code> cut every Unit again from run elv2_l156's records, with no compile: on riscv64, 509,236 of the 3,981,370 words came out, exactly as counted beforehand, and nothing else changed. The VM's run elv2_l160 gave the same, and its 12 checks passed (log 453). <code>a + b</code>'s Unit is now log 440's 4 words: load a, load b, add, store."],
+		size: "292,248 of the 321,882 riscv64 Units",
+		src: "logs 440, 450, 451, 453",
+	},
+	c22: {
+		title: "Relocation", items: "22", status: "solved",
+		node: "extract_unit_from_LoHiOp",
+		c: "int now = calls;",
+		rv: "auipc [R_RISCV_PCREL_HI20 calls] · addi · c.lw · sw",
+		text: ["<code>now = calls</code> reads the global <code>calls</code>. While compiling, clang can't know where <code>calls</code> will sit in memory, so clang leaves the address blank, with a note naming what belongs there (a relocation: here <code>R_RISCV_PCREL_HI20 calls</code>). The linker fills the blank when it puts the program together.",
+			"Nothing to model: in AutoPoly's emulation the ledger fills the same blank, as the linker would, and in the Lean term the address is a named unknown (log 406's rule). In other words, the Unit's words are right as they are; only the address waits to be filled in."],
+		size: "not counted",
+		src: "logs 406, 437, 444; run elv2_l154",
+	},
+	c12: {
+		title: "A holder's place", items: "12, 16, 27–30", status: "solved",
+		node: "ledgerer",
+		c: "p->x += p->y;",
+		rv: "ld (p) · c.lw (p->y) · c.lw (p->x) · c.addw · c.sw",
+		text: ["A holder can live in different places: a local in the frame, a global, a thread-local (one copy for each thread), a static, or behind a pointer, like <code>p.contents.x</code> here (C: <code>p-&gt;x</code>). The place changes which words fetch and store the holder, never the value computed.",
+			"Here clang's words are: load <code>p</code> (<code>ld</code>), load <code>y</code> (<code>c.lw</code>), load <code>x</code> (<code>c.lw</code>), add (<code>c.addw</code>), store <code>x</code> (<code>c.sw</code>). Run elv2_l152 checked 13,026 functions with holders in each place: all 13,026 gave the predicted values, on all three machines.",
+			"The fetch and store words are the HiOp's own, so they sit inside its one Unit (your yes, log 440). What's left: having <code>map_HiOp_to_unit()</code> lower the HiOps with holders in the other places, as the product needs them."],
+		size: "52,104 of 52,104 checks (run elv2_l152)",
+		src: "logs 431, 433, 440, 442",
+	},
+	c5: {
+		title: "Declaration", items: "5", status: "solved",
+		node: "ledgerer",
+		c: "int calls = 0;",
+		rv: null,
+		text: ["<code>calls: c_int = 0</code> (C: <code>int calls = 0;</code>) declares a holder: the line names it, gives its type, and gives it a first value. A declaration computes nothing; it says where the ledger keeps the holder, and what the holder starts as.",
+			"I did declarations by hand: log 385's 22 rules, each read from clang, plus the declarations named since (<code>__func__</code>, an array with no size, a function with no prototype, labels, anonymous members, designated initializers), in the ledgerer's <code>SUPPORT_gnu_c_declarations_by_hand.md</code>."],
+		size: "49,691 uses in the five code bases: 44,083 declarations, 3,232 initializer lists with 1,510 zeros filled in, 552 compound literals, 314 __func__",
+		src: "logs 380, 385, 432, 444",
+	},
+	c20: {
+		title: "Struct layout", items: "20, 36", status: "solved",
+		node: "ledgerer",
+		c: "struct point { int x; int y; };",
+		rv: null,
+		text: ["A struct's layout is where each field sits inside the struct, and the struct's size. <code>struct point</code>: <code>x</code> at byte 0, <code>y</code> at byte 4, size 8 bytes.",
+			"I wrote riscv64's sizes, alignments (the byte multiple each type must start at) and layout rules by hand, and run elv2_l157 checked them against clang's compiled code: it read 65 of 65 rows, and all 63 of my predictions held.",
+			"riscv64's layouts only, since AutoPoly runs riscv64's LoOps."],
+		size: "12 kinds of declaration",
+		src: "logs 385, 427, 444",
+	},
+	c13: {
+		title: "A name", items: "13", status: "solved",
+		node: "ledgerer",
+		c: "int now = calls;",
+		rv: null,
+		text: ["<code>now = calls</code> reads a holder by its name, <code>calls</code>. <code>held_HiOp_wrapper</code> passes every holder in through the pointer <code>p</code> instead (<code>p-&gt;a</code> is holder a), so no held HiOp names a holder.",
+			"Nothing to model: a name is where the ledger keeps a holder. Reading <code>calls</code> is reading the ledger's place for <code>calls</code>."],
+		size: "1 kind of expression",
+		src: "logs 429, 444",
+	},
+	c14: {
+		title: "Constant", items: "14", status: "solved",
+		node: "ledgerer",
+		c: "count = count + 1;",
+		rv: "lw · c.addiw a0, 0x1 · sw: the 1 is in the add's own word",
+		text: ["<code>count + 1</code> adds a constant, 1. <code>held_HiOp_wrapper</code> has every holder read from a field of <code>p</code>, so no held Unit has a constant in it. In a real program, clang puts the 1 inside the add word itself: <code>c.addiw a0, 0x1</code> means \"add 1\".",
+			"Solved at your \"sure\": a constant is a value the ledger passes in, so <code>count + 1</code> is <code>a + b</code> with b = 1."],
+		size: "5 kinds of expression and 1 conversion",
+		src: "logs 385, 432, 444; run elv2_l154",
+	},
+	c33c: {
+		title: "Unwritten holder", items: "33", part: "its third case", status: "solved",
+		node: "ledgerer",
+		c: "int count;  …  count = count + 1;",
+		rv: "lw · c.addiw · sw: it reads whatever the stack held",
+		text: ["For <code>count: c_int</code> with no value (C: <code>int count;</code>), clang's words make room for an int and write nothing there. Reading <code>count</code> before anything is written gives whatever was in that memory: C gives no value.",
+			"On riscv64 the room is a slot in the frame (<code>-0x38(s0)</code>: 56 bytes below the frame's base), and the slot holds whatever an earlier function left there.",
+			"Solved, at your word: \"if clang or whatever is allocating space without initializing to zeroes, we will do so.\" The ledger starts the slot at 0. When our checks compare against riscv64's own run, they accept any value in that slot."],
+		size: "not counted",
+		src: "logs 435, 444; run elv2_l154",
+	},
+	c34: {
+		title: "Other threads", items: "34", status: "solved",
+		node: "hub/autopoly",
+		c: "atomic_thread_fence(order);",
+		rv: "a branch for each order, then fence r, rw · fence rw, w · fence.tso · fence rw, rw",
+		text: ["<code>atomic_thread_fence(order)</code> gives back nothing. It is a line in the program that this thread's memory reads and writes may not cross, so that other threads see them in order. How strict the line is depends on <code>order</code>, a memory order.",
+			"On riscv64, clang writes a branch on <code>order</code>, then one <code>fence</code> word for each order: <code>fence r, rw</code>, <code>fence rw, w</code>, <code>fence.tso</code>, <code>fence rw, rw</code>. Each fence word says which earlier reads (r) and writes (w) must finish before which later ones.",
+			"I wrote by hand what each riscv64 word that orders memory promises other threads, and how each of the twelve languages keeps it, at least as strictly (autopoly's <code>SUPPORT_riscv64_ordering_per_target_language.md</code>). The c row is clang's own mapping, which I read from run elv2_l158; the other eleven rows are my reading, which no run has checked."],
+		size: "every kept HiOp whose Unit orders memory (a fence, an atomic memory word, or an lr/sc pair), and the 2,548 that take a memory order",
+		src: "logs 406, 434, 444; run elv2_l154",
+	},
+	c23: {
+		title: "The riscv64 reader", items: "23", status: "solved",
+		node: "lower_HiOp",
+		c: null,
+		rv: null,
+		text: ["The reader, <code>read_words_at_symbol</code> in <code>lower_HiOp</code>, has <code>llvm-objdump</code> print clang's compiled file, and reads out the words under each held function's name. On riscv64 the reader had read some Units short, missing words at their end: 1,170 Units in log 424, each after a place where the function computes an address (of a label, of a constant or a string kept in memory, or of a jump table).",
+			"I fixed the reader, and run elv2_l156 ran it wide on all three machines; the result held its prediction. On riscv64, 1,172 of 322,610 Units gained their missing words, each keeping its old words first: log 424's 1,170, <code>&amp;&amp;m</code>'s, and one fence Unit that log 424's test could not tell, all as predicted (log 449). On x86-64 and aarch64, no Unit's words changed."],
+		size: "1,170 riscv64 Units read short (log 424)",
+		src: "logs 424, 445; run elv2_l153",
+	},
+	csort: {
+		title: "The trace's sort", items: "", status: "out",
+		node: "extract_lang_vocab",
+		c: null,
+		rv: null,
+		text: ["In log 379, a trace that followed clang's own code as clang ran sorted GNU C's operators into basic and complex HiOps. Four questions about that sort stayed open: the trace followed one holder set per operator; it printed 7 programs coarsely; it filed the read of a holder under <code>=</code>; and it left 31 builtins unsorted.",
+			"Closed (log 453), by your words of 2026-09-30: complex HiOps \"require modelling AFTER the actual HiOps are modelled. since modelling the basic HiOps gives us the more complex HiOps essentially for free.\" The sort was there to save that work; <code>map_HiOp_to_unit()</code> lowered and cut every operator anyway, so the sort has nothing left to save."],
+		size: "4 questions",
+		src: "logs 319, 374, 379, 430, 431, 453",
+	},
+	cout: {
+		title: "Five left out", items: "", status: "out",
+		node: "your rulings of log 446 and the all-three-architectures rule",
+		c: null,
+		rv: null,
+		text: ["Five groups that run elv2_l159 found among what Units call, each with nothing to keep on riscv64 in our configuration: Apple-only routines (<code>__cospi</code> and 8 more; 452 Units call them); SafeStack's 4 routines (written in C++, used only when compiling with <code>-fsanitize=safe-stack</code>; 4 Units); <code>__trunctfbf2</code>, which compiler-rt defines for x86-64 only (12 Units); 4 conversions between <code>_Float16</code> and <code>__int128</code> that compiler-rt doesn't define for any machine (126 Units); and <code>__builtin_eh_return</code>, for which clang writes no word on riscv64 and aarch64 (360 and 330 Units).",
+			"Out, by your own rulings (log 453). Apple-only and SafeStack are outside our configuration (\"our configuration is GNU-C unoptimized and debugging\", log 446). The two gaps in compiler-rt and <code>__builtin_eh_return</code> are clang's (\"if it changes the computational natural of the program, thats on clang\", log 446)."],
+		size: "5 groups",
+		src: "runs elv2_l156, elv2_l159; logs 449, 453",
+	},
+	c9: {
+		title: "The tools into their places", items: "9", status: "next",
+		node: "extract_lang_vocab",
+		c: null,
+		rv: null,
+		text: ["I moved the tools that read GNU C's HiOps from clang into the product's nodes, except two parts: the code that tries things in clang, which is <code>extract_lang_vocab</code>'s job, and the held-form's routing, which is <code>HiOp_configuration_solver</code>'s. Both still sit outside their nodes (log 461). And <code>extract()</code> still reuses the answers clang gave before, where you set it to make its whole list every run and check it against the past findings (log 462). <code>extract()</code> reads clang's own lists of operators and holders. Through <code>judge_pass</code> (in <code>extract_lang_vocab/clang.py</code>), <code>extract()</code> hands every combination of an operator and holders to <code>judge</code>, which writes the combinations, each in its held-form, into GNU C files of up to 20,000, starts clang once on each file to check it, and gives each combination the answer clang wrote on its own lines. <code>extract()</code> keeps the HiOps clang accepts. GNU C's own steps are in <code>extract_lang_vocab/clang.py</code>, and <code>dict_of_lang_HiOps</code> writes the HiOps to a file.",
+			"Run elv2_l166 checked the move: it made GNU C's grid twice the same day, once with the old script and once through <code>extract()</code>. Clang's accept-or-refuse answers were the same, 2,088,155 of 2,088,155, and so were the HiOps, 325,613 of 325,613.",
+			"Found while checking: since log 424, every grid run had stopped on the statements GNU C doesn't have (C++'s <code>try</code> and others). <code>judge_pass</code> tries those statements on purpose, so that clang refuses them; but <code>held_HiOp_wrapper</code> stopped with an error while writing them, before clang ever saw them, and the whole run stopped with it. I fixed <code>held_HiOp_wrapper</code> (log 456)."],
+		size: "2 of 3 in their places; the third in part (log 461)",
+		src: "logs 452 to 456; run elv2_l166",
+	},
+	c47: {
+		title: "Signatures dropped by a one-row check", items: "47", status: "next",
+		node: "extract_lang_vocab",
+		c: "__sync_fetch_and_add(&count, 1);  __sync_fetch_and_add_8(&count, 1);",
+		rv: null,
+		text: ["<code>__sync_fetch_and_add_4(p, v)</code> reads the 4-byte number at <code>p</code>, adds <code>v</code>, writes the sum back at <code>p</code>, and gives back the number as it was, all as one step: no other thread can read or write those 4 bytes in between. Why: the counter is 7, and threads A and B each add 1. As a plain read and then a write, B can read 7 before A writes 8, so both write 8 and one add is lost. With fetch_and_add, A gets 7, B gets 8, and the counter is 9.", "Our check asks clang about the first row of each written form. When clang makes another size of the builtin for that row (with <code>flag</code> a <code>char</code>, <code>__sync_fetch_and_add_4(&amp;flag, 1)</code> becomes the 1-byte add), the whole form is dropped. Each dropped signature is a HiOp variant clang accepts and lowers: its holders change its meaning, and its Unit carries it.", "So a program that writes <code>__sync_fetch_and_add(&amp;count, 1)</code> or <code>__sync_fetch_and_add_8(&amp;count, 1)</code> has no HiOp in either list, and the list <code>extract()</code> makes also lacks <code>__sync_fetch_and_add_4(&amp;count, 1)</code>. Fix, at your word: keep every signature clang accepts.", "What it does, and two threads taking files with it, stepped: <a href=\"SUPPORT_gnu_c_sync_fetch_and_add_walk.html\">the walk</a>, or run <code>SUPPORT_gnu_c_sync_fetch_and_add_walk.py</code> beside this page."],
+		size: "165 of 1,237 written forms; they hold 23,045 signatures clang accepts: the lowering's list has 4,509, extract()'s none",
+		src: "log 456; run elv2_l166; logs 464 to 468, 471, 477, 478",
+	},
+	c48: {
+		title: "fpclassify missed by the check", items: "48", status: "next",
+		node: "extract_lang_vocab",
+		c: "int kind = __builtin_fpclassify(0, 1, 4, 3, 2, x);",
+		rv: null,
+		text: ["How our held-form writes builtins today:<table><tr><th>builtin</th><th>its held function's one statement (names shortened)</th></tr><tr><td><code>__builtin_popcount</code>, and 1,063 others</td><td><code>(void)(__builtin_popcount(p-&gt;a));</code></td></tr><tr><td><code>__builtin_fpclassify</code>, the only one</td><td><code>p-&gt;result = (__builtin_fpclassify(part_a(), …, part_f()));</code></td></tr></table>", "<code>part_a()</code> … <code>part_f()</code> are calls to functions declared and never defined; fpclassify's five codes became such parts in log 424.", "Our check reads the first statement through <code>(void)(</code> and parentheses to the call. For fpclassify it meets <code>p-&gt;result =</code> first, and stops: it sees an assignment, not the call. So it reports fpclassify as not written, and the dict drops all 32 of its HiOps.", "Fix, at your word: let the check go through <code>p-&gt;result = (</code> too."],
+		size: "32 HiOps",
+		src: "log 456; log 464",
+	},
+	c4: {
+		title: "Other builtins", items: "4", status: "out",
+		node: "all-three-architectures rule",
+		c: null,
+		rv: null,
+		text: ["101 builtins that clang marks for every language and our list lacked: atomics of HIP and OpenCL (languages for GPUs), scoped atomics (atomics limited to one group of threads, a GPU idea), and others for other machines. Out by the rule of all three machines (log 381)."],
+		size: "101 builtins",
+		src: "log 381",
+	},
+	c8: {
+		title: "Twelve operators", items: "8", status: "out",
+		node: "all-three-architectures rule",
+		c: null,
+		rv: null,
+		text: ["12 of GNU C's operators lower on one or two of riscv64, x86-64 and aarch64, but not on all three, so the rule of all three machines leaves them out (log 377)."],
+		size: "12 operators",
+		src: "log 377",
+	},
+	c35: {
+		title: "One machine only", items: "35", status: "out",
+		node: "all-three-architectures rule",
+		c: null,
+		rv: null,
+		text: ["4 constructs that clang accepts on one of the three machines and refuses on the other two: a half-precision <code>__fp16</code> as a parameter or a result (aarch64 only); <code>_BitInt</code> numbers wider than 128 bits (x86-64 only); the 128-bit float <code>__float128</code> (x86-64 only); and the address spaces <code>__seg_fs</code> and <code>__seg_gs</code> (x86-64 only). Out by the rule of all three machines, named so they can't surprise (log 435)."],
+		size: "4 constructs",
+		src: "log 435",
+	},
+	c26: {
+		title: "Clang's lists compared", items: "26", status: "solved",
+		node: "extract_lang_vocab",
+		c: null,
+		rv: null,
+		text: ["To check that nothing was missed, run elv2_l149 and the script <code>compare_clangs_other_lists.py</code> compared what we have for GNU C with clang's other lists of what a program may contain or depend on, such as its predefined macros, its driver's defaults, each machine's calling convention and layouts, its description of each machine, and LLVM's list of runtime routines (your rule: check completeness against a list it didn't come from). They compared 7 lists, and the comparison added five gaps to the list of what's missing."],
+		size: "7 lists",
+		src: "logs 435, 436",
+	},
+};
+
+// The list on the right: one group per model, the one that solves its problems.
+const GROUPS = [
+	{ title: "the vocabulary", node: "extract_lang_vocab", cards: ["c47", "c48"] },
+	{ title: "in every LoOp", node: "map_LoOp_to_lean", cards: ["c33ab", "c31", "c38"] },
+	{ title: "hold and lower", node: "map_HiOp_to_unit", cards: ["c1", "c15", "c40", "c17", "c18", "c19", "c11", "c39", "c37"] },
+	{ title: "routines a Unit calls", node: "hub/autopoly", cards: ["c32"] },
+	{ title: "the cut", node: "extract_unit_from_LoHiOp", cards: ["c21", "cp", "c22"] },
+	{ title: "the ledger", node: "ledgerer", cards: ["c12", "c5", "c20", "c13", "c14", "c33c"] },
+	{ title: "other threads", node: "hub/autopoly", cards: ["c34"] },
+];
+const ELSEWHERE = [
+	{ title: "our tools", cards: ["c9", "c23", "csort", "c26"] },
+	{ title: "out", cards: ["cout", "c4", "c8", "c35"] },
+];
+const STATUS_WORDS = { next: "remains", solved: "done", later: "later", out: "out" };
+// The cards by status (log 464: the C library and another clang off the list, at your word): 3 + 1 + 23 + 6 = 33.
+const COUNTS = [["next", 3], ["later", 1], ["solved", 23], ["out", 6]];
+
+const state = { view: "py", pinned: null, showSettled: false };
+// Settled items stay out of the list unless asked for (Dee, log 448: "your list isnt shrinking").
+const SETTLED = ["solved", "out"];
+
+function main() {
+	drawCounts();
+	drawCode();
+	drawIndex();
+	showHint();
+	wireButtons();
+}
+
+function drawCounts() {
+	const bar = document.getElementById("bar");
+	const help = document.getElementById("help");
+	for (const pair of COUNTS) {
+		const chip = document.createElement("span");
+		chip.className = "chip " + pair[0];
+		chip.textContent = STATUS_WORDS[pair[0]] + " " + pair[1];
+		bar.insertBefore(chip, help);
+	}
+}
+
+function drawCode() {
+	const code = document.getElementById("code");
+	code.textContent = "";
+	let lines = PYTHON;
+	if (state.view === "c") {
+		lines = GNU_C;
+	}
+	let inComment = false;
+	for (let index = 0; index < lines.length; index++) {
+		const text = lines[index];
+		const opens = text.indexOf("/*") !== -1 && text.indexOf("*/") === -1;
+		code.appendChild(lineElement(index + 1, text, inComment));
+		if (opens) {
+			inComment = true;
+		}
+		if (text.indexOf("*/") !== -1) {
+			inComment = false;
+		}
+	}
+}
+
+function lineElement(number, text, inComment) {
+	const line = document.createElement("span");
+	line.className = "ln";
+	const no = document.createElement("span");
+	no.className = "no";
+	no.textContent = String(number);
+	line.appendChild(no);
+	if (inComment) {
+		const comment = document.createElement("span");
+		comment.className = "com";
+		comment.textContent = text;
+		line.appendChild(comment);
+		line.appendChild(document.createTextNode("\n"));
+		return line;
+	}
+	const pieces = splitMarks(text);
+	for (const piece of pieces) {
+		if (piece.cards === null) {
+			appendPlain(line, piece.text);
+			continue;
+		}
+		line.appendChild(markElement(piece));
+	}
+	line.appendChild(document.createTextNode("\n"));
+	return line;
+}
+
+// "a «c1,c2|b» c" -> [{text: "a "}, {text: "b", cards: [...]}, {text: " c"}]
+function splitMarks(text) {
+	const pieces = [];
+	const pattern = /«([^|»]+)\|([^»]*)»/g;
+	let last = 0;
+	let found = pattern.exec(text);
+	while (found !== null) {
+		pieces.push({ text: text.slice(last, found.index), cards: null });
+		pieces.push({ text: found[2], cards: found[1].split(",") });
+		last = found.index + found[0].length;
+		found = pattern.exec(text);
+	}
+	pieces.push({ text: text.slice(last), cards: null });
+	return pieces;
+}
+
+function markElement(piece) {
+	const mark = document.createElement("span");
+	const first = CARDS[piece.cards[0]];
+	mark.className = "mk " + first.status;
+	mark.textContent = piece.text;
+	mark.dataset.cards = piece.cards.join(",");
+	mark.tabIndex = 0;
+	mark.setAttribute("role", "button");
+	mark.setAttribute("aria-label", cardTitles(piece.cards));
+	mark.addEventListener("click", function () { pin(piece.cards); });
+	mark.addEventListener("keydown", function (event) {
+		if (event.key === "Enter" || event.key === " ") {
+			event.preventDefault();
+			pin(piece.cards);
+		}
+	});
+	mark.addEventListener("pointerenter", function (event) {
+		if (event.pointerType === "mouse") {
+			showCards(piece.cards);
+		}
+	});
+	mark.addEventListener("pointerleave", function (event) {
+		if (event.pointerType === "mouse") {
+			restore();
+		}
+	});
+	const holder = document.createElement("span");
+	holder.appendChild(mark);
+	return holder;
+}
+
+function cardTitles(ids) {
+	const titles = [];
+	for (const id of ids) {
+		titles.push(CARDS[id].title);
+	}
+	const joined = titles.join("; ");
+	return joined;
+}
+
+// Python-ish colouring of the unmarked text: comments, strings, numbers, keywords.
+const TOKEN = /(#.*$|\/\*.*?\*\/|\/\*.*$|^\s*\*.*\*\/|b?"(?:[^"\\]|\\.)*"|\b\d+\b|\b(?:def|return|class|from|import|while|pass|True|None|int|char|double|long|void|struct|typedef|unsigned|const)\b)/g;
+
+function appendPlain(line, text) {
+	let last = 0;
+	let found = TOKEN.exec(text);
+	while (found !== null) {
+		line.appendChild(document.createTextNode(text.slice(last, found.index)));
+		const token = document.createElement("span");
+		token.className = tokenClass(found[0]);
+		token.textContent = found[0];
+		line.appendChild(token);
+		last = found.index + found[0].length;
+		found = TOKEN.exec(text);
+	}
+	line.appendChild(document.createTextNode(text.slice(last)));
+	TOKEN.lastIndex = 0;
+}
+
+function tokenClass(token) {
+	let name = "kw";
+	if (token.startsWith("#") || token.startsWith("/*") || token.trim().startsWith("*")) {
+		name = "com";
+	} else if (token.startsWith("\"") || token.startsWith("b\"")) {
+		name = "str";
+	} else if (/^\d/.test(token)) {
+		name = "num";
+	}
+	return name;
+}
+
+function drawIndex() {
+	const index = document.getElementById("index");
+	index.textContent = "";
+	index.appendChild(settledButton());
+	for (const group of GROUPS) {
+		const shown = shownCards(group.cards);
+		if (shown.length === 0) {
+			continue;
+		}
+		index.appendChild(groupHeading(group.title, group.node));
+		index.appendChild(entryList(shown));
+	}
+	index.appendChild(groupHeading("not in the program", null));
+	for (const part of ELSEWHERE) {
+		const shown = shownCards(part.cards);
+		if (shown.length === 0) {
+			continue;
+		}
+		const sub = document.createElement("div");
+		sub.className = "sub";
+		sub.textContent = part.title;
+		index.appendChild(sub);
+		index.appendChild(entryList(shown));
+	}
+}
+
+function shownCards(ids) {
+	const shown = [];
+	for (const id of ids) {
+		const settled = SETTLED.indexOf(CARDS[id].status) !== -1;
+		if (settled && !state.showSettled) {
+			continue;
+		}
+		shown.push(id);
+	}
+	return shown;
+}
+
+function settledButton() {
+	const button = document.createElement("button");
+	button.id = "settled";
+	let label = "show the settled items too";
+	if (state.showSettled) {
+		label = "show only what remains";
+	}
+	button.textContent = label;
+	button.addEventListener("click", function () {
+		state.showSettled = !state.showSettled;
+		drawIndex();
+	});
+	return button;
+}
+
+function groupHeading(title, node) {
+	const heading = document.createElement("h3");
+	heading.textContent = title + " ";
+	if (node !== null) {
+		const name = document.createElement("span");
+		name.className = "node";
+		name.textContent = node;
+		heading.appendChild(name);
+	}
+	return heading;
+}
+
+function entryList(ids) {
+	const list = document.createElement("ul");
+	for (const id of ids) {
+		list.appendChild(entryElement(id));
+	}
+	return list;
+}
+
+function entryElement(id) {
+	const card = CARDS[id];
+	const entry = document.createElement("li");
+	entry.className = "entry";
+	entry.tabIndex = 0;
+	entry.setAttribute("role", "button");
+	const dot = document.createElement("span");
+	dot.className = "dot " + card.status;
+	entry.appendChild(dot);
+	const title = document.createElement("span");
+	title.textContent = card.title;
+	entry.appendChild(title);
+	entry.addEventListener("click", function () { pinAndFind(id); });
+	entry.addEventListener("keydown", function (event) {
+		if (event.key === "Enter" || event.key === " ") {
+			event.preventDefault();
+			pinAndFind(id);
+		}
+	});
+	return entry;
+}
+
+function pin(ids) {
+	state.pinned = ids;
+	showCards(ids);
+	markPicked(ids);
+}
+
+function pinAndFind(id) {
+	pin([id]);
+	const marks = marksOf(id);
+	if (marks.length === 0) {
+		return;
+	}
+	marks[0].scrollIntoView({ block: "center", behavior: "smooth" });
+	for (const mark of marks) {
+		mark.classList.remove("flash");
+		void mark.offsetWidth;
+		mark.classList.add("flash");
+	}
+}
+
+function marksOf(id) {
+	const found = [];
+	const marks = document.querySelectorAll(".mk");
+	for (const mark of marks) {
+		const ids = mark.dataset.cards.split(",");
+		if (ids.indexOf(id) !== -1) {
+			found.push(mark);
+		}
+	}
+	return found;
+}
+
+function markPicked(ids) {
+	const marks = document.querySelectorAll(".mk");
+	for (const mark of marks) {
+		mark.classList.remove("picked");
+		const own = mark.dataset.cards.split(",");
+		for (const id of ids) {
+			if (own.indexOf(id) !== -1) {
+				mark.classList.add("picked");
+			}
+		}
+	}
+}
+
+function restore() {
+	if (state.pinned === null) {
+		showHint();
+		return;
+	}
+	showCards(state.pinned);
+}
+
+function showHint() {
+	const box = document.getElementById("card");
+	box.classList.remove("shown");
+	box.textContent = "";
+	const hint = document.createElement("p");
+	hint.className = "hint";
+	hint.textContent = "Click a mark, or a line below.";
+	box.appendChild(hint);
+}
+
+function showCards(ids) {
+	const box = document.getElementById("card");
+	box.textContent = "";
+	box.classList.add("shown");
+	const close = document.createElement("button");
+	close.id = "close";
+	close.textContent = "close";
+	close.addEventListener("click", unpin);
+	box.appendChild(close);
+	for (const id of ids) {
+		box.appendChild(cardElement(CARDS[id]));
+	}
+}
+
+function unpin() {
+	state.pinned = null;
+	markPicked([]);
+	showHint();
+}
+
+function cardElement(card) {
+	const element = document.createElement("article");
+	element.className = "card";
+	const heading = document.createElement("h2");
+	heading.textContent = card.title;
+	element.appendChild(heading);
+	const meta = document.createElement("div");
+	meta.className = "meta";
+	const chip = document.createElement("span");
+	chip.className = "chip " + card.status;
+	chip.textContent = STATUS_WORDS[card.status];
+	meta.appendChild(chip);
+	meta.appendChild(document.createTextNode(card.node));
+	element.appendChild(meta);
+	if (card.c !== null) {
+		element.appendChild(labelled("GNU C", card.c));
+	}
+	if (card.rv !== null) {
+		element.appendChild(labelled("riscv64", card.rv));
+	}
+	for (const sentence of card.text) {
+		const paragraph = document.createElement("p");
+		paragraph.innerHTML = sentence;
+		element.appendChild(paragraph);
+	}
+	const size = document.createElement("p");
+	size.className = "label";
+	size.textContent = "size: " + card.size + " · " + card.src;
+	element.appendChild(size);
+	return element;
+}
+
+function labelled(label, text) {
+	const part = document.createElement("div");
+	const name = document.createElement("div");
+	name.className = "label";
+	name.textContent = label;
+	part.appendChild(name);
+	const block = document.createElement("pre");
+	block.textContent = text;
+	part.appendChild(block);
+	return part;
+}
+
+function wireButtons() {
+	const help = document.getElementById("help");
+	help.addEventListener("click", function () {
+		const box = document.getElementById("helpbox");
+		const opening = box.hidden;
+		box.hidden = !opening;
+		help.setAttribute("aria-expanded", String(opening));
+	});
+	const buttons = document.querySelectorAll(".views button");
+	for (const button of buttons) {
+		button.addEventListener("click", function () { switchView(button.dataset.view); });
+	}
+}
+
+function switchView(view) {
+	state.view = view;
+	const buttons = document.querySelectorAll(".views button");
+	for (const button of buttons) {
+		button.setAttribute("aria-pressed", String(button.dataset.view === view));
+	}
+	drawCode();
+	if (state.pinned !== null) {
+		markPicked(state.pinned);
+	}
+}
+
+main();
+</script>
+</body>
+</html>
