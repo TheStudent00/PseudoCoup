@@ -213,25 +213,35 @@ def _is_bitmask_63(expr_node: Any) -> bool:
 
 def _normalize_inline_cond_and_div(ln: str, lang: str) -> str:
     """Normalize native inline conditionals (`? :`, Rust `if/else`, Go IIFE) into Python `IfExp`."""
-    # Go IIFE: func() int64 { if COND { return THEN } else { return ELSE } }()
-    ln = re.sub(
-        r"func\(\)\s*\w+\s*\{\s*if\s+(.*?)\s*\{\s*return\s+(.*?)\s*\}\s*else\s*\{\s*return\s+(.*?)\s*\}\s*\}\(\)",
-        r"(\2 if \1 else \3)",
-        ln,
+    # Go IIFE (inside-out for arbitrary nesting): func() int64 { if COND { return THEN } else { return ELSE } }()
+    go_iife_re = re.compile(
+        r"func\(\)\s*\w+\s*\{\s*if\s+([^{}]+?)\s*\{\s*return\s+([^{}]+?)\s*\}\s*else\s*\{\s*return\s+([^{}]+?)\s*\}\s*\}\(\)"
     )
-    # Rust inline if: (if COND { THEN } else { ELSE })
-    ln = re.sub(
-        r"\(\s*if\s+(.*?)\s*\{\s*(.*?)\s*\}\s*else\s*\{\s*(.*?)\s*\}\s*\)",
-        r"(\2 if \1 else \3)",
-        ln,
+    while go_iife_re.search(ln):
+        ln = go_iife_re.sub(r"(\2 if \1 else \3)", ln)
+    # Rust inline if (inside-out for arbitrary nesting): (if COND { THEN } else { ELSE })
+    rust_if_re = re.compile(
+        r"\(\s*if\s+([^{}]+?)\s*\{\s*([^{}]+?)\s*\}\s*else\s*\{\s*([^{}]+?)\s*\}\s*\)"
     )
+    while rust_if_re.search(ln):
+        ln = rust_if_re.sub(r"(\2 if \1 else \3)", ln)
     # C/C++/Java/TS/C#/Dart/Swift/PHP/Ruby ternary: ((COND) ? (THEN) : (ELSE))
     if "?" in ln and ":" in ln:
         ln = _convert_balanced_ternary(ln)
-    # Python/Ruby native truncated remainder `(a - (int(a / b) * b))` -> `trunc_rem(a, b)`
+    # Python native truncated remainder `(a - (int(a / b) * b))` -> `trunc_rem(a, b)`
     ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\s*-\s*\(\s*int\(\s*\1\s*/\s*([A-Za-z0-9_]+)\s*\)\s*\*\s*\2\s*\)\s*\)", r"trunc_rem(\1, \2)", ln)
-    # Python/Ruby native truncated division `int(a / b)` -> `trunc_div(a, b)`
+    # Python native truncated division `int(a / b)` -> `trunc_div(a, b)`
     ln = re.sub(r"int\(\s*([A-Za-z0-9_]+)\s*/\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
+    # Dart/Ruby native truncated remainder `(a.remainder(b))` -> `trunc_rem(a, b)`
+    ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\.remainder\(\s*([A-Za-z0-9_]+)\s*\)\s*\)", r"trunc_rem(\1, \2)", ln)
+    # Ruby native truncated division `(a.fdiv(b).truncate)` -> `trunc_div(a, b)`
+    ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\.fdiv\(\s*([A-Za-z0-9_]+)\s*\)\.truncate\s*\)", r"trunc_div(\1, \2)", ln)
+    # Dart native truncated division `(a ~/ b)` -> `trunc_div(a, b)`
+    ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\s*~/\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
+    # PHP native truncated division `intdiv(a, b)` -> `trunc_div(a, b)`
+    ln = re.sub(r"intdiv\(\s*([A-Za-z0-9_]+)\s*,\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
+    # TypeScript native truncated division `Math.trunc(a / b)` -> `trunc_div(a, b)`
+    ln = re.sub(r"Math\.trunc\(\s*([A-Za-z0-9_]+)\s*/\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
     return ln
 
 
@@ -373,6 +383,7 @@ class ScriptToLedger:
                 ln,
             )
             ln = ln.replace(":=", "=")
+            ln = re.sub(r"\b(\d+)L\b", r"\1", ln)
             ln = _normalize_inline_cond_and_div(ln, lang)
             ln = ln.replace("&&", " and ").replace("||", " or ")
             if ln.startswith("if ") or ln.startswith("if("):
@@ -711,6 +722,8 @@ class LedgerToScript:
     @classmethod
     def _emit_expr(cls, expr: Any, lang: str) -> str:
         if isinstance(expr, URConst):
+            if lang in ("java", "csharp") and abs(expr.value) > 2147483647:
+                return f"{expr.value}L"
             return str(expr.value)
         if isinstance(expr, URVar):
             return f"${expr.name}" if lang == "php" else expr.name
@@ -734,11 +747,21 @@ class LedgerToScript:
                 a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
                 if lang == "python":
                     return f"int({a} / {b})"
+                if lang == "ruby":
+                    return f"({a}.fdiv({b}).truncate)"
+                if lang == "dart":
+                    return f"({a} ~/ {b})"
+                if lang == "php":
+                    return f"intdiv({a}, {b})"
+                if lang == "typescript":
+                    return f"Math.trunc({a} / {b})"
                 return f"({a} / {b})"
             if op == "trunc_rem":
                 a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
                 if lang == "python":
                     return f"({a} - (int({a} / {b}) * {b}))"
+                if lang in ("ruby", "dart"):
+                    return f"({a}.remainder({b}))"
                 return f"({a} % {b})"
             a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
             if lang == "python" and op in ("&&", "||"):

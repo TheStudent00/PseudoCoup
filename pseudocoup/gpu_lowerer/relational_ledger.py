@@ -114,8 +114,14 @@ class RelationalLedgerTable:
         return nid
 
     def _build_block(self, stmts: list[Any], depth: int, indent: int) -> int:
-        nid = self._alloc_row(depth, KIND_BLOCK, extra=len(stmts))
-        cids = [self._build_stmt(s, depth + 1, indent) for s in stmts]
+        if len(stmts) <= MAX_CHILDREN:
+            nid = self._alloc_row(depth, KIND_BLOCK, extra=len(stmts))
+            cids = [self._build_stmt(s, depth + 1, indent) for s in stmts]
+            self._set_children(nid, cids)
+            return nid
+        chunks = [stmts[i : i + MAX_CHILDREN] for i in range(0, len(stmts), MAX_CHILDREN)]
+        nid = self._alloc_row(depth, KIND_BLOCK, extra=len(chunks))
+        cids = [self._build_block(ch, depth + 1, indent) for ch in chunks]
         self._set_children(nid, cids)
         return nid
 
