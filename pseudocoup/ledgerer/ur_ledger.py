@@ -353,7 +353,22 @@ class ScriptToLedger:
                     indent += 1
                 continue
             ln = re.sub(
-                r"^(?:int64_t|uint64_t|int32_t|uint32_t|int16_t|uint16_t|int8_t|uint8_t|long|int|uint|var|let\s+mut|let)\s+([A-Za-z_]\w*)\s*(?::\s*\w+)?\s*=\s*",
+                r"^(int64_t|uint64_t|int32_t|uint32_t|int16_t|uint16_t|int8_t|uint8_t|long|int|uint)\s+([A-Za-z_]\w*)\s*=\s*",
+                r"\2: \1 = ",
+                ln,
+            )
+            ln = re.sub(
+                r"^var\s+([A-Za-z_]\w*)\s+(int64|uint64|int32|uint32|int16|uint16|int8|uint8|int|uint)\s*=\s*",
+                r"\1: \2 = ",
+                ln,
+            )
+            ln = re.sub(
+                r"^(?:var|let\s+mut|let)\s+([A-Za-z_]\w*)\s*:\s*([A-Za-z0-9_]+)\s*=\s*",
+                r"\1: \2 = ",
+                ln,
+            )
+            ln = re.sub(
+                r"^(?:var|let\s+mut|let)\s+([A-Za-z_]\w*)\s*=\s*",
                 r"\1 = ",
                 ln,
             )
@@ -413,6 +428,15 @@ class ScriptToLedger:
 
     @classmethod
     def _conv_stmt(cls, node: ast.stmt, lang: str, known: dict[str, str], locals_map: dict[str, HolderDecl]) -> Any:
+        if isinstance(node, ast.AnnAssign) and isinstance(node.target, ast.Name) and node.value is not None:
+            tgt = node.target.id
+            expr = cls._conv_expr(node.value, lang, False, known)
+            ann_str = ast.unparse(node.annotation).strip()
+            h = SURFACE_TO_CANON_HOLDER.get(ann_str, getattr(expr, "holder", "i64"))
+            is_decl = tgt not in known
+            known[tgt] = h
+            locals_map[tgt] = HolderDecl.from_type(tgt, h)
+            return URAssign(target=tgt, holder=h, expr=expr, is_decl=is_decl)
         if isinstance(node, ast.Assign) and len(node.targets) == 1 and isinstance(node.targets[0], ast.Name):
             tgt = node.targets[0].id
             expr = cls._conv_expr(node.value, lang, False, known)
@@ -559,11 +583,20 @@ def link_ledgers(ledgers: list[URLedger]) -> URLedger:
                 s.expr = link_expr(s.expr, fn.func_name, known_holders)
                 expr_h = getattr(s.expr, "holder", "i64")
                 if s.is_decl:
-                    s.holder = expr_h
-                    known_holders[s.target] = expr_h
-                    fn.locals[s.target] = HolderDecl.from_type(s.target, expr_h)
-                elif s.holder != expr_h:
-                    s.expr = build_holder_cast_node(s.expr, expr_h, s.holder)
+                    if s.holder in ("u32", "i32", "u16", "i16", "u8", "i8"):
+                        target_h = s.holder
+                    else:
+                        target_h = expr_h
+                    s.holder = target_h
+                    known_holders[s.target] = target_h
+                    fn.locals[s.target] = HolderDecl.from_type(s.target, target_h)
+                    if (target_h in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)) or target_h != expr_h:
+                        s.expr = build_holder_cast_node(s.expr, "i64", target_h)
+                else:
+                    target_h = known_holders.get(s.target, s.holder)
+                    s.holder = target_h
+                    if (target_h in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)) or target_h != expr_h:
+                        s.expr = build_holder_cast_node(s.expr, "i64", target_h)
                 out.append(s)
             elif isinstance(s, URIf):
                 s.cond = link_expr(s.cond, fn.func_name, known_holders)
@@ -577,8 +610,9 @@ def link_ledgers(ledgers: list[URLedger]) -> URLedger:
             elif isinstance(s, URReturn):
                 s.expr = link_expr(s.expr, fn.func_name, known_holders)
                 expr_h = getattr(s.expr, "holder", "i64")
-                if expr_h != fn.return_holder:
-                    cast_node = build_holder_cast_node(s.expr, expr_h, fn.return_holder)
+                if expr_h != fn.return_holder or (fn.return_holder in ("u32", "i32", "u16", "i16", "u8", "i8") and isinstance(s.expr, URHiOpCall)):
+                    src_cast_h = "i64" if expr_h == fn.return_holder else expr_h
+                    cast_node = build_holder_cast_node(s.expr, src_cast_h, fn.return_holder)
                     bridge_events.append({
                         "site": f"{fn.func_name} return",
                         "from_lang": fn.source_lang,
