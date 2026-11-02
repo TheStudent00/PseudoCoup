@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp.extract_unit_from_LoHiOp
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.extract_unit_from_LoHiOp
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 6
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.extract_unit_from_LoHiOp
 
 ## super_node
@@ -44,12 +44,12 @@ adds a uniform arrival, and this is what takes it back off.
 
 *notes:*
 
-- The cut, at Dee's word of 2026-10-12 (`Planning/CORE_0_0_0_pseudocoup.md
-  Dee: "if the answer being yes reduces work, i dont see why we
+- The cut, at the owner's word of 2026-10-12 (`Planning/CORE_0_0_0_pseudocoup.md
+  the owner: "if the answer being yes reduces work, i dont see why we
   wouldnt"): the Unit keeps the words that fetch its holders' values, the
   operation, and the word that stores its result; the frame (prologue and return) and the copy of `p` (the
-  arrival) are cut. The question was mine (log 437 §2); the yes is Dee's.
-- How the Unit's words are told. Dee, 2026-10-13 (`Planning/CORE_0_0_0_pseudocoup.md):
+  arrival) are cut. The question was mine (log 437 §2); the yes is the owner's.
+- How the Unit's words are told. the owner, 2026-10-13 (`Planning/CORE_0_0_0_pseudocoup.md):
   "we need some way to tell which arch-opcodes belong to the lowered HiOp. is
   that not enough to settle this particular issue?" My answer, the means: the
   debug table that `-g` writes names the source line of each word, so the Unit

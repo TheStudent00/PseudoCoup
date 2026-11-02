@@ -4,14 +4,14 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Python / CPython Full-Vocabulary Lowering, Lowerer BranchTree Extraction, and Logical Domain-to-Range Proofs
 
 > "i suppose what needs proving are the domain and range of each HiOp (without any work by hand i mean, instead using the logical defintions) because otherwise it seems like proving emulation is trivial.  
 > i think we should work on extracting/lowering another language vocab so we can test domain-range and emulation proofs."  
-> — **Dee**
+> — **the owner**
 
 ---
 
@@ -20,7 +20,7 @@ author: Dee & Gemini
 
 ### Python / CPython Lowering Metrics Summary
 
-Following Dee's instruction to tackle the remaining languages one-by-one (Language #2: **Python / CPython**, following Rust), Python was fully ingested, extracted, lowered at both CPython bytecode and native RISC-V machine levels, and formally verified:
+Following the owner's instruction to tackle the remaining languages one-by-one (Language #2: **Python / CPython**, following Rust), Python was fully ingested, extracted, lowered at both CPython bytecode and native RISC-V machine levels, and formally verified:
 
 | Stage / Component | Source File / Output | Ingestion / Verification Result | Status |
 | :--- | :--- | :---: | :---: |

@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.HiOps
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -32,7 +32,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -54,7 +54,7 @@ accepts with it and the deterministic `(entry, exit)` paths its lowerer
 takes. One HiOp variant per distinct accepted lowering path, filed under
 the operator as the program writes it; its holders and `entry_info`
 (`state_info[0]`) are context that selects the path and modifies its
-meaning. Dee, 2026-10-15 : "those signatures look like HiOp
+meaning. the owner, 2026-10-15 : "those signatures look like HiOp
 variants with context that modifies their meanings."
 
 Updated 2026-10-26: the earlier brute-force grid (`extract()`) and static

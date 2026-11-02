@@ -4,14 +4,14 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Java Full-Vocabulary Lowering, Logical Domain-to-Range Proofs, and the Universal All-Languages Matrix
 
 > "i suppose what needs proving are the domain and range of each HiOp (without any work by hand i mean, instead using the logical defintions) because otherwise it seems like proving emulation is trivial.  
 > i think we should work on extracting/lowering another language vocab so we can test domain-range and emulation proofs."  
-> — **Dee**
+> — **the owner**
 
 ---
 
@@ -20,7 +20,7 @@ author: Dee & Gemini
 
 ### Java Lowering Metrics Summary
 
-Following Dee's direction to systematically bring every major language ecosystem under the universal 4-pillar ontology, **Java** (`javac 25.0.4.1` / OpenJDK 25) was fully ingested, extracted, lowered at dual levels (JVM Bytecode Units + native RISC-V machine Units), and formally proven in Z3:
+Following the owner's direction to systematically bring every major language ecosystem under the universal 4-pillar ontology, **Java** (`javac 25.0.4.1` / OpenJDK 25) was fully ingested, extracted, lowered at dual levels (JVM Bytecode Units + native RISC-V machine Units), and formally proven in Z3:
 
 | Stage / Component | Source File / Output | Verification Result | Status |
 | :--- | :--- | :---: | :---: |

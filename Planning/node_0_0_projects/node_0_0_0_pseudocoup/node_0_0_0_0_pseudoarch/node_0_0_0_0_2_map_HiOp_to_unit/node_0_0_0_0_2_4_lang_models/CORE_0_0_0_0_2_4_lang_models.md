@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lang_models
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.langs
 designation: code (container)
 node:
@@ -32,7 +32,7 @@ sub_nodes:
 - **level:** 5
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.langs
 
 ## super_node
@@ -60,11 +60,11 @@ A file inside a language's folder carries no language prefix (`unreached_paths.j
 `holder_facts.json`, `gate_tables.py`, `templates.py`): the parent folder
 (`lang_models/gnu_c/`, `lang_models/go/`, etc.) identifies the language.
 
-- Dee, 2026-10-14: "something we absolutely do need is a node to hold
+- the owner, 2026-10-14: "something we absolutely do need is a node to hold
   language specific stuff if we dont already have it. that way we wouldnt
   have to label everything with a language specifier since the container
   folder would clarify it."
-- Dee, 2026-10-15: renamed `langs` to `lang_models` in `map_HiOp_to_unit`'s
+- the owner, 2026-10-15: renamed `langs` to `lang_models` in `map_HiOp_to_unit`'s
   redrawn ontology (`SUPPORT_settling_the_ontology.md`).
 
 ### How Additional Languages Plug Into `lang_models/<lang>`

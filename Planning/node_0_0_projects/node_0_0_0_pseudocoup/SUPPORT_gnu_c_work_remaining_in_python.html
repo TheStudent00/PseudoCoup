@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>GNU C Work Remaining</title>
 <!--
-  PCHQ, 2026-10-13, log 445. Dee: "i would like to use Python to represent the C
+  PCHQ, 2026-10-13, log 445. the owner: "i would like to use Python to represent the C
   code ... one example for each remaining problem ... an html support page for
   showing the code and the places highlighted". The same content, as text, is
   SUPPORT_gnu_c_work_remaining.md beside this file. The riscv64 words in the
@@ -281,7 +281,7 @@ pre#code {
 	<div id="helpbox" hidden>
 		<p>GNU C, written in Python's syntax. Holders are C's types under ctypes' names: <code>c_int</code> is <code>int</code>, <code>c_char</code> plain <code>char</code>, <code>c_longdouble</code> <code>long double</code>, <code>POINTER(Point)</code> a <code>struct point *</code>, <code>byref(x)</code> is <code>&amp;x</code>. Operators keep C's meaning: <code>/</code> on two <code>c_int</code> is C's division. An import stands for an <code>#include</code>; <code>libc</code> is the C library, <code>stdatomic</code> is <code>&lt;stdatomic.h&gt;</code>. A comment after <code>#</code> says in plain words what its line does.</p>
 		<p>A mark is one problem. Click or tap it, or a line of the list on the right, for its card. Each problem is marked once; the same problem comes back unmarked elsewhere (every first assignment is a declaration, every literal a constant, every variable a name).</p>
-		<p>Colours: remains; done (some by hand now, maybe modelled later, at Dee's word); later, with our own optimizing of arch-opcodes; out: by the all-three-architectures rule, outside our configuration (GNU C, <code>-O0 -g</code>), clang's own gap, or closed as needing nothing more. The list shows what remains; its button shows the rest.</p>
+		<p>Colours: remains; done (some by hand now, maybe modelled later, at the owner's word); later, with our own optimizing of arch-opcodes; out: by the all-three-architectures rule, outside our configuration (GNU C, <code>-O0 -g</code>), clang's own gap, or closed as needing nothing more. The list shows what remains; its button shows the rest.</p>
 		<p>Unmarked code: HiOps that <code>held_HiOp_wrapper</code> held and <code>map_HiOp_to_unit()</code> lowered and cut, among the 321,882 that clang lowered for riscv64 (run elv2_l156). The riscv64 words in the cards come from run elv2_l154, which compiled the same program as GNU C (the GNU C button), less the 9 lines added on 2026-10-14 for the cards on the two faults and the other clang.</p>
 	</div>
 </header>
@@ -854,7 +854,7 @@ const STATUS_WORDS = { next: "remains", solved: "done", later: "later", out: "ou
 const COUNTS = [["next", 3], ["later", 1], ["solved", 23], ["out", 6]];
 
 const state = { view: "py", pinned: null, showSettled: false };
-// Settled items stay out of the list unless asked for (Dee, log 448: "your list isnt shrinking").
+// Settled items stay out of the list unless asked for (the owner, log 448: "your list isnt shrinking").
 const SETTLED = ["solved", "out"];
 
 function main() {
@@ -981,11 +981,11 @@ function cardTitles(ids) {
 }
 
 // Python-ish colouring of the unmarked text: comments, strings, numbers, keywords.
-const TOKEN = /(#.*$|\/\*.*?\*\/|\/\*.*$|^\s*\*.*\*\/|b?"(?:[^"\\]|\\.)*"|\b\d+\b|\b(?:def|return|class|from|import|while|pass|True|None|int|char|double|long|void|struct|typedef|unsigned|const)\b)/g;
+const SYNTAX_PAT = /(#.*$|\/\*.*?\*\/|\/\*.*$|^\s*\*.*\*\/|b?"(?:[^"\\]|\\.)*"|\b\d+\b|\b(?:def|return|class|from|import|while|pass|True|None|int|char|double|long|void|struct|typedef|unsigned|const)\b)/g;
 
 function appendPlain(line, text) {
 	let last = 0;
-	let found = TOKEN.exec(text);
+	let found = SYNTAX_PAT.exec(text);
 	while (found !== null) {
 		line.appendChild(document.createTextNode(text.slice(last, found.index)));
 		const token = document.createElement("span");
@@ -993,10 +993,10 @@ function appendPlain(line, text) {
 		token.textContent = found[0];
 		line.appendChild(token);
 		last = found.index + found[0].length;
-		found = TOKEN.exec(text);
+		found = SYNTAX_PAT.exec(text);
 	}
 	line.appendChild(document.createTextNode(text.slice(last)));
-	TOKEN.lastIndex = 0;
+	SYNTAX_PAT.lastIndex = 0;
 }
 
 function tokenClass(token) {

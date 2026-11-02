@@ -8,7 +8,7 @@ its two sub-nodes, `compile_standard_source` and `read_words_at_symbol`.
     LoHiOp = read_words_at_symbol(machine_code, source.symbol)  # refuses when no symbol reaches the object
 
 A machine word and its arch-opcode are one thing in two forms (the node's
-definition), so nothing is mapped here, and no Sail model is read here. Dee,
+definition), so nothing is mapped here, and no Sail model is read here. the owner,
 2026-09-21: "the mapping between arch-opcode and machine-opcode is 1-to-1".
 
 Written fresh on 2026-10-07 ; nothing in it is lifted
@@ -30,20 +30,20 @@ from .standard_HiOp_wrapper import StandardSource
 
 # The compiler and its flags, one row per language.
 #
-# The optimizer is off (-O0). Dee, 2026-10-08: "we want an honest lowering,
+# The optimizer is off (-O0). the owner, 2026-10-08: "we want an honest lowering,
 # not a simplification ... the default is no optimizer for all lowerings where
 # we are trying to extract the arch-units." The optimizer is used only with a
-# reason given to Dee before the run. Until 2026-10-08 this row said -O1,
+# reason given to the owner before the run. Until 2026-10-08 this row said -O1,
 # copied from the grid's syntax-only check .
 #
 # The debug table is on (-g), so each word can be traced to the field it
-# reads. Dee, the same day: "debug as a default might be a good rule to have."
+# reads. the owner, the same day: "debug as a default might be a good rule to have."
 #
 # The rest is GNU C's dialect, the grid's own, with -c: no -march, because our
 # target is clang's own riscv64 default (RVA23U64 + Zifencei); -ferror-limit=0,
 # so clang lists every error, not only the first 19.
 #
-# The check of every HiOp on x86-64 and aarch64 (Dee's rule of 2026-10-01,
+# The check of every HiOp on x86-64 and aarch64 (the owner's rule of 2026-10-01,
 # lower only what lowers on every major architecture;  swaps
 # this row's target and DISASSEMBLE_COMMAND for its run
 # (Research/lower_HiOp/lower_gnu_c.py --target); the reader below reads the

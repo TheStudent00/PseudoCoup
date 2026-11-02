@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.hub.autopoly
 level: 4
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 4
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -41,9 +41,9 @@ proven equal to those primitives — and the LoOp runs in that language.
 Every LoOp emulated means every Unit emulated, which means every HiOp
 emulated. That is the polyfill.
 
-- What AutoPoly carries across languages is the UR-Node (Dee's
+- What AutoPoly carries across languages is the UR-Node (the owner's
   `UniversalRichNode`, which log 302 places under both AutoPoly and the
-  Ledgerer). Its design, locked by Dee on 2026-10-09, is defined once, in the
+  Ledgerer). Its design, locked by the owner on 2026-10-09, is defined once, in the
   ledgerer's CORE (`## design`): a HiOp variant with its Units, one per
   architecture, and their Lean terms. The polyfill is what makes a UR-Node's
   meaning the same in every language .
@@ -59,10 +59,10 @@ emulated. That is the polyfill.
 - [SUPPORT_riscv64_ordering_per_target_language.md](SUPPORT_riscv64_ordering_per_target_language.md):
   what each riscv64 word that orders memory promises other threads (fences,
   AMOs, LR/SC), and how each of the twelve languages keeps it at least as
-  strongly, by hand. Dee, 2026-10-13, on the fence: "its more of an
+  strongly, by hand. the owner, 2026-10-13, on the fence: "its more of an
   infrastructure thing no?" .
 - [SUPPORT_gnu_c_infrastructure_lowered_whole.md](SUPPORT_gnu_c_infrastructure_lowered_whole.md):
   the routines riscv64's Units call, lowered whole and optimized for
   AutoPoly to run whole: compiler-rt done (run elv2_l159), the C library
-  waiting on Dee's choice. Dee: "theyre self contained objects. they dont need
+  waiting on the owner's choice. the owner: "theyre self contained objects. they dont need
   to be split" (logs 448, 449).

@@ -15,7 +15,7 @@ Node `hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp.compile_stan
 > that wont be empty eventually. but we have things like "draft"
 > codifications to indicate an incomplete node.
 >
-> — Dee, 2026-07-31
+> — the owner, 2026-07-31
 
 So the rule has two parts, and the second is what stops it being
 vacuous:
@@ -43,4 +43,4 @@ nothing beneath it to be incomplete.
 
 ## check 2 and beyond
 
-None yet. Dee, 2026-07-31: "we can figure out better checks later."
+None yet. the owner, 2026-07-31: "we can figure out better checks later."

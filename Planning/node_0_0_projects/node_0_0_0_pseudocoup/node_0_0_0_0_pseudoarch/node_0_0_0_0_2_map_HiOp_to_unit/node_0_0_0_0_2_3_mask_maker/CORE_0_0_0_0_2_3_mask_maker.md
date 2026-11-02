@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.mask_maker
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.DRY_mask_maker
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 5
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.DRY_mask_maker
 
 ## super_node
@@ -42,7 +42,7 @@ rest go to the lowerer, and they go in bulk.
 
 It records all the work already done, in both stages of `map_HiOp_to_unit`:
 the verdict on each cell, and each cell whose arch-unit is already extracted.
-So neither stage redoes a cell. Dee, 2026-10-05: "it also prevents one from
+So neither stage redoes a cell. the owner, 2026-10-05: "it also prevents one from
 re-running cells that have already have extracted arch-units. its all the
 work thats already been done -- hence, DRY". That is why it moved up that day
 (log 361), from under `extract_lang_vocabulary` to beside it under

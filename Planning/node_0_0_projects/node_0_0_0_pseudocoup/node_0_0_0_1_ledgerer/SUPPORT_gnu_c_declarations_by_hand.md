@@ -35,7 +35,7 @@ and no instruction comes from it.
 | 2 | a written value (`0.5`, `'x'`, `"text"`) | a constant of its holder; a string's bytes go in the program's data |
 | 3 | a conversion that only changes the holder | the same bits, seen as the new holder |
 | 4 | a parameter | a holder in the function's frame; its first value is the argument |
-| 5 | a variable | a holder of its type: in the frame when local and not `static`; in the program's data when `static` or at file scope; defined elsewhere when `extern`; first value from its initializer, else 0 (Dee, log 446); an array sized while the program runs takes its room when its line runs |
+| 5 | a variable | a holder of its type: in the frame when local and not `static`; in the program's data when `static` or at file scope; defined elsewhere when `extern`; first value from its initializer, else 0 (the owner, log 446); an array sized while the program runs takes its room when its line runs |
 | 6 | a declaration line | nothing of its own: its declarations, in order |
 | 7 | a struct or union | a new holder, laid out by §4's rules |
 | 8 | a field | an offset in its struct, or a range of bits for a bit-field |
@@ -63,7 +63,7 @@ Table 2. Each one, and the rule it comes under.
 | an anonymous member | `struct { union { int i; float f; }; int k; }` | its fields are found as fields of the enclosing struct, at the member's offset plus their own: `i` and `f` at 0, `k` at 4 |
 | a designated initializer | `{.y = 9}`, `[2] = 5`, GNU's `[1 ... 3] = 7` | rule 15, element by element |
 | a thread's own variable | `_Thread_local int seen;` | rule 5, with one copy per thread; riscv64 finds it from the `tp` register (my reading: each emulated thread keeps its own copy) |
-| a run-time-sized array | `int buf[n];` | rule 5: room taken when its line runs (Dee: "okay", log 446) |
+| a run-time-sized array | `int buf[n];` | rule 5: room taken when its line runs (the owner: "okay", log 446) |
 | `const`, `volatile` | `const int limit = 9;` | `const`: placed like any holder, in read-only data where clang puts it there; `volatile`: every read and write stays, as at `-O0` they already do |
 
 ## 3. Attributes
@@ -86,7 +86,7 @@ Read back from the assembly clang writes for
 `Research/lower_HiOp/samples_l157/declarations_riscv64_layout.c`, by run
 elv2_l157 (`out/samples_l157/layout_riscv64.txt`): 65 of 65 rows read; my 63
 predictions (the RISC-V psABI, LP64D) all held; 2 rows were only recorded.
-Dee's ruling: riscv64's layouts only, since AutoPoly runs riscv64's LoOps.
+the owner's ruling: riscv64's layouts only, since AutoPoly runs riscv64's LoOps.
 
 Table 4. Sizes and alignments, in bytes.
 

@@ -21,5 +21,5 @@ status: living
   - compiler-rt lowered whole for riscv64, `-O2 -g` (run elv2_l159): 155 of
     its 159 files; the 54 routines riscv64's Units call reach 58, 5,830
     words; `SUPPORT_gnu_c_infrastructure_lowered_whole.md`. The C library
-    waits on Dee's choice. Running these whole is this node's work, not
+    waits on the owner's choice. Running these whole is this node's work, not
     started.

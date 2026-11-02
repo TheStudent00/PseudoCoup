@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lang_models.gnu_c.unreached_paths
 level: 7
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: data (record)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 7
 - **status:** draft
 - **designation:** data (record)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node

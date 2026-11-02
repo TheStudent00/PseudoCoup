@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.context
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -26,7 +26,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -45,7 +45,7 @@ The contexts a holder or HiOp can be in, both at entry into the lowerer
 modifies a lowered Unit (`model_contexts`): the lowerer's logic for a place,
 modelled once and applied the same way to every HiOp.
 
-Dee, 2026-10-15 : "the way the context changes things is logic
+the owner, 2026-10-15 : "the way the context changes things is logic
 defined within the lowerer. i want the way that context changes things to be
 modelled. thats what context is. context could change a bunch of things but it
 changes it according to its model."

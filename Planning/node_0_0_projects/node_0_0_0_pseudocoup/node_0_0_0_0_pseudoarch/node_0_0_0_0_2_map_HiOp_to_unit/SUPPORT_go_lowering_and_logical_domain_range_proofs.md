@@ -4,14 +4,14 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Go Lowering, Logical Domain-to-Range Extraction, and AutoPoly Emulation Proofs
 
 > "wow. i suppose what needs proving are the domain and range of each HiOp (without any work by hand i mean, instead using the logical defintions) because otherwise it seems like proving emulation is trivial.  
 > i think we should work on extracting/lowering another language vocab so we can test domain-range and emulation proofs."  
-> — **Dee**
+> — **the owner**
 
 ---
 
@@ -20,7 +20,7 @@ author: Dee & Gemini
 
 ### Full-Vocabulary Lowering Metrics Summary
 
-Following Dee's direction to extract and lower full compiler vocabularies across distinct language ecosystems with zero work by hand, the automated lowering pipeline on `riscv64-runner` verified and lowered the complete Go and non-GNU-C Clang compiler vocabularies to RISC-V `Unit`s:
+Following the owner's direction to extract and lower full compiler vocabularies across distinct language ecosystems with zero work by hand, the automated lowering pipeline on `riscv64-runner` verified and lowered the complete Go and non-GNU-C Clang compiler vocabularies to RISC-V `Unit`s:
 
 | Ecosystem / Corpus | Summary File | Variants Lowered / Total | Lowering Success Rate | RISC-V Unit Words | Arch-Opcodes | Key Milestones & Source Artifacts |
 | :--- | :--- | :---: | :---: | :---: | :---: | :--- |
@@ -49,16 +49,16 @@ On `riscv64-runner`, **`574 / 592`** (`97.0%`) non-GNU-C Clang variants lowered 
 ---
 
 <details open>
-<summary><b>1. Dee's Core Insight & The Zero-By-Hand Automation Imperative</b></summary>
+<summary><b>1. the owner's Core Insight & The Zero-By-Hand Automation Imperative</b></summary>
 
 In initial AutoPoly prototypes (`autopoly_prototype.py`), cross-language operator behaviors (such as Python's floored division `py.floordiv_i32`, Go's shifting rules `go.shl_i32`, or Rust's saturating conversions) were modeled using manually authored Python lambdas and synthesized via hand-crafted grammar search.
 
-Dee recognized the fundamental circularity in that approach:
+the owner recognized the fundamental circularity in that approach:
 **If an engineer must hand-code the semantic model of each language's HiOp in Python, proving emulation between them merely proves that our manual hand-models match our grammar rules.**
 
 The genuine, foundational breakthrough consists of deriving the **Defined Domain** $D_{\text{ok}}$, the **Trap Domain** $D_{\text{trap}}$, and the **Output Range Formula** $F(a_0, a_1)$ of every HiOp **with zero work by hand**, derived entirely from the formal logical definitions of the machine instructions (`LoOp`s) in its compiler-lowered `Unit`.
 
-To realize Dee's vision, we built the automated **Logical Domain-to-Range & AutoPoly Emulation Prover** (`Research/autopoly/prove_domain_range_and_emulation.py`). It:
+To realize the owner's vision, we built the automated **Logical Domain-to-Range & AutoPoly Emulation Prover** (`Research/autopoly/prove_domain_range_and_emulation.py`). It:
 1. Compiles real **Go**, **GNU C**, and **C++** HiOps directly to 64-bit RISC-V (`riscv64`).
 2. Slices and extracts their exact machine instructions into basic blocks.
 3. Symbolically executes each `Unit` against our formal RISC-V Sail/circuit bit-vector specification in Z3.
@@ -245,7 +245,7 @@ theorem cxx_spaceship_eq_piecewise_c (a0 a1 : BitVec 64) :
 <summary><b>6. Conclusion & Integration with PseudoArch</b></summary>
 
 1. **Zero-By-Hand Automation Achieved:**
-   Dee's hypothesis is conclusively proven: by grounding domain-to-range derivation directly in the formal logical definitions of hardware instructions (`LoOp`s), emulation proofs between different programming languages cease to rely on subjective hand-written models and become verifiable, automated mathematical theorems.
+   the owner's hypothesis is conclusively proven: by grounding domain-to-range derivation directly in the formal logical definitions of hardware instructions (`LoOp`s), emulation proofs between different programming languages cease to rely on subjective hand-written models and become verifiable, automated mathematical theorems.
 2. **Next Steps:**
    - Wire `prove_domain_range_and_emulation.py` into `Projects/PseudoArch/map_HiOp_to_unit` so that newly lowered language vocabularies (e.g. Swift, Rust, Python bytecode) automatically produce formal equivalence certificates upon lowering.
    - Persist generated SMT-LIB2 and Lean 4 proofs as first-class metadata in `dict_of_lang_HiOps`.

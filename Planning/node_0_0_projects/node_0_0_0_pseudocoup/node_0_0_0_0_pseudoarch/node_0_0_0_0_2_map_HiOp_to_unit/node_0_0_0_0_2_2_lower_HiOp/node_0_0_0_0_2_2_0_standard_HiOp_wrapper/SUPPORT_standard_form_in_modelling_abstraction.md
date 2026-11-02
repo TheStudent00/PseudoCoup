@@ -6,14 +6,14 @@ status: draft
 # SUPPORT — standard_form_in_modelling_abstraction
 
 The standard-form in the context of modelling abstraction, as its
-configurations. Third draft, 2026-10-10. Not literal. For Dee to build on.
+configurations. Third draft, 2026-10-10. Not literal. For the owner to build on.
 
 - `placeholder_k()`: inert. It stands for whatever code a program puts there.
-- `HiOp[k](...)`: part k of one HiOp (Dee's notation, 2026-10-10). `(...)` is
+- `HiOp[k](...)`: part k of one HiOp (the owner's notation, 2026-10-10). `(...)` is
   what the part takes, such as a test; the line indented under it is the
   part's body.
 - depended-HiOp: the HiOp that is depended on. dependent-HiOp: a HiOp that
-  depends on a depended-HiOp (Dee's words). A loop is a depended-HiOp; the
+  depends on a depended-HiOp (the owner's words). A loop is a depended-HiOp; the
   `break;` inside it is a dependent-HiOp.
 
 ## 1. a HiOp with N bodies
@@ -54,7 +54,7 @@ the language writes it, a label.
 | CPython's `For` | 1 or 2 | `HiOp[0](item in items)`, and `HiOp[1]` when there is a second body | `for item in items: body` and `else: body` |
 
 The second draft drew N = 0, 1 and 2 as three configurations of their own,
-and wrote the second body with `else`; that tied it to `if` (Dee,
+and wrote the second body with `else`; that tied it to `if` (the owner,
 2026-10-10: "but `else` is not the abstraction is it?").
 
 ## 2. a depended-HiOp and its dependent-HiOp

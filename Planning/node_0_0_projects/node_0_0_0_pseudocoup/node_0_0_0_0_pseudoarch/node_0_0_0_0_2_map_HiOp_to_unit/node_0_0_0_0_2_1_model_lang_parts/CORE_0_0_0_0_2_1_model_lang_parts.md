@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -34,7 +34,7 @@ sub_nodes:
 - **level:** 5
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -57,7 +57,7 @@ language-agnostic machinery: its HiOps, its holders, the infrastructure its
 Units call, the contexts that change what a HiOp does, how complex each HiOp
 is, and each HiOp's configuration.
 
-Dee's sketch, 2026-10-15, named this node `model_lang_components`; then:
+the owner's sketch, 2026-10-15, named this node `model_lang_components`; then:
 "i might change components for parts. `model_lang_parts`. shorter, same
 info."
 
@@ -102,11 +102,11 @@ four invariants that hold in every compiler:
    `unlock_branch` intersects the gate predicates along each untaken chain to
    emit `1` candidate per surviving equivalence class until `open == 0`.
 
-### Dee's Downstream Unit-Modelling Order
+### the owner's Downstream Unit-Modelling Order
 
 Once all HiOp variants and their deterministic `(entry, exit)` paths are
 enumerated (`open == 0`), downstream Unit slicing and composition follow
-Dee's complexity order (Dee, 2026-10-12, 
+the owner's complexity order (the owner, 2026-10-12, 
 simple HiOps, then model hybrid HiOps, then model complex HiOps. because each
 preceding stage helps us model the next -- with complex being essentially
 free"):

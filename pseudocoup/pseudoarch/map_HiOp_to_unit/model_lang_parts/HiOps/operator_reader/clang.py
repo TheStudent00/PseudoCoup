@@ -295,10 +295,10 @@ def codes_in(part) -> list:
 
 def expression_kinds() -> tuple:
     """(kind, where clang declares it) for every concrete kind in
-    StmtNodes.td, statements and expressions both, in clang's order (Dee,
+    StmtNodes.td, statements and expressions both, in clang's order (the owner,
     2026-09-30: statements are HiOps). An abstract kind is never built on its
     own, so it is not listed. The name still says expressions: renaming it
-    waits for Dee's word."""
+    waits for the owner's word."""
     nodes = read_clang_stmt_nodes(CHECKOUT, STMT_NODES)
     kinds = []
     for kind, (_base, is_abstract, line_number) in nodes.items():

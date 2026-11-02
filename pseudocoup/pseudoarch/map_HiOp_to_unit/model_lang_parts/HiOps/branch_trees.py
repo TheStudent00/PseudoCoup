@@ -3,7 +3,7 @@
 the operators' traced paths run, read with tree-sitter from each file as
 clang's preprocessor writes it, and the depth of every path.
 
-Dee, 2026-10-22 (PCHQ Gemini copy, after log 501): "when i say depth, im
+the owner, 2026-10-22 (PCHQ Gemini copy, after log 501): "when i say depth, im
 referring to the meaning thats used by every reasonably sane person on the
 planet in the field of computation. a logical control flow branch. the
 number of those along a path define its depth." Then: "just measure it. is
@@ -1312,10 +1312,10 @@ def say_traced(traced: dict, operators: int) -> None:
 # ---------------------------------------------------------------------------
 # 4. the abstract objects that unlock a branch, and the candidates they write
 #
-# , at Dee's word: "beautifully designed. lets put
+# , at the owner's word: "beautifully designed. lets put
 # it in a research node and fill out the PlanPlan for it, down to the leaf
 # nodes. and then we will generate the instruction for Claude to implement
-# and run." Plan node research/trace_logical_paths/branch_trees. Dee,
+# and run." Plan node research/trace_logical_paths/branch_trees. the owner,
 # 2026-10-22: "wouldnt we be able to determine the abstract objects which
 # unlock each branch? ... we could use intelligent trimming of possibilities
 # to make the method reach wider and deeper."

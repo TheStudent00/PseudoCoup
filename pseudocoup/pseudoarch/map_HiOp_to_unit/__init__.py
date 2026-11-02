@@ -15,7 +15,7 @@ This module's own loop, `map_HiOp_to_unit`, runs the last three for many
 HiOps at once: it puts many standard functions in one source, compiles the
 source once (lower_HiOp), reads each standard function's words, and cuts its
 Unit (extract_unit_from_LoHiOp). Moved here on 2026-10-13 from the research
-runner `Research/lower_HiOp/lower_gnu_c.py` , at Dee's word:
+runner `Research/lower_HiOp/lower_gnu_c.py` , at the owner's word:
 "okay lets move the tools into their places". The runner keeps what is a
 run's: which HiOps it lowers, for which machine, and the records it writes.
 
@@ -32,7 +32,7 @@ signatures `extract()` tries from what it reads); its lowering half, bridge
 and compose are research code for now
 (`Research/extract_lang_vocabulary/complex_signature_reader/`).
 
-Renamed and moved 2026-10-05 at Dee's word (PseudoCoup log 361):
+Renamed and moved 2026-10-05 at the owner's word (PseudoCoup log 361):
 `extract_lang_vocabulary` became `extract_lang_vocab`, and `DRY_mask_maker`
 moved up from it to here, because both stages use the mask.
 """

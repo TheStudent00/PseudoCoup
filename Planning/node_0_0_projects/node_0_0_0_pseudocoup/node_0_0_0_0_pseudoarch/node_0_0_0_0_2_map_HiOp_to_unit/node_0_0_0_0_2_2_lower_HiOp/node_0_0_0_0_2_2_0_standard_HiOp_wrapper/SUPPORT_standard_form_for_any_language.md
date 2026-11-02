@@ -12,13 +12,13 @@ close to an implementation but written to be read, in the form of PCHQ log
 
 Written by Claude (Opus 5.5) on 2026-10-09, first as §2 of
 `Planning/CORE_0_0_0_pseudocoup.md, at
-Dee's request:
+the owner's request:
 
 > what might be useful is something like log 373 style. not perfectly literal
 > but very descriptive and nearly actual code implementation. but
 > descriptive-ness being the primary objective of it.
 
-Put here at Dee's word, the same day (log 405):
+Put here at the owner's word, the same day (log 405):
 
 > if you could please put that in a SUPPORT file in its proper node location,
 > thatd be appreciated. i want to be able to reference it and perhaps use it
@@ -26,7 +26,7 @@ Put here at Dee's word, the same day (log 405):
 
 Whose is what:
 
-- Dee's: the standard-form itself, a container the caller owns in place of the
+- the owner's: the standard-form itself, a container the caller owns in place of the
   bare function (log 302); the inert parts (2026-10-08); the definition of a
   HiOp.
 - Claude's: the five steps, the wording of the rules, and every name in
@@ -36,7 +36,7 @@ Whose is what:
 
 ## the rules
 
-A HiOp is one operator of a language, with its holders (Dee's definition).
+A HiOp is one operator of a language, with its holders (the owner's definition).
 Every placeholder of its operator is one of three kinds of thing to the HiOp.
 It is a value the HiOp reads. Or it is code the HiOp runs, which in a real
 program is other HiOps. Or it is a name or a type the HiOp refers to.
@@ -51,7 +51,7 @@ program is other HiOps. Or it is a name or a type the HiOp refers to.
 - a control HiOp is a statement, or an expression whose parts run only on
   some paths (`a && b`, `a || b`, `a ? b : c`, `a ?: b`). its parts are held
   as inert calls: calls to functions declared and never defined, so the
-  lowerer keeps each call and cannot see inside (Dee, 2026-10-08). a body's
+  lowerer keeps each call and cannot see inside (the owner, 2026-10-08). a body's
   call answers nothing, so its holder never shows; a value's call answers the
   value read from its holder.
 - a context is a HiOp that this HiOp can only stand inside: `break;` and
@@ -214,7 +214,7 @@ def write_the_held_source(row: LanguageRow, hiop: HiOp, held: Held, statement):
 
 class HiOp:
 	"""
-		one operator of a language, with its holders (Dee's definition). every
+		one operator of a language, with its holders (the owner's definition). every
 		field below is read from the lowerer, or from the language as the
 		lowerer takes it, never written by hand: what each placeholder is, and
 		where the HiOp may stand, are in the lowerer's own checks and lowering
@@ -427,7 +427,7 @@ python_break = HiOp(
   where it can stand; write the standard source.
 - `hold_one_placeholder` is where the standard-form decides, by the
   placeholder's role, never by the language. Only the words come from the row.
-- `stand_it_where_it_can_stand` is where Dee's "dependent HiOps" live.
+- `stand_it_where_it_can_stand` is where the owner's "dependent HiOps" live.
   - The HiOps a HiOp holds inside it in a real program (its body, its test)
     are its parts, each an inert call (`hold_one_placeholder`).
   - The HiOps it can only stand inside are its contexts, written around it,

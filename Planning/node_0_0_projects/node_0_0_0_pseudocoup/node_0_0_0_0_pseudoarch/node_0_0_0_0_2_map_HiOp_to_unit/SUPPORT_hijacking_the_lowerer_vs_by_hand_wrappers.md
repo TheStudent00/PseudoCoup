@@ -4,7 +4,7 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Hijacking the Lowerer vs. By-Hand Wrappers: Direct Lowering via Entry `state[0]` -> Target Exit
@@ -12,7 +12,7 @@ author: Dee & Gemini
 > "that looks like a lot of work done by hand. is that absolutely necessary?
 >
 > and actually... do we need to define a form at all? if we know what the state[0] needed at an entry point to reach an intended target exit, can we not just use those. like hijack the lowerer since we control its source, instead of having to model HiOps by-hand"
-> — **Dee**
+> — **the owner**
 
 ---
 

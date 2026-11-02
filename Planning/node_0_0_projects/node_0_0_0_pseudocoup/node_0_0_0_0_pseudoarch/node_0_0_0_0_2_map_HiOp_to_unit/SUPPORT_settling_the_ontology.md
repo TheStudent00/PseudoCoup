@@ -5,12 +5,12 @@ status: draft
 
 # SUPPORT — settling_the_ontology
 
-The tree under `map_HiOp_to_unit`, being re-drawn at Dee's word. Started
+The tree under `map_HiOp_to_unit`, being re-drawn at the owner's word. Started
 2026-10-15 in PCHQ's brainstorming conversation. Nothing has moved yet: the
 tree below is the proposal, and the plan's tree is still the one
-`bash ~/Programming/PRIVATE/PseudoCoup/hq.sh tree` prints.
+`bash PRIVATE/PseudoCoup/hq.sh tree` prints.
 
-Dee, 2026-10-15:
+the owner, 2026-10-15:
 
 > what an unbelievable mess this is. it might actually be faster to start
 > over and re-create the ontology from scratch then to try and disentangle
@@ -28,9 +28,9 @@ It replaces the proposal of 2026-10-14 in
 [SUPPORT_tree_now_and_proposed.html](SUPPORT_tree_now_and_proposed.html)
 , which moved code within today's tree and added no node.
 
-## 1. Dee's sketch, as given
+## 1. the owner's sketch, as given
 
-Block A. Dee's tree, 2026-10-15, as written.
+Block A. the owner's tree, 2026-10-15, as written.
 
 ```
 map_HiOp_to_unit
@@ -48,11 +48,11 @@ map_HiOp_to_unit
 ...
 ```
 
-## 2. Dee's decisions since
+## 2. the owner's decisions since
 
-Table 1. Each decision after the sketch, in Dee's words, 2026-10-15.
+Table 1. Each decision after the sketch, in the owner's words, 2026-10-15.
 
-| decision | Dee's words |
+| decision | the owner's words |
 |---|---|
 | `model_lang_components` is named `model_lang_parts` | "i might change components for parts. `model_lang_parts`. shorter, same info." |
 | a sixth part, `HiOp_configurations`, holds `dependent_HiOp_reader` and `HiOp_configuration_solver` | "`model_lang_components -> HiOp_configurations`?", to Claude's proposal of a part for each HiOp's configuration: its bodies, and the HiOps that can only stand inside it |
@@ -65,7 +65,7 @@ Table 1. Each decision after the sketch, in Dee's words, 2026-10-15.
 
 ## 3. The tree, proposed
 
-Figure 1. Every node under `map_HiOp_to_unit` today, placed in Dee's tree.
+Figure 1. Every node under `map_HiOp_to_unit` today, placed in the owner's tree.
 `(new)` marks a node that doesn't exist today. A node keeps its sub-nodes
 unless §4 says otherwise. It shows placement only, not status.
 
@@ -98,27 +98,27 @@ map_HiOp_to_unit
 ```
 
 Table 2. Each node of today, where Figure 1 puts it, and whose placement it
-is. "Claude's" placements wait for Dee's word.
+is. "Claude's" placements wait for the owner's word.
 
 | today | proposed | whose |
 |---|---|---|
-| `extract_lang_vocab` | none: its sub-nodes go into `model_lang_parts` | Dee's sketch |
-| `extract_lang_vocab` → `operator_reader` | `model_lang_parts` → `HiOps` → `operator_reader` | Dee's sketch (`HiOps`); Claude's (as its sub-node) |
+| `extract_lang_vocab` | none: its sub-nodes go into `model_lang_parts` | the owner's sketch |
+| `extract_lang_vocab` → `operator_reader` | `model_lang_parts` → `HiOps` → `operator_reader` | the owner's sketch (`HiOps`); Claude's (as its sub-node) |
 | `extract()`, `extract_lang_vocab`'s own loop: operators crossed with holders, the variants clang accepts kept | `model_lang_parts` → `HiOps` | Claude's |
-| `extract_lang_vocab` → `holder_reader` | `model_lang_parts` → `holders` → `holder_reader` | Dee's sketch (`holders`); Claude's (as its sub-node) |
-| `complex_signature_reader` | `model_lang_parts` → `HiOps` → `complex_signature_reader` | Dee (Table 1) |
-| `extract_lang_infra` (on the work list, no node yet) | `model_lang_parts` → `infra` | Dee's sketch |
-| `model_HiOps` → `model_contexts` | `model_lang_parts` → `context` → `model_contexts` | Dee's sketch (`context`); Claude's (as its sub-node) |
-| `model_HiOps` → `HiOp_sorter` | `model_lang_parts` → `HiOp_complexities` → `HiOp_sorter` | Dee's sketch (`HiOp_complexities`); Claude's (as its sub-node) |
+| `extract_lang_vocab` → `holder_reader` | `model_lang_parts` → `holders` → `holder_reader` | the owner's sketch (`holders`); Claude's (as its sub-node) |
+| `complex_signature_reader` | `model_lang_parts` → `HiOps` → `complex_signature_reader` | the owner (Table 1) |
+| `extract_lang_infra` (on the work list, no node yet) | `model_lang_parts` → `infra` | the owner's sketch |
+| `model_HiOps` → `model_contexts` | `model_lang_parts` → `context` → `model_contexts` | the owner's sketch (`context`); Claude's (as its sub-node) |
+| `model_HiOps` → `HiOp_sorter` | `model_lang_parts` → `HiOp_complexities` → `HiOp_sorter` | the owner's sketch (`HiOp_complexities`); Claude's (as its sub-node) |
 | `model_HiOps`, the modelling itself (simple HiOps first, then hybrid, then complex) | `model_lang_parts` → `HiOps` | Claude's |
-| `extract_lang_vocab` → `dependent_HiOp_reader`, `HiOp_configuration_solver` | `model_lang_parts` → `HiOp_configurations` | Dee |
-| `standard_HiOp_wrapper` | `lower_HiOp` → `standard_HiOp_wrapper` | Dee's sketch |
+| `extract_lang_vocab` → `dependent_HiOp_reader`, `HiOp_configuration_solver` | `model_lang_parts` → `HiOp_configurations` | the owner |
+| `standard_HiOp_wrapper` | `lower_HiOp` → `standard_HiOp_wrapper` | the owner's sketch |
 | `lower_HiOp` → `compile_standard_source`, `read_words_at_symbol` | unchanged | |
-| `extract_unit_from_LoHiOp` | `lower_HiOp` → `extract_unit_from_LoHiOp` | Dee |
-| `langs` → `gnu_c` | `lang_models` → `gnu_c` | Dee's sketch |
-| none | `lang_models` → `go` | Dee's sketch |
+| `extract_unit_from_LoHiOp` | `lower_HiOp` → `extract_unit_from_LoHiOp` | the owner |
+| `langs` → `gnu_c` | `lang_models` → `gnu_c` | the owner's sketch |
+| none | `lang_models` → `go` | the owner's sketch |
 | `dict_of_lang_HiOps` | unchanged: what the whole tree fills, its keys from `HiOps` and its values from `lower_HiOp` | Claude's |
-| `DRY_mask_maker` | `mask_maker`, renamed | Dee (Table 1) |
+| `DRY_mask_maker` | `mask_maker`, renamed | the owner (Table 1) |
 
 ## 4. Still open
 
@@ -145,11 +145,11 @@ Settled on 2026-10-15 and moved to Table 1: where clang's own pieces go.
 
 ## 6. How it goes live: PlanPlan's `.NASCENT`
 
-PlanPlan's `framework/PROTOCOL.md` §6d (Dee, 2026-10-15) gives the way.
+PlanPlan's `framework/PROTOCOL.md` §6d (the owner, 2026-10-15) gives the way.
 The new CORE and the new nodes are built in `map_HiOp_to_unit/.NASCENT/`,
 which every tool skips. Today's nodes stay live, and each moves once, at
 the end, with everything it holds then. Table 2 becomes
 `.NASCENT/SUPPORT_migration_map.md`, whose frontmatter lists every node
 `from:` and `to:` (`to: deleted`, `from: new`). Opened 2026-10-15 at
-Dee's word: "please fill in the .NASCENT for `map_HiOps_to_unit` as best
+the owner's word: "please fill in the .NASCENT for `map_HiOps_to_unit` as best
 you can." The map is `.NASCENT/SUPPORT_migration_map.md`.

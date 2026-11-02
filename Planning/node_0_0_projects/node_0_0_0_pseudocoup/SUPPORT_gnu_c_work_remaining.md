@@ -6,7 +6,7 @@ status: draft
 # SUPPORT — gnu_c_work_remaining
 
 What remains for GNU C, started over on 2026-10-13 with everything done
-taken out , at Dee's word:
+taken out , at the owner's word:
 
 > i asked you to start the list over with the things we solved removed. im
 > sick of scanning so many items and tracking a bunch of numbers.
@@ -22,10 +22,10 @@ record of every gap ever found stays in
 Since 2026-10-19 the standard progress view of GNU C vocabulary extraction,
 both methods side by side out of one whole, lives in
 `node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/.NASCENT/node_0_0_0_0_2_1_model_lang_parts/PROGRESS.md`,
-Table 1 (Dee's word; . Table 1 below is the previous methods'
+Table 1 (the owner's word; . Table 1 below is the previous methods'
 own table, kept as it stood.
 
-Dee, 2026-10-16: "idk why we cant keep a stable table that i can look at to
+the owner, 2026-10-16: "idk why we cant keep a stable table that i can look at to
 know what progress is being made. we were trying to solve specific problems
 which were gaps." Table 1 keeps the same rows from now on, and each time GNU
 C's list is made again it gains a column.
@@ -45,10 +45,10 @@ operators of one builtin.
 | left out: our check asked clang about one choice of holders, and clang made another operator, one the list holds under its own name (other languages' operators whose text is C's: C++20's rewritten `a * b` is C's `a * b`, `BinaryOperator` `Mul`) | 53 | 53 | nothing lost |
 | left out: our check asked clang about one choice of holders, and clang made another operator; the operator written is lost (Table 2) | 5 | 5 | 3 already ruled: the compound literal by hand, `v.x` as `v[0]`, `fallthrough` by hand (gap list items 5 and 19); open: `__builtin_fpclassify`, `__builtin_invoke`, and statement attributes other than `fallthrough` |
 | all operators clang accepts | 1,416 | 1,416 | counted as standard_HiOp_wrapper holds each text: GNU C's statement expression `({ a; })` and initializer list `{a}` are never accepted there (gap list items 5 and 11), so they are outside this whole |
-| `extract()` makes its whole list again every run, and sets it beside the last one | not done | done in the code: every combination asked of clang again, the past answers only set beside the new ones (Dee: "until PseudoCoup is completed, i dont want to assume that our past answers are correct") | checked 2026-10-17 by run elv2_l178 (small: each pass's first 40 operators, run elv2_l177's answers as the past): 44,806 of 44,806 combinations asked again (pass a 2,971, b 36,051, c 5,784), all 44,806 answered as before, 0 changed |
-| with three or more arguments, each holder the reader gives is tried once, not in every combination | | Claude's choice: every combination stopped run elv2_l174 | waits on Dee's word |
-| the operators added since 2026-10-14 lowered to Units | | not lowered yet | waits on Dee's word |
-| fusing `a * b + c` into one `fmadd.d` | later | later | Dee: "we will get it later when we find a way to optimize arch-opcodes" |
+| `extract()` makes its whole list again every run, and sets it beside the last one | not done | done in the code: every combination asked of clang again, the past answers only set beside the new ones (the owner: "until PseudoCoup is completed, i dont want to assume that our past answers are correct") | checked 2026-10-17 by run elv2_l178 (small: each pass's first 40 operators, run elv2_l177's answers as the past): 44,806 of 44,806 combinations asked again (pass a 2,971, b 36,051, c 5,784), all 44,806 answered as before, 0 changed |
+| with three or more arguments, each holder the reader gives is tried once, not in every combination | | Claude's choice: every combination stopped run elv2_l174 | waits on the owner's word |
+| the operators added since 2026-10-14 lowered to Units | | not lowered yet | waits on the owner's word |
+| fusing `a * b + c` into one `fmadd.d` | later | later | the owner: "we will get it later when we find a way to optimize arch-opcodes" |
 
 Changes to Table 1's rows, each with its reason:
 
@@ -71,19 +71,19 @@ what our list's text was, what clang made of it, and the cause.
 
 | operator | C writes | our text | clang made | cause | status |
 |---|---|---|---|---|---|
-| `CompoundLiteralExpr` | `(int){5}` | `(T)a` | a cast, `CStyleCastExpr` | the reader writes the initializer without its braces | covered by hand (gap list item 5, at Dee's word of 2026-10-13) |
-| `ExtVectorElementExpr` | `v.x`, `v.xy` (an element of an ext vector, by letter) | `a.m` | a member of a struct, `MemberExpr` | the reader writes a struct member's name where an element's letter goes | solved before as a complex HiOp: `v.x` is `v[0]`, the subscript the list holds on the same holder (gap list item 19, log 448, after Dee's "arent these complex HiOps?"); written "open" here on 2026-10-16 without that row read |
+| `CompoundLiteralExpr` | `(int){5}` | `(T)a` | a cast, `CStyleCastExpr` | the reader writes the initializer without its braces | covered by hand (gap list item 5, at the owner's word of 2026-10-13) |
+| `ExtVectorElementExpr` | `v.x`, `v.xy` (an element of an ext vector, by letter) | `a.m` | a member of a struct, `MemberExpr` | the reader writes a struct member's name where an element's letter goes | solved before as a complex HiOp: `v.x` is `v[0]`, the subscript the list holds on the same holder (gap list item 19, log 448, after the owner's "arent these complex HiOps?"); written "open" here on 2026-10-16 without that row read |
 | `AttributedStmt` | `__attribute__((fallthrough));` | `a;` | the statement `a;` alone | the reader writes no attribute (its code calls `Attr->printPretty`) | `fallthrough`: by hand, the same instructions as without it (gap list item 19, log 447); clang's other statement attributes (`nomerge`, `musttail`, `likely`, ...): not ruled on |
-| `__builtin_fpclassify` | `__builtin_fpclassify(0, 1, 4, 3, 2, x)` | the same | the assignment `p->result = (...)` | our check looks for the call where the standard form put it before log 424 | waits on Dee's word |
-| `__builtin_invoke` | `__builtin_invoke(f, x)` | the same | the plain call `f(x)` | clang's check (`BuiltinInvoke`) builds the plain call in its place | waits on Dee's word |
+| `__builtin_fpclassify` | `__builtin_fpclassify(0, 1, 4, 3, 2, x)` | the same | the assignment `p->result = (...)` | our check looks for the call where the standard form put it before log 424 | waits on the owner's word |
+| `__builtin_invoke` | `__builtin_invoke(f, x)` | the same | the plain call `f(x)` | clang's check (`BuiltinInvoke`) builds the plain call in its place | waits on the owner's word |
 
-Dee, 2026-10-16: "what is the abstraction for not dropping these?" Claude's
-answer, waiting for Dee's word, two rules:
+the owner, 2026-10-16: "what is the abstraction for not dropping these?" Claude's
+answer, waiting for the owner's word, two rules:
 
 1. clang's acceptance alone decides what is kept. Our check records what
    clang built from each accepted signature, and never drops a signature for
    it; one text is one HiOp, so another language's name that writes a C text
-   joins C's operator. It makes Dee's ruling for the `__sync` sizes general
+   joins C's operator. It makes the owner's ruling for the `__sync` sizes general
    ("every signature clang accepts is a HiOp variant of the name written"),
    and it keeps `__builtin_invoke` and `__builtin_fpclassify`.
 2. Every part clang's printer writes is a slot with a kind of its own, filled
@@ -99,7 +99,7 @@ literal by hand (gap list item 5), `v.x` as the complex HiOp `v[0]` (item
 19, log 448), and `fallthrough` by hand, the same as without it (item 19,
 log 447). And rule 1 keeps all of the 1,416 by its own terms, while the
 1,416 leave out what standard_HiOp_wrapper never lets clang accept (items 5
-and 11). Dee, 2026-10-17: "okay prove it then" and "it feels like these
+and 11). the owner, 2026-10-17: "okay prove it then" and "it feels like these
 rules are a bunch of patch work"; the proof is being measured on clang's
 own code .
 
@@ -110,11 +110,11 @@ in Table 1; `__builtin_fpclassify` is now inside "another operator".
 
 ## What was done on 2026-10-16 (log 480)
 
-- **The reader joined to `extract()`**, at Dee's word ("do it now"): for
+- **The reader joined to `extract()`**, at the owner's word ("do it now"): for
   each builtin with custom typechecking, the holders its checking code accepts,
   read by `complex_signature_reader`, are tried, and clang accepts or refuses
   each. Table 1's third row.
-- **Signatures dropped by a one-row check, kept**, at Dee's word of
+- **Signatures dropped by a one-row check, kept**, at the owner's word of
   2026-10-15 ("if it works, then yeah sure"). Table 1's second row.
 - **Clang's files read preprocessed** (run elv2_l173), and a fault that
   lost 101 of 902 expressions and statements found by run elv2_l176 and
@@ -155,7 +155,7 @@ in Table 1; `__builtin_fpclassify` is now inside "another operator".
   lowering's 322,610 HiOps.
 - **The one-over of GNU C** (log 457): the page's program, the models in
   pseudo-code, and how stable they are across clang 19, 20, 21 and 22.
-- **The explanations, rewritten** (logs 458 to 460), at Dee's critiques: the
+- **The explanations, rewritten** (logs 458 to 460), at the owner's critiques: the
   544 are types that `judge_holders` tried as GNU C's holders, and clang
   accepted 52; every card, log and list entry written today now names who
   does each step, defines its words, and gives each claim a second route

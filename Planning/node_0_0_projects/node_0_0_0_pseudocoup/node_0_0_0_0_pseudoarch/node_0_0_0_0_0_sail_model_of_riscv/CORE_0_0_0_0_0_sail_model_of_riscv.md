@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.sail_model_of_riscv
 level: 4
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 4
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node

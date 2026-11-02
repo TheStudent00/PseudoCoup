@@ -81,7 +81,7 @@ migration:
 # SUPPORT — migration_map
 
 The record of `map_HiOp_to_unit`'s rework, by PlanPlan's
-`framework/PROTOCOL.md` §6d. Opened 2026-10-15 at Dee's word ("please fill
+`framework/PROTOCOL.md` §6d. Opened 2026-10-15 at the owner's word ("please fill
 in the .NASCENT for `map_HiOps_to_unit` as best you can") and updated
 2026-10-26 to incorporate the winning 100%-complete in-HiOp branch-tree and
 gate-predicate equivalence-class toolset (`Research/trace_logical_paths_clone/`,
@@ -114,20 +114,20 @@ Table 2. Files, research tools, and code moving into `model_lang_parts` and `lan
 | what | today in | goes to | whose |
 |---|---|---|---|
 | CORE, PROGRESS, CHECK, DASHBOARD of retired nodes | `extract_lang_vocab`, `model_HiOps`, `complex_signature_reader` | `.archive/` | §6d |
-| `branch_trees.py` (`BranchTree`, `PartConstraint`, `AbstractConstraint`, `CandidateWriter`, `unlock_branch`: language-general tree solver) | `Research/trace_logical_paths_clone/branch_trees.py` | `model_lang_parts/HiOps/branch_trees` | Dee + Gemini (2026-10-26) |
-| `enumerate_branch_candidates.py` (`UnreachedBranch`, `BranchCondition`, `VariantCandidate`, `Record`, `enumerate_every_path`, `classify_branches`) | `Research/trace_logical_paths_clone/enumerate_branch_candidates.py` | `model_lang_parts/HiOps/enumerate_branch_candidates` | Dee + Gemini (2026-10-26) |
-| `enumerate_paths.py` (groups accepted traces into deterministic `(entry, exit)` paths / HiOp variants) | `Research/trace_logical_paths_clone/enumerate_paths.py` | `model_lang_parts/HiOps/enumerate_paths` | Dee + Gemini (2026-10-26) |
-| `what_is_left_for_each_hiop.py` -> renamed **`find_unreached_paths.py`** (system comparing traced paths against `BranchTree`s to find remaining open branches) | `Research/trace_logical_paths_clone/what_is_left_for_each_hiop.py` | `model_lang_parts/HiOps/find_unreached_paths` | Dee (2026-10-26): no `_HiOp_` in name under `HiOps` |
-| `accepted_signatures.py` (`type_answers`, `llvm_type_answers` querying the lowerer on the holder pool) | `Projects/PseudoArch/map_HiOp_to_unit/complex_signature_reader/accepted_signatures.py` | `model_lang_parts/holders/accepted_signatures` | Dee + Gemini (2026-10-26) |
-| Gate-predicate equivalence-class partitioner (`EQUIVALENCE_CLASS_HOLDERS` / `TYPE_ONLY_HOLDERS` partitioning logic) | `Research/trace_logical_paths_clone/branch_trees.py` | `model_lang_parts/holders/equivalence_classes` | Dee + Gemini (2026-10-26) |
-| `context.py` (`Context(operator, holders, setup, preamble, program)`: `entry_info` `state_info[0]`, `VALUE_FORMS`) | `Research/trace_logical_paths_clone/context.py` | `model_lang_parts/context/entry_context` | Dee + Gemini (2026-10-26) |
-| `traced_clang` & `path_recorder.c` (`-fsanitize-coverage=trace-pc-guard` instrumented Clang 21.1.8 binary) | `Research/trace_logical_paths/` | `lang_models/gnu_c/traced_clang` | Dee: Clang stuff under `gnu_c` |
-| `trace.py`, `trace_once.py`, `logical_path.py`, `lines_run.py` (`--in-hiop` trace runner and cutter) | `Research/trace_logical_paths_clone/` | `lang_models/gnu_c/trace` | Dee + Gemini (2026-10-26) |
-| Clang C++ gate-predicate & `derived_info` tables (`PART_NAMES`, `INNER_READS`, `OPTION_NAMES`, `LANGUAGE_NAMES`, `NOT_NEEDED_NAMES`, `CANNOT_REACH_NAMES`, `REFUSAL`, `entry_info_unreachable`, Clang `leaf_reading` rules) | `Research/trace_logical_paths_clone/branch_trees.py` & `enumerate_branch_candidates.py` | `lang_models/gnu_c/gate_tables` | Dee + Gemini (2026-10-26) |
-| GNU C holder facts & equivalence classes (`holder_facts_riscv64-runner_l14.json` -> `holder_facts.json` for `180` holders; `42` `EQUIVALENCE_CLASS_HOLDERS` + `3` `TYPE_ONLY_HOLDERS`, `HOLDER_PREAMBLE`) | `Research/trace_logical_paths_clone/` | `lang_models/gnu_c/equivalence_classes` | Dee + Gemini (2026-10-26) |
-| GNU C standard-form templates (`operators_of(key)`, `operator_candidates`) | `Research/trace_logical_paths_clone/enumerate_branch_candidates.py` | `lang_models/gnu_c/templates` | Dee + Gemini (2026-10-26) |
-| `what_is_left.json` -> renamed **`unreached_paths.json`** (solved GNU C record: `1,806` HiOps, `0` open branches left), plus `paths.json`, `lines.json`, `branch_candidates.json`, `trees/`, and `SUPPORT_*` pages | `Research/trace_logical_paths_clone/bt1_l04_.../` & `Planning/node_0_1_research/node_0_1_5_trace_logical_paths_clone/` | `lang_models/gnu_c/unreached_paths` | Dee (2026-10-26): `unreached_paths` data structure |
-| clang's own readers: `extract_lang_vocab/clang.py`, `extract_lang_vocab/operator_reader/clang.py`, `model_HiOps/HiOp_sorter/clang.py`, `read_clang_types` in `holder_reader.py` | `Projects/PseudoArch/map_HiOp_to_unit/` | `lang_models/gnu_c` | Dee: "we can keep clang stuff under gnu_c" |
+| `branch_trees.py` (`BranchTree`, `PartConstraint`, `AbstractConstraint`, `CandidateWriter`, `unlock_branch`: language-general tree solver) | `Research/trace_logical_paths_clone/branch_trees.py` | `model_lang_parts/HiOps/branch_trees` | the owner + Gemini (2026-10-26) |
+| `enumerate_branch_candidates.py` (`UnreachedBranch`, `BranchCondition`, `VariantCandidate`, `Record`, `enumerate_every_path`, `classify_branches`) | `Research/trace_logical_paths_clone/enumerate_branch_candidates.py` | `model_lang_parts/HiOps/enumerate_branch_candidates` | the owner + Gemini (2026-10-26) |
+| `enumerate_paths.py` (groups accepted traces into deterministic `(entry, exit)` paths / HiOp variants) | `Research/trace_logical_paths_clone/enumerate_paths.py` | `model_lang_parts/HiOps/enumerate_paths` | the owner + Gemini (2026-10-26) |
+| `what_is_left_for_each_hiop.py` -> renamed **`find_unreached_paths.py`** (system comparing traced paths against `BranchTree`s to find remaining open branches) | `Research/trace_logical_paths_clone/what_is_left_for_each_hiop.py` | `model_lang_parts/HiOps/find_unreached_paths` | the owner (2026-10-26): no `_HiOp_` in name under `HiOps` |
+| `accepted_signatures.py` (`type_answers`, `llvm_type_answers` querying the lowerer on the holder pool) | `Projects/PseudoArch/map_HiOp_to_unit/complex_signature_reader/accepted_signatures.py` | `model_lang_parts/holders/accepted_signatures` | the owner + Gemini (2026-10-26) |
+| Gate-predicate equivalence-class partitioner (`EQUIVALENCE_CLASS_HOLDERS` / `TYPE_ONLY_HOLDERS` partitioning logic) | `Research/trace_logical_paths_clone/branch_trees.py` | `model_lang_parts/holders/equivalence_classes` | the owner + Gemini (2026-10-26) |
+| `context.py` (`Context(operator, holders, setup, preamble, program)`: `entry_info` `state_info[0]`, `VALUE_FORMS`) | `Research/trace_logical_paths_clone/context.py` | `model_lang_parts/context/entry_context` | the owner + Gemini (2026-10-26) |
+| `traced_clang` & `path_recorder.c` (`-fsanitize-coverage=trace-pc-guard` instrumented Clang 21.1.8 binary) | `Research/trace_logical_paths/` | `lang_models/gnu_c/traced_clang` | the owner: Clang stuff under `gnu_c` |
+| `trace.py`, `trace_once.py`, `logical_path.py`, `lines_run.py` (`--in-hiop` trace runner and cutter) | `Research/trace_logical_paths_clone/` | `lang_models/gnu_c/trace` | the owner + Gemini (2026-10-26) |
+| Clang C++ gate-predicate & `derived_info` tables (`PART_NAMES`, `INNER_READS`, `OPTION_NAMES`, `LANGUAGE_NAMES`, `NOT_NEEDED_NAMES`, `CANNOT_REACH_NAMES`, `REFUSAL`, `entry_info_unreachable`, Clang `leaf_reading` rules) | `Research/trace_logical_paths_clone/branch_trees.py` & `enumerate_branch_candidates.py` | `lang_models/gnu_c/gate_tables` | the owner + Gemini (2026-10-26) |
+| GNU C holder facts & equivalence classes (`holder_facts_riscv64-runner_l14.json` -> `holder_facts.json` for `180` holders; `42` `EQUIVALENCE_CLASS_HOLDERS` + `3` `TYPE_ONLY_HOLDERS`, `HOLDER_PREAMBLE`) | `Research/trace_logical_paths_clone/` | `lang_models/gnu_c/equivalence_classes` | the owner + Gemini (2026-10-26) |
+| GNU C standard-form templates (`operators_of(key)`, `operator_candidates`) | `Research/trace_logical_paths_clone/enumerate_branch_candidates.py` | `lang_models/gnu_c/templates` | the owner + Gemini (2026-10-26) |
+| `what_is_left.json` -> renamed **`unreached_paths.json`** (solved GNU C record: `1,806` HiOps, `0` open branches left), plus `paths.json`, `lines.json`, `branch_candidates.json`, `trees/`, and `SUPPORT_*` pages | `Research/trace_logical_paths_clone/bt1_l04_.../` & `Planning/node_0_1_research/node_0_1_5_trace_logical_paths_clone/` | `lang_models/gnu_c/unreached_paths` | the owner (2026-10-26): `unreached_paths` data structure |
+| clang's own readers: `extract_lang_vocab/clang.py`, `extract_lang_vocab/operator_reader/clang.py`, `model_HiOps/HiOp_sorter/clang.py`, `read_clang_types` in `holder_reader.py` | `Projects/PseudoArch/map_HiOp_to_unit/` | `lang_models/gnu_c` | the owner: "we can keep clang stuff under gnu_c" |
 | `SUPPORT_gnu_c_infrastructure_lowered_whole.md` | `hub/autopoly` | `model_lang_parts/infra` | 
 
 Edges that change at the end, in nodes that stay:
@@ -140,7 +140,7 @@ Edges that change at the end, in nodes that stay:
   (with its 6 sub-nodes) and `go`.
 - `DRY_mask_maker` becomes `mask_maker`: its node, and its code,
   `DRY_mask_maker.py` to `mask_maker.py`, whose comments keep what DRY
-  means and what the module does. Dee, 2026-10-16: "i want to change
+  means and what the module does. the owner, 2026-10-16: "i want to change
   `DRY_mask_maker` to `mask_maker`. comments inside can still example what
   its about DRY and what its doing."
 

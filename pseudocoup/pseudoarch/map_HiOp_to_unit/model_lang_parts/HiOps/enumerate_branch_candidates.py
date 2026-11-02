@@ -3,11 +3,11 @@
 no context of an operator has taken, read from the binary and the lines
 records, its condition read from clang's source, the holder (or constant,
 width, shape, option) that would take it written as a context (a HiOp
-variant-candidate), traced with Dee's method, and looped until every branch
+variant-candidate), traced with the owner's method, and looped until every branch
 is taken or shown closed (PCHQ plan: research/trace_logical_paths,
 enumerate_branch_candidates; log 492 §2.2.7, log 493 §4).
 
-Dee, 2026-10-21 (to Gemini): "i talked about enumerating every path so that
+the owner, 2026-10-21 (to Gemini): "i talked about enumerating every path so that
 the branching structure is flattened into a bunch of straight paths." And
 2026-10-18, 04:26 UTC (the conversation of research node trace_logical_paths):
 "the conditions of the control flow branches, the things that we are using
@@ -15,16 +15,16 @@ to enumerate all the paths, are the things we use to construct the HiOp
 variant-candidates (supposed HiOps that could be accepted or refused)".
 
 Written 2026-10-21 from take_every_side.py (its first version, kept beside it
-as it was): the same logic, with Dee's word, branch, in every name, record
+as it was): the same logic, with the owner's word, branch, in every name, record
 and message, and the record branch_candidates.json. Two of the first version's
-closings are gone, at Dee's word through logs 493 and 494: a test of clang's
+closings are gone, at the owner's word through logs 493 and 494: a test of clang's
 insert point (HaveInsertPoint, GetInsertBlock) stays open, since a statement
 before the operator reaches it .
 
-Dee, 2026-10-20: "RUN IT": every line of clang's code that the method could
+the owner, 2026-10-20: "RUN IT": every line of clang's code that the method could
 take and no run has taken is run on, by the method itself.
 
-A branch's outcome is one of four (Dee, 2026-10-20):
+A branch's outcome is one of four (the owner, 2026-10-20):
     taken          a context (one of the records' or a candidate, of this
                    operator or another) ran it
     cannot reach   the method cannot take it; the reason is its badge: the
@@ -50,7 +50,7 @@ plan's run A). --resume continues the record already in OUT: an operator
 done there is skipped, the others go on from their recorded rounds (a
 continuation lane finishes what the instance's ceiling cut).
 
-2026-10-20, run l159 read (Dee: "i want every one of these run"; on the
+2026-10-20, run l159 read (the owner: "i want every one of these run"; on the
 option branches: "if it wasnt used, use it"): an option branch is traced under
 its option; a branch some context of any operator ran (every lines record) is
 taken; the other languages are "not needed".
@@ -88,7 +88,7 @@ IN_HIOP_SPANS_FILE = os.environ.get("PSEUDOARCH_IN_HIOP_SPANS", os.path.join(HER
 # this machine (/persist/traced_clang_src on the VM), otherwise the checkout
 # under PSEUDOARCH_SOURCES (the run script exports /sources) or the laptop's.
 SOURCES_CHECKOUT = "llvm-project-21.1.8"
-SOURCES_DEFAULT = os.path.expanduser("~/Programming/SOURCES")
+SOURCES_DEFAULT = os.path.expanduser("SOURCES")
 SOURCES_PREFIXES = ("/persist/traced_clang_src/", "/sources/llvm-project-21.1.8/")
 # How far a test's statement is read above and below its line.
 STATEMENT_REACH = 8
@@ -100,9 +100,9 @@ WIDTH = 13
 LITERALS = ("1", "0")
 
 # ---------------------------------------------------------------------------
-# §4.2 and Dee's outcome rule. Our setup gives clang no option beyond
+# §4.2 and the owner's outcome rule. Our setup gives clang no option beyond
 # lower_HiOp's command, so a test that reads an option is always decided our
-# setup's way, and its other branch needs the option. Dee, 2026-10-20, on the
+# setup's way, and its other branch needs the option. the owner, 2026-10-20, on the
 # option branches: "if it wasnt used, use it": an option branch is traced under
 # the option (OPTION_NAMES, the sanitizers), and the trace says taken or
 # open. The names that close a branch are the other languages ("not needed")
@@ -128,7 +128,7 @@ OPTION_NAMES = [
     ("getFPEvalMethod", ("-ffp-eval-method=double",), "", ()),
     ("NativeHalfType", ("-Xclang -fnative-half-type",), "", ()),
     ("StrictFloatCastOverflow", ("-fno-strict-float-cast-overflow",), "", ()),
-    # 2026-10-21, Dee: "if it runs on it next, run it". The profile and
+    # 2026-10-21, the owner: "if it runs on it next, run it". The profile and
     # coverage options the eight functions' tests read.
     # CGExprScalar.cpp 5225, VisitBinLAnd: `InstrumentRegions = ...hasProfileClangInstr()`
     ("hasProfileClangInstr", ("-fprofile-instr-generate",), "", ()),
@@ -162,7 +162,7 @@ SANITIZERS_FILE = "/persist/traced_clang_src/clang/include/clang/Basic/Sanitizer
 SANITIZER_LINE = re.compile(r"^SANITIZER(?:_GROUP)?\(\"([^\"]+)\",\s*(\w+)")
 SANITIZER_KIND = re.compile(r"SanitizerKind::(?:SO_)?(\w+)")
 SANITIZERS_UNNAMED = "undefined"
-# The other languages: "not needed" (Dee, 2026-10-20).
+# The other languages: "not needed" (the owner, 2026-10-20).
 LANGUAGE_NAMES = [
     ("CPlusPlus", "not GNU C: C++"),
     ("isReferenceType", "not GNU C: C++"),
@@ -224,10 +224,10 @@ LANGUAGE_NAMES = [
     ("MSPropertyDecl", "not GNU C: Microsoft __declspec(property)"),
 ]
 INSTRUMENTATION = "instrumentation (profiling, coverage): like debug-specific lowering, not needed"
-# Dee, 2026-10-20: a feature not on all three architectures ("i only care
+# the owner, 2026-10-20: a feature not on all three architectures ("i only care
 # about the paths that are supported on all three architectures") and an
 # optimization done later ("optimizations are done later") are "not needed".
-# Dee, 2026-10-20, 23:30 UTC, on a ruling widened past its instance ("if i
+# the owner, 2026-10-20, 23:30 UTC, on a ruling widened past its instance ("if i
 # inform you of an incorrect label ... it makes the page's completeness
 # incomplete"): only what the ruling named is closed by name; a test that
 # reads the target in general stays open until traced with each of the three
@@ -263,7 +263,7 @@ NOT_NEEDED_NAMES = [
     ("isMSVCXXPersonality", "not on all three architectures: MSVC C++ personality"),
     ("CC_SwiftAsync", "not GNU C: Swift async calling convention"),
     ("tryEmitFMulAdd", "an optimization done later: the fused multiply-add"),
-    # Dee, 2026-10-21, 05:50 UTC, on instrumentation being "not needed,
+    # the owner, 2026-10-21, 05:50 UTC, on instrumentation being "not needed,
     # unless a run takes it": "sure." The option of OPTION_NAMES is traced
     # first; this closing is the outcome when it does not take the branch (the
     # pattern PointerAuth has). CGExprScalar.cpp 5225, 5247, 5312 (VisitBinLAnd),
@@ -316,7 +316,7 @@ CANNOT_REACH_NAMES = [
 ]
 
 
-# Dee, 2026-10-20 23:30 UTC: a ruling closes only its instance; the rest is
+# the owner, 2026-10-20 23:30 UTC: a ruling closes only its instance; the rest is
 # settled by a run. A test that reads the target is traced on the other two
 # of the three architectures ("i only care about the paths that are
 # supported on all three architectures"); riscv64, our setup, is the third,
@@ -341,11 +341,11 @@ def closing_names() -> list:
 
 
 CLOSING_NAMES = closing_names()
-# Dee, 2026-10-21, 01:20 UTC, on the lines of the eight functions that only a
+# the owner, 2026-10-21, 01:20 UTC, on the lines of the eight functions that only a
 # C++ throw expression reaches (an arm of a conditional giving a null value):
 # "if its outside of GNU-C, then yes 'not needed: outside GNU C'". A ruled
 # branch is one function and the text of its test; the ruling closes that
-# instance only (Dee, 2026-10-20, 23:30 UTC).
+# instance only (the owner, 2026-10-20, 23:30 UTC).
 RULED_SIDES = [
     ("ScalarExprEmitter::VisitAbstractConditionalOperator", "if (!Result && !E->getType()->isVoidType())",
      "not needed", "not GNU C: only a C++ throw expression gives a null value here"),
@@ -353,13 +353,13 @@ RULED_SIDES = [
      "not needed", "not GNU C: only a C++ throw expression gives a null value here"),
     ("ScalarExprEmitter::VisitAbstractConditionalOperator", "if (!RHS)",
      "not needed", "not GNU C: only a C++ throw expression gives a null value here"),
-    # Dee, 2026-10-21, 01:20 UTC ("if its outside of GNU-C, then yes 'not needed:
+    # the owner, 2026-10-21, 01:20 UTC ("if its outside of GNU-C, then yes 'not needed:
     # outside GNU C'"): the AST argument order is used only when clang rebuilds
     # an atomic expression in C++ template instantiation; every atomic
     # operator's compile took the other arm (log 489 §26).
     ("Sema::BuildAtomicExpr", "if (ArgOrder == Sema::AtomicArgumentOrder::AST)",
      "not needed", "not GNU C: the AST argument order is used only by C++ template instantiation"),
-    # Dee, 2026-10-22: Sema::CheckConditionalOperands refuses a GNU vector
+    # the owner, 2026-10-22: Sema::CheckConditionalOperands refuses a GNU vector
     # ('v4si') as the condition in C (SemaExpr.cpp:8053; ext_vector_type takes
     # the earlier branch at 5554), so only C++ CXXCheckConditionalOperands
     # reaches 5594.
@@ -437,7 +437,7 @@ PLACE_FORMS = {
     # a subscripted GNU vector: an LValue of kind VectorElt
     "vector element": ("v4si", "{holder} {name};", "p->{name}[1]"),
     # an element of clang's ext vector, by its name: an LValue of kind
-    # ExtVectorElt (clang's own extension, not GCC's C: the label is Dee's)
+    # ExtVectorElt (clang's own extension, not GCC's C: the label is the owner's)
     "ext vector element": ("ev4si", "{holder} {name};", "p->{name}.x"),
     # an element of a matrix (-fenable-matrix): an LValue of kind MatrixElt
     "matrix element": ("m2", "{holder} {name};", "p->{name}[0][1]"),
@@ -1050,7 +1050,7 @@ def branch_of(key: str, name: str, function: str, test, untaken, paths: list) ->
 
 def still_open(branches: list, record) -> list:
     """The branches with no outcome in the record yet: a branch closed, or open
-    after its candidate was traced, is not tried again (it is Dee's list)."""
+    after its candidate was traced, is not tried again (it is the owner's list)."""
     kept = []
     for branch in branches:
         if not record.has_branch(branch):
@@ -1293,7 +1293,7 @@ def parts_named(text: str) -> list:
 def change_for(condition: dict, pool: set) -> dict:
     """The change §4.3 names for each kind the condition reads. Closed when
     the condition reads only closing names (an option, another language, the
-    target, clang's bookkeeping); open, for Dee, when it reads no name the
+    target, clang's bookkeeping); open, for the owner, when it reads no name the
     tables know. A closing name beside other kinds is kept: when the other
     kinds' candidates fail, it names the branch's outcome."""
     if is_a_refusal(condition["branch"]):
@@ -1342,9 +1342,9 @@ def change_for(condition: dict, pool: set) -> dict:
         # a target name's closing (PointerAuth) stays as the fallback: a target
         # that takes the branch is the verdict (taken, or "not needed: taken on
         # x86-64"); when no target takes it, the ruled closing is the outcome
-        # (Dee, 2026-10-20: pointer authentication is "not needed"). Until
+        # (the owner, 2026-10-20: pointer authentication is "not needed"). Until
         # 2026-10-21 04:40 UTC the fallback was dropped here, and l189 left
-        # Dee's ruled instances "open".
+        # the owner's ruled instances "open".
         return change
     change["closed"] = True
     if closing is not None:
@@ -1352,7 +1352,7 @@ def change_for(condition: dict, pool: set) -> dict:
         change["why"] = closing[1]
         return change
     change["outcome"] = "open"
-    change["why"] = "the condition is not read: for Dee"
+    change["why"] = "the condition is not read: for the owner"
     unflagged = options_without_a_flag(condition["kinds"])
     if unflagged:
         change["why"] = "it reads an option with no flag in the table yet: " + ", ".join(unflagged)
@@ -1363,7 +1363,7 @@ def change_for(condition: dict, pool: set) -> dict:
 
 
 # ---------------------------------------------------------------------------
-# Dee, 2026-10-21, 05:50 UTC, on a branch whose untaken block is a diagnostic
+# the owner, 2026-10-21, 05:50 UTC, on a branch whose untaken block is a diagnostic
 # and a refusal ("no exit to LLVM"): "yes, i believe thats correct." Read
 # from the block's own lines, not from a name in the test; a block that also
 # holds code reaching LLVM is not one.
@@ -1399,9 +1399,9 @@ def is_a_refusal(branch: dict) -> bool:
     return refused
 
 
-# Dee, 2026-10-21, 01:20 UTC , on a branch whose block is
+# the owner, 2026-10-21, 01:20 UTC , on a branch whose block is
 # `llvm_unreachable`: "is that needed?" (it lowers nothing; no program reaches
-# it: clang's own guard), and log 494's list of Dee's rules keeps it. A branch
+# it: clang's own guard), and log 494's list of the owner's rules keeps it. A branch
 # whose untaken block is only that guard is "not needed".
 CLANGS_OWN_GUARD = ("not needed", "clang's own guard: llvm_unreachable, no program reaches it")
 UNREACHABLE = re.compile(r"^(?:llvm_unreachable|__builtin_unreachable|LLVM_BUILTIN_UNREACHABLE|llvm::report_fatal_error|report_fatal_error)\b")
@@ -2124,7 +2124,7 @@ def with_new(candidates: list, written: list, contexts: list) -> list:
 
 
 # ---------------------------------------------------------------------------
-# 7 trace_and_check: Dee's method on the candidates, and their lines
+# 7 trace_and_check: the owner's method on the candidates, and their lines
 
 def trace_and_check(key: str, candidates: list, binary: dict, earlier: list, first: int) -> dict:
     """The candidates traced (check_trace_logical_paths.run_all), the five
@@ -2417,7 +2417,7 @@ def branch_record(branch: dict, condition: dict, change: dict, candidates: list,
 
 
 # ---------------------------------------------------------------------------
-# 2026-10-21, Dee: "if it runs on it next, run it". What lies inside a branch
+# 2026-10-21, the owner: "if it runs on it next, run it". What lies inside a branch
 # closed as not needed or cannot reach takes that branch's closing: a branch
 # whose test lies in the block the closed branch's test guards, and the
 # block's lines of code no branch holds (a test inside an untaken block never
@@ -2649,7 +2649,7 @@ def settle_branches(entry: dict, paths: list, everywhere: dict) -> None:
             branch["targets"] = []
 
 
-# Dee, 2026-10-21, 05:50 UTC, on a branch whose test reads the target and that
+# the owner, 2026-10-21, 05:50 UTC, on a branch whose test reads the target and that
 # no target takes (l190: isPPC64, isWasm, X86_VectorCall,
 # areArgsDestroyedLeftToRightInCallee, useFP16ConversionIntrinsics twice,
 # EmitCall 5490): "correct."
@@ -2673,7 +2673,7 @@ def traced_on_the_other_targets(branch: dict) -> bool:
 
 
 def taken_elsewhere(branch: dict, everywhere: dict) -> bool:
-    """Dee, 2026-10-20 (run l159 read): a branch any run took is taken. The
+    """the owner, 2026-10-20 (run l159 read): a branch any run took is taken. The
     branch's block is run when every one of its lines was run by some context
     of one operator, in any lines record (the clang's-code page's
     merged_lines() merges the same records); the dispatches on the

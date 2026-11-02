@@ -17,7 +17,7 @@ and its four sub-nodes:
     sort             shared        (lang, operators) -> complex_HiOps, each
                                    with what it is built from, and simple_HiOps
 
-Dee, 2026-10-01: "if its complex, its high level definition will have HiOps
+the owner, 2026-10-01: "if its complex, its high level definition will have HiOps
 which compose it", and "i was referring to the logical C++ definition, not
 prose/comments".
 
@@ -44,7 +44,7 @@ AN EXCEPTION TO THE DESIGN, ARGUED FOR DEE : the design reads
 each definition with tree-sitter. clang writes many of its definitions with
 macros (`VisitBinMulAssign` comes from `HANDLEBINOP`), and tree-sitter does
 not expand them, the design's own open item. So the definition is read from
-clang's code compiled in debug mode, Dee's method (logs 350 and 366): every
+clang's code compiled in debug mode, the owner's method (logs 350 and 366): every
 macro is pasted in, and each function's relocation records name every
 function it calls or hands on.
 

@@ -183,7 +183,7 @@ Over the course of
 
 ### 3.3. Proposed Unified Wrapper Architecture (~250 Lines)
 
-If Dee wishes to refactor `standard_HiOp_wrapper.py` before or after the lowering pass, the entire module can be replaced with a clean, table-driven architecture of approximately 250 lines:
+If the owner wishes to refactor `standard_HiOp_wrapper.py` before or after the lowering pass, the entire module can be replaced with a clean, table-driven architecture of approximately 250 lines:
 
 ```python
 # Unified Architecture Sketch (~250 lines)

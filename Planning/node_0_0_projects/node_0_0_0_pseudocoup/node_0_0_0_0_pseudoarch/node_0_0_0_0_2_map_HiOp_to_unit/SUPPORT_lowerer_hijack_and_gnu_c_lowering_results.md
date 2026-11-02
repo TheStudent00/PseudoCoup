@@ -4,13 +4,13 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Direct Lowerer Hijack & Consolidated GNU C Lowering Results
 
 > "very cool. we might as well see what it can do."
-> — **Dee**
+> — **the owner**
 
 ---
 

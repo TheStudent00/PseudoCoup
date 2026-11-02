@@ -4,13 +4,13 @@ type: support
 belongs_to: CORE_0_0_0_0_2_map_HiOp_to_unit.md
 status: active
 date: 2026-10-31
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: Cross-Architecture Venn Diagrams, 158-Refusal Elimination, and AutoPoly Domain-to-Range Synthesis
 
 > "we might as well see what it can do."
-> — **Dee**
+> — **the owner**
 
 ![Cross-architecture Venn diagram of lowered GNU C HiOps and variants](SUPPORT_cross_arch_venn_diagram.html)
 

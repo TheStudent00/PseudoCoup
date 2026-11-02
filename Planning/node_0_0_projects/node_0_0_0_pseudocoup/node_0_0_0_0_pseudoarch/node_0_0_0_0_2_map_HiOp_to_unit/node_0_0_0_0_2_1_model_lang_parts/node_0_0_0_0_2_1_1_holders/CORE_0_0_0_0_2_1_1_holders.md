@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.holders
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -28,7 +28,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -44,7 +44,7 @@ sub_nodes:
 ## definition
 
 A language's holders: the types an operand or a result is held in, such as
-`int`, `double`, `int *`, `v4si`, or `struct S`. Dee, 2026-10-12 (PCHQ log
+`int`, `double`, `int *`, `v4si`, or `struct S`. the owner, 2026-10-12 (PCHQ log
 426): "`m` is the holder content and its context. every variable has an
 address that can be read as an integer." So a holder is its content and its
 context; its type is the content's shape.

@@ -224,7 +224,7 @@ def checking_bounds(events: list, depths: list, names: dict):
 # A statement HiOp (IfStmt, ForStmt, ReturnStmt, ...) is written as a
 # statement in the function's body, never inside the expression the marks
 # bound, so its checking action is Sema's statement action and its lowering
-# is CodeGenFunction's statement emitter (log 487 §24; Dee, 2026-10-19:
+# is CodeGenFunction's statement emitter (log 487 §24; the owner, 2026-10-19:
 # "24 have no exit? are those actually HiOps if they literally have no
 # exit?").
 STATEMENT_ACTION = re.compile(r"^clang::Sema::ActOn\w*Stmt\(")

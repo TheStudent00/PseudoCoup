@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch
 level: 3
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -30,7 +30,7 @@ sub_nodes:
 - **level:** 3
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node

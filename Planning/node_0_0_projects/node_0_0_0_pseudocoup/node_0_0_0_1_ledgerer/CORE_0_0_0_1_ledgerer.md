@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.ledgerer
 level: 3
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -25,7 +25,7 @@ sub_nodes:
 - **level:** 3
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -41,36 +41,36 @@ sub_nodes:
 Two directions over one artifact, the UR-Ledger. Detail waits; pseudoarch is
 being descended first.
 
-- **The UR-Ledger** is the artifact's name (Dee, 2026-10-09: "UR-Ledger might
+- **The UR-Ledger** is the artifact's name (the owner, 2026-10-09: "UR-Ledger might
   be a better way of describing things"; agreed the same day, "great, lets
   update that part of the design too"). It was called UR-AST, "Universal Rich
-  AST" (PseudoCoup_v5's `ur` CORE, Dee, 2026-08-02). The AST is only the tree
+  AST" (PseudoCoup_v5's `ur` CORE, the owner, 2026-08-02). The AST is only the tree
   its nodes hang in; the ledger is the whole: its UR-Nodes, the connectors
   between them, and the order of every change .
-- **The ledger is an RCG.** Dee, 2026-10-09: "the ledgerer has enough
+- **The ledger is an RCG.** the owner, 2026-10-09: "the ledgerer has enough
   complexity to model Reflective Call Graphs (RCG: own term my thesis
   proposal to describe a Dynamic Call Graph that modifies itself but in a
   way that is observable -- a DCG might modify itself but without an
   additional axis, its reflections might not be easily observable). so in
   essence, the ledger is an RCG."
-- **Its nodes are UR-Nodes** (Dee's `UniversalRichNode`, 
+- **Its nodes are UR-Nodes** (the owner's `UniversalRichNode`, 
   it sits under both Ledgerer and AutoPoly; defined once, here). What one is
-  was locked by Dee on 2026-10-09: "well its a strong argument. we can lock
+  was locked by the owner on 2026-10-09: "well its a strong argument. we can lock
   that design in. i have no disagreements with it." . Its
   shape is in `## design`.
 
 *notes:*
 
-- Declarations are done by hand now, and may be modelled later. Dee,
+- Declarations are done by hand now, and may be modelled later. the owner,
   2026-10-13: "i thought we solved declarations like ten times by now ...
   declarations are common across many other languages. we can model that
   by-hand and pick it up later potentially once PseudoCoup is actually up and
   running" , and, correcting my "later, by hand": "by-hand now,
   later potentially by modelling" (log 447). Settled before in logs 382, 383
-  and 385. This covers the list's items 5, 20, 36, and 17 (Dee: "okay").
+  and 385. This covers the list's items 5, 20, 36, and 17 (the owner: "okay").
   Done by hand on 2026-10-13: `SUPPORT_gnu_c_declarations_by_hand.md` (log
   449).
-- A holder declared without a value holds 0 in the ledger. Dee, 2026-10-13:
+- A holder declared without a value holds 0 in the ledger. the owner, 2026-10-13:
   "could we not initialize to zero?" A comparison against riscv64's own run
   accepts any value of the holder's type .
 - A name and a relocation need nothing modelled: the ledger knows where each
@@ -87,13 +87,13 @@ being descended first.
   what the ledger does with each GNU C declaration, by hand: log 385's 22
   rules, the declarations named since, every attribute sorted by what it
   changes, and riscv64's sizes, alignments and layout rules read back from
-  clang (run elv2_l157). Dee, 2026-10-13: "by-hand now, later potentially by
+  clang (run elv2_l157). the owner, 2026-10-13: "by-hand now, later potentially by
   modelling" .
 
 ## design
 
-The UR-Node, as locked by Dee on 2026-10-09 
-here the same day by Claude, Opus 5.5, at Dee's word).
+The UR-Node, as locked by the owner on 2026-10-09 
+here the same day by Claude, Opus 5.5, at the owner's word).
 
 ```
 class universal_rich_node
@@ -122,7 +122,7 @@ class universal_rich_node
   proof between two such terms, the `EquivalenceProver` beside the UR-Node
   under AutoPoly in log 302.
 
-Dee's three points of 2026-10-09, and what carries each:
+the owner's three points of 2026-10-09, and what carries each:
 
 - "(1) a nodes universality -- that a node has the same meaning in all
   languages (via polyfill)": `units` and `meaning`, with AutoPoly running any
@@ -135,5 +135,5 @@ Dee's three points of 2026-10-09, and what carries each:
   Unit per architecture.
 
 Not part of the node: dominance between UR-Nodes. It is a relation among
-them, left for the Hub's construction (Dee, 2026-10-09: "lets leave it for
+them, left for the Hub's construction (the owner, 2026-10-09: "lets leave it for
 later"); the ideas so far are in the hub's `SUPPORT_BRAINSTORM_hub.md`.

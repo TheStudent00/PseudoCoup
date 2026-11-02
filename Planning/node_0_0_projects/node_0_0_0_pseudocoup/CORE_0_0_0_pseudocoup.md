@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup
 level: 2
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -28,7 +28,7 @@ sub_nodes:
 - **level:** 2
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -47,7 +47,7 @@ The product. It holds the Ledgerer and the Hub, and PseudoArch is what
 the Hub is built out of.
 
 Built at `Projects/PseudoCoup` as a plain directory inside this repo,
-copy-pasted over `TheStudent00/PseudoCoup` when it is done.
+copy-pasted over `<owner>/PseudoCoup` when it is done.
 
 The ontology this node and everything under it comes from is
 `Planning/CORE_0_0_0_pseudocoup.md
@@ -63,13 +63,13 @@ The ontology this node and everything under it comes from is
 - [SUPPORT_gnu_c_work_remaining.md](SUPPORT_gnu_c_work_remaining.md): what
   remains for GNU C, started over on 2026-10-13 with everything done taken out
   : four things and one for later, each with what it waits on
-  and my recommendation, and what was done that day. Dee: "i asked you to
+  and my recommendation, and what was done that day. the owner: "i asked you to
   start the list over with the things we solved removed" (log 449); first
   written at "i need to see a new report of the work that remains" (log 445).
 - [SUPPORT_gnu_c_work_remaining_in_python.html](SUPPORT_gnu_c_work_remaining_in_python.html):
   the same, as one small program written in Python's syntax with each problem
   marked once; a click on a mark opens its card (the GNU C line, riscv64's
-  words, what is missing); its list shows only what remains (log 449). Dee,
+  words, what is missing); its list shows only what remains (log 449). the owner,
   2026-10-13: "i would like to use Python to represent the C code".
 - [SUPPORT_gnu_c_sync_fetch_and_add_walk.py](SUPPORT_gnu_c_sync_fetch_and_add_walk.py)
   and [SUPPORT_gnu_c_sync_fetch_and_add_walk.html](SUPPORT_gnu_c_sync_fetch_and_add_walk.html):
@@ -78,16 +78,16 @@ The ontology this node and everything under it comes from is
   `write_number`) written out, and below them two threads, A and B, taking two
   files from one list. With a read and then a write, both take a.txt; with
   `fetch_and_add`, A takes a.txt and B takes b.txt. The page steps through
-  that run one line at a time, 24 steps . Dee,
+  that run one line at a time, 24 steps . the owner,
   2026-10-14: "use Python to show me what `__sync_fetch_and_add_4(a, b)`
   [does] ... i want to observe literal behavior on actual data." And: "i want
   to see fetch_and_add used and showing how two threads use it to
   coordinate"
 - [SUPPORT_gnu_c_clang_code_by_sub_model.html](SUPPORT_gnu_c_clang_code_by_sub_model.html):
   clang's own code for GNU C's HiOps, each line marked by the sub-model whose
-  programs make clang run it . Dee, 2026-10-17: "a handful of
+  programs make clang run it . the owner, 2026-10-17: "a handful of
   actual lowerer code containing its HiOp vocabulary per problem".
 - [SUPPORT_gnu_c_sub_models_reach.html](SUPPORT_gnu_c_sub_models_reach.html):
   a few examples per sub-model, in Python beside clang's C++, and everything
-  unmodelled . Dee, 2026-10-17: "a few examples per
+  unmodelled . the owner, 2026-10-17: "a few examples per
   sub-model which expresses the power of that sub-model".

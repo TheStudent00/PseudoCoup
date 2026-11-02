@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.HiOp_configurations
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -26,7 +26,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -45,8 +45,8 @@ The syntactic and structural pattern each HiOp is held in:
 - a depended-HiOp with its dependent-HiOps inside (`break;` / `continue;` inside a loop; `case` / `default` inside `switch`; `goto *&&m; m:` for `IndirectGotoStmt` + `LabelStmt`), or
 - multi-template syntactic forms of a single AST operator key (`operators_of(key)` in `enumerate_branch_candidates.py`, such as `MemberExpr` dot `a.m` vs. arrow `a->m`, `UnaryExprOrTypeTraitExpr` expression `sizeof a` vs. type `sizeof(T)`, and `GenericSelectionExpr` expression vs. type controlling argument).
 
-Dee, 2026-10-10: "the correct held-form configuration (such as "HiOp with N
-bodies")". The name is Dee's, 2026-10-15: "`model_lang_components ->
+the owner, 2026-10-10: "the correct held-form configuration (such as "HiOp with N
+bodies")". The name is the owner's, 2026-10-15: "`model_lang_components ->
 HiOp_configurations`?"
 
 - `dependent_HiOp_reader` reads, from the lowerer's code, where each

@@ -1,5 +1,5 @@
 <!-- GENERATED FILE — do not hand-edit. -->
-<!-- Produced by ~/Programming/PRIVATE/PlanPlan/framework/generate_dashboards.py from this node's own sub-tree. Hand edits are lost the -->
+<!-- Produced by PRIVATE/PlanPlan/framework/generate_dashboards.py from this node's own sub-tree. Hand edits are lost the -->
 <!-- next time the tool runs; re-run it instead of editing this file. -->
 
 # DASHBOARD — node_0_0_0_0_2_4_0_gnu_c
@@ -50,8 +50,8 @@ counted by scanning every PROGRESS.md bullet in this sub-tree for these words; a
 
 ## SUPPORT files in this sub-tree
 
-- `~/Programming/PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_breakdown.html`
-- `~/Programming/PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_by_what_clang_writes.html`
-- `~/Programming/PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_sorted_by_clangs_code.html`
-- `~/Programming/PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_simple_hiops_state.html`
-- `~/Programming/PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_vocab_what_is_missing.md`
+- `PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_breakdown.html`
+- `PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_by_what_clang_writes.html`
+- `PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_operators_sorted_by_clangs_code.html`
+- `PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_simple_hiops_state.html`
+- `PRIVATE/PseudoCoup/Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_lang_models/node_0_0_0_0_2_4_0_gnu_c/SUPPORT_gnu_c_vocab_what_is_missing.md`

@@ -64,7 +64,7 @@ of two groups, so the Units column overlaps.
 
 ## 3. What remains
 
-- **The C library.** Which one is Dee's choice. My recommendation is musl:
+- **The C library.** Which one is the owner's choice. My recommendation is musl:
   - clang builds it, where glibc is built with GCC (clang's support is
     partial);
   - it is small enough to lower whole and run whole: plain C, with a few

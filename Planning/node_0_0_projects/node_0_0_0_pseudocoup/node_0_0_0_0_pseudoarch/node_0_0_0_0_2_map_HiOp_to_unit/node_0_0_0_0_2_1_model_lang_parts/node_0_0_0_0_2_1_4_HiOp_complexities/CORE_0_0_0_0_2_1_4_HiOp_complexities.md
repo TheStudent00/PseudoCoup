@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.HiOp_complexities
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -24,7 +24,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -33,19 +33,19 @@ sub_nodes:
 
 ## sub_nodes
 
-- [HiOp_sorter](node_0_0_0_0_2_1_4_0_HiOp_sorter/CORE_0_0_0_0_2_1_4_0_HiOp_sorter.md) — Sorts a language's operators into Dee's call-complexity classes (`simple`, `hybrid`, `complex`, `undetermined`) and by their in-HiOp `BranchTree` depth (`depth 0` vs.
+- [HiOp_sorter](node_0_0_0_0_2_1_4_0_HiOp_sorter/CORE_0_0_0_0_2_1_4_0_HiOp_sorter.md) — Sorts a language's operators into the owner's call-complexity classes (`simple`, `hybrid`, `complex`, `undetermined`) and by their in-HiOp `BranchTree` depth (`depth 0` vs.
 
 ## definition
 
 How complex each HiOp is, read from the operator's definition and in-HiOp
 `BranchTree` in its lowerer's own code along two orthogonal axes:
 
-1. **Downstream Unit Call-Complexity (Dee's classes, log 373):**
+1. **Downstream Unit Call-Complexity (the owner's classes, log 373):**
    - `simple`: its own call key, and no other calls. It lowers directly.
    - `hybrid`: its own call key, and other calls.
    - `complex`: other calls only, with no key of its own.
    - `undetermined`: neither, so it is read again.
-   Dee, 2026-10-06 : "a hybrid callee is where a callee is
+   the owner, 2026-10-06 : "a hybrid callee is where a callee is
    defined with other calls but also its own unique call key. that means that
    the hybrid complexity callee (HiOp) cannot be composed by a collection of
    simple callees because its own `main_call_key` is unique."

@@ -5,9 +5,9 @@ Plan: `.../node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_3_extract_unit_from_Lo
 
     unit = extract_unit(LoHiOp, HiOp_line)   # the words under the HiOp's line, in order
 
-What a Unit is, Dee, 2026-10-12 : the HiOp's holders' fetches,
+What a Unit is, the owner, 2026-10-12 : the HiOp's holders' fetches,
 its operation and its result's store; the frame and the copy of `p` are cut.
-How its words are told, Dee, 2026-10-13 (log 446): "we need some way to tell
+How its words are told, the owner, 2026-10-13 (log 446): "we need some way to tell
 which arch-opcodes belong to the lowered HiOp". The standard-form writes the HiOp
 on a line of its own (standard_HiOp_wrapper.HiOp_on_its_own_line), lower_HiOp reads
 each word's source line from the debug table, and the frame's words are filed

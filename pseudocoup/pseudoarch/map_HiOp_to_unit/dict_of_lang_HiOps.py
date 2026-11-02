@@ -13,7 +13,7 @@ lowerer's own verdicts. One JSON line per HiOp, compressed:
     {"lang": "c", "operator": "BinaryOperator.Add", "template": "a + b", "operands": ["a", "b"],
      "source": "...", "holders": [["Int", "int", "..."], ["Int", "int", "..."]], "evidence": "..."}
 
-Written 2026-10-14 , at Dee's word "lets do it", with
+Written 2026-10-14 , at the owner's word "lets do it", with
 `extract()`. Until then a language's HiOps were read straight from the
 research grid's verdicts
 (`Research/extract_lang_vocabulary/mask/gnu17/c.knowns.jsonl.gz`).

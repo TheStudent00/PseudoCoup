@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp.compile_standard_source
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (function)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 6
 - **status:** draft
 - **designation:** code (function)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -43,14 +43,14 @@ Refuses when the compiler refuses the source: the language declines the
 HiOp (`lower_HiOp`'s first refusal). The refusal keeps the compiler's own
 words.
 
-The optimizer is off. Dee, 2026-10-08: "we want an honest lowering, not a
+The optimizer is off. the owner, 2026-10-08: "we want an honest lowering, not a
 simplification ... the default is no optimizer for all lowerings where we are
 trying to extract the arch-units. im not saying that its unacceptable to use
 the optimizer under any circumstance but it needs to be justified and stated
 explicitly before doing so."
 
 The debug table is on, so each word can be traced to the field it reads.
-Dee, the same day: "debug as a default might be a good rule to have.
+the owner, the same day: "debug as a default might be a good rule to have.
 obviously if its going to cause full memory/disk or tasks to take days, i want
 to understand before."
 
@@ -67,10 +67,10 @@ Each language is one row: its compiler and its flags.
 
 Corrected 2026-10-08: until then this definition said "with the optimizer on"
 and gave `-O1`, "because the held-form exists for the optimizer". That was my
-reading, against Dee's process (`Planning/CORE_0_0_0_pseudocoup.md,
+reading, against the owner's process (`Planning/CORE_0_0_0_pseudocoup.md,
 third correction).
 
-Written 2026-10-07 by Claude (Opus 5.5), at Dee's word ("yes as long as it
+Written 2026-10-07 by Claude (Opus 5.5), at the owner's word ("yes as long as it
 makes sense for the current context of the project"), from `lower_HiOp`'s
 own definition. The wording is mine (`Planning/CORE_0_0_0_pseudocoup.md).
 

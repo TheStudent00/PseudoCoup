@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit
 level: 4
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -32,7 +32,7 @@ sub_nodes:
 - **level:** 4
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -64,8 +64,8 @@ become the dict's keys, and their Units its values.
   ```
 
 
-- Redrawn 2026-10-15 at Dee's word, in place of a tree that had grown by our
-steps (extract, then model), and updated 2026-10-26 after Dee's in-HiOp
+- Redrawn 2026-10-15 at the owner's word, in place of a tree that had grown by our
+steps (extract, then model), and updated 2026-10-26 after the owner's in-HiOp
 branch-tree + gate-predicate equivalence-class method achieved 100% completion
 across all `1,806` GNU C operators (`0` open branches / `0` unreached paths
 left in `unreached_paths.json`):
@@ -73,7 +73,7 @@ left in `unreached_paths.json`):
   > what an unbelievable mess this is. it might actually be faster to start over and re-create the ontology from scratch then to try and disentangle this.
 
 Every change is in [SUPPORT_migration_map.md](SUPPORT_migration_map.md).
-Dee's decisions, in Dee's words, are in
+the owner's decisions, in the owner's words, are in
 [SUPPORT_settling_the_ontology.md](SUPPORT_settling_the_ontology.md), and the
 2026-10-26 ontological alignment (`find_unreached_paths` vs. `unreached_paths`
 and why this architecture solves vocabulary extraction for all C-family and
@@ -120,7 +120,7 @@ and [SUPPORT_nascent_updated_tree_and_nodes.md](SUPPORT_nascent_updated_tree_and
   proven in Z3 (`UNSAT` over all $2^{128}$ input pairs) across Rust, GNU C, and Go (saturating float-to-int
   cast, division-by-zero & overflow panic guards, 128-bit multi-word carry addition, and in-range shift equivalences).
 - [SUPPORT_go_lowering_and_logical_domain_range_proofs.md](SUPPORT_go_lowering_and_logical_domain_range_proofs.md):
-  Dee's insight realized: automated derivation of defined domains $D_{\text{ok}}$,
+  the owner's insight realized: automated derivation of defined domains $D_{\text{ok}}$,
   trap domains $D_{\text{trap}}$ (`runtime.panicdivide`, `runtime.panicshift`), and
   symbolic output formulas with zero work by hand solely by composing formal logical
   RISC-V `LoOp` Sail specifications in lowered Units; 12 cross-language equivalence
@@ -153,7 +153,7 @@ and [SUPPORT_nascent_updated_tree_and_nodes.md](SUPPORT_nascent_updated_tree_and
   riscv64-runner: the 1,379-operator cross-architectural run and the full 57,480-variant
   run on riscv64 (57,240 canonical wrappers compiled, 57,322 lowered).
 - [SUPPORT_hijacking_the_lowerer_vs_by_hand_wrappers.md](SUPPORT_hijacking_the_lowerer_vs_by_hand_wrappers.md):
-  Dee's architectural realization: eliminating by-hand wrapper forms and DWARF
+  the owner's architectural realization: eliminating by-hand wrapper forms and DWARF
   slicing by hijacking the lowerer (`CodeGenFunction`) directly at the entry
   point (`state[0]` -> target exit), why all 12 patches in
   `standard_HiOp_wrapper.py` only existed to appease the C parser/Sema outside
@@ -224,12 +224,12 @@ and [SUPPORT_nascent_updated_tree_and_nodes.md](SUPPORT_nascent_updated_tree_and
 - [SUPPORT_modelling_sketch_for_the_outstanding_items.md](SUPPORT_modelling_sketch_for_the_outstanding_items.md):
   a page of sketches, one per model (places, a Unit's meaning, holders per
   machine, calls, traps, data, control, threads), each with the open items of
-  the what-is-missing list it would close. Dee, 2026-10-12: "id also like a
+  the what-is-missing list it would close. the owner, 2026-10-12: "id also like a
   sketch of the modelling we would have to do to solve the outstanding items."
 - [SUPPORT_settling_the_ontology.md](SUPPORT_settling_the_ontology.md): how
-  this tree was settled, 2026-10-15: Dee's sketch, Dee's decisions in Dee's
+  this tree was settled, 2026-10-15: the owner's sketch, the owner's decisions in the owner's
   words, and what was left open.
 - [SUPPORT_work_remaining.md](SUPPORT_work_remaining.md): what must still be
   completed in this node, in the order to go through it, one or two items at
-  a time. Dee, 2026-10-15: "make a list of things that must be completed
+  a time. the owner, 2026-10-15: "make a list of things that must be completed
   within the `map_HiOp_to_unit` node that we need to go through."

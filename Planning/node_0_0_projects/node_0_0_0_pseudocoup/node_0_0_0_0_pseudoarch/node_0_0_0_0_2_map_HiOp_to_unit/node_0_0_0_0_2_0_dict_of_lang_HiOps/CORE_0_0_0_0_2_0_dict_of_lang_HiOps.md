@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.dict_of_lang_HiOps
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 5
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -66,7 +66,7 @@ Every citation is in
 
 ## a holder is identified by what it lowers to, never by its spelling
 
-Dee, 2026-09-27: "we are lowering things into RISC-V. if theyre the same type,
+the owner, 2026-09-27: "we are lowering things into RISC-V. if theyre the same type,
 theyre provably so. why would we hand-write a normalizer when normalization can
 be done by automation?"
 

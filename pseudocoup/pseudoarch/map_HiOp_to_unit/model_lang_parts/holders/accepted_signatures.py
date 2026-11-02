@@ -4,7 +4,7 @@ each argument can take on a path clang's checking code accepts, tested
 against the conditions checking_reader read on that path: the signatures
 extract() tries for the builtin, each then judged by clang.
 
-Dee, 2026-10-15: "is it not possible to use tree-sitter to identify where
+the owner, 2026-10-15: "is it not possible to use tree-sitter to identify where
 these operator definitions start and end, and then extract all the accepted
 signatures or the holders it processes? ... those holder list become the
 possible variant to check if GNU-C accepts it." And 2026-10-16: "why would i

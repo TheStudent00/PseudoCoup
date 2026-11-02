@@ -107,7 +107,7 @@ class Verdict(NamedTuple):
 # `standard_HiOp_wrapper` on 2026-10-13 ; `standard_cell_lines`, below,
 # is left as its caller.
 JUDGE_COMMAND = {
-    # GNU C, clang's default dialect (-std=gnu17): Dee, 2026-10-05, "we have
+    # GNU C, clang's default dialect (-std=gnu17): the owner, 2026-10-05, "we have
     # agreed to work with GNU-C" . Was -std=c17.
     "c": "clang -std=gnu17 -O1 --target=riscv64-unknown-linux-gnu -nostdlibinc -fsyntax-only -ferror-limit=0",
     "cpp": "clang++ -std=c++20 -O1 --target=riscv64-linux-gnu --gcc-toolchain=/usr -fsyntax-only -ferror-limit=0",
@@ -1518,7 +1518,7 @@ def judge_holders(lang: str, holders: tuple, directory: str, evidence: str) -> l
 
 def make_mask(lang: str, operators: tuple, holders: tuple, directory: str = ".", evidence: str = "", workers: int = 4):
     """Makes grid_mask_of_knowns: the grid for `lang`, every cell with the
-    lowerer's verdict. (Named by Dee, 2026-10-01; it was
+    lowerer's verdict. (Named by the owner, 2026-10-01; it was
     `grid_mask_of_knowns()`, the data structure's own name.)
 
         kept   = holders the held struct can keep a field of

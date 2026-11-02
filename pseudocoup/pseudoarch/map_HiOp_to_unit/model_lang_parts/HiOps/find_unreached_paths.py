@@ -4,7 +4,7 @@ records, the branches the loop's records leave for it and where they sit (in
 the code of clang's that names the HiOp, or in functions other HiOps' paths
 run too), and the tests outside that code that name the HiOp.
 
-Dee, 2026-10-23, on the page of a tree for each HiOp entry (1,472 of the
+the owner, 2026-10-23, on the page of a tree for each HiOp entry (1,472 of the
 1,806 at depth 0): "have/can we not solve all of those 1472 HiOps at depth
 0? solved so that we dont have to include them in any of the runs
 anymore?"

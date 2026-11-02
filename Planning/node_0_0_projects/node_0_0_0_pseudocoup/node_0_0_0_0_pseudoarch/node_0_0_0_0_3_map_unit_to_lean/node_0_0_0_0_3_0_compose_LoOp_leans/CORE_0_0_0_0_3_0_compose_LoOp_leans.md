@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_unit_to_lean.compose_LoOp_leans
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 5
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node

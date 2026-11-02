@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp.read_words_at_symbol
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (function)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 6
 - **status:** draft
 - **designation:** code (function)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -58,9 +58,9 @@ extensions written by hand.
 The symbol is the standard function's name, which `standard_HiOp_wrapper` hands on
 with the source.
 
-Written 2026-10-07 by Claude (Opus 5.5), at Dee's word ("yes as long as it
+Written 2026-10-07 by Claude (Opus 5.5), at the owner's word ("yes as long as it
 makes sense for the current context of the project"), from `lower_HiOp`'s
-own definition. Changed later the same day, at Dee's word: its words, read
+own definition. Changed later the same day, at the owner's word: its words, read
 as arch-opcodes, are the LoHiOp
 (`Planning/CORE_0_0_0_pseudocoup.md). The wording is mine (`Planning/CORE_0_0_0_pseudocoup.md).
 

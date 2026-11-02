@@ -56,7 +56,7 @@ def declaring_file_path(checkout: str, relative: str) -> str:
 
 # Where the files of a lowerer written in C++ sit as its own preprocessor
 # writes them: every macro expanded, each line at its own line number, one
-# sub-directory per checkout. Dee, 2026-10-16: "lets implement that so we
+# sub-directory per checkout. the owner, 2026-10-16: "lets implement that so we
 # never have to be bothered by these again." This project keeps them; the
 # variable names another place (the checkouts' own directory, to read the
 # files as written).

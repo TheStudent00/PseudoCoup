@@ -14,7 +14,7 @@ whatever the function calls it (clang's PrintCallArgs calls it `Call`).
 A file is read as the lowerer's own preprocessor writes it
 (`preprocessed_file_path`), never as written, so nothing a macro writes is
 hidden: every macro is expanded, each line sits at its own line number, and
-each list the file #includes is joined onto its #include's line. Dee,
+each list the file #includes is joined onto its #include's line. the owner,
 2026-10-16: "lets implement that so we never have to be bothered by these
 again." `same_line_text` makes that text from the preprocessor's output.
 

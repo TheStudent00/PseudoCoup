@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp
 level: 5
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (module)
 node:
@@ -30,7 +30,7 @@ sub_nodes:
 - **level:** 5
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -57,10 +57,10 @@ The words, read as arch-opcodes at the standard function's symbol, are the
 LoHiOp. The Sail model is not read here; it is read in the Lean part
 (`map_LoOp_to_lean`).
 
-*Removed 2026-10-07, at Dee's word:* two paragraphs that had each word read
+*Removed 2026-10-07, at the owner's word:* two paragraphs that had each word read
 back into the Sail model's constructor here, by inverting the model's
 assembly clause because the Lean emit marks Sail's decoder `noncomputable`.
-Dee, 2026-09-21: "the mapping between arch-opcode and machine-opcode is
+the owner, 2026-09-21: "the mapping between arch-opcode and machine-opcode is
 1-to-1"; and 2026-10-07: "we arent at the Sail part of the project are we?"
 The removed text, and the finding about sail-riscv's build that one of them
 held, are kept in

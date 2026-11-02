@@ -11,7 +11,7 @@ by hand, 2026-10-13, by Claude (Opus 5.5),
 
 > same with this. if you can do them by hand. do them please.
 
-Dee placed this outside the Lean proofs (log 447 §5): "its more of an
+the owner placed this outside the Lean proofs (log 447 §5): "its more of an
 infrastructure thing no?" Sail's definitions follow one hart, and in one
 thread an ordering word changes nothing, so its whole meaning is what other
 threads may see.
@@ -23,7 +23,7 @@ reorder memory more than riscv64 allows (RVWMO, riscv64's memory model), one
 thread can see a value it could never see on riscv64. A program with one
 thread loses nothing.
 
-**The rule (Dee, log 447):** each target keeps every order riscv64 keeps, or
+**The rule (the owner, log 447):** each target keeps every order riscv64 keeps, or
 a stronger one. Stronger is always correct; it only costs speed.
 
 ## 1. What each riscv64 word promises

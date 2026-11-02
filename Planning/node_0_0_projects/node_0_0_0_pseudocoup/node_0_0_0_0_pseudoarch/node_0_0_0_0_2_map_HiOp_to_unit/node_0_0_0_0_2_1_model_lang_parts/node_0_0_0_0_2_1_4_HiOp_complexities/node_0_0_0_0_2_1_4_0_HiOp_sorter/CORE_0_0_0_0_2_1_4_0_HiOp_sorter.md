@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.HiOp_complexities.HiOp_sorter
 level: 7
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_HiOps.HiOp_sorter
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 7
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_HiOps.HiOp_sorter
 
 ## super_node
@@ -35,7 +35,7 @@ sub_nodes: []
 
 ## definition
 
-Sorts a language's operators into Dee's call-complexity classes (`simple`,
+Sorts a language's operators into the owner's call-complexity classes (`simple`,
 `hybrid`, `complex`, `undetermined`) and by their in-HiOp `BranchTree` depth
 (`depth 0` vs. `depth 1+`), setting the downstream Unit-modelling order of
 `model_lang_parts`.

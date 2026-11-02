@@ -7,12 +7,12 @@ status: draft
 
 A page of sketches: the modelling that would close the open items of
 `node_0_0_0_0_2_4_extract_lang_vocab/SUPPORT_gnu_c_vocab_what_is_missing.md`
-(items 1 to 38). Written 2026-10-12 by Claude (Opus 5.5) at Dee's request:
+(items 1 to 38). Written 2026-10-12 by Claude (Opus 5.5) at the owner's request:
 
 > id also like a sketch of the modelling we would have to do to solve the
 > outstanding items.
 
-The goal is Dee's, the same day:
+The goal is the owner's, the same day:
 
 > faithful AutoPoly — meaning that coding components of any GNU-C program has
 > polyfill that is computationally equivalent. i would settle for just RISCV if
@@ -25,7 +25,7 @@ what is already known.
 
 ## Read this first: the plan's design already covers most of the eight (2026-10-13, 
 
-Dee, 2026-10-13: "we are going as far to emulate the very RISC-V arch-opcodes
+the owner, 2026-10-13: "we are going as far to emulate the very RISC-V arch-opcodes
 by slicing GMP and modeling by-hand the handful of basic operations GMP uses to
 model arch-opcodes. omg. you arent familiar with the entire project."
 
@@ -42,14 +42,14 @@ a polyfill gives what riscv64 gives, edge cases included.
 | 2. what a Unit means | settled (logs 437, 440) |
 | 3. holders per machine | riscv64's facts are in its Units; the other machines only serve the all-three-architectures rule |
 | 4. calls | mapping: the routines' riscv64 code, lowered; system calls are where the emulation meets the environment |
-| 5. traps | in the LoOps (Sail): riscv64's divide gives -1 and never traps; a holder read before its first write is the ledger's (Dee's definition) |
+| 5. traps | in the LoOps (Sail): riscv64's divide gives -1 and never traps; a holder read before its first write is the ledger's (the owner's definition) |
 | 6. data | the ledger's |
-| 7. control | Dee's design (logs 395 to 399) |
+| 7. control | the owner's design (logs 395 to 399) |
 | 8. threads | one thread: in the LoOps; what other harts see (RVWMO): the one thing left |
 
 ## Read this first: most of these models are mapping (2026-10-12, 
 
-Dee, later the same day:
+the owner, later the same day:
 
 > if we made a mapping from high_level --to--> low_level for every high level
 > building block, the intermediate stage wouldnt require a model.
@@ -66,7 +66,7 @@ Unit is the HiOp's own words (my reading, asked in log 437: its fetches and
 store are in, the wrapper's frame is out). Under both, the models below sort
 into what each item really needs.
 
-Dee answered the question of log 437 the same day : "if the
+the owner answered the question of log 437 the same day : "if the
 answer being yes reduces work, i dont see why we wouldnt." It does, so the
 fetches and the store are the HiOp's own words, and items 16 and 27 to 30 are
 closed in the list. Log 440 also shows that this is September's canon form
@@ -83,9 +83,9 @@ Table 0. The list's 39 items, by what each needs (log 437, Table 1).
 | nothing: the all-three-architectures rule | 4, 8, 35 | 3 |
 | done | 26 | 1 |
 
-So Model 2 is settled by Dee's word, Model 3 is carried by the words, and
+So Model 2 is settled by the owner's word, Model 3 is carried by the words, and
 Models 4 and 6 are mapping. Models 5 and 8 are the machine level. Model 1 is a
-shortcut for mapping, and Model 7 is Dee's design. The sketches below stay as
+shortcut for mapping, and Model 7 is the owner's design. The sketches below stay as
 the record of what each part involves.
 
 Figure 1. Where the eight models meet. It shows which model feeds which step;
@@ -167,8 +167,8 @@ def meaning(held_function, machine):
   and aarch64's choice of selector all happen inside the function, so this
   reading needs no model of them. The other reading cuts each HiOp's own
   words out, and then needs every machine's word rules.
-- Which reading a Unit takes is Dee's (log 434 §3.2, queued).
-- Settled 2026-10-12 at Dee's word : the wrapper only
+- Which reading a Unit takes is the owner's (log 434 §3.2, queued).
+- Settled 2026-10-12 at the owner's word : the wrapper only
   isolates a HiOp's words, and a Unit is the HiOp's operand fetches, its
   operation and its result's store; the frame and the copy of `p` are cut
   (`op_1970` on riscv64: 4 of its 15 words). So neither reading above is
@@ -255,7 +255,7 @@ def outcome(unit, inputs, machine):
     operating system stops the program with a signal (`SIGFPE`, `SIGSEGV`), and
     a polyfill must stop the program with the same signal.
   - **whatever was already there:** `int n; ... n ...` reads a stack slot that
-    nothing wrote. What "equivalent" means there is Dee's to say.
+    nothing wrote. What "equivalent" means there is the owner's to say.
 - Where to look: the 19 checks of clang's group "undefined" (`Sanitizers.def`)
   name the operations.
 - Tested (run elv2_l151): `(int)` of a NaN gave 0x7FFFFFFF, -0x80000000, 0;
@@ -297,7 +297,7 @@ def StmtExpr(body):
 	return value
 ```
 
-- Dee's design of logs 395 to 399: a rich HiOp is a function of its bodies.
+- the owner's design of logs 395 to 399: a rich HiOp is a function of its bodies.
   A statement expression `({ a; b; })` is one more of them.
 - Tested (run elv2_l151): `({ a; b; })` gave `b` on all three.
 
@@ -342,7 +342,7 @@ Table 1. What each model needs per machine, and what riscv64 alone saves.
   trap rules, and their memory models. The rest is per-machine data that clang
   already gives, and the automation reads it three times, once per machine.
 - My reading, not checked: Sail models of Arm and x86 exist upstream. Whether
-  Sail's Lean output works for them is not known. `~/Programming/SOURCES/`
+  Sail's Lean output works for them is not known. `SOURCES/`
   holds an x86-64 semantics in K (`X86-64-semantics`), which is not Lean.
 
 ## Not a model

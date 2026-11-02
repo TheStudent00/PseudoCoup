@@ -4,7 +4,7 @@ type: support
 belongs_to: CORE_0_0_0_2_hub.md
 status: active
 date: 2026-11-01
-author: Dee & Gemini
+author: the owner & Gemini
 ---
 
 # SUPPORT: 12-Language AutoPoly Status & Constructing the Hub

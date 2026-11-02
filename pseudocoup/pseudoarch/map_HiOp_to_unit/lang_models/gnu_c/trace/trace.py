@@ -207,7 +207,7 @@ def recording_of(clang_binary: str, names: dict, work: str, from_the_start: bool
     written once, into `work`. With `from_the_start` the record begins with
     the file, so the struct's own line is in it: a refusal there (the
     result's __typeof__) was outside the record until run fable1_l08 showed
-    18 refusals without a diagnostic (Dee, 2026-10-18: "id like it fixed")."""
+    18 refusals without a diagnostic (the owner, 2026-10-18: "id like it fixed")."""
     os.makedirs(work, exist_ok=True)
     path = os.path.join(work, "opaque.bin")
     with open(path, "wb") as written:

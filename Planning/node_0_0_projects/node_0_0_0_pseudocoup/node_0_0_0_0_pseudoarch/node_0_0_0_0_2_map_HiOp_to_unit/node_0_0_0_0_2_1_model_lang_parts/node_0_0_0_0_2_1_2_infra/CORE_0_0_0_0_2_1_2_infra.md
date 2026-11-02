@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.model_lang_parts.infra
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -40,20 +40,20 @@ Unit calls into. Today that is compiler-rt's routines for riscv64: run
 elv2_l159 lowered compiler-rt whole, and the 54 routines riscv64's Units
 call reach 58 routines in all .
 
-Dee, 2026-10-14 , the note this node comes from: "a
+the owner, 2026-10-14 , the note this node comes from: "a
 thought that came to mind is that `extract_lang_infrastructure` or
 `extract_lang_infra` might make sense in the ontology since the work we did
 was extracting vocabulary but also infrastructure and that extraction was
 different because we lowered it (we can upgrade that extraction after we
 build the new PseudoCoup)"
 
-- It was the work list's `extract_lang_infra`; in Dee's tree of 2026-10-15
+- It was the work list's `extract_lang_infra`; in the owner's tree of 2026-10-15
   it is this part.
 - Nothing is in it yet. The record of that lowering is `hub/autopoly`'s
   `SUPPORT_gnu_c_infrastructure_lowered_whole.md`, which log 456 §6 said
   would move here.
 
-Made 2026-10-15 in `map_HiOp_to_unit`'s `.NASCENT/`, at Dee's word: "please fill in the .NASCENT for `map_HiOps_to_unit` as best you can." Not live until the rework puts `.NASCENT`'s contents in place (PlanPlan `framework/PROTOCOL.md` §6d).
+Made 2026-10-15 in `map_HiOp_to_unit`'s `.NASCENT/`, at the owner's word: "please fill in the .NASCENT for `map_HiOps_to_unit` as best you can." Not live until the rework puts `.NASCENT`'s contents in place (PlanPlan `framework/PROTOCOL.md` §6d).
 
 ## support
 

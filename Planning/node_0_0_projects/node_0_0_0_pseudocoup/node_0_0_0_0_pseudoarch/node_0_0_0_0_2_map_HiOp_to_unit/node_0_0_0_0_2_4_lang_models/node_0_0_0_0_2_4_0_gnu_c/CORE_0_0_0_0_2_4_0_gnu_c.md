@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lang_models.gnu_c
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.langs.gnu_c
 designation: code (container)
 node:
@@ -34,7 +34,7 @@ sub_nodes:
 - **level:** 6
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.langs.gnu_c
 
 ## super_node

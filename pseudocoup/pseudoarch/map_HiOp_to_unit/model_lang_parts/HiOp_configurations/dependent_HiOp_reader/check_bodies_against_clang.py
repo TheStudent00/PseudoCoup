@@ -22,7 +22,7 @@ runs each part, and compares.
    (ENTRY) and an (EXIT) block is used. When none does, the check stops and
    says so.
 
-2. The programs, one or more per listing, in Dee's examples' form:
+2. The programs, one or more per listing, in the owner's examples' form:
 
        int inert_0(void); ... int inert_<n>(void);     declared, never defined
        void f(void) { inert_0(); <the listing>; inert_<n>(); }
@@ -180,7 +180,7 @@ EXTRA_PROGRAMS = (
             " between"},
 )
 
-# The by-hand abstract structure of the 8 listings, in Dee's notation, and
+# The by-hand abstract structure of the 8 listings, in the owner's notation, and
 # their bodies .
 BY_HAND = {
     "a && b": ("HiOp[0](a): b", ["b"]),

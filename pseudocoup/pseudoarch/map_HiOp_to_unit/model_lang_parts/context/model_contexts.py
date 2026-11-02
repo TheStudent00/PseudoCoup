@@ -5,7 +5,7 @@ bit-field place, learned by automation on riscv64 .
 Plan: `.../node_0_0_0_0_2_8_model_HiOps/node_0_0_0_0_2_8_1_model_contexts/`
 (made 2026-10-15).
 
-Dee, 2026-10-15: "the way the context changes things is logic defined within
+the owner, 2026-10-15: "the way the context changes things is logic defined within
 the lowerer. i want the way that context changes things to be modelled. thats
 what context is. context could change a bunch of things but it changes it
 according to its model. if the context model is not HiOp specific, it make

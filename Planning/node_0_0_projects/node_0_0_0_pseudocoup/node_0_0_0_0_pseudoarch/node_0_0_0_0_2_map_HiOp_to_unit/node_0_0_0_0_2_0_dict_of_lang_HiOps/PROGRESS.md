@@ -29,5 +29,5 @@ status: living
   which `extract()` made on 2026-10-14, holds 325,613 HiOps:
   `Research/extract_lang_vocabulary/refactor_check/extract_l164/c.HiOps.jsonl.gz`.
   `lower_gnu_c.py` doesn't read the dict yet: it keeps its list of
-  2026-10-06 until Dee rules on the two faults of log 456 §5. Status:
+  2026-10-06 until the owner rules on the two faults of log 456 §5. Status:
   written; not yet read by the lowering.

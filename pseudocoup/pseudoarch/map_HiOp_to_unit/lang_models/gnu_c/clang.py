@@ -10,7 +10,7 @@ Plan: `.../node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/`
     read = read_signatures("c", vocabulary, kept, work, small)   # the signatures clang's checking code accepts, read from it
     found = passes("c", vocabulary, kept, declarations, work, evidence, small, read)
 
-Moved here on 2026-10-14 , at Dee's word "lets do it", from the
+Moved here on 2026-10-14 , at the owner's word "lets do it", from the
 research runner `Research/extract_lang_vocabulary/run_elv3.py` (GNU C's grid,
  and from
 `Research/extract_lang_vocabulary/complex_signature_reader/covered_vocabulary.py`
@@ -268,7 +268,7 @@ def read_back_as_written(kinds: list) -> set:
     the same builtin at another size: clang sizes a `__sync_*` builtin by
     what its pointer points to (`__sync_fetch_and_add_4` on a `char *` is
     `__sync_fetch_and_add_1`). Each such signature is a HiOp variant clang
-    accepts, its holders the context that sets its size (Dee, 2026-10-15:
+    accepts, its holders the context that sets its size (the owner, 2026-10-15:
     "those signatures look like HiOp variants with context that modifies
     their meanings"; on keeping every one: "if it works, then yeah sure").
     Until 2026-10-16 the form was dropped (item 47 of the missing list)."""
@@ -638,9 +638,9 @@ def judge_pass(label: str, operators: list, holders: tuple, kept: list, full: bo
     start = time.time()
     print(f"[{label}] {len(operators)} operators, {len(cells)} cells", flush=True)
     # Every cell is asked of clang again. Until PseudoCoup is done, no past
-    # answer is taken as correct (Dee, 2026-10-16: "until PseudoCoup is
+    # answer is taken as correct (the owner, 2026-10-16: "until PseudoCoup is
     # completed, i dont want to assume that our past answers are correct");
-    # the past answers are read only to set the new ones beside them (Dee,
+    # the past answers are read only to set the new ones beside them (the owner,
     # 2026-10-14: "it can easily generate a new list and it can validate the
     # past findings").
     past = mask_code.knowns("c", cells, tuple(operators), holders)

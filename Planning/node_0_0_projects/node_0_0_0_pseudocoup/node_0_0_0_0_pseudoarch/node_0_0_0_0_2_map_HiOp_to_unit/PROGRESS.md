@@ -13,11 +13,11 @@ status: living
   research scripts (`Research/extract_lang_vocabulary/run_elv3.py`,
   `Research/lower_HiOp/lower_gnu_c.py`); each has its place in this plan
   (`extract_lang_vocab.extract()`, `dict_of_lang_HiOps`, this node's own
-  entry). Dee, the same evening: "how about we continue solving GNU C first
+  entry). the owner, the same evening: "how about we continue solving GNU C first
   because its unclear if this mess is just going to keep getting worse and id
   rather not make the mess in the main-line." Moving them into their places
-  is the next step whenever Dee chooses it.
-- 2026-10-13, late , at Dee's word "okay lets move the tools
+  is the next step whenever the owner chooses it.
+- 2026-10-13, late , at the owner's word "okay lets move the tools
   into their places": this node's own loop is in the product,
   `Projects/PseudoArch/map_HiOp_to_unit/__init__.py`: `map_HiOp_to_unit(lang,
   held_HiOps, preamble, machine)` lowers and cuts many held HiOps at once,
@@ -48,7 +48,7 @@ status: living
   routing (81 parts) still sit in `DRY_mask_maker.py`. `lower_gnu_c.py` keeps
   its HiOp list of 2026-10-06 for now: the dict that `extract()` made today
   differs from that list by two faults (log 456 §5), and fixing them changes
-  which HiOps the lowering lowers, so the fix waits for Dee's word. Log 457
+  which HiOps the lowering lowers, so the fix waits for the owner's word. Log 457
   measured how stable this node's Units are: runs elv2_l168 and elv2_l169
   had clang 20.1.8 and clang 22.1.2 lower every GNU C HiOp on riscv64, and
   set each Unit beside clang 21.1.8's: the same arch-opcodes for 318,135
@@ -57,10 +57,10 @@ status: living
   20 or later. Status: the move is not complete (log 461); the faults open.
 
 - 2026-10-15: sub-node 7, `langs` (one sub-node per language, for each
-  language's own parts of this node), made at Dee's word, with `gnu_c` under
+  language's own parts of this node), made at the owner's word, with `gnu_c` under
   it . Nothing moved in yet.
 
-- 2026-10-15: `.NASCENT/` opened in this node's folder, at Dee's word ("please fill in the .NASCENT for
+- 2026-10-15: `.NASCENT/` opened in this node's folder, at the owner's word ("please fill in the .NASCENT for
   `map_HiOps_to_unit` as best you can"), by PlanPlan's `framework/PROTOCOL.md` §6d. It holds the new CORE,
   the new nodes (`model_lang_parts` and its six parts, `lang_models` → `go`) and
   `SUPPORT_migration_map.md`. Today's nodes stay live until the rework moves them; a node added, moved or

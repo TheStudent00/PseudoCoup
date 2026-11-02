@@ -7,7 +7,7 @@ status: draft
 
 Where each language's lowerer declares its own operators, its own holders,
 and, where it writes them down as data, the pairings between them. Every
-path is under `~/Programming/SOURCES/`. Rows were read in the source named,
+path is under `SOURCES/`. Rows were read in the source named,
 on 2026-09-23 and 2026-09-28.
 
 ## the rule this settles

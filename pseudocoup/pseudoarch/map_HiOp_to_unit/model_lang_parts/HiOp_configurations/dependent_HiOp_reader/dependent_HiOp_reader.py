@@ -12,7 +12,7 @@ its places. The lowerer is the compiler that lowers GNU C: clang.
 
 Plan: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
 node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/
-node_0_0_0_0_2_4_2_dependent_HiOp_reader/ (a draft for Dee to build on; a
+node_0_0_0_0_2_4_2_dependent_HiOp_reader/ (a draft for the owner to build on; a
 research node until 2026-10-11, . The functions below carry the
 plan's names. Its runs and records: Research/extract_lang_vocabulary/
 dependent_HiOp_reader/ (lanes_elv2/, out/).
@@ -28,7 +28,7 @@ Step 3 (Block B): for every listing, which of its parts are bodies
 (which_parts_are_bodies). The 8 it is for are the 4 expressions whose bodies
 clang writes like operands (`a && b`, `a || b`, `a ? b : c`, `a ?: b`) and
 the 4 `for` listings with a step. A body, as this code counts it (the plan's
-stand-in for Dee's word, CORE section 3.1): a part clang writes as a
+stand-in for the owner's word, CORE section 3.1): a part clang writes as a
 statement; or a part clang writes as an operand that clang's control-flow
 builder puts behind the HiOp's own branch, or runs again before a loop's
 test. The part the branch tests is not a body, nor a part that runs once,
@@ -258,7 +258,7 @@ read_how_each_part_is_written 19, combine_bodies 20):
        b;`). Every other test forks, and both paths are kept.
 15. Blocks.
     a. On entry `Block` holds "after", the block of the code after the node
-       (an inert call stands after every listing in Dee's examples), and
+       (an inert call stands after every listing in the owner's examples), and
        `Succ` "after it".
     b. `createBlock()` makes a block linked to the one `Succ` holds;
        `createBlock(false)` one with no link; `createNoReturnBlock()` one

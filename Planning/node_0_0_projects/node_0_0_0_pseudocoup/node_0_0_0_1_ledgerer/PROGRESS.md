@@ -7,19 +7,19 @@ status: living
 
 - 2026-09-22: node created from the ontology in
   `Planning/CORE_0_0_0_pseudocoup.md
-- 2026-10-09, design: the UR-Node is locked by Dee ("well its a strong
+- 2026-10-09, design: the UR-Node is locked by the owner ("well its a strong
   argument. we can lock that design in. i have no disagreements with it."):
   a HiOp variant carried with its Units, one per architecture, and their Lean
   terms. Recorded as the register entry `universal_rich_node`
   (`realize: false`, code (class)) and the CORE's `## design`. The artifact's
-  name is now the UR-Ledger, formerly UR-AST (Dee: "great, lets update that
-  part of the design too"), and the ledger is an RCG, in Dee's words, in the
+  name is now the UR-Ledger, formerly UR-AST (the owner: "great, lets update that
+  part of the design too"), and the ledger is an RCG, in the owner's words, in the
   CORE's definition. Status: design locked; no code
   (`Planning/CORE_0_0_0_pseudocoup.md).
 - 2026-10-13, declarations by hand: done. `SUPPORT_gnu_c_declarations_by_hand.md`
   holds log 385's 22 rules, the declarations named since, the attributes, and
   riscv64's layout read back from clang by run elv2_l157 (65 of 65 rows; my
-  63 predictions all held). Status: done by hand; modelling later, at Dee's
+  63 predictions all held). Status: done by hand; modelling later, at the owner's
   word (`Planning/CORE_0_0_0_pseudocoup.md).
 
 - 2026-11-01, implementation & 2-cycle roundtrip verification: `UniversalRichNode`

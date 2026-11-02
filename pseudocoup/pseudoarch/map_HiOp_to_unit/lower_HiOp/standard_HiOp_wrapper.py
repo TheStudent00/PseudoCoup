@@ -6,7 +6,7 @@ Plan: `.../node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_1_held_HiOp_wrapper/`.
     lines = standard_HiOp_wrapper(lang, key, operator, spellings, routing)   # the standard function's lines
     lines = HiOp_on_its_own_line(lines)                                  # the HiOp on a line of its own
 
-Moved here on 2026-10-13 from DRY_mask_maker , at Dee's word:
+Moved here on 2026-10-13 from DRY_mask_maker , at the owner's word:
 "okay lets move the tools into their places". The code is as it was there,
 line for line, with three changes: the main function took the node's name
 (it was `standard_cell_lines`); the routing is always handed by the caller, since
@@ -133,7 +133,7 @@ VALUE_PLACEHOLDERS = ("a", "b", "c", "d", "e", "f", "g", "h")
 # `void __atomic_clear(A *, int)`, lines 3947 to 3951). The vocabulary wrote
 # them with three parts, and clang refused every form, "too many arguments to
 # function call, expected 2, have 3" (fable1_l81, 36 forms; fable1_l152, 21;
-# lines record fable1_l168). 2026-10-21, Dee: "for the things you can do, do
+# lines record fable1_l168). 2026-10-21, the owner: "for the things you can do, do
 # them please".
 FORMS_BY_HAND = {
     "__atomic_test_and_set": ("__atomic_test_and_set(a, b)", ("a", "b")),
@@ -506,7 +506,7 @@ def HiOp_on_its_own_line(lines: list) -> list:
 
     The debug table then files the HiOp's words under a line of their own,
     and the frame's under the header and the closing brace, so
-    extract_unit_from_LoHiOp cuts the Unit by line. Dee, 2026-10-13 (PCHQ log
+    extract_unit_from_LoHiOp cuts the Unit by line. the owner, 2026-10-13 (PCHQ log
     446): "we need some way to tell which arch-opcodes belong to the lowered
     HiOp"; written the same day (log 449). Only the layout changes."""
     if len(lines) >= 3 and lines[-1].strip() == "}" and lines[-3].endswith("*p) {"):
@@ -597,22 +597,22 @@ def is_statement(operator) -> bool:
 # The standard form of a control HiOp: every part is an inert call, a call to a
 # function declared and never defined, so clang keeps every part, and the
 # HiOp's Unit is its own jumps and tests with a call where each part goes.
-# Dee, 2026-10-08: "having inert function bodies might actually solve that
+# the owner, 2026-10-08: "having inert function bodies might actually solve that
 # problem because the polyfill would be a nested structure of function
 # calls". Tried in research 
-# try_inert_parts.py) and moved here at Dee's word (log 399): "it seems like
+# try_inert_parts.py) and moved here at the owner's word (log 399): "it seems like
 # the new standard-form is incredibly successful and would make sense to be in
 # the project PlanPlan and its implementation".
 #
 # Where each listing's configuration comes from 
-# 420 §4; Dee, 2026-10-11: "proceed with part b"): which placeholders are
+# 420 §4; the owner, 2026-10-11: "proceed with part b"): which placeholders are
 # bodies, which expressions hold bodies, which statements jump, what a
 # dependent-HiOp stands inside, what a part stands inside, which standard function
 # answers a value, and which answer is kept in a local are read from the record
 # of HiOp_configuration_solver (ROUTING, made by routing_from_the_record, in the
 # section "the routing" below). The tables and branches written by hand until
 # then are kept here under their names with _BY_HAND added (ROUTING_BY_HAND
-# holds them), as the check the routing from the record is compared with: Dee,
+# holds them), as the check the routing from the record is compared with: the owner,
 # 2026-10-10, by-hand results are the oracle when automating (logs 400 to 402).
 # The standard-form uses only ROUTING.
 #
@@ -701,7 +701,7 @@ CONSTANT_FORM = "((" + INERT_VALUE_TYPE + ")0)"
 # words as the same builtins on a plain `int` (log 400). For these three only:
 # `__typeof_unqual__` for every HiOp also took `_Atomic` off a cast's type, and
 # clang refused 676 casts to `_Atomic` holders (log 367, run elv2_l67), which is
-# why C_RESULT_TYPE takes the type through a comma. Dee, 2026-10-09: "okay go
+# why C_RESULT_TYPE takes the type through a comma. the owner, 2026-10-09: "okay go
 # ahead and make both corrections to the standard-form" (log 402).
 UNQUALIFIED_RESULTS = (
     "__builtin_align_up",
@@ -739,7 +739,7 @@ C_FLEXIBLE_ARRAY_FIELD = "int count; __typeof__((*({0} *)0)[0]) {1}[] __attribut
 # do-while's test, a skipped body), no path reached that call, none of its
 # words were in the object on any of the three architectures, and the jump
 # went to the very next word (log 399). `break;` and `goto m;` since log 402;
-# `continue;`, `goto *a;`, `return a;` and `return;` since log 405, after Dee
+# `continue;`, `goto *a;`, `return a;` and `return;` since log 405, after the owner
 # asked, 2026-10-09: "should we not make `GNU-C` current with the most advanced
 # design?". Before it, `continue;` jumped back to itself, `return a;` and
 # `return;` wrote no jump at all (log 404, §3), and `goto *a;` jumped over the

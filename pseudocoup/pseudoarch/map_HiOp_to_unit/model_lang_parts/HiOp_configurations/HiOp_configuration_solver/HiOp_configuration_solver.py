@@ -1,10 +1,10 @@
-"""HiOp_configuration_solver -- Dee's method for finding each listing's
+"""HiOp_configuration_solver -- the owner's method for finding each listing's
 configuration by trying arrangements of its components on the lowerer, not
 by reading the lowerer's code. Steps 1 to 4, the upgrades of 
 Table 4 (rules 63 to 74), the fixes after the first small run (rules 75 to
 80), and what the wide run adds (rules 81 to 85). Built as configuration_brute_force ; named
-dependent_HiOp_solver by Dee and moved into extract_lang_vocab on 2026-10-11
-; renamed HiOp_configuration_solver the same day, at Dee's
+dependent_HiOp_solver by the owner and moved into extract_lang_vocab on 2026-10-11
+; renamed HiOp_configuration_solver the same day, at the owner's
 choice of the name Claude proposed in .
 
 Plan node: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
@@ -105,18 +105,18 @@ arrange: every arrangement of each group
 12. Made in a fixed order: at each place an inert call first, then the
     components as read; at each line the lowest level first. Numbered from 1
     in each group.
-13. Dee's order: the `if` group's arrangements with the lines in Dee's order
-    (DEES_ORDER) are marked, and Dee's three examples among them by their
+13. the owner's order: the `if` group's arrangements with the lines in the owner's order
+    (DEES_ORDER) are marked, and the owner's three examples among them by their
     levels (DEES_EXAMPLES).
 14. The check: 280, 60, 420 and 60 arrangements (EXPECTED_ARRANGEMENTS, from
-    the plan's section 3), 820 in all; 12 in Dee's order; Dee's 3 examples
+    the plan's section 3), 820 in all; 12 in the owner's order; the owner's 3 examples
     found. Any other count stops the run. Steps 2 to 4: made again untrimmed
     in the part step_1_again, where the same count is checked.
 
 write_programs: each arrangement written in GNU C
 15. Only GNU C is written. Another language stops the run.
 16. Inert calls are numbered so no two share a name: the lines that are inert
-    calls first, in line order, as Dee numbers them (`inert_0()` to
+    calls first, in line order, as the owner numbers them (`inert_0()` to
     `inert_3()` in the `if` group); then each value a component takes, in
     line order, since a component's value becomes an inert call too. Each is
     declared `int inert_<k>(void);`. Steps 2 to 4: a value written as a
@@ -299,7 +299,7 @@ arrange
 40. Dependents, by rule: the statement listings the lowerer refuses alone
     under every fill and accepts held in a holder; and the listings that need
     something in the same function, refused alone without it and accepted
-    with it. What each needs is typed from the plan (Dee's table of the 16,
+    with it. What each needs is typed from the plan (the owner's table of the 16,
     : `goto m;` needs `m: a;`, `goto *a;` needs `&&m`
     and `m: a;`, `&&m` needs `m: a;` (NEEDS). A listing refused alone and
     held in every holder is neither, and is counted so (`return a;`, whose
@@ -355,7 +355,7 @@ run_with_chosen_returns
     `goto *a;` through a label table; rules 65 and 66 build again a program
     that fails to link, or asks for a constant.
 48. Built for the VM's own processor (which parts run does not depend on the
-    processor): `clang -std=gnu17 -O0 -g` with no `--target` (Dee's standing
+    processor): `clang -std=gnu17 -O0 -g` with no `--target` (the owner's standing
     rule: no optimizer); up to 500 programs of one group with the same
     declarations in one file, each program's function renamed `f_<n>`,
     linked with a harness file that gives each inert call a body. A file
@@ -576,7 +576,7 @@ ask_the_lowerer, arrange and classify
     (C's per-language piece), sorts each first error into "where it stands"
     (clang forbids a component where it stands), "the test program" (a fault
     of the program the method wrote: a name, a type, a constant, a library,
-    the linker) or "unsorted" (anything else: listed for Dee, never put in
+    the linker) or "unsorted" (anything else: listed for the owner, never put in
     either by guess). Trimming (rule 38) trims only on a "where it stands"
     refusal. A listing refused alone only for the test program, under every
     fill and in every context, is recorded as not accepted because of the
@@ -765,9 +765,9 @@ EXPECTED_IN_DEES_ORDER = 12
 # Rule 36: step 1's record, as run elv2_l122 kept it .
 EXPECTED_STEP_1_KEPT = 185
 
-# Rule 13: Dee's `if` example (Dee's chat of 2026-10-10, quoted in PCHQ log
-# 416): the lines in Dee's order, and Dee's three arrangements, by their
-# levels, with Dee's words.
+# Rule 13: the owner's `if` example (the owner's chat of 2026-10-10, quoted in PCHQ log
+# 416): the lines in the owner's order, and the owner's three arrangements, by their
+# levels, with the owner's words.
 DEES_ORDER = ["inert call", "if(a)", "inert call", "else", "inert call", "inert call"]
 DEES_EXAMPLES = [
     {"example": 1, "levels": [0, 0, 0, 0, 0, 0], "dees_words": "doesnt work"},
@@ -781,7 +781,7 @@ SWITCH_GROUP = ["switch (a) b;", "case a: b;", "default: a;", "break;"]
 DO_GROUP = ["break;", "do a; while (b);", "while (a) b;"]
 EXPECTED_SWITCH_ARRANGEMENTS = 166320
 
-# Rule 40: what each listing needs in the same function, typed from Dee's
+# Rule 40: what each listing needs in the same function, typed from the owner's
 # table of the 16 .
 NEEDS = {
     "goto m;": ["m: a;"],
@@ -797,7 +797,7 @@ TYPE_LETTERS = ("T", "U", "V", "W")
 PIECE = re.compile(r"\w+|\s+|\.\.\.|.")
 WORD = re.compile(r"\w+")
 
-# An inert call, as a line of an arrangement; and as Dee writes one.
+# An inert call, as a line of an arrangement; and as the owner writes one.
 INERT_CALL = {"is": "inert call"}
 INERT_CALL_WRITTEN = "inert_{0}()"
 
@@ -3707,9 +3707,9 @@ def check_the_counts(arrangements: dict, part: str) -> None:
     if name == "step_1_again" and counts != EXPECTED_ARRANGEMENTS:
         stop(f"arrange: the counts are {counts}, not {EXPECTED_ARRANGEMENTS}; nothing is run")
     if name == "step_1_again" and count_in_dees_order(arrangements["arrangements"]) != EXPECTED_IN_DEES_ORDER:
-        stop(f"arrange: not {EXPECTED_IN_DEES_ORDER} arrangements in Dee's order; nothing is run")
+        stop(f"arrange: not {EXPECTED_IN_DEES_ORDER} arrangements in the owner's order; nothing is run")
     if name == "step_1_again" and count_dees_examples(arrangements["arrangements"]) != len(DEES_EXAMPLES):
-        stop(f"arrange: not Dee's {len(DEES_EXAMPLES)} examples; nothing is run")
+        stop(f"arrange: not the owner's {len(DEES_EXAMPLES)} examples; nothing is run")
     if name == "switch_untrimmed" and counts.get("switch") != EXPECTED_SWITCH_ARRANGEMENTS:
         stop(f"arrange: the switch group has {counts.get('switch')} arrangements, not "
              f"{EXPECTED_SWITCH_ARRANGEMENTS}; nothing is run")
@@ -5818,7 +5818,7 @@ def classify(accepted: dict, runs: dict) -> dict:
 
 def refusals_by_sort(accepted: dict, groups: list, runs: dict) -> dict:
     """Rule 72: the part's refusals by sort: the whole arrangements of its groups, the listings' asks (alone, in a
-    context, held in a holder), and the builds of signal 2; and every unsorted message, for Dee."""
+    context, held in a holder), and the builds of signal 2; and every unsorted message, for the owner."""
     tally = {"whole arrangements": {}, "listings' asks": {}, "builds": {}, "unsorted messages": {}}
     for group in groups:
         for entry in group["first_errors"]:
@@ -6887,7 +6887,7 @@ def kept_lines_and_levels(groups: list) -> set:
 
 
 def notation_of(lines: list) -> list:
-    """The lines as Dee writes them: inert calls numbered in line order; a
+    """The lines as the owner writes them: inert calls numbered in line order; a
     component that holds a body followed by `:` (`if(a):`), unless its name
     ends in one (`m:`)."""
     notation = []
@@ -7274,7 +7274,7 @@ def add_the_refusals_by_sort(text: list, tally: dict) -> None:
             parts.append(f"{sort} {tally[where].get(sort, 0)} of {whole}")
         text.append(f"   {where}: {'; '.join(parts)}")
     unsorted = tally["unsorted messages"]
-    text.append(f"   unsorted messages, for Dee ({len(unsorted)}):")
+    text.append(f"   unsorted messages, for the owner ({len(unsorted)}):")
     for message in most_common_first(unsorted):
         text.append(f"      {unsorted[message]}: {message}")
 
@@ -9513,7 +9513,7 @@ def add_upgrades_section(text: list, configurations: dict) -> None:
 
 
 def add_summary_heading(text: list, configurations: dict) -> None:
-    text.append("HiOp_configuration_solver, steps 2 to 4: Dee's method (plan node 0_0_0_0_2_4_4, section 3.1; ")
+    text.append("HiOp_configuration_solver, steps 2 to 4: the owner's method (plan node 0_0_0_0_2_4_4, section 3.1; ")
     text.append(f"lowerer: {configurations['lowerer']}")
     text.append(f"asked alone: {configurations['asked_alone']}")
     text.append(f"asked in batches: {configurations['asked_in_batches']}")

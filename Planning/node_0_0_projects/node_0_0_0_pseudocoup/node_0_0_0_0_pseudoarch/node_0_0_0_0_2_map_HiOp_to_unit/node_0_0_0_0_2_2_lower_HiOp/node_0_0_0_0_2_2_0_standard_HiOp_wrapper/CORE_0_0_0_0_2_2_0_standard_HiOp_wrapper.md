@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.lower_HiOp.standard_HiOp_wrapper
 level: 6
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.standard_HiOp_wrapper
 designation: code (module)
 node:
@@ -22,7 +22,7 @@ sub_nodes: []
 - **level:** 6
 - **status:** draft
 - **designation:** code (module)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** hq.projects.pseudocoup.pseudoarch.map_HiOp_to_unit.standard_HiOp_wrapper
 
 ## super_node
@@ -52,8 +52,8 @@ mutation, constant folding, and short-circuit evaluation.
 
 ## abstract design
 
-Added 2026-10-07 by Claude (Opus 5.5), at Dee's word: "i suppose we can
-note the abstract design in its CORE". The standard-form is Dee's: it "uses a
+Added 2026-10-07 by Claude (Opus 5.5), at the owner's word: "i suppose we can
+note the abstract design in its CORE". The standard-form is the owner's: it "uses a
 container-wrapper instead of the original function-warpper" (log 302, as
 written). The
 four parts below, their wording and the helper names in Block A are mine,
@@ -117,17 +117,17 @@ language:
   call after it: `for (;;) { if (part_k_test()) break; part_k_skipped(); }`,
   `if (part_k_test()) return part_k_a(); part_k_skipped();`. The test lets a
   path skip the jump and reach the call, so the jump goes over it, as it does
-  in real code (zlib's `inflate.c`, log 400). `break;` and `goto m;` at Dee's
+  in real code (zlib's `inflate.c`, log 400). `break;` and `goto m;` at the owner's
   word, 2026-10-09: "okay go ahead and make both corrections to the
-  held-form" (log 402). The other four since log 405, after Dee asked the
+  held-form" (log 402). The other four since log 405, after the owner asked the
   same day: "should we not make `GNU-C` current with the most advanced
   design?"
 - A builtin that answers nothing (`void`) is held as the call alone, since
   no field can hold it.
-- A control HiOp's parts are inert calls (Dee's idea, 2026-10-08: "having
+- A control HiOp's parts are inert calls (the owner's idea, 2026-10-08: "having
   inert function bodies might actually solve that problem because the
   polyfill would be a nested structure of function calls"; tried in PCHQ log
-  397, moved here at Dee's word in log 399: "would make sense to be in the
+  397, moved here at the owner's word in log 399: "would make sense to be in the
   project PlanPlan and its implementation"). A control HiOp is a statement,
   or `a && b`, `a || b`, `a ? b : c`, `a ?: b`. Each part is a call to a
   function declared and never defined, so the compiler keeps every part, and
@@ -179,11 +179,11 @@ The standard-form for any language, written out: its rules, its five steps as
 descriptive code in log 373's form, and instances in GNU C and Python, with
 where GNU C's code does each step:
 [SUPPORT_standard_form_for_any_language.md](SUPPORT_standard_form_for_any_language.md)
-(log 404 §2, put here at Dee's word in log 405). Block A above is the four
+(log 404 §2, put here at the owner's word in log 405). Block A above is the four
 parts; that file's Block A is the whole standard-form.
 
 The standard-form in the context of modelling abstraction, as its
 configurations: a HiOp with N bodies, written as its parts `HiOp[0]` to
-`HiOp[N-1]` (Dee's notation), and a depended-HiOp with its dependent-HiOps
-inside; a draft for Dee to build on, nothing ruled (Dee, 2026-10-10):
+`HiOp[N-1]` (the owner's notation), and a depended-HiOp with its dependent-HiOps
+inside; a draft for the owner to build on, nothing ruled (the owner, 2026-10-10):
 [SUPPORT_standard_form_in_modelling_abstraction.md](SUPPORT_standard_form_in_modelling_abstraction.md).

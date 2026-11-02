@@ -2,7 +2,7 @@
 id: hq.projects.pseudocoup.hub
 level: 3
 status: draft
-settled_by: Dee
+settled_by: the owner
 supersedes: null
 designation: code (container)
 node:
@@ -24,7 +24,7 @@ sub_nodes:
 - **level:** 3
 - **status:** draft
 - **designation:** code (container)
-- **settled_by:** Dee
+- **settled_by:** the owner
 - **supersedes:** null
 
 ## super_node
@@ -50,7 +50,7 @@ Holds AutoPoly. Detail waits; pseudoarch is being descended first.
 - [SUPPORT_BRAINSTORM_hub.md](SUPPORT_BRAINSTORM_hub.md): the ideas raised
   about the Hub's operators (other languages' operators by name, as
   `C.*`; the Hub's own operators; dominance, modes and clustering), each
-  marked whose it is and where it stands. Opened 2026-10-09 at Dee's word,
+  marked whose it is and where it stands. Opened 2026-10-09 at the owner's word,
   "we can make notes in brainstorming documents so we dont have to re-think
   the ideas weve already thought-up"; left for the Hub's construction.
 - [SUPPORT_universal_12_language_autopoly_and_hub_construction.md](SUPPORT_universal_12_language_autopoly_and_hub_construction.md):
