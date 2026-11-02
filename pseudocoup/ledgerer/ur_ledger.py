@@ -722,8 +722,6 @@ class LedgerToScript:
     @classmethod
     def _emit_expr(cls, expr: Any, lang: str) -> str:
         if isinstance(expr, URConst):
-            if lang in ("java", "csharp") and abs(expr.value) > 2147483647:
-                return f"{expr.value}L"
             return str(expr.value)
         if isinstance(expr, URVar):
             return f"${expr.name}" if lang == "php" else expr.name

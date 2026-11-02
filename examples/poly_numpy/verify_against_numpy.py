@@ -145,7 +145,9 @@ def run_native_toolchains() -> None:
         print(f"  [PHP (php 8.5)  ] {php_out} == NumPy PASS")
 
         # Java (javac + java)
-        java_body = (EMITTED_DIR / "poly_numpy.java").read_text().replace("long np_", "static long np_")
+        import re
+        java_body = re.sub(r"\b(4294967295|2147483648)\b", r"\1L", (EMITTED_DIR / "poly_numpy.java").read_text())
+        java_body = java_body.replace("long np_", "static long np_")
         java_src = f"public class T {{\n{java_body}\npublic static void main(String[] a) {{ for (long s : new long[]{{-17,0,7,42,99}}) System.out.print(np_pipeline_digest(s) + \" \"); }}\n}}\n"
         (tdir / "T.java").write_text(java_src)
         subprocess.run(["javac", str(tdir / "T.java")], check=True)
