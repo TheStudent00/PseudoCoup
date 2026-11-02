@@ -238,6 +238,8 @@ def _normalize_inline_cond_and_div(ln: str, lang: str) -> str:
     ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\.fdiv\(\s*([A-Za-z0-9_]+)\s*\)\.truncate\s*\)", r"trunc_div(\1, \2)", ln)
     # Dart native truncated division `(a ~/ b)` -> `trunc_div(a, b)`
     ln = re.sub(r"\(\s*([A-Za-z0-9_]+)\s*~/\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
+    if lang == "dart":
+        ln = ln.replace("~/", "//")
     # PHP native truncated division `intdiv(a, b)` -> `trunc_div(a, b)`
     ln = re.sub(r"intdiv\(\s*([A-Za-z0-9_]+)\s*,\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
     # TypeScript native truncated division `Math.trunc(a / b)` -> `trunc_div(a, b)`
