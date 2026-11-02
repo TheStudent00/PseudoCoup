@@ -104,12 +104,20 @@ def prove_branchless_identities_z3() -> dict[str, str]:
     shr_branchless = a >> ((b & z63) | ((z0 - out_range) & z63))
 
     # 4. Overflow-safe trunc_div & trunc_rem via divisor adjustment safe_b = b + (ovf << 1)
+    # Concrete base facts on 64-bit hardware divider: MIN_I64 / 1 == MIN_I64 and SRem(MIN_I64, 1) == 0
+    assert z3.is_true(z3.simplify(min_i64 / z1 == min_i64))
+    assert z3.is_true(z3.simplify(z3.SRem(min_i64, z1) == z0))
+    BV64 = z3.BitVecSort(64)
+    sdiv = z3.Function("sdiv", BV64, BV64, BV64)
+    srem = z3.Function("srem", BV64, BV64, BV64)
+    base_axioms = z3.And(sdiv(min_i64, z1) == min_i64, srem(min_i64, z1) == z0)
+
     ovf = z3.If(z3.And(a == min_i64, b == neg1), z1, z0)
     safe_b = b + (ovf << z1)
-    div_branched = z3.If(z3.And(a == min_i64, b == neg1), min_i64, a / b)
-    div_branchless = a / safe_b
-    rem_branched = z3.If(z3.And(a == min_i64, b == neg1), z0, z3.SRem(a, b))
-    rem_branchless = z3.SRem(a, safe_b)
+    div_branched = z3.If(z3.And(a == min_i64, b == neg1), min_i64, sdiv(a, b))
+    div_branchless = sdiv(a, safe_b)
+    rem_branched = z3.If(z3.And(a == min_i64, b == neg1), z0, srem(a, b))
+    rem_branchless = srem(a, safe_b)
 
     # 5. Floor div & Floor mod
     q = div_branchless
@@ -124,10 +132,10 @@ def prove_branchless_identities_z3() -> dict[str, str]:
         "branchless_ite": ite_branched == ite_branchless,
         "branchless_saturate_shl": shl_branched == shl_branchless,
         "branchless_saturate_shr": shr_branched == shr_branchless,
-        "branchless_trunc_div": z3.Implies(b != z0, div_branched == div_branchless),
-        "branchless_trunc_rem": z3.Implies(b != z0, rem_branched == rem_branchless),
-        "branchless_floor_div": z3.Implies(b != z0, fdiv_branched == fdiv_branchless),
-        "branchless_floor_mod": z3.Implies(b != z0, fmod_branched == fmod_branchless),
+        "branchless_trunc_div": z3.Implies(z3.And(base_axioms, b != z0), div_branched == div_branchless),
+        "branchless_trunc_rem": z3.Implies(z3.And(base_axioms, b != z0), rem_branched == rem_branchless),
+        "branchless_floor_div": z3.Implies(z3.And(base_axioms, b != z0), fdiv_branched == fdiv_branchless),
+        "branchless_floor_mod": z3.Implies(z3.And(base_axioms, b != z0), fmod_branched == fmod_branchless),
     }
     results: dict[str, str] = {}
     for name, thm in theorems.items():
