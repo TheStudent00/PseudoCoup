@@ -100,8 +100,8 @@ def prove_branchless_identities_z3() -> dict[str, str]:
 
     # 3. Saturating right shift: a >> ((b & 63) | (-(!(0 <= b < 64)) & 63))
     out_range = z3.If(z3.Or(b < z0, b >= z64), z1, z0)
-    shr_branched = z3.If(z3.And(b >= z0, b < z64), z3.BV2Int(z3.Ashr(a, b & z63)) if False else z3.Ashr(a, b & z63), z3.Ashr(a, z63))
-    shr_branchless = z3.Ashr(a, (b & z63) | ((z0 - out_range) & z63))
+    shr_branched = z3.If(z3.And(b >= z0, b < z64), a >> (b & z63), a >> z63)
+    shr_branchless = a >> ((b & z63) | ((z0 - out_range) & z63))
 
     # 4. Overflow-safe trunc_div & trunc_rem via divisor adjustment safe_b = b + (ovf << 1)
     ovf = z3.If(z3.And(a == min_i64, b == neg1), z1, z0)
