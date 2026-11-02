@@ -204,6 +204,23 @@ class RiscvUnitVM:
                 "sltiu": int(v1 < (imm & MASK64)),
             }[mnem]
             self.set_reg(ops[0], res)
+        elif mnem in ("czero.eqz", "czero.nez") and len(ops) >= 3:
+            v, c = self.get_reg(ops[1]), self.get_reg(ops[2])
+            zero_it = (c == 0) if mnem == "czero.eqz" else (c != 0)
+            self.set_reg(ops[0], 0 if zero_it else v)
+        elif mnem in ("div", "divw", "rem", "remw", "divu", "remu") and len(ops) >= 3:
+            a, b = self.get_reg(ops[1]), self.get_reg(ops[2])
+            sa, sb = s64(a), s64(b)
+            base_m = mnem.rstrip("w")
+            if base_m == "div":
+                res = -1 if sb == 0 else (sa if (sa == -(1 << 63) and sb == -1) else int(sa / sb))
+            elif base_m == "rem":
+                res = sa if sb == 0 else (0 if (sa == -(1 << 63) and sb == -1) else (sa - int(sa / sb) * sb))
+            elif base_m == "divu":
+                res = MASK64 if b == 0 else (a // b)
+            else:
+                res = a if b == 0 else (a % b)
+            self.set_reg(ops[0], s32(res) if mnem.endswith("w") else res)
         elif mnem in ("add", "c.add", "addw", "c.addw", "sub", "c.sub", "subw", "c.subw",
                       "mul", "mulw", "and", "c.and", "or", "c.or", "xor", "c.xor",
                       "sll", "sllw", "srl", "srlw", "sra", "sraw", "slt", "sltu") and len(ops) >= 2:
