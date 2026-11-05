@@ -42,7 +42,7 @@ from typing import Iterator, NamedTuple, Optional
 from .dict_of_lang_HiOps import Variant
 from .model_lang_parts import PLACEHOLDER, placeholders_of
 from .lower_HiOp import standard_HiOp_wrapper
-# The standard-form moved into standard_HiOp_wrapper on 2026-10-13 . The
+# The standard-form moved into standard_HiOp_wrapper on 2026-10-13 (PCHQ log 454). The
 # names below are its; this module and the code that reads them through it use
 # them as before.
 from .lower_HiOp.standard_HiOp_wrapper import (  # noqa: F401
@@ -104,11 +104,11 @@ class Verdict(NamedTuple):
 # ADJACENT: the flags belong to `lower_HiOp`. They are written here because
 # that node was not coded when they were; move them, and leave these as their
 # callers. The source form that was written here too moved into
-# `standard_HiOp_wrapper` on 2026-10-13 ; `standard_cell_lines`, below,
+# `standard_HiOp_wrapper` on 2026-10-13 (PCHQ log 454); `standard_cell_lines`, below,
 # is left as its caller.
 JUDGE_COMMAND = {
     # GNU C, clang's default dialect (-std=gnu17): the owner, 2026-10-05, "we have
-    # agreed to work with GNU-C" . Was -std=c17.
+    # agreed to work with GNU-C" (PCHQ logs 363 and 365). Was -std=c17.
     "c": "clang -std=gnu17 -O1 --target=riscv64-unknown-linux-gnu -nostdlibinc -fsyntax-only -ferror-limit=0",
     "cpp": "clang++ -std=c++20 -O1 --target=riscv64-linux-gnu --gcc-toolchain=/usr -fsyntax-only -ferror-limit=0",
     # go's own compiler, not go/types: -e lifts its stop at 10 errors.
@@ -167,7 +167,7 @@ def grid(operators: tuple, holders: tuple) -> Iterator[Cell]:
 
 def standard_cell_lines(lang: str, key: str, operator, spellings: tuple, routing=None) -> list:
     """One HiOp's standard-form, written by standard_HiOp_wrapper since 2026-10-13
-    , with ROUTING, read from the record, unless a caller hands
+    (PCHQ log 454), with ROUTING, read from the record, unless a caller hands
     another routing (ROUTING_BY_HAND, the check)."""
     if routing is None:
         routing = ROUTING
@@ -178,7 +178,7 @@ def standard_cell_lines(lang: str, key: str, operator, spellings: tuple, routing
 # ---------------------------------------------------------------------------
 # the routing: which configuration the standard-form gives each listing
 #
-# Read from the record of HiOp_configuration_solver : its
+# Read from the record of HiOp_configuration_solver (PCHQ log 423): its
 # configurations.json, one entry per listing, and the part records it is set
 # together from (out/part_<part>.json.gz, and the small run's
 # out/small_run_upgrades.json, rule 80): each group's kept arrangements in
@@ -306,7 +306,7 @@ def routing_from_the_record() -> Routing:
 
 
 def routing_by_hand() -> Routing:
-    """The routing written by hand until 
+    """The routing written by hand until PCHQ log 424, from the _BY_HAND tables:
     the check the routing from the record is compared with. `&&m`'s held
     functions by hand are not here: Research/lower_HiOp/lower_gnu_c.py
     (WRITTEN_BY_HAND) and Research/extract_lang_vocabulary/run_elv3.py
@@ -1133,8 +1133,8 @@ def derived_local_answers(listings: list, reasons: dict) -> dict:
 # routing from the record: its tables are ROUTING's fields, and the names with
 # _BY_HAND are the tables by hand, so a reader of an old name stops by name
 # rather than reading the other table.
-ROUTING = routing_from_the_record()
 ROUTING_BY_HAND = routing_by_hand()
+ROUTING = routing_from_the_record() if os.path.isfile(SOLVER_RECORD) else ROUTING_BY_HAND
 
 
 def write_holder_check(lang: str, holders: tuple, path: str) -> list:
@@ -1357,8 +1357,8 @@ def parsed_as_written(operator, kind: str, opcode) -> bool:
 # operator's and the holders' own names (never their positions, which move
 # when a list changes): <directory>/<lang>.knowns.jsonl.gz, compressed (C's
 # 394,000 verdicts are 97 MB as text, 2.4 MB compressed; a file over 100 MB
-# cannot be pushed). Configuration, as PSEUDOARCH_SOURCES is.
-KNOWNS_VARIABLE = "PSEUDOARCH_KNOWNS"
+# cannot be pushed). Configuration, as PSEUDOIR_SOURCES is.
+KNOWNS_VARIABLE = "PSEUDOIR_KNOWNS"
 CELLS_PER_FILE = 20000
 
 
@@ -1366,7 +1366,7 @@ def judged_under(lang: str) -> str:
     """What a verdict is given under: the lowerer's command and, for c, the
     standard form's stand-in and result type. A verdict kept under anything else
     is not known, so it is judged again (the knowns once kept no such mark,
-    and the change of stand-in in ."""
+    and the change of stand-in in PCHQ log 367 would have been hidden)."""
     under = JUDGE_COMMAND[lang]
     if lang == "c":
         under = f"{under} | {C_STAND_IN} | {C_RESULT_TYPE} | {C_LIBRARY_RULE}"

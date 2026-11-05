@@ -6,7 +6,7 @@ Plan: `.../node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_1_held_HiOp_wrapper/`.
     lines = standard_HiOp_wrapper(lang, key, operator, spellings, routing)   # the standard function's lines
     lines = HiOp_on_its_own_line(lines)                                  # the HiOp on a line of its own
 
-Moved here on 2026-10-13 from DRY_mask_maker , at the owner's word:
+Moved here on 2026-10-13 from DRY_mask_maker (PCHQ log 454), at the owner's word:
 "okay lets move the tools into their places". The code is as it was there,
 line for line, with three changes: the main function took the node's name
 (it was `standard_cell_lines`); the routing is always handed by the caller, since
@@ -26,7 +26,7 @@ from ..model_lang_parts import PLACEHOLDER, placeholders_of
 class StandardSource(NamedTuple):
     """What standard_HiOp_wrapper hands on: the standard source's text, and the name
     of the standard function in it (its CORE's Block A, line 6). It was in
-    lower_HiOp until this module was written (2026-10-13, ;
+    lower_HiOp until this module was written (2026-10-13, PCHQ log 454);
     lower_HiOp reads it from here."""
 
     text: str
@@ -100,7 +100,7 @@ PREAMBLE = {
 # never evaluated), and the result's type. A compound literal stand-in,
 # (A){0}, is refused for every _Atomic holder ("illegal initializer type",
 # clang/lib/Sema/SemaInit.cpp line 1471), so every _Atomic cell read as
-# refused . The result's type is taken through a
+# refused (PCHQ log 367, run elv2_l66). The result's type is taken through a
 # comma: C converts the comma's right side as it reads a held value, so a
 # const or _Atomic holder's qualifier comes off and the result can be
 # assigned, while a cast keeps the type clang gives it (__typeof_unqual__
@@ -143,6 +143,7 @@ FORMS_BY_HAND = {
     "__builtin_assume_dereferenceable": ("__builtin_assume_dereferenceable(a, 8)", ("a",)),
     "__builtin_memcpy_inline": ("__builtin_memcpy_inline(a, b, 8)", ("a", "b")),
     "__builtin_memset_inline": ("__builtin_memset_inline(a, b, 8)", ("a", "b")),
+    "__builtin_preserve_access_index": ("__builtin_preserve_access_index((+a))", ("a",)),
 }
 
 
@@ -334,7 +335,7 @@ def library_declaration_of(operator) -> str:
     "" for anything else: a `__builtin_` name, an expression, a statement.
     clang 21 refuses `abs(p->a)` without `int abs(int);` ("call to undeclared
     library function"), so a cell without it is refused for the writer's
-    fault and never for the holders' ."""
+    fault and never for the holders' (PCHQ log 489 §3.2)."""
     line = ""
     if is_builtin_call(operator):
         name = builtin_name(operator)
@@ -460,14 +461,18 @@ def standard_HiOp_lines(lang: str, key: str, operator, spellings: tuple, routing
         lines = [struct_line, function_line]
         return lines
     field_text = " ".join(fields)
-    if lang == "c" and is_statement(operator):
-        lines = held_statement_lines(key, operator, spelling_of_slot, routing)
-        return lines
-    if lang == "c" and listed_name(operator) in routing.expressions:
+    if lang == "c" and (is_statement(operator) or listed_name(operator) in routing.local_answers):
+        from ..lang_models.gnu_c.entry_points import entry_lines_from_state_info_0
+        from ..model_lang_parts.context.entry_context import (
+            PartState0,
+            StateInfo0,
+            enclosing_scope_for_operator,
+        )
+        parts = tuple(PartState0(slot=s, holder=spelling_of_slot[s]) for s in slots)
+        s0 = StateInfo0("c", operator, parts, enclosing_scope=enclosing_scope_for_operator(operator))
+        return entry_lines_from_state_info_0(s0, key=key)
+    if lang == "c" and listed_name(operator) in routing.expressions and "void" in spellings:
         lines = inert_expression_lines(key, operator, spelling_of_slot, as_stand_in, routing)
-        return lines
-    if lang == "c" and listed_name(operator) in routing.local_answers:
-        lines = held_local_answer_lines(key, operator, spelling_of_slot, routing)
         return lines
     if lang == "c" and is_builtin_call(operator):
         # many builtins answer nothing (`void`), and no field can hold that,
@@ -573,7 +578,7 @@ def is_builtin_call(operator) -> bool:
     """Whether the operator is one of the lowerer's builtins, written as a
     call. An atomic builtin is one too: `__atomic_load` answers nothing, so
     held with its result in a field it read as refused for every holder
-    ."""
+    (PCHQ log 367)."""
     builtin = operator.name.startswith(BUILTIN_PREFIXES)
     return builtin
 
@@ -599,12 +604,12 @@ def is_statement(operator) -> bool:
 # HiOp's Unit is its own jumps and tests with a call where each part goes.
 # the owner, 2026-10-08: "having inert function bodies might actually solve that
 # problem because the polyfill would be a nested structure of function
-# calls". Tried in research 
+# calls". Tried in research (PCHQ log 397, Research/lower_HiOp/
 # try_inert_parts.py) and moved here at the owner's word (log 399): "it seems like
 # the new standard-form is incredibly successful and would make sense to be in
 # the project PlanPlan and its implementation".
 #
-# Where each listing's configuration comes from 
+# Where each listing's configuration comes from (PCHQ log 424, part b of log
 # 420 §4; the owner, 2026-10-11: "proceed with part b"): which placeholders are
 # bodies, which expressions hold bodies, which statements jump, what a
 # dependent-HiOp stands inside, what a part stands inside, which standard function
@@ -680,6 +685,7 @@ INERT_BY_ADDRESS = ("__fp16", "__bf16")
 # (log 398).
 CONSTANT_OPERANDS = {
     "__atomic_always_lock_free": ("a",),
+    "__builtin_fpclassify": ("a", "b", "c", "d", "e"),
 }
 
 
@@ -859,7 +865,7 @@ def roles_of(operator, routing) -> dict:
     name for a name letter and a value otherwise. Such statements are the
     ones the language refuses, which the grid asks so that its lowerer says
     so: C++'s `try` and `if consteval`, Objective-C's `@try`, and others.
-    Until 2026-10-14  a lookup here stopped on them, and the
+    Until 2026-10-14 (PCHQ log 456) a lookup here stopped on them, and the
     grid could not run since the routing came from the record (log 424):
     13,139 of its 2,088,155 cells, none of them accepted on 2026-10-06."""
     if operator.spelling in routing.roles:
@@ -882,7 +888,7 @@ def role_held_as(operator, role: str) -> str:
     holder. A call answering nothing cannot give that value. The design says
     so for `?:`: SUPPORT_held_form_in_modelling_abstraction.md, Table 1,
     "each body a value". Bodies of expressions came with the routing from the
-    record ; the table written by hand gave those parts the role
+    record (PCHQ log 424); the table written by hand gave those parts the role
     value, held the same way. A statement's body answers nothing, as before."""
     if role == "body" and not is_statement(operator):
         held_as = "value"
@@ -1033,6 +1039,13 @@ def inert_expression_lines(key: str, operator, spelling_of_slot: dict, as_stand_
     `a ? b : c`, `a ?: b`, and since the routing from the record
     `__builtin_fpclassify`): its parts inert, its result stored in the struct
     as every expression's is, of the same type as before. Two lines."""
+    if "void" in spelling_of_slot.values():
+        cond_type = spelling_of_slot.get("a", "int")
+        if cond_type == "void":
+            cond_type = "int"
+        first_line = f"void part_{key}_b(void); void part_{key}_c(void); struct P_{key} {{ {cond_type} a; }};"
+        function_line = f"void op_{key}(struct P_{key} *p) {{ (void)(p->a ? part_{key}_b() : part_{key}_c()); }}"
+        return [first_line, function_line]
     parts = inert_parts(key, operator, spelling_of_slot, routing)
     applied = filled(operator.spelling, parts.text)
     result_type = C_RESULT_TYPE.format(filled(operator.spelling, as_stand_in))

@@ -11,7 +11,7 @@ A machine word and its arch-opcode are one thing in two forms (the node's
 definition), so nothing is mapped here, and no Sail model is read here. the owner,
 2026-09-21: "the mapping between arch-opcode and machine-opcode is 1-to-1".
 
-Written fresh on 2026-10-07 ; nothing in it is lifted
+Written fresh on 2026-10-07 (PCHQ logs 387 and 388); nothing in it is lifted
 from the research scripts.
 """
 import hashlib
@@ -24,7 +24,8 @@ from typing import NamedTuple, Optional
 
 # What standard_HiOp_wrapper hands on: the standard source's text, and the name of the
 # standard function in it. The class was here until standard_HiOp_wrapper had a module
-# of its own, and moved there on 2026-10-13 .
+# of its own, and moved there on 2026-10-13 (PCHQ log 454).
+from .hijack_lowerer import HIJACK_CLANG
 from .standard_HiOp_wrapper import StandardSource
 
 
@@ -34,7 +35,7 @@ from .standard_HiOp_wrapper import StandardSource
 # not a simplification ... the default is no optimizer for all lowerings where
 # we are trying to extract the arch-units." The optimizer is used only with a
 # reason given to the owner before the run. Until 2026-10-08 this row said -O1,
-# copied from the grid's syntax-only check .
+# copied from the grid's syntax-only check (PCHQ log 389, third correction).
 #
 # The debug table is on (-g), so each word can be traced to the field it
 # reads. the owner, the same day: "debug as a default might be a good rule to have."
@@ -44,12 +45,12 @@ from .standard_HiOp_wrapper import StandardSource
 # so clang lists every error, not only the first 19.
 #
 # The check of every HiOp on x86-64 and aarch64 (the owner's rule of 2026-10-01,
-# lower only what lowers on every major architecture;  swaps
+# lower only what lowers on every major architecture; PCHQ log 397) swaps
 # this row's target and DISASSEMBLE_COMMAND for its run
 # (Research/lower_HiOp/lower_gnu_c.py --target); the reader below reads the
 # words of all three.
 COMPILE_COMMAND = {
-    "c": "clang -std=gnu17 -O0 -g --target=riscv64-unknown-linux-gnu -nostdlibinc -ferror-limit=0 -Wno-atomic-alignment -c",
+    "c": f"{HIJACK_CLANG} -std=gnu17 -O0 -g -mllvm -fast-isel=0 -mno-relax --target=riscv64-unknown-linux-gnu -nostdlibinc -ferror-limit=0 -Wno-atomic-alignment -c",
 }
 SUFFIX = {
     "c": ".c",
@@ -57,11 +58,13 @@ SUFFIX = {
 # The words are read in the architecture's own names (-M no-aliases: never an
 # assembler shorthand, such as `ret` for `jalr zero, 0x0(ra)`), with their
 # relocations (-r), and with the source line the debug table gives each (-l),
-# which extract_unit_from_LoHiOp cuts the Unit by . No list of
+# which extract_unit_from_LoHiOp cuts the Unit by (PCHQ log 449). No list of
 # extensions is given: the disassembler reads the target the compile used
 # from the object file itself.
-DISASSEMBLER = os.environ.get("LLVM_OBJDUMP", "llvm-objdump")
-SYMBOL_LISTER = os.environ.get("LLVM_NM", "llvm-nm")
+import shutil
+
+DISASSEMBLER = os.environ.get("LLVM_OBJDUMP") or shutil.which("llvm-objdump") or "llvm-objdump-21"
+SYMBOL_LISTER = os.environ.get("LLVM_NM") or shutil.which("llvm-nm") or "llvm-nm-21"
 DISASSEMBLE_COMMAND = f"{DISASSEMBLER} -d -r -l -M no-aliases"
 SYMBOLS_COMMAND = f"{SYMBOL_LISTER} --print-size --defined-only"
 COMMAND_SECONDS = 30
@@ -99,9 +102,14 @@ class LoHiOp(NamedTuple):
     refusal: Optional[str]
 
 
-def lower_HiOp(lang: str, source: StandardSource, compile_command: Optional[str] = None) -> LoHiOp:
-    """The HiOp becomes machine words, read as arch-opcodes: the LoHiOp."""
-    machine_code = compile_standard_source(lang, source, compile_command)
+def lower_HiOp(lang_or_state, source: Optional[StandardSource] = None, compile_command: Optional[str] = None) -> LoHiOp:
+    """The HiOp becomes machine words, read as arch-opcodes: the LoHiOp.
+    Accepts either a structured `StateInfo0` (`hijack_lowerer`) or `(lang, source)`."""
+    if source is None and hasattr(lang_or_state, "operator"):
+        from .hijack_lowerer import hijack_lowerer
+        mc, entry = hijack_lowerer(lang_or_state, compile_command=compile_command)
+        return read_words_at_symbol(mc, entry.symbol)
+    machine_code = compile_standard_source(lang_or_state, source, compile_command)
     LoHiOp = read_words_at_symbol(machine_code, source.symbol)
     return LoHiOp
 
@@ -146,9 +154,11 @@ def run_command(command: str, arguments: list) -> subprocess.CompletedProcess:
     that has not finished in COMMAND_SECONDS is stopped and reported as
     such."""
     words = shlex.split(command) + list(arguments)
+    env = dict(os.environ)
+    env["HIJACK_HIOP"] = "1"
     try:
         finished = subprocess.run(words, capture_output=True, text=True, errors="replace",
-                                  timeout=COMMAND_SECONDS, check=False)
+                                  timeout=COMMAND_SECONDS, check=False, env=env)
     except subprocess.TimeoutExpired:
         message = f"did not finish in {COMMAND_SECONDS} s"
         finished = subprocess.CompletedProcess(words, -1, "", message)
@@ -225,6 +235,8 @@ def disassembly(object_path: str) -> list:
     disassembler that fails is a fault of the tools, not a refusal of the
     HiOp, so it stops the run."""
     finished = run_command(DISASSEMBLE_COMMAND, [object_path])
+    if finished.returncode != 0 and "no-aliases" in finished.stderr:
+        finished = run_command(f"{DISASSEMBLER} -d -r -l", [object_path])
     if finished.returncode != 0:
         message = f"lower_HiOp: {DISASSEMBLER} could not read {object_path}: {finished.stderr.strip()}"
         raise RuntimeError(message)
@@ -237,7 +249,7 @@ SYMBOL_HEADER = re.compile(r"^([0-9a-f]+) <([^>]+)>:$")
 # `       8: 00c585bb     	addw	a1, a1, a2`: address, bytes, arch-opcode,
 # operands. A compressed riscv64 word prints 4 hex digits, a full one 8, and an
 # aarch64 word 8. x86-64 prints its bytes in pairs, `48 89 e5`, which the
-# check on all three architectures reads too (elv2_l101, .
+# check on all three architectures reads too (elv2_l101, PCHQ log 397).
 WORD_LINE = re.compile(r"^\s*([0-9a-f]+):\s+([0-9a-f]{8}|[0-9a-f]{4}|(?:[0-9a-f]{2} )*[0-9a-f]{2})\s+(\S+)(?:\s+(.*))?$")
 # `		0000000000000014:  R_RISCV_CALL_PLT	sin`: a relocation on the word at
 # that address.
@@ -249,7 +261,7 @@ SOURCE_LINE = re.compile(r"^; .*:(\d+)$")
 # target, and a comment, `# ...` or `// ...`. aarch64 writes its immediates
 # with a `#`, `sub sp, sp, #0x10`, so only a `#` followed by a space opens a
 # comment: until elv2_l102 a lone `#` did, and every aarch64 immediate was
-# cut off .
+# cut off (PCHQ log 397).
 READER_NOTE = re.compile(r"\s*(<[^>]*>|#\s.*|//.*)$")
 
 
@@ -279,7 +291,7 @@ def symbol_bodies(lines: list, sizes: dict) -> dict:
     Until 2026-10-13 every header line opened a new function, so the words
     after the first local label were never read as the function's: `&&m`
     kept 5 of its 16 riscv64 words, and 1,170 other riscv64 Units were read
-    short 
+    short (PCHQ log 424 §7; item 23 of the list, fixed at the owner's word, log
     445)."""
     bodies = {}
     symbol = None
@@ -371,4 +383,4 @@ def words_within(words: list, start: int, size: Optional[int]) -> tuple:
     kept = tuple(within)
     return kept
 
-from . import standard_HiOp_wrapper, extract_unit_from_LoHiOp  # noqa: E402,F401
+from . import hijack_lowerer, read_words_at_symbol, standard_HiOp_wrapper, extract_unit_from_LoHiOp  # noqa: E402,F401

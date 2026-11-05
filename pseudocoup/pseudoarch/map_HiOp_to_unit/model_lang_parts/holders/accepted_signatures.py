@@ -31,7 +31,7 @@ decides; a condition the walk left unread is not in the rules at all
 (checking_reader's `unread`).
 
 The evaluator is compose's (`Research/extract_lang_vocabulary/complex_signature_reader/compose.py`,
-, with the kinds of type C holds that compose's domain did not
+PCHQ log 325), with the kinds of type C holds that compose's domain did not
 (enums, _BitInt, structs, unions, complex numbers, arrays, functions), with
 each argument also seen as C passes it (an array as a pointer to its first
 element, an _Atomic as its value), and with each holder's facts read from
@@ -141,7 +141,7 @@ def holder_facts(spellings: list, directory: str, preamble: tuple = ()) -> dict:
     and its sign; `preamble`, the declarations a spelling outside the
     grid's preamble needs (the trace loop's `ev4sf`). A spelling clang
     cannot declare has no facts (None): clang's recovery gave it int's
-    (2026-10-23, run riscv64-runner_l13: `ev4sf` and `wchar_t`)."""
+    (2026-10-23, run tlp1_l13: `ev4sf` and `wchar_t`)."""
     kinds = builtin_kinds()
     nodes = {}
     sizes = {}
@@ -170,7 +170,7 @@ def holder_facts(spellings: list, directory: str, preamble: tuple = ()) -> dict:
 
 def holder_facts_kept(spellings: list, directory: str, path: str, preamble: tuple = ()) -> dict:
     """holder_facts, read from `path` when every spelling is there, else
-    asked of clang once and written to `path` 
+    asked of clang once and written to `path` (PCHQ log 503 §2, Table 1: the
     facts loaded without clang on every import)."""
     if os.path.exists(path):
         facts = facts_read(path)
@@ -513,7 +513,7 @@ def llvm_type_answers(t) -> dict:
     becomes `ptr`; an integer, a bool, an enum and a _BitInt an integer type;
     a floating type a floating-point type; a GNU or ext vector a vector type;
     a struct, a union, an array and a complex number an aggregate (a complex
-    number is `{ T, T }`). 
+    number is `{ T, T }`). PCHQ log 503 §2, Table 1."""
     integer = t.kind in INTEGER_KINDS
     floating = t.kind == "floating"
     vector = t.kind in VECTOR_KINDS

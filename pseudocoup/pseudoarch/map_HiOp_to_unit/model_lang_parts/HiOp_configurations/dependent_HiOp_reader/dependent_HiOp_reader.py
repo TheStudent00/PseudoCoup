@@ -10,10 +10,10 @@ it in the function: `break;` must stand inside a loop or a switch, and
 dependent-HiOp may stand inside are its depended-HiOps; this file calls them
 its places. The lowerer is the compiler that lowers GNU C: clang.
 
-Plan: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
+Plan: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoir/
 node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/
 node_0_0_0_0_2_4_2_dependent_HiOp_reader/ (a draft for the owner to build on; a
-research node until 2026-10-11, . The functions below carry the
+research node until 2026-10-11, PCHQ log 422). The functions below carry the
 plan's names. Its runs and records: Research/extract_lang_vocabulary/
 dependent_HiOp_reader/ (lanes_elv2/, out/).
 
@@ -60,7 +60,7 @@ Parser.cpp). For `goto *a;`, the jump checker walks the function's body
 (JumpDiagnostics.cpp). Each step is read from the code, and every answer
 carries its file and line.
 
-What it reads, from clang 21.1.8 under $PSEUDOARCH_SOURCES/llvm-project-21.1.8:
+What it reads, from clang 21.1.8 under $PSEUDOIR_SOURCES/llvm-project-21.1.8:
 
     clang/include/clang/Basic/StmtNodes.td            clang's own list of kinds
     clang/lib/Sema/SemaStmt.cpp                       the checking functions; the Sema calls that build a statement
@@ -97,7 +97,7 @@ operator_reader's cpp_code.
 
     python3 dependent_HiOp_reader.py     writes out/places.json (steps 1 and 2) and out/bodies.json (step 3),
                                          out/ being Research/extract_lang_vocabulary/dependent_HiOp_reader/out;
-                                         PSEUDOARCH_SOURCES names the sources folder
+                                         PSEUDOIR_SOURCES names the sources folder
 
 The reading rules, each small and stated:
 
@@ -363,7 +363,7 @@ import sys
 from typing import NamedTuple
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# Projects/PseudoArch/map_HiOp_to_unit/extract_lang_vocab/dependent_HiOp_reader: four folders down from Projects.
+# Projects/PseudoIR/map_HiOp_to_unit/extract_lang_vocab/dependent_HiOp_reader: four folders down from Projects.
 PROJECTS = os.path.normpath(os.path.join(HERE, "..", "..", "..", "..", ".."))
 PCHQ = os.path.dirname(PROJECTS)
 # The vocabulary's research folder: the listings it reads, and this reader's runs and records.
@@ -372,13 +372,13 @@ OUT = os.path.join(RESEARCH, "dependent_HiOp_reader", "out")
 if PROJECTS not in sys.path:
     sys.path.insert(0, PROJECTS)
 
-from PseudoArch.map_HiOp_to_unit.model_lang_parts import declaring_file_path, placeholders_of  # noqa: E402
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import spelling_of  # noqa: E402
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import clang as clang_reader  # noqa: E402
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import cpp_code  # noqa: E402
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import ways as operator_walk  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts import declaring_file_path, placeholders_of  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import spelling_of  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import clang as clang_reader  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import cpp_code  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import ways as operator_walk  # noqa: E402
 
-# clang's source: a folder under the one $PSEUDOARCH_SOURCES names.
+# clang's source: a folder under the one $PSEUDOIR_SOURCES names.
 CHECKOUT = "llvm-project-21.1.8"
 # clang's own list of the kinds of statement and expression.
 STMT_NODES = clang_reader.STMT_NODES
@@ -6170,7 +6170,7 @@ def with_what_bodies_read(bodies: dict, branching: list, checkout: str) -> dict:
     recorded = {
         "what": "which parts of each GNU C listing are bodies, read from clang's control-flow builder (CFG.cpp)"
                 " and its write-back code (StmtPrinter.cpp) (dependent_HiOp_reader, step 3: rules 12 to 20)",
-        "clang_source": os.path.join(os.environ.get("PSEUDOARCH_SOURCES", ""), checkout),
+        "clang_source": os.path.join(os.environ.get("PSEUDOIR_SOURCES", ""), checkout),
         "clang_files_read": body_file_hashes(checkout),
         "listings": listing_hashes(),
         "the_eight": the_eight(bodies),
@@ -7281,7 +7281,7 @@ def with_what_was_read(places: dict, checkout: str, listings_path: str, label_ad
     recorded = {
         "what": "where each dependent-HiOp of GNU C may stand and what it needs, read from clang's source"
                 " (dependent_HiOp_reader, steps 1 and 2)",
-        "clang_source": os.path.join(os.environ.get("PSEUDOARCH_SOURCES", ""), checkout),
+        "clang_source": os.path.join(os.environ.get("PSEUDOIR_SOURCES", ""), checkout),
         "clang_files_read": file_hashes(checkout),
         "listings": listings_path,
         "listings_sha256": sha256_of(listings_path),

@@ -19,7 +19,7 @@ import tree_sitter_java
 HERE = Path(__file__).resolve().parent
 PCHQ = HERE.parents[4]
 sys.path.insert(0, str(PCHQ / "Projects"))
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps import branch_trees  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps import branch_trees  # noqa: E402
 
 JDK_SRC = Path("sources/jdk-25.0.4")
 VOCAB_PATH = PCHQ / "Research" / "extract_lang_vocabulary" / "vocabulary" / "java.json"

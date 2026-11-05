@@ -1,7 +1,7 @@
 """check_bodies_against_clang -- dependent_HiOp_reader's step 3 answer
 (out/bodies.json) checked against clang's own dump of its control-flow
 builder, on the tower, and against two hand tables. Plan node
-Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
+Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoir/
 node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/
 node_0_0_0_0_2_4_2_dependent_HiOp_reader, section 3.1
 ("Its checks"). out/ is the reader's: Research/extract_lang_vocabulary/dependent_HiOp_reader/out.
@@ -90,14 +90,14 @@ runs each part, and compares.
    the reader says) against the reader's body.
 
 7. The hand tables, part by part:
-   - INERT_PART_ROLES (Projects/PseudoArch/map_HiOp_to_unit/DRY_mask_maker.py,
-     kept there as INERT_PART_ROLES_BY_HAND since 
+   - INERT_PART_ROLES (Projects/PseudoIR/map_HiOp_to_unit/DRY_mask_maker.py,
+     kept there as INERT_PART_ROLES_BY_HAND since PCHQ log 424, when the
      standard-form began to take its routing from HiOp_configuration_solver's record):
      for a statement, its "body" parts are its bodies, every other role not;
      for the 4 expressions its "value" marks a holder that matters, not "not
      a body", so they are set against the next table instead;
    - the by-hand abstract structure of the 8 listings (BY_HAND, typed here
-     from : their bodies.
+     from PCHQ log 416, the owner's notation): their bodies.
 
 Writes out/bodies_check.json (each program, its dump, the parts compared) and
 out/bodies_check_summary.txt (the counts with their wholes, every
@@ -114,7 +114,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import dependent_HiOp_reader as reader  # noqa: E402
 import check_against_clang as first_check  # noqa: E402
-from PseudoArch.map_HiOp_to_unit import mask_maker as DRY_mask_maker  # noqa: E402
+from PseudoIR.map_HiOp_to_unit import mask_maker as DRY_mask_maker  # noqa: E402
 
 BODIES = os.path.join(reader.OUT, "bodies.json")
 CHECKED = os.path.join(reader.OUT, "bodies_check.json")
@@ -181,7 +181,7 @@ EXTRA_PROGRAMS = (
 )
 
 # The by-hand abstract structure of the 8 listings, in the owner's notation, and
-# their bodies .
+# their bodies (PCHQ log 416; the task of 2026-10-10).
 BY_HAND = {
     "a && b": ("HiOp[0](a): b", ["b"]),
     "a || b": ("HiOp[0](a): b", ["b"]),

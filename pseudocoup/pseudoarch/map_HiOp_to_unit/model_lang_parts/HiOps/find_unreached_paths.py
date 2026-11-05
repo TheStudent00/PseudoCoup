@@ -40,7 +40,7 @@ import time
 HERE = os.path.dirname(os.path.abspath(__file__))
 NODE = os.path.normpath(os.path.join(HERE, "..", "..", "Planning", "node_0_1_research",
                                      "node_0_1_5_trace_logical_paths_clone"))
-RUN_L14_KEYS = os.path.join(HERE, "riscv64-runner_l14_the_trees_on_every_operator_with_branches_left", "keys_all.txt")
+RUN_L14_KEYS = os.path.join(HERE, "tlp1_l14_the_trees_on_every_operator_with_branches_left", "keys_all.txt")
 LEFT = ("open", "not reached (not read yet)", "not reached (candidates traced)")
 MOST_EXAMPLES = 3
 STATE = {"started": time.time()}
@@ -91,7 +91,7 @@ def main() -> None:
     naming = naming_tests(data, bt, page, trees, named)
     left, operators_of_side = left_branches(clangs_code, keyed, gnu_c)
     in_l14 = run_l14_keys(clangs_code, keyed)
-    say(f"[run riscv64-runner_l14] {len(in_l14)} HiOps in its key list")
+    say(f"[run tlp1_l14] {len(in_l14)} HiOps in its key list")
     rows = rows_of(data, accepted, named, naming, left, operators_of_side, in_l14)
     summary = summary_of(rows)
     add_distinct_left(summary, rows, left)
@@ -331,7 +331,7 @@ def not_reached_kind(side: dict, problems) -> str:
 
 
 def run_l14_keys(clangs_code, keyed: dict) -> set:
-    """The HiOps run riscv64-runner_l14 works through: its key list's lines are a key,
+    """The HiOps run tlp1_l14 works through: its key list's lines are a key,
     a tab and the key's branches not reached; lines starting with # are its
     header."""
     found = set()
@@ -342,7 +342,7 @@ def run_l14_keys(clangs_code, keyed: dict) -> set:
             if not line.strip() or line.startswith("#"):
                 continue
             key = line.split("\t")[0].strip()
-            found.add(clangs_code.vocabulary_key(key, None, "riscv64-runner_l14", keyed) or key)
+            found.add(clangs_code.vocabulary_key(key, None, "tlp1_l14", keyed) or key)
     return found
 
 
@@ -363,7 +363,7 @@ def row_of(hiop: dict, accepted: dict, named: dict, naming: dict, left: dict, op
     counts = accepted.get(key, {"accepted": 0, "paths": 0})
     sides = left.get(key)
     row = {"key": key, "depth": hiop["depth"], "paths": counts["paths"], "accepted": counts["accepted"],
-           "state": state_of(hiop, counts, sides), "in_run_riscv64-runner_l14": key in in_l14,
+           "state": state_of(hiop, counts, sides), "in_run_tlp1_l14": key in in_l14,
            "left": 0, "left_in_named_code": 0, "left_elsewhere": 0, "left_for_it_alone": 0,
            "left_for_two_or_more": 0, "tests_naming_it_elsewhere": len(naming.get(key, [])),
            "examples": naming.get(key, [])[:MOST_EXAMPLES]}
@@ -412,18 +412,18 @@ def group_of(row: dict) -> str:
 def summary_of(rows: list) -> dict:
     found = {}
     for row in rows:
-        sums = found.setdefault(group_of(row), {"HiOps": 0, "by state": {}, "in run riscv64-runner_l14": 0,
-                                                "branches left in run riscv64-runner_l14": 0, "left": 0,
+        sums = found.setdefault(group_of(row), {"HiOps": 0, "by state": {}, "in run tlp1_l14": 0,
+                                                "branches left in run tlp1_l14": 0, "left": 0,
                                                 "left in named code": 0, "left elsewhere": 0,
                                                 "left for it alone": 0, "left for two or more": 0,
                                                 "HiOps with a branch left for it alone": 0,
                                                 "HiOps named by a test elsewhere": 0})
         sums["HiOps"] += 1
         sums["by state"][row["state"]] = sums["by state"].get(row["state"], 0) + 1
-        if row["in_run_riscv64-runner_l14"]:
-            sums["in run riscv64-runner_l14"] += 1
+        if row["in_run_tlp1_l14"]:
+            sums["in run tlp1_l14"] += 1
             if row["state"] == "branches left":
-                sums["branches left in run riscv64-runner_l14"] += 1
+                sums["branches left in run tlp1_l14"] += 1
         sums["left"] += row["left"]
         sums["left in named code"] += row["left_in_named_code"]
         sums["left elsewhere"] += row["left_elsewhere"]

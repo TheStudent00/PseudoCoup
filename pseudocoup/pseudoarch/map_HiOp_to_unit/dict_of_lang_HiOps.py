@@ -13,7 +13,7 @@ lowerer's own verdicts. One JSON line per HiOp, compressed:
     {"lang": "c", "operator": "BinaryOperator.Add", "template": "a + b", "operands": ["a", "b"],
      "source": "...", "holders": [["Int", "int", "..."], ["Int", "int", "..."]], "evidence": "..."}
 
-Written 2026-10-14 , at the owner's word "lets do it", with
+Written 2026-10-14 (PCHQ log 456), at the owner's word "lets do it", with
 `extract()`. Until then a language's HiOps were read straight from the
 research grid's verdicts
 (`Research/extract_lang_vocabulary/mask/gnu17/c.knowns.jsonl.gz`).
@@ -32,7 +32,7 @@ class Variant(NamedTuple):
     one, and None when it does not. `evidence` names how the cell became
     known, so any count built on this record is attributable.
 
-    Moved here from extract_lang_vocab on 2026-10-14 , as the
+    Moved here from extract_lang_vocab on 2026-10-14 (PCHQ log 456), as the
     note on it there said it would be once this node was coded; the dict is
     what every reader of a language's HiOps reads. extract_lang_vocab keeps
     the name.

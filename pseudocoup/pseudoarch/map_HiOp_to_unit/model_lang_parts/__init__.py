@@ -22,7 +22,7 @@ from ..dict_of_lang_HiOps import Variant
 
 # Where the upstream checkouts live is configuration: this variable names
 # the directory holding them, one sub-directory per checkout.
-SOURCES_VARIABLE = "PSEUDOARCH_SOURCES"
+SOURCES_VARIABLE = "PSEUDOIR_SOURCES"
 
 
 class Declaration(NamedTuple):
@@ -60,7 +60,7 @@ def declaring_file_path(checkout: str, relative: str) -> str:
 # never have to be bothered by these again." This project keeps them; the
 # variable names another place (the checkouts' own directory, to read the
 # files as written).
-PREPROCESSED_VARIABLE = "PSEUDOARCH_PREPROCESSED"
+PREPROCESSED_VARIABLE = "PSEUDOIR_PREPROCESSED"
 HERE = os.path.dirname(os.path.abspath(__file__))
 PREPROCESSED_DEFAULT = os.path.normpath(
     os.path.join(HERE, "..", "..", "..", "..", "Research", "extract_lang_vocabulary", "made_by_clang", "preprocessed")
@@ -173,7 +173,7 @@ class Extracted(NamedTuple):
 
 # Each language's own module of steps for `extract()`.
 LOWERERS = {
-    "c": "PseudoArch.map_HiOp_to_unit.lang_models.gnu_c.clang",
+    "c": "PseudoIR.map_HiOp_to_unit.lang_models.gnu_c.clang",
 }
 
 
@@ -302,6 +302,6 @@ def identity_of(operator: Operator, held: tuple) -> tuple:
     return identity
 
 
-from . import HiOps, holders, infra, context, HiOp_complexities, HiOp_configurations  # noqa: E402,F401
+from . import holders, HiOps, infra, context, HiOp_complexities, HiOp_configurations  # noqa: E402,F401
 from .HiOps import operator_reader  # noqa: E402,F401
 from .holders import holder_reader  # noqa: E402,F401

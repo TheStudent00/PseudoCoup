@@ -185,12 +185,12 @@ REPLACED_CALLS = ("BI__builtin_shufflevector",)
 
 # clang's own list-writer, the program clang's build runs to make its builtin
 # lists. Configuration: found on PATH by default.
-CLANG_TABLEGEN_VARIABLE = "PSEUDOARCH_CLANG_TABLEGEN"
+CLANG_TABLEGEN_VARIABLE = "PSEUDOIR_CLANG_TABLEGEN"
 DEFAULT_CLANG_TABLEGEN = "clang-tblgen"
 
 # The clang that answers how many operands a builtin takes when no list says.
 # Configuration: found on PATH by default.
-COMPILER_VARIABLE = "PSEUDOARCH_CLANG"
+COMPILER_VARIABLE = "PSEUDOIR_CLANG"
 DEFAULT_COMPILER = "clang"
 ASK_TARGET = "riscv64-unknown-linux-gnu"
 ASK_LANGUAGES = (("c", "c17"), ("c++", "c++20"))

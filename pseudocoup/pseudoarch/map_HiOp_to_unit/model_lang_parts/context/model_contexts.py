@@ -1,6 +1,6 @@
 """model_contexts -- a context's model: the lowerer's logic for a place,
 modelled once and applied the same way to every HiOp. Today it holds the
-bit-field place, learned by automation on riscv64 .
+bit-field place, learned by automation on riscv64 (PCHQ log 479).
 
 Plan: `.../node_0_0_0_0_2_8_model_HiOps/node_0_0_0_0_2_8_1_model_contexts/`
 (made 2026-10-15).

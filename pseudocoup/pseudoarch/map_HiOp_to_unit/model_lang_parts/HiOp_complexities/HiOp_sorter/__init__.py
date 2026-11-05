@@ -40,7 +40,7 @@ hands `EmitMul` to `EmitCompoundAssign`.
                 simple_HiOps.append(op)                    # 4  lowers directly
         return complex_HiOps, simple_HiOps
 
-AN EXCEPTION TO THE DESIGN, ARGUED FOR DEE : the design reads
+AN EXCEPTION TO THE DESIGN, ARGUED FOR THE OWNER (PCHQ log 367): the design reads
 each definition with tree-sitter. clang writes many of its definitions with
 macros (`VisitBinMulAssign` comes from `HANDLEBINOP`), and tree-sitter does
 not expand them, the design's own open item. So the definition is read from

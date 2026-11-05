@@ -1,12 +1,12 @@
 """HiOp_configuration_solver -- the owner's method for finding each listing's
 configuration by trying arrangements of its components on the lowerer, not by
-reading the lowerer's code. Built as configuration_brute_force 
+reading the lowerer's code. Built as configuration_brute_force (PCHQ logs 417
 to 421); named dependent_HiOp_solver by the owner on 2026-10-11 ("dependent_HiOp_solver?",
-; renamed HiOp_configuration_solver the same day, at the owner's choice of
-the name Claude proposed in .
+PCHQ log 422); renamed HiOp_configuration_solver the same day, at the owner's choice of
+the name Claude proposed in PCHQ log 422 ("thats good, i like it", PCHQ log 423).
 
 Plan: `.../node_0_0_0_0_2_4_extract_lang_vocab/node_0_0_0_0_2_4_3_HiOp_configuration_solver/`
-(a research node until 2026-10-11, .
+(a research node until 2026-10-11, PCHQ log 422).
 
     HiOp_configuration_solver.py      the method, its rules in its docstring; run one part at a time
 

@@ -1,17 +1,17 @@
 """HiOp_configuration_solver -- the owner's method for finding each listing's
 configuration by trying arrangements of its components on the lowerer, not
-by reading the lowerer's code. Steps 1 to 4, the upgrades of 
+by reading the lowerer's code. Steps 1 to 4, the upgrades of PCHQ log 421
 Table 4 (rules 63 to 74), the fixes after the first small run (rules 75 to
-80), and what the wide run adds (rules 81 to 85). Built as configuration_brute_force ; named
+80), and what the wide run adds (rules 81 to 85). Built as configuration_brute_force (PCHQ logs 417 to 419); named
 dependent_HiOp_solver by the owner and moved into extract_lang_vocab on 2026-10-11
-; renamed HiOp_configuration_solver the same day, at the owner's
-choice of the name Claude proposed in .
+(PCHQ log 422); renamed HiOp_configuration_solver the same day, at the owner's
+choice of the name Claude proposed in PCHQ log 422 (PCHQ log 423).
 
-Plan node: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
+Plan node: Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoir/
 node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/
 node_0_0_0_0_2_4_3_HiOp_configuration_solver (Block A in section 2, the steps in
 section 3, what steps 2 to 4 add in section 3.1, the checks in section 4).
-The method in full: 
+The method in full: PCHQ log 417, sections 1 to 3. Step 1: PCHQ log 418, run
 elv2_l122. Its runs and records: Research/extract_lang_vocabulary/
 HiOp_configuration_solver/ (lanes_elv2/, and out/, where every record is written).
 
@@ -55,19 +55,19 @@ signal 2 (line 5), typed inert calls, the listings that are expressions,
 trimming (step 3), and every listing in groups chosen by rule (step 4). Rules 1
 to 27 are step 1's; where steps 2 to 4 change one, it says so and names the
 rule that does. Rules 28 to 62 are steps 2 to 4's. Rules 63 to 74 are the
-upgrades of , each naming the
+upgrades of PCHQ log 421 Table 4 (2026-10-11, PCHQ log 422), each naming the
 row it carries; where one changes an earlier rule, that rule names it. Rules 75
-to 80 are the fixes after the first small run (elv2_l132, , each
+to 80 are the fixes after the first small run (elv2_l132, PCHQ log 422), each
 naming the rule it changes, and that rule names it. Rules 81 to 85 come with
-the wide run , in the same way. Rule 86 comes with part (b), when
-the standard-form began to take its routing from this record .
+the wide run (PCHQ log 423), in the same way. Rule 86 comes with part (b), when
+the standard-form began to take its routing from this record (PCHQ log 424).
 
 read_components: each listing's components, read from its text
  1. Which listings: in step 1, the 7 that the four groups name (GROUPS), each
     found in kinds_forms.json by its `template` text. Steps 2 to 4: rule 28.
  2. Placeholders: a letter standing as a word of its own. `a` to `h` hold
     values, `m` and `n` are names, `T` to `W` are types: the placeholder
-    letters of Projects/PseudoArch/map_HiOp_to_unit/extract_lang_vocab
+    letters of Projects/PseudoIR/map_HiOp_to_unit/extract_lang_vocab
     (PLACEHOLDER), typed here.
  3. The text is cut into pieces, kept as written: words, spaces, `...`, and
     single marks (any other character).
@@ -132,7 +132,7 @@ write_programs: each arrangement written in GNU C
 18. The program: the declarations, then `void f(void) {`, the lines, each
     indented four spaces more for each level, then `}`.
 19. Typed here, not read from a listing: `{ }` for a held body (how C writes
-    a held body, one of the handful each language needs by hand, 
+    a held body, one of the handful each language needs by hand, PCHQ log 417
     section 2); the inert call and its declaration, returning `int` so it can
     stand as a test; and the function `void f(void)` around the lines.
 
@@ -300,7 +300,7 @@ arrange
     under every fill and accepts held in a holder; and the listings that need
     something in the same function, refused alone without it and accepted
     with it. What each needs is typed from the plan (the owner's table of the 16,
-    : `goto m;` needs `m: a;`, `goto *a;` needs `&&m`
+    PCHQ log 416 Table 5): `goto m;` needs `m: a;`, `goto *a;` needs `&&m`
     and `m: a;`, `&&m` needs `m: a;` (NEEDS). A listing refused alone and
     held in every holder is neither, and is counted so (`return a;`, whose
     function must return a value).
@@ -438,7 +438,7 @@ classify
        pairs, its `needs_in_the_same_function` against the pairs, and its
        `one_switch` refusals against the groups of two of the same;
     b. against the hand tables of
-       Projects/PseudoArch/map_HiOp_to_unit/DRY_mask_maker.py, read from its
+       Projects/PseudoIR/map_HiOp_to_unit/DRY_mask_maker.py, read from its
        source, not changed: INERT_PART_ROLES, each part's role against its
        reading alone (`body` against a body; `value` against a part that is
        not a body; `constant` against a value the fill writes as a number;
@@ -473,7 +473,7 @@ The record
     rule 57) and out/steps_2_to_4_summary.txt, every count with its whole.
 62. A file this run reads is named with its sha256 in every record written.
 
-The upgrades of 
+The upgrades of PCHQ log 421 Table 4 (PCHQ log 422, 2026-10-11)
 
 read_components
 63. (log 421 Table 4, row 1) Which listings, from now: every listing of
@@ -587,7 +587,7 @@ ask_the_lowerer, arrange and classify
     get the same configuration (accepted alone or not, its context, N, its
     bodies, its role); those that differ are listed. Listings written the
     same share one configuration, so the check counts them apart.
-74. The small run (part small_run_upgrades, : the listings
+74. The small run (part small_run_upgrades, PCHQ log 422): the listings
     SMALL_RUN names, each listing read as the same entry as one of its row 1
     listings, and every 100th of the listings in rule 63's order, each alone;
     the pairs of `case a ... b: c;`; and the part declarations' groups,
@@ -595,7 +595,7 @@ ask_the_lowerer, arrange and classify
     out/small_run_upgrades_summary.txt, whose table has one row per listing or
     group, and never a part record or out/configurations.json.
 
-The fixes after the first small run (elv2_l132, 
+The fixes after the first small run (elv2_l132, PCHQ log 422, 2026-10-11)
 
 75. (row 3; changes rule 65) Every stand-in is written under a name of its
     own, its symbol set by an assembler label:
@@ -624,7 +624,7 @@ The fixes after the first small run (elv2_l132,
     counted as the test program's fault, and it is not asked held in a holder.
 78. (changes rules 53 and 56) A listing not run alone has no N and no bodies:
     written "not run alone". A dependent's N by signal 1: each part a
-    component of it holds is a body (the second reading of 
+    component of it holds is a body (the second reading of PCHQ log 419 Table
     2: a part is a body when a component holds it, or when it runs behind the
     branch or again), each shown with how the lines that component holds read
     in the groups (rule 55), and set against the reader's. Each listing's
@@ -644,10 +644,10 @@ The fixes after the first small run (elv2_l132,
     `upgrades` takes each of its fields from the latest part that holds it.
     (Rule 85: but one, the check of the listings read as the same entry.)
 
-The wide run 
+The wide run (PCHQ log 423, 2026-10-11)
 
 81. (changes rules 53, 56 and 78) Every listing run alone has its N by the
-    second reading of 
+    second reading of PCHQ log 419 Table 2, as rule 78 gives a dependent's: a
     part is a body when a component of the listing holds it, or when it runs
     behind the branch or again alone (rule 52; a tested part is not one). Each
     body is kept with why (`why`): the component that holds it, how it runs
@@ -670,13 +670,13 @@ The wide run
     table (`goto *a;`, rule 67), which the part label_table_pairs takes, all or
     a slice (`label_table_pairs:k/n`, `label_table_pairs:j-k/n`, as rule 36's
     triples). The groups of two of the same and the triples read the part pairs,
-    as before: no kept pair has `goto *a;` only inside a holder 
+    as before: no kept pair has `goto *a;` only inside a holder (PCHQ log 419
     section 5), so it makes none of their groups; the part label_table_pairs
     checks this in its own record (`depends_on_no_holder`) and stops if not. A
     part's slices are added up in the record, and left out of it when the
     whole part is there.
 84. The record against the record it replaces: the newest
-    out/configurations_l<run>.json beside it (the record of 
+    out/configurations_l<run>.json beside it (the record of PCHQ log 419 is kept
     as out/configurations_l130.json), listing by listing: the listings in both
     and in one only; for each listing in both, whether it ran alone, its role,
     fill and context, whether clang accepted it alone, N (the earlier record's,
@@ -694,7 +694,7 @@ The wide run
     (0 of 69 compared, from the part label_table_pairs:1/3, where the part
     listings compared 39 of 69).
 
-Part (b): the standard-form takes its routing from this record 
+Part (b): the standard-form takes its routing from this record (PCHQ log 424, 2026-10-11)
 
 86. (changes rule 57b) The hand tables b. checks against are read under the
     names DRY_mask_maker.py keeps them by since the standard-form began to take its
@@ -718,7 +718,7 @@ import sys
 import time
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-# Projects/PseudoArch/map_HiOp_to_unit/extract_lang_vocab/HiOp_configuration_solver: four folders down from Projects.
+# Projects/PseudoIR/map_HiOp_to_unit/extract_lang_vocab/HiOp_configuration_solver: four folders down from Projects.
 PROJECTS = os.path.normpath(os.path.join(HERE, "..", "..", "..", "..", ".."))
 PCHQ = os.path.dirname(PROJECTS)
 # The vocabulary's research folder: the listings read, the reader's records, and this module's runs and records.
@@ -731,7 +731,7 @@ HOLDER_CLASSES = os.path.join(GNU17_FOLDER, "holders.json")
 LIBRARY_DECLARATIONS = os.path.join(GNU17_FOLDER, "library_declarations.json")
 READER_PLACES = os.path.join(VOCABULARY, "dependent_HiOp_reader", "out", "places.json")
 READER_BODIES = os.path.join(VOCABULARY, "dependent_HiOp_reader", "out", "bodies.json")
-HAND_TABLES = os.path.join(PCHQ, "Projects", "PseudoArch", "map_HiOp_to_unit", "lower_HiOp", "standard_HiOp_wrapper.py")
+HAND_TABLES = os.path.join(PCHQ, "Projects", "PseudoIR", "map_HiOp_to_unit", "lower_HiOp", "standard_HiOp_wrapper.py")
 OUT = os.path.join(VOCABULARY, "HiOp_configuration_solver", "out")
 STEP_1_RECORD = os.path.join(OUT, "step_1_arrangements.json")
 PART_FILE = os.path.join(OUT, "part_{0}.json.gz")
@@ -759,10 +759,10 @@ EXPECTED_COMPONENTS = {
     "m: a;": ["m: holds a body"],
 }
 
-# Rule 14: the plan's section 3 and 
+# Rule 14: the plan's section 3 and PCHQ log 417, Table 1.
 EXPECTED_ARRANGEMENTS = {"if": 280, "while": 60, "for": 420, "goto": 60}
 EXPECTED_IN_DEES_ORDER = 12
-# Rule 36: step 1's record, as run elv2_l122 kept it .
+# Rule 36: step 1's record, as run elv2_l122 kept it (PCHQ log 418).
 EXPECTED_STEP_1_KEPT = 185
 
 # Rule 13: the owner's `if` example (the owner's chat of 2026-10-10, quoted in PCHQ log
@@ -782,7 +782,7 @@ DO_GROUP = ["break;", "do a; while (b);", "while (a) b;"]
 EXPECTED_SWITCH_ARRANGEMENTS = 166320
 
 # Rule 40: what each listing needs in the same function, typed from the owner's
-# table of the 16 .
+# table of the 16 (PCHQ log 416, Table 5).
 NEEDS = {
     "goto m;": ["m: a;"],
     "goto *a;": ["&&m", "m: a;"],
@@ -857,10 +857,10 @@ READING_LETTERS = {
     "once": "o",
 }
 BODY_READINGS = ("behind the branch", "again", "behind the branch and again")
-# Rule 81: the two readings of N of 
+# Rule 81: the two readings of N of PCHQ log 419 Table 2.
 SECOND_READING = ("a part is a body when a component of the listing holds it, or when it runs behind the "
-                  "branch or again ")
-FIRST_READING = ("a part is a body when it runs behind the branch or again, alone (signal 2 alone; 
+                  "branch or again (PCHQ log 419 Table 2, the second reading; rules 78 and 81)")
+FIRST_READING = ("a part is a body when it runs behind the branch or again, alone (signal 2 alone; PCHQ log "
                  "419 Table 2, the first reading)")
 FINISHED_OUTCOMES = ("R", "E")
 
@@ -877,7 +877,7 @@ TRIMMED_PARTS = ("step_1_trimmed", "switch_trimmed", "do_trimmed", "pairs", "two
 SLICED_PARTS = ("triples", "label_table_pairs")
 ALL_ALONE_PARTS = ("step_1_again",)
 
-# Rule 64 : GNU C's contexts, typed here, one of the handful each language needs by
+# Rule 64 (PCHQ log 421 Table 4, row 2): GNU C's contexts, typed here, one of the handful each language needs by
 # hand. Each: the lines before the function, its header, the lines it declares first in it, the names it offers
 # (each with the holder spellings or holder classes it fits), and how a run's f_<n>(void) calls it.
 TODAYS_CONTEXT = "void f(void)"
@@ -1046,7 +1046,7 @@ REFUSAL_SORTS = [
 NOTE = re.compile(r"^(?P<file>[^:\s]+):(?P<line>\d+):(?P<column>\d+): note: (?P<message>.*)$")
 NOTE_LINES_ABOVE = 20
 
-# Rule 74: the small run of 
+# Rule 74: the small run of PCHQ log 422; each listing by its text (and, where two listings are written the same,
 # its entry's name), with the rows of log 421 Table 4 it is chosen for. Every listing also shows row 8.
 SMALL_RUN = [
     {"listing": "__sync_lock_test_and_set_1(a, b, c)", "name": None, "rows": [1]},
@@ -1391,7 +1391,7 @@ def listing_entry(text: str, record: dict, file_name: str, taken: list) -> dict:
     return entry
 
 
-# Rule 70 : declarations as components
+# Rule 70 (PCHQ log 421 Table 4, row 6): declarations as components
 
 
 def add_the_declarations(listings: dict, part: str) -> None:
@@ -1933,7 +1933,7 @@ def listing_as_a_record(listing: dict) -> dict:
     return record
 
 
-# Rule 68 : held or taken, read first with tree-sitter's C grammar
+# Rule 68 (PCHQ log 421 Table 4, row 5): held or taken, read first with tree-sitter's C grammar
 
 
 def tree_sitter_parser():
@@ -2346,7 +2346,7 @@ def set_the_fill(listing: dict, question: dict, where: str) -> None:
         listing["accepted_held_in"] = question["held_in"]
 
 
-# Rule 66 : one placeholder at a time as a constant, where a refusal asks for one
+# Rule 66 (PCHQ log 421 Table 4, row 3): one placeholder at a time as a constant, where a refusal asks for one
 
 
 def ask_each_with_one_constant(listings: dict, used: list, lowerer: dict) -> None:
@@ -2394,7 +2394,7 @@ def constant_override(listing: dict, letter: str) -> dict:
     return overrides
 
 
-# Rule 64 : the other contexts
+# Rule 64 (PCHQ log 421 Table 4, row 2): the other contexts
 
 
 def context_named(name: str) -> dict:
@@ -2446,7 +2446,7 @@ def add_a_name_that_fits(overrides: dict, letter: str, holder, context: dict, li
             overrides[letter] = {"form": "name", "holder": holder, "text": name["name"]}
 
 
-# Rule 72 : refusals sorted by clang's message
+# Rule 72 (PCHQ log 421 Table 4, row 8): refusals sorted by clang's message
 
 
 def sort_of(message) -> str:
@@ -4624,7 +4624,7 @@ def why_refused_alone(listing: dict) -> str:
     return reason
 
 
-# Rule 67 : `goto *a;` run through the label table
+# Rule 67 (PCHQ log 421 Table 4, row 4): `goto *a;` run through the label table
 
 
 def run_with_the_label_table(chosen: dict, accepted: dict, lowerer: dict) -> None:
@@ -4711,7 +4711,7 @@ def written_into(arrangement: dict, written: dict, run_as: str) -> None:
     arrangement["run_as"] = run_as
 
 
-# Rule 66 : built again with a constant
+# Rule 66 (PCHQ log 421 Table 4, row 3): built again with a constant
 
 
 def build_again_with_a_constant(results: dict, chosen: dict, accepted: dict, lowerer: dict) -> None:
@@ -5044,7 +5044,7 @@ def not_run_result(function: dict, reason: str, task=None, stand_ins=None) -> di
     return result
 
 
-# Rule 65 : stand-ins for what the linker does not find
+# Rule 65 (PCHQ log 421 Table 4, row 3): stand-ins for what the linker does not find
 
 
 def undefined_references(output: str) -> list:
@@ -5813,7 +5813,7 @@ def classify(accepted: dict, runs: dict) -> dict:
     return configurations
 
 
-# Rule 72 : every refusal of a part by its sort
+# Rule 72 (PCHQ log 421 Table 4, row 8): every refusal of a part by its sort
 
 
 def refusals_by_sort(accepted: dict, groups: list, runs: dict) -> dict:
@@ -5844,7 +5844,7 @@ def add_to_the_sort(tally: dict, where: str, sort: str, count: int, message: str
         tally["unsorted messages"][message] = tally["unsorted messages"].get(message, 0) + count
 
 
-# Rule 73 : listings read as the same entry get the same configuration
+# Rule 73 (PCHQ log 421 Table 4, row 1): listings read as the same entry get the same configuration
 
 
 def same_entry_check(alone: list, listings: dict) -> dict:
@@ -5970,7 +5970,7 @@ def runs_as_counted(kept: list) -> dict:
     return counted
 
 
-# Rule 69 : the reader's places, as the places each group's dependent is expected in
+# Rule 69 (PCHQ log 421 Table 4, row 5): the reader's places, as the places each group's dependent is expected in
 
 
 def readers_places_of_a_group(group: dict, kept: int, places: dict) -> dict:
@@ -6002,7 +6002,7 @@ def expected_by_the_reader(places, kinds: list) -> str:
     return expected
 
 
-# Rule 70 : a jump into a declaration's scope
+# Rule 70 (PCHQ log 421 Table 4, row 6): a jump into a declaration's scope
 
 
 def declaration_scope_of_a_group(group: dict, kept: list, first_errors: list):
@@ -6489,7 +6489,7 @@ def add_the_configurations(alone: list, groups: list, listings: dict) -> None:
 
 def configuration_of_a_listing(entry: dict, listing: dict, groups: list) -> dict:
     """Rule 78: a dependent, by signal 1 and the groups; a listing neither run alone nor a dependent has no N.
-    Rule 81: a listing run alone by the second reading of 
+    Rule 81: a listing run alone by the second reading of PCHQ log 419 Table 2 too (a part is a body when a
     component holds it, or when it runs behind the branch or again), the first (signal 2 alone) kept beside it."""
     ran = entry["not_run"] is None
     configuration = configuration_not_run_alone()
@@ -6587,7 +6587,7 @@ def configuration_from(ran: bool, role: str) -> str:
 
 
 def first_reading_of(ran: bool, n, bodies) -> dict:
-    """Rule 81: the first reading of , kept beside the configuration."""
+    """Rule 81: the first reading of PCHQ log 419 Table 2 (signal 2 alone), kept beside the configuration."""
     first = {}
     first["reading"] = FIRST_READING
     first["N"] = None
@@ -7154,7 +7154,7 @@ def small_run_summary(record: dict) -> str:
 
 
 def add_small_run_heading(text: list, record: dict) -> None:
-    text.append("HiOp_configuration_solver, the small run of : the upgrades of 
+    text.append("HiOp_configuration_solver, the small run of PCHQ log 422 (rule 74): the upgrades of PCHQ log 421 Table 4, "
                 "rows 1 to 8, through every stage, with the fixes after the first small run (rules 75 to 80)")
     text.append(f"lowerer: {record['lowerer']}")
     text.append(f"asked alone: {record['asked_alone']}")
@@ -7358,7 +7358,7 @@ def add_x_set_lines(text: list, entry: dict) -> None:
 
 
 def log_419_record() -> dict:
-    """The record of , by listing; read, never written here."""
+    """The record of PCHQ log 419 (out/configurations.json), by listing; read, never written here."""
     by_listing = {}
     if os.path.exists(CONFIGURATIONS_FILE):
         for listing in read_json(CONFIGURATIONS_FILE)["listings"]:
@@ -7753,7 +7753,7 @@ def part_record(configurations: dict, lowerer: dict, part: str) -> dict:
 def heading_of(what: str, lowerer: dict) -> dict:
     heading = {}
     heading["what"] = what
-    heading["plan"] = ("Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/node_0_0_0_0_2_map_HiOp_to_unit/"
+    heading["plan"] = ("Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoir/node_0_0_0_0_2_map_HiOp_to_unit/"
                        "node_0_0_0_0_2_4_extract_lang_vocab/node_0_0_0_0_2_4_3_HiOp_configuration_solver (Block A; section 3.1)")
     heading["rules"] = "HiOp_configuration_solver.py, its docstring"
     heading["lowerer"] = lowerer["version"]
@@ -8758,7 +8758,7 @@ def the_check(listings: list, parts: dict, groups: list) -> dict:
 
 
 def the_reader_n(listings: list) -> dict:
-    """Rule 81: every listing's N as its configuration gives it (the second reading of , and
+    """Rule 81: every listing's N as its configuration gives it (the second reading of PCHQ log 419 Table 2), and
     by signal 2 alone (the first), against the reader's N (bodies.json); counted for the listings run alone and
     for the dependents; each difference named."""
     reader = readers_bodies()
@@ -9498,7 +9498,7 @@ def add_upgrades_section(text: list, configurations: dict) -> None:
     """Rules 63 to 73, counted from the record (`upgrades`)."""
     upgrades = configurations.get("upgrades", {})
     text.append("")
-    text.append("9. The upgrades of ")
+    text.append("9. The upgrades of PCHQ log 421 Table 4 (rules 63 to 73)")
     every = upgrades.get("every_listing", [])
     text.append(f"   listings taken (rule 63): {len(every)}")
     same = upgrades.get("read_as_the_same_entry")
@@ -9513,7 +9513,7 @@ def add_upgrades_section(text: list, configurations: dict) -> None:
 
 
 def add_summary_heading(text: list, configurations: dict) -> None:
-    text.append("HiOp_configuration_solver, steps 2 to 4: the owner's method (plan node 0_0_0_0_2_4_4, section 3.1; ")
+    text.append("HiOp_configuration_solver, steps 2 to 4: the owner's method (plan node 0_0_0_0_2_4_4, section 3.1; PCHQ log 417)")
     text.append(f"lowerer: {configurations['lowerer']}")
     text.append(f"asked alone: {configurations['asked_alone']}")
     text.append(f"asked in batches: {configurations['asked_in_batches']}")
@@ -9852,7 +9852,7 @@ def add_bodies_section(text: list, configurations: dict) -> None:
     given = len(listings) - counted.get("not run alone", 0)
     text.append("")
     text.append("10. Each listing's bodies (rule 81): a part is a body when a component of the listing holds it, or "
-                "when it runs behind the branch or again ; beside it, N by "
+                "when it runs behind the branch or again (PCHQ log 419 Table 2, the second reading); beside it, N by "
                 "signal 2 alone (the first reading)")
     text.append(f"   listings: {len(listings)}; N given {given} of {len(listings)}; no N (not run alone, not a "
                 f"dependent) {counted.get('not run alone', 0)} of {len(listings)}")

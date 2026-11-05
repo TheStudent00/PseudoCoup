@@ -15,7 +15,7 @@ This module's own loop, `map_HiOp_to_unit`, runs the last three for many
 HiOps at once: it puts many standard functions in one source, compiles the
 source once (lower_HiOp), reads each standard function's words, and cuts its
 Unit (extract_unit_from_LoHiOp). Moved here on 2026-10-13 from the research
-runner `Research/lower_HiOp/lower_gnu_c.py` , at the owner's word:
+runner `Research/lower_HiOp/lower_gnu_c.py` (PCHQ log 454), at the owner's word:
 "okay lets move the tools into their places". The runner keeps what is a
 run's: which HiOps it lowers, for which machine, and the records it writes.
 
@@ -32,7 +32,7 @@ signatures `extract()` tries from what it reads); its lowering half, bridge
 and compose are research code for now
 (`Research/extract_lang_vocabulary/complex_signature_reader/`).
 
-Renamed and moved 2026-10-05 at the owner's word (PseudoCoup log 361):
+Renamed and moved 2026-10-05 at the owner's word (PseudoCoupHQ log 361):
 `extract_lang_vocabulary` became `extract_lang_vocab`, and `DRY_mask_maker`
 moved up from it to here, because both stages use the mask.
 """
@@ -43,7 +43,23 @@ from . import model_lang_parts  # noqa: F401
 from . import lower_HiOp
 from . import mask_maker
 from . import lang_models  # noqa: F401
-from .lower_HiOp import standard_HiOp_wrapper, extract_unit_from_LoHiOp
+from .lower_HiOp import hijack_lowerer, read_words_at_symbol, standard_HiOp_wrapper, extract_unit_from_LoHiOp
+
+
+def map_state_info_0_to_unit(state_info_0, key: str = "k", compile_command: Optional[str] = None, library_decl: str = "") -> "MappedHiOp":
+    """Hijack the lowerer at the HiOp entry point with `state_info_0`, read the
+    emitted `LoHiOp`, and extract the `Unit` between `__hiop_unit_begin` and
+    `__hiop_unit_end`."""
+    machine = state_info_0.target.replace("-", "_")
+    mc, entry = hijack_lowerer.hijack_lowerer(
+        state_info_0,
+        key=key,
+        compile_command=compile_command,
+        library_decl=library_decl,
+    )
+    lo = lower_HiOp.read_words_at_symbol(mc, entry.symbol)
+    unit = extract_unit_from_LoHiOp.extract_unit(lo, entry.hiop_line, machine=machine)
+    return MappedHiOp(key, lo, entry.hiop_line, unit)
 
 # How many standard functions go in one source: the source is compiled once,
 # and a refused source is split until each refusal belongs to one HiOp.

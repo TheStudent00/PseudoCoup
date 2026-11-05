@@ -31,7 +31,7 @@ each of its ways, the lines each way holds; and the exits (`return`,
 `break`, ...). Each operand a test tests keeps its text and its atoms (the
 calls with their receivers and arguments, the comparisons, the names).
 
-§4 
+§4 (PCHQ log 503, at the owner's word: "wouldnt we be able to determine the
 abstract objects which unlock each branch?"): the abstract objects that
 unlock a branch. A branch's chain, the ways a path takes from its
 function's entry to it (calls not followed), narrows what a program may be,
@@ -43,12 +43,12 @@ run traces them.
     branch_trees.py files OUT     the files and functions the lines records name
     branch_trees.py trees OUT     each function's tree, and the depths of its paths
     branch_trees.py traced OUT    the depth of every traced path, by operator
-    branch_trees.py unlock OUT    log 503's checks: run riscv64-runner_l10's five branches unlocked, functions trimmed
+    branch_trees.py unlock OUT    log 503's checks: run tlp1_l10's five branches unlocked, functions trimmed
     branch_trees.py dry OUT       every not-reached branch unlocked without tracing; the operators to run
-                                  (both read the trees PSEUDOARCH_BRANCH_TREES names)
+                                  (both read the trees PSEUDOIR_BRANCH_TREES names)
 
-Every count runs on the tower (instance riscv64-runner): clang's files are
-preprocessed there first (PSEUDOARCH_PREPROCESSED names OUT/preprocessed).
+Every count runs on the tower (instance tlp1): clang's files are
+preprocessed there first (PSEUDOIR_PREPROCESSED names OUT/preprocessed).
 """
 
 import copy
@@ -195,7 +195,7 @@ def function_order(function: dict) -> tuple:
 
 
 def add_definition(found: list, node) -> None:
-    from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import cpp_code
+    from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import cpp_code
     declarator = cpp_code.function_declarator(node)
     body = node.child_by_field_name("body")
     if declarator is None or body is None:
@@ -526,7 +526,7 @@ def text_of(node) -> str:
     return text
 
 
-# a leaf test's atoms : what it is made of, its
+# a leaf test's atoms (PCHQ log 503 §2, Table 1): what it is made of, its
 # outermost form first, then the forms inside it in the order written
 COMPARISONS = ("==", "!=", "<", "<=", ">", ">=")
 NAMES = ("identifier", "qualified_identifier", "field_identifier", "namespace_identifier", "type_identifier",
@@ -940,7 +940,7 @@ def add_tested_lines(found: list, test: dict) -> None:
 # the trees step
 
 def trees_step(out: str) -> None:
-    from PseudoArch.map_HiOp_to_unit.model_lang_parts import preprocessed_file_path
+    from PseudoIR.map_HiOp_to_unit.model_lang_parts import preprocessed_file_path
     named = read_json(os.path.join(out, "files.json"))
     parser = parser_of()
     refused = {}
@@ -1312,7 +1312,7 @@ def say_traced(traced: dict, operators: int) -> None:
 # ---------------------------------------------------------------------------
 # 4. the abstract objects that unlock a branch, and the candidates they write
 #
-# , at the owner's word: "beautifully designed. lets put
+# PCHQ log 503 (Gemini copy), at the owner's word: "beautifully designed. lets put
 # it in a research node and fill out the PlanPlan for it, down to the leaf
 # nodes. and then we will generate the instruction for Claude to implement
 # and run." Plan node research/trace_logical_paths/branch_trees. the owner,
@@ -1355,7 +1355,7 @@ ELEMENT_OF = {"v4si": "int", "v4ui": "unsigned int", "v4sf": "float", "v4df": "d
               "ev4si": "int", "ev4sf": "float", "ev4b": "_Bool", "m2": "int", "arrptr": "arr4"}
 # the kinds of holder a bit-field can be: C23 6.7.2.1 names the bit-precise
 # integers beside int and bool (the l10 records hold `unsigned _BitInt(37) b
-# : 13` accepted, run riscv64-runner_l10, part 1, path 125)
+# : 13` accepted, run tlp1_l10, part 1, path 125)
 BIT_FIELD_KINDS = ("integer", "bool", "enum", "bitint")
 # a test's receiver read for its inner type: a vector's element, a pointer's pointee (log 503 §2)
 INNER_READS = ("getElementType()", "getPointeeType()", "SrcEltType", "SrcEltTy", "DstEltType", "DstEltTy",
@@ -1364,19 +1364,9 @@ INNER_READS = ("getElementType()", "getPointeeType()", "SrcEltType", "SrcEltTy",
 # the holders the writer takes first, simplest first; the others after them, by name
 SIMPLE_HOLDERS = ("int", "unsigned int", "_Bool", "long", "unsigned long", "char", "short", "long long",
                   "float", "double", "int *", "void *")
-TYPE_ONLY_HOLDERS = ("fntype", "void", "struct I")
-# canonical gate-predicate equivalence class representatives (one per class)
-EQUIVALENCE_CLASS_HOLDERS = (
-    "int", "unsigned int", "short", "unsigned short", "char", "long", "__int128",
-    "_Bool", "enum E", "_BitInt(37)",
-    "_Float16", "__fp16", "__bf16", "float", "double",
-    "cf16", "double _Complex", "_Complex int",
-    "int *", "char *", "void *", "const int *", "struct I *", "fnptr",
-    "fntype", "struct I", "void", "const int", "const v4si", "volatile int",
-    "noderef_int_ptr", "noderef_struct_ptr", "nullptr_t",
-    "arr4",
-    "v4si", "v4ui", "v4sf", "v4df", "ev4si", "ev4sf", "ev4b",
-    "struct S", "struct S_anon", "union U", "_Atomic int",
+from ..holders.equivalence_classes import (
+    EQUIVALENCE_CLASS_HOLDERS,
+    TYPE_ONLY_HOLDERS,
 )
 # the kinds of test that read a part
 PART_KINDS = ("holder", "place", "signed", "constant", "lvalue")
@@ -1389,8 +1379,8 @@ BINDINGS_KEPT = 27
 # made one (the open one), and the function is marked
 TRIM_STATES_KEPT = 256
 # the saved trees and the holder facts the loop reads
-TREES = os.environ.get("PSEUDOARCH_BRANCH_TREES", os.path.join(HERE, "riscv64-runner_l13_the_branch_trees", "trees"))
-FACTS_FILE = os.environ.get("PSEUDOARCH_HOLDER_FACTS", os.path.join(HERE, "holder_facts_riscv64-runner_l13.json"))
+TREES = os.environ.get("PSEUDOIR_BRANCH_TREES", os.path.join(HERE, "tlp1_l13_the_branch_trees", "trees"))
+FACTS_FILE = os.environ.get("PSEUDOIR_HOLDER_FACTS", os.path.join(HERE, "holder_facts_tlp1_l13.json"))
 CACHE = {"trees": {}, "holders": {}, "fits": {}, "type_tests": None, "leaves": {}, "capped": 0}
 
 
@@ -1401,12 +1391,12 @@ def loop_module():
 
 def key_name() -> str:
     """The key the standard form's own names take (context.KEY: op_k, P_k)."""
-    from PseudoArch.map_HiOp_to_unit.model_lang_parts.context.entry_context import KEY
+    from PseudoIR.map_HiOp_to_unit.model_lang_parts.context.entry_context import KEY
     return KEY
 
 
 def signatures_module():
-    from PseudoArch.map_HiOp_to_unit.model_lang_parts.holders import accepted_signatures as signatures
+    from PseudoIR.map_HiOp_to_unit.model_lang_parts.holders import accepted_signatures as signatures
     return signatures
 
 
@@ -1731,7 +1721,7 @@ def falls_through(items: list) -> bool:
 class PartConstraint(NamedTuple):
     """What one part of the HiOp may be along a path: its holders (of its
     value, as clang's checks read its type), its places, its value forms
-    ."""
+    (PCHQ log 503, plan node PartConstraint)."""
 
     holders: frozenset
     places: frozenset
@@ -1840,7 +1830,7 @@ class AbstractConstraint(NamedTuple):
         value forms, options, target) is kept by the writer wherever the chain
         allows it (write_from_constraint), not pinned here: the base took the
         other way at the branch's own test, so what that test reads must be
-        free to change (run riscv64-runner_l10's base for EmitStoreThroughLValue
+        free to change (run tlp1_l10's base for EmitStoreThroughLValue
         2510->2527 reads part 0 as a matrix element, and the branch needs it
         to be a bit-field)."""
         constraint = open_constraint(len(base_context.holders), held_facts)
@@ -2421,7 +2411,7 @@ def bound_chain(chain: list, binding: dict, part_count: int) -> list:
 # CandidateWriter
 
 class CandidateWriter(NamedTuple):
-    """Writes a constraint as a context 
+    """Writes a constraint as a context (PCHQ log 503, plan node
     CandidateWriter): the holders the standard form can write (the pool, and
     the loop's HOLDER_PREAMBLE), and each holder's facts."""
 
@@ -2904,7 +2894,7 @@ def register_declaration(holder: str, name: str, target: str) -> str:
 # unlock_branch
 
 def unlock_branch(branch: dict, base_context, tree, writer) -> list:
-    """Block A of 
+    """Block A of PCHQ log 503 §2: the chain into the branch in its
     function's tree; along it, from the base's constraint, each way's
     unlocking set intersected in turn (a state left empty is cut); each
     state left written as a context. The chain is tried once for each
@@ -3309,16 +3299,16 @@ def trimmed_summary(tree: BranchTree, held_facts: dict, seconds: float = 0) -> d
 
 
 # ---------------------------------------------------------------------------
-# 5. the checks of 
+# 5. the checks of PCHQ log 503 §3, line 1, and the count before the run
 
-# run riscv64-runner_l10's five branches the candidates traced did not take (log 501,
+# run tlp1_l10's five branches the candidates traced did not take (log 501,
 # Table 7), each with the record of the operators it was tried for
 FIVE = ("CodeGenFunction::EmitStoreThroughLValue:2510->2527",
         "CodeGenFunction::EmitBitfieldConversionCheck:1400->1401",
         "CodeGenFunction::EmitStoreThroughExtVectorComponentLValue:2698->2701",
         "CodeGenFunction::EmitStoreThroughGlobalRegLValue:2776->2777",
         "CodeGenFunction::EmitStoreThroughGlobalRegLValue:2782->2783")
-FIVE_RECORDS = ("riscv64-runner_l10_traced_part_1_of_3", "riscv64-runner_l10_traced_part_2_of_3", "riscv64-runner_l10_traced_part_3_of_3")
+FIVE_RECORDS = ("tlp1_l10_traced_part_1_of_3", "tlp1_l10_traced_part_2_of_3", "tlp1_l10_traced_part_3_of_3")
 # log 503 §3: the four functions trimmed and set beside log 502's Table 2
 FOUR = ("StartFunction", "EmitSub", "BuildAtomicExpr", "CheckCompareOperands")
 # the whole trimming pass: its bound, and each function's; each of the four's
@@ -3329,7 +3319,7 @@ FOUR_EACH = 300
 
 def unlock_step(out: str) -> None:
     """The writer (the holder facts asked of clang once, FACTS_FILE); the
-    five branches unlocked from run riscv64-runner_l10's bases; the four functions
+    five branches unlocked from run tlp1_l10's bases; the four functions
     trimmed; every function on the traced paths trimmed, within TRIM_BOUND."""
     trees = TREES
     loop = loop_module()
@@ -3349,7 +3339,7 @@ def unlock_step(out: str) -> None:
 
 
 def five_unlocked(trees: str, writer: CandidateWriter) -> list:
-    """Each of the five, for each operator run riscv64-runner_l10 tried it for: its
+    """Each of the five, for each operator run tlp1_l10 tried it for: its
     chain, the states left for each binding, and the candidates written."""
     loop = loop_module()
     found = []
@@ -3541,12 +3531,12 @@ def every_trimmed(trees: str, held_facts: dict) -> dict:
 
 
 def dry_step(out: str) -> None:
-    """Every branch the page reads as not reached 
+    """Every branch the page reads as not reached (PCHQ log 500's classes:
     the condition not read yet, or the candidates traced did not take it),
     unlocked for one operator it is untaken for, from the context that ran
     its test, without tracing: how many get a candidate no context of the
     operator traced before; and the operators that hold them all, chosen
-    greedily (as run riscv64-runner_l10 chose), written to OUT/keys.txt."""
+    greedily (as run tlp1_l10 chose), written to OUT/keys.txt."""
     page, keyed, gnu_c = gnu_c_reading()
     problems = page.problems_page()
     records = page.read_loop_records()
@@ -3588,7 +3578,7 @@ def dry_step(out: str) -> None:
     dry = {"branches": rows, "operators": chosen, "counts": dry_counts(rows)}
     write_json(dry, os.path.join(out, "dry.json"))
     with open(os.path.join(out, "keys.txt"), "w", encoding="utf-8") as written:
-        written.write("# riscv64-runner_l13: the operators that hold every not-reached branch a new candidate unlocks\n")
+        written.write("# tlp1_l13: the operators that hold every not-reached branch a new candidate unlocks\n")
         for key in chosen:
             written.write(key + "\n")
     say(f"[dry] {dry['counts']}; {len(chosen)} operators to run")
@@ -3615,7 +3605,7 @@ def dry_row(side_id: str, state: str, entry: dict, lines: dict, trees: str, writ
     paths = lines.get(key, [])
     base = None
     for ran in side.get("ran_by", []):
-        # a record of run riscv64-runner_l02's time names the context itself, not its run and path
+        # a record of run tlp1_l02's time names the context itself, not its run and path
         if "run" not in ran:
             continue
         for path in paths:

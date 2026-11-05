@@ -11,19 +11,17 @@ import os
 import sys
 from typing import Any, Dict, Tuple
 
-THIS_DIR = os.path.dirname(os.path.abspath(__file__))
-REPO_ROOT = os.path.abspath(os.path.join(THIS_DIR, "..", "..", ".."))
+REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 SAIL_LIFTER_DIR = os.path.join(REPO_ROOT, "Research", "oracle", "riscv", "sail_lifter")
 RISCV_ORACLE_DIR = os.path.join(REPO_ROOT, "Research", "oracle", "riscv")
-BUNDLED_EMIT_DIR = os.path.join(THIS_DIR, "lean_emit")
-EMIT_DIR = BUNDLED_EMIT_DIR if os.path.isdir(BUNDLED_EMIT_DIR) else os.path.join(RISCV_ORACLE_DIR, "leanpath", "gmp_insert")
+EMIT_DIR = os.path.join(RISCV_ORACLE_DIR, "leanpath", "gmp_insert")
 SL1_EMIT_DIR = os.path.join(SAIL_LIFTER_DIR, "lean_emit")
 GMP_INSERT_DIR = os.path.join(EMIT_DIR, "LeanIM")
 GMP_SLICES_DIR = os.path.join(GMP_INSERT_DIR, "Gmp")
 FLAT_SLICES_DIR = os.path.join(RISCV_ORACLE_DIR, "softfloat_slices", "flattened")
 
-for _p in (THIS_DIR, RISCV_ORACLE_DIR, SAIL_LIFTER_DIR):
-    if os.path.isdir(_p) and _p not in sys.path:
+for _p in (RISCV_ORACLE_DIR, SAIL_LIFTER_DIR):
+    if _p not in sys.path:
         sys.path.insert(0, _p)
 
 import lean_reader as _lean_reader  # noqa: E402

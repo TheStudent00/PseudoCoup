@@ -10,9 +10,9 @@ Plan: `.../node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/`
     read = read_signatures("c", vocabulary, kept, work, small)   # the signatures clang's checking code accepts, read from it
     found = passes("c", vocabulary, kept, declarations, work, evidence, small, read)
 
-Moved here on 2026-10-14 , at the owner's word "lets do it", from the
+Moved here on 2026-10-14 (PCHQ log 456), at the owner's word "lets do it", from the
 research runner `Research/extract_lang_vocabulary/run_elv3.py` (GNU C's grid,
- and from
+PCHQ log 367) and from
 `Research/extract_lang_vocabulary/complex_signature_reader/covered_vocabulary.py`
 (which made `vocabulary/c.json` on 2026-10-01). The code is as it was there,
 but for four things:
@@ -60,7 +60,7 @@ class Vocabulary(NamedTuple):
 
 
 class Passes(NamedTuple):
-    """GNU C's grid, pass by pass, as run_elv3 asked it : every
+    """GNU C's grid, pass by pass, as run_elv3 asked it (PCHQ log 367): every
     form over the small set (a), the forms it accepted over every holder kept
     (b), every builtin over every holder kept (c), and since 2026-10-16 each
     builtin with custom typechecking over the signatures its checking code
@@ -409,7 +409,7 @@ NOT_JUDGED_IN_C = "::"
 
 
 # Two simple operators c.json leaves out, because the operator reader keeps
-# only kinds that take an operand : reading a held
+# only kinds that take an operand (PCHQ log 366, Table 1): reading a held
 # value, and taking a label's address. Each is named from clang's own lists.
 # The read is the conversion clang adds wherever a held value is used; a
 # program writes only the holder, `a`.
@@ -421,7 +421,7 @@ THE_READ = Operator("c", "ImplicitCastExpr.LValueToRValue", "a", ("a",),
 LABEL_ADDRESS = Operator("c", "AddrLabelExpr", "&&m", ("m",),
                          "clang/include/clang/Basic/StmtNodes.td: def AddrLabelExpr; "
                          "left out of c.json (it takes no operand, only a name)")
-# `&&m`'s standard function by hand, as the grid held it until 
+# `&&m`'s standard function by hand, as the grid held it until PCHQ log 424: the
 # check. Since then the routing read from the record holds it
 # (DRY_mask_maker.ROUTING.local_answers: its answer in a local, its label
 # after it).
@@ -441,7 +441,7 @@ def forms_of(written: dict) -> list:
 
 
 def label_address_check(work: str) -> dict:
-    """`&&m`, held as the routing read from the record says : its
+    """`&&m`, held as the routing read from the record says (PCHQ log 424): its
     answer in a local, its label after it. Accepted, and read back through
     clang's syntax tree: the local's initializer, through its parenthesis.
 
@@ -849,7 +849,7 @@ def kinds_pass(label: str, operators: list, holders: tuple, rows: list, written:
         detail = node.get("opcode") or node.get("name") or callee_of(node)
         if mask_code.is_statement(operator):
             written_kind = operator.name.split(".")[0]
-            # since `,
+            # since PCHQ log 402 `break;` sits behind an `if` in a `for (;;)`,
             # and `goto m;` behind an `if`, so each jump goes over reached code
             # (a do-while held `break;` in log 399, a bare `for (;;)` before);
             # since log 405 every statement that jumps does; since log 424 the
