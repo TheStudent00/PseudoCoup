@@ -17,14 +17,14 @@ pseudocoup/
 
 1. **`PseudoArch` (`pseudocoup/pseudoarch/`):**
    - Extracts each language's native operator vocabulary (`HiOp` + `Holder`s) directly from its compiler/runtime source and lowers every kept variant to a sliced **`ArchUnit`** (a sequence of `riscv64` `LoOp`s).
-   - Composes the `LoOp` definitions from the Sail RISC-V specification into a formal `(D_ok, D_trap, R_val)` logical meaning (`12,164` lowered `ArchUnit`s across `1,545` canonical modes).
+   - Composes the `LoOp` definitions from the Sail RISC-V specification (`sail_model_of_riscv` + `map_LoOp_to_lean` + `map_unit_to_lean`) into a formal `(D_ok, D_trap, R_val)` logical meaning (`12,904` lowered `ArchUnit`s across `2,715` canonical modes, plus `56,905 / 56,905 = 100.00%` of GNU C non-trap units and `58 / 58` whole-lowered `compiler-rt` routines = `5,830 / 5,830` `LoOp` words).
 2. **`Ledgerer` (`pseudocoup/ledgerer/`):**
    - **`UniversalRichNode` (`UR-Node`):** Carries `(hiop, units, meaning)` so every node in a program graph knows its exact hardware `ArchUnit` and formal domain/range.
    - **`ScriptToLedger` & `LedgerToScript`:** Parses source scripts into the **Universal Rich Ledger (`UR-Ledger`)** and emits target scripts through the `Hub`.
 3. **`The Hub` & `AutoPoly` (`pseudocoup/hub/`):**
    - **Tier 1 (`Exact 1-to-1 Native HiOp`):** Direct emission when Z3 `EquivalenceProver` proves $\Delta = \emptyset$.
-   - **Tier 2 (`Piecewise HiOp`):** Synthesizes exact branch-free/ternary guards over the discrepancy domain $\Delta \ne \emptyset$ (e.g., `INT64_MIN / -1`, negative floor-modulo, shift width $\ge 64$).
-   - **Tier 3 (`Guaranteed LoOp-to-HiOpPrimitive Backstop`):** Emits the `ArchUnit`'s `LoOp` sequence using the 12 universal `HiOpPrimitive`s present in every language.
+   - **Tier 2 (`Piecewise HiOp` & Symbolic `HiOp`-Variant Composition):** Synthesizes exact branch-free/ternary guards over the discrepancy domain $\Delta \ne \emptyset$ (e.g., `INT64_MIN / -1`, negative floor-modulo, shift width $\ge 64$) and depth-2 `HiOp`-variant compositions (`2,056 / 2,056 = 100.00%` of target-supported 64-bit `HiOp` pairs resolved at Tier 1 or Tier 2).
+   - **Tier 3 (`Guaranteed LoOp-to-HiOpPrimitive Backstop`):** Emits the `ArchUnit`'s `LoOp` sequence using the 17 universal 64-bit `HiOpPrimitive`s (`204 / 204 = 100.00%` proved `UNSAT` in Z3 across all 12 languages), plus whole-lowered `compiler-rt` basic-block state machines.
    - **`HolderBridge`:** Bridges tools across languages with distinct `Holder` widths or signedness (`IdentityBridge`, Rule 3 `sext.w`/`zext.w` reinterpretation, and `WidthCastBridge`).
 
 
@@ -54,7 +54,12 @@ Run the complete verification suite across all 12 languages:
 | `tests/test_quickfox_all_12_langs.py` | 2-cycle `quickfox` roundtrip across all 12 Original Languages (`c`, `cpp`, `go`, `rust`, `python`, `java`, `typescript`, `csharp`, `ruby`, `php`, `dart`, `swift`) + 24-hop sequential 12-language daisy-chain (`Cycle 1 == Cycle 2`). |
 | `tests/test_roundtrip_two_cycles.py` | Multi-statement 2-cycle stabilization suites (`Go <-> C`, `Python <-> Rust`, `TypeScript <-> Java`) on interior and edge-case inputs (`b >= 64`, `INT64_MIN / -1`, negative floor-div/mod). |
 | `tests/test_holder_bridge.py` | Cross-language Hub pipeline combining `Python` (`i64`) $\to$ `Go` (`u32`) $\to$ `HolderBridge("u32", "i32")` $\to$ `C` (`i32`). |
-| `tests/test_hub_complete.py` | Exhaustive execution of all `12,164` lowered `riscv64` `ArchUnit`s in `RiscvUnitVM` + `MultiBodyEngine` + Z3 control-flow proofs. |
+| `tests/test_gpu_tensor_lowerer.py` | Relational tensor GPU lowerer (`DictLUT` + `RelationalLedgerTable` + `GPUTensorLowerer`) verified 100% byte-identical to CPU lowerer across all 12 languages. |
+| `tests/test_hub_complete.py` | Exhaustive execution of all `12,904` lowered `riscv64` `ArchUnit`s in `RiscvUnitVM` + `MultiBodyEngine` + Z3 control-flow proofs. |
+| `pseudocoup/hub/autopoly/compiler_rt_lifter.py` | Whole-lowered `compiler-rt` lifter (`58 / 58` needed routines = `5,830 / 5,830` Sail-lifted `LoOp` words, `40` DAGs + `18` loop state machines). |
+| `pseudocoup/hub/autopoly/verify_hiop_primitives.py` | Formal Z3 (`UNSAT`) proof of all `17 x 12 = 204` `(HiOpPrimitive, language)` pairs against Sail-derived `UnitLean`s. |
+| `pseudocoup/hub/autopoly/verify_tier1_tier2_12langs.py` | Symbolic `HiOp`-variant domain-and-range search & depth-2 composition across `2,256` syntheses (`1,786` Tier 1 + `270` Tier 2 + `200` Tier 3; `2,056 / 2,056 = 100.00%` Tier 1 + Tier 2 on target-supported 64-bit `HiOp`s). |
+| `pseudocoup/hub/verify_hub_all_12_langs.py` | End-to-end Hub verification across `12,904` `UR-Node`s (`2,715` canonical modes), `18 / 18` `eval_qualified_expr` cases, `6 / 6` 4-word `compiler-rt` caller `UR-Node`s, and `60 / 60` `transpile_hub_expr` cases. |
 
 ---
 
