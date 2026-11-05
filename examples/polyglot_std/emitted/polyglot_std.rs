@@ -1,10 +1,10 @@
 fn std_rotl32_c(x: i64, r: i64) -> i64 {
-    return (((x << (r & 63)) | (x >> ((32 - r) & 63))) & 4294967295);
+    return (((x << r) | (x >> (32 - r))) & 4294967295);
 }
 
 fn std_mul32(a: i64, b: i64) -> i64 {
     let mut lo: i64 = ((a * (b & 65535)) & 4294967295);
-    let mut hi: i64 = (((a * (b >> (16 & 63))) << (16 & 63)) & 4294967295);
+    let mut hi: i64 = (((a * (b >> 16)) << 16) & 4294967295);
     return ((lo + hi) & 4294967295);
 }
 
@@ -15,9 +15,9 @@ fn std_xxh32_round(acc: i64, input: i64) -> i64 {
 }
 
 fn std_xxh32_avalanche(h: i64) -> i64 {
-    let mut h1: i64 = std_mul32((h ^ (h >> (15 & 63))), (2246822519 & 4294967295));
-    let mut h2: i64 = std_mul32((h1 ^ (h1 >> (13 & 63))), (3266489917 & 4294967295));
-    return ((h2 ^ (h2 >> (16 & 63))) & 4294967295);
+    let mut h1: i64 = std_mul32((h ^ (h >> 15)), (2246822519 & 4294967295));
+    let mut h2: i64 = std_mul32((h1 ^ (h1 >> 13)), (3266489917 & 4294967295));
+    return ((h2 ^ (h2 >> 16)) & 4294967295);
 }
 
 fn std_xxh32_word64(data: i64, seed: i64) -> i64 {
@@ -29,10 +29,10 @@ fn std_xxh32_word64(data: i64, seed: i64) -> i64 {
 }
 
 fn std_lz4_pack_token(lit_len: i64, match_len: i64, offset: i64, literal_u32: i64) -> i64 {
-    let mut token: i64 = (((lit_len & 15) << (4 & 63)) | (match_len & 15));
-    let mut off_bits: i64 = ((offset & 65535) << (8 & 63));
-    let mut lit_bits: i64 = ((literal_u32 & 4294967295) << (24 & 63));
-    return ((token | off_bits) | lit_bits);
+    let mut lz4_hdr: i64 = (((lit_len & 15) << 4) | (match_len & 15));
+    let mut off_bits: i64 = ((offset & 65535) << 8);
+    let mut lit_bits: i64 = ((literal_u32 & 4294967295) << 24);
+    return ((lz4_hdr | off_bits) | lit_bits);
 }
 
 fn std_lz4_token_lit_len(frame: i64) -> i64 {
@@ -52,12 +52,12 @@ fn std_lz4_literal(frame: i64) -> i64 {
 }
 
 fn std_rotl32_rs(x: i64, b: i64) -> i64 {
-    return (((x << (b & 63)) | (x >> ((32 - b) & 63))) & 4294967295);
+    return (((x << b) | (x >> (32 - b))) & 4294967295);
 }
 
 fn std_pack_u32_pair(lo: i64, hi: i64) -> i64 {
     let mut ulo: i64 = (lo & 4294967295);
-    let mut uhi: i64 = ((hi & 4294967295) << (32 & 63));
+    let mut uhi: i64 = ((hi & 4294967295) << 32);
     return (ulo | uhi);
 }
 
@@ -106,30 +106,30 @@ fn std_halfsiphash_1_3(k0: i64, k1: i64, m0: i64, m1: i64) -> i64 {
 }
 
 fn std_zigzag_encode(n: i64) -> i64 {
-    return (((if ((1 >= 0) && (1 < 64)) { (n << (1 & 63)) } else { 0 }) ^ (if ((31 >= 0) && (31 < 64)) { (n >> (31 & 63)) } else { (n >> (63 & 63)) })) & 4294967295);
+    return (((n << 1) ^ (n >> 31)) & 4294967295);
 }
 
 fn std_zigzag_decode(z: i64) -> i64 {
-    return (((((if ((1 >= 0) && (1 < 64)) { (z >> (1 & 63)) } else { (z >> (63 & 63)) }) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
 }
 
 fn std_leb128_encode_u32(v: i64) -> i64 {
     let mut b0: i64 = (((v & 127) | (if (v >= 128) { 128 } else { 0 })) & 4294967295);
-    let mut v1: i64 = ((if ((7 >= 0) && (7 < 64)) { (v >> (7 & 63)) } else { (v >> (63 & 63)) }) & 4294967295);
+    let mut v1: i64 = ((v >> 7) & 4294967295);
     let mut b1: i64 = (((v1 & 127) | (if (v1 >= 128) { 128 } else { 0 })) & 4294967295);
-    let mut v2: i64 = ((if ((14 >= 0) && (14 < 64)) { (v >> (14 & 63)) } else { (v >> (63 & 63)) }) & 4294967295);
+    let mut v2: i64 = ((v >> 14) & 4294967295);
     let mut b2: i64 = (((v2 & 127) | (if (v2 >= 128) { 128 } else { 0 })) & 4294967295);
-    let mut v3: i64 = (((if ((21 >= 0) && (21 < 64)) { (v >> (21 & 63)) } else { (v >> (63 & 63)) }) & 127) & 4294967295);
+    let mut v3: i64 = (((v >> 21) & 127) & 4294967295);
     let mut nbytes: i64 = (((1 + (if (v >= 128) { 1 } else { 0 })) + (if (v >= 16384) { 1 } else { 0 })) + (if (v >= 2097152) { 1 } else { 0 }));
-    let mut wire: i64 = ((((b0 | (if ((8 >= 0) && (8 < 64)) { (b1 << (8 & 63)) } else { 0 })) | (if ((16 >= 0) && (16 < 64)) { (b2 << (16 & 63)) } else { 0 })) | (if ((24 >= 0) && (24 < 64)) { (v3 << (24 & 63)) } else { 0 })) & 4294967295);
+    let mut wire: i64 = ((((b0 | (b1 << 8)) | (b2 << 16)) | (v3 << 24)) & 4294967295);
     return (wire | (if ((32 >= 0) && (32 < 64)) { (nbytes << (32 & 63)) } else { 0 }));
 }
 
 fn std_leb128_decode_u32(packed: i64) -> i64 {
     let mut b0: i64 = (packed & 255);
-    let mut b1: i64 = ((if ((8 >= 0) && (8 < 64)) { (packed >> (8 & 63)) } else { (packed >> (63 & 63)) }) & 255);
-    let mut b2: i64 = ((if ((16 >= 0) && (16 < 64)) { (packed >> (16 & 63)) } else { (packed >> (63 & 63)) }) & 255);
-    let mut b3: i64 = ((if ((24 >= 0) && (24 < 64)) { (packed >> (24 & 63)) } else { (packed >> (63 & 63)) }) & 255);
+    let mut b1: i64 = ((if ((8 >= 0) && (8 < 64)) { (packed >> (8 & 63)) } else { (packed >> 63) }) & 255);
+    let mut b2: i64 = ((if ((16 >= 0) && (16 < 64)) { (packed >> (16 & 63)) } else { (packed >> 63) }) & 255);
+    let mut b3: i64 = ((if ((24 >= 0) && (24 < 64)) { (packed >> (24 & 63)) } else { (packed >> 63) }) & 255);
     let mut acc: i64 = (b0 & 127);
     if (((b0 & 128) != 0)) {
         acc = (acc | (if ((7 >= 0) && (7 < 64)) { ((b1 & 127) << (7 & 63)) } else { 0 }));
