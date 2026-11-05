@@ -19,7 +19,7 @@ as it was): the same logic, with the owner's word, branch, in every name, record
 and message, and the record branch_candidates.json. Two of the first version's
 closings are gone, at the owner's word through logs 493 and 494: a test of clang's
 insert point (HaveInsertPoint, GetInsertBlock) stays open, since a statement
-before the operator reaches it .
+before the operator reaches it (PCHQ log 489 §25).
 
 the owner, 2026-10-20: "RUN IT": every line of clang's code that the method could
 take and no run has taken is run on, by the method itself.
@@ -83,12 +83,12 @@ SAY_EVERY = 60
 # holder is taken from (§4.3).
 HOLDERS_FILE = os.path.normpath(os.path.join(HERE, "..", "extract_lang_vocabulary", "reader_joined", "elv2_l177",
                                              "holders.json"))
-IN_HIOP_SPANS_FILE = os.environ.get("PSEUDOARCH_IN_HIOP_SPANS", os.path.join(HERE, "in_hiop_spans.json"))
+IN_HIOP_SPANS_FILE = os.environ.get("PSEUDOIR_IN_HIOP_SPANS", os.path.join(HERE, "in_hiop_spans.json"))
 # clang's source: the text the traced binary was built from when it is on
 # this machine (/persist/traced_clang_src on the VM), otherwise the checkout
-# under PSEUDOARCH_SOURCES (the run script exports /sources) or the laptop's.
+# under PSEUDOIR_SOURCES (the run script exports /sources) or the laptop's.
 SOURCES_CHECKOUT = "llvm-project-21.1.8"
-SOURCES_DEFAULT = os.path.expanduser("SOURCES")
+SOURCES_DEFAULT = os.environ.get("PSEUDOCOUP_SOURCES_DIR", "/sources")
 SOURCES_PREFIXES = ("/persist/traced_clang_src/", "/sources/llvm-project-21.1.8/")
 # How far a test's statement is read above and below its line.
 STATEMENT_REACH = 8
@@ -650,8 +650,8 @@ def enumerate_every_path(operator, record, lines: dict, binary: dict, pool: set,
 
 
 def candidates_for(operator, branch: dict, change: dict, contexts: list, pool: set) -> tuple:
-    """(the candidates, the change as the record shows it). 
-    §2, Table 1: the branch's function's tree (branch_trees, run riscv64-runner_l13)
+    """(the candidates, the change as the record shows it). PCHQ log 503
+    §2, Table 1: the branch's function's tree (branch_trees, run tlp1_l13)
     unlocks it (branch_trees.unlock_branch): the chain of ways from the
     function's entry to the branch, each way's unlocking set intersected in
     turn, each state left written once. The tables' change (write_candidate)
@@ -852,7 +852,7 @@ def unreached_branches(operator, lines: dict, binary: dict) -> list:
     """Every successor block of one of the operator's path functions that no
     path of the operator ran, whose predecessor some path ran (§4.1). A block
     is run when every one of its lines is run (lines.json holds lines, not
-    blocks). Under --in-hiop (or PSEUDOARCH_IN_HIOP=1), restricted to the
+    blocks). Under --in-hiop (or PSEUDOIR_IN_HIOP=1), restricted to the
     operator's in-HiOp functions and line spans."""
     key = key_for(operator)
     paths = lines.get(key, [])
@@ -876,8 +876,8 @@ def unreached_branches(operator, lines: dict, binary: dict) -> list:
 
 def in_hiop_spans_of(key: str):
     """The in-HiOp [function, first, last] spans of `key` when --in-hiop or
-    PSEUDOARCH_IN_HIOP is active; None when running in-file across all functions."""
-    if not STATE.get("in_hiop") and not os.environ.get("PSEUDOARCH_IN_HIOP"):
+    PSEUDOIR_IN_HIOP is active; None when running in-file across all functions."""
+    if not STATE.get("in_hiop") and not os.environ.get("PSEUDOIR_IN_HIOP"):
         return None
     if STATE["in_hiop_spans"] is None:
         loaded = read_json(IN_HIOP_SPANS_FILE)
@@ -1109,7 +1109,7 @@ def joined_parts(statement: str) -> list:
 def source_path(file: str) -> str:
     if os.path.exists(file):
         return file
-    root = os.path.join(os.environ.get("PSEUDOARCH_SOURCES", SOURCES_DEFAULT), SOURCES_CHECKOUT)
+    root = os.path.join(os.environ.get("PSEUDOIR_SOURCES", SOURCES_DEFAULT), SOURCES_CHECKOUT)
     for prefix in SOURCES_PREFIXES:
         if file.startswith(prefix):
             path = os.path.join(root, file[len(prefix):])
@@ -1399,7 +1399,7 @@ def is_a_refusal(branch: dict) -> bool:
     return refused
 
 
-# the owner, 2026-10-21, 01:20 UTC , on a branch whose block is
+# the owner, 2026-10-21, 01:20 UTC (PCHQ log 489 §23), on a branch whose block is
 # `llvm_unreachable`: "is that needed?" (it lowers nothing; no program reaches
 # it: clang's own guard), and log 494's list of the owner's rules keeps it. A branch
 # whose untaken block is only that guard is "not needed".
@@ -1796,10 +1796,10 @@ def candidate_of(operator, base, alternative: dict):
         setup = setup_for_holders(base.setup, alternative["holders"])
         candidate = Context(operator, tuple(alternative["holders"]), setup)
         if base.program:
-            # 
+            # PCHQ log 503 §2, line 16: a base written in its own program (a
             # place, a constant) keeps it, each part in its place with its new
             # holder where the holder fits the place; until 2026-10-22 the
-            # program was dropped (run riscv64-runner_l10's bit-field and global
+            # program was dropped (run tlp1_l10's bit-field and global
             # register bases)
             candidate = holders_in_place(operator, base, alternative["holders"], setup)
         if candidate is None or not writes(candidate):
@@ -1970,7 +1970,7 @@ def program_of(base, parts: list, kind: str, value: str) -> str:
             if struct_at < 0:
                 return ""
             if branch_trees.place_and_form(lines[body_at], lines[struct_at], name)[0] == kind:
-                # already in this place: run riscv64-runner_l10 wrote `p->a[0][1][0][1]`
+                # already in this place: run tlp1_l10 wrote `p->a[0][1][0][1]`
                 # from a base whose part 0 was a matrix element
                 continue
             placed_holder = place_holder(kind, holder)
@@ -1985,7 +1985,7 @@ def program_of(base, parts: list, kind: str, value: str) -> str:
 
 
 def place_holder(kind: str, holder: str) -> str:
-    """The holder a part is written with in a place form 
+    """The holder a part is written with in a place form (PCHQ log 503 §2,
     line 16): its own holder when it fits the place (a pointer or an
     integer of at most 8 bytes in a global register, a signed integer in a
     signed bit-field), the vector or matrix whose element it is for an
@@ -2057,7 +2057,7 @@ def index_of_line(lines: list, start: str) -> int:
 
 
 def slots_of_operator(operator) -> tuple:
-    from PseudoArch.map_HiOp_to_unit.lower_HiOp.standard_HiOp_wrapper import slots_of
+    from PseudoIR.map_HiOp_to_unit.lower_HiOp.standard_HiOp_wrapper import slots_of
     slots = slots_of(operator)
     return slots
 
@@ -2791,9 +2791,9 @@ def records_of_the_pruned_binary() -> set:
 
 
 # The run folders that hold records: fable1's (logs 487 to 489) and, from
-# 2026-10-21, those of riscv64-runner, the instance that runs this copy's code (log 493
+# 2026-10-21, those of tlp1, the instance that runs this copy's code (log 493
 # §4, line 7).
-RUN_FOLDERS = ("fable1_*", "riscv64-runner_*")
+RUN_FOLDERS = ("fable1_*", "tlp1_*")
 
 
 def records_named(name: str) -> list:
@@ -3100,7 +3100,7 @@ def arguments_of(words: list):
     in_hiop = "--in-hiop" in words
     if in_hiop:
         words.remove("--in-hiop")
-    STATE["in_hiop"] = in_hiop or bool(os.environ.get("PSEUDOARCH_IN_HIOP"))
+    STATE["in_hiop"] = in_hiop or bool(os.environ.get("PSEUDOIR_IN_HIOP"))
     rounds = ROUNDS
     if "--rounds" in words:
         at = words.index("--rounds")

@@ -32,7 +32,7 @@ signatures `extract()` tries from what it reads); its lowering half, bridge
 and compose are research code for now
 (`Research/extract_lang_vocabulary/complex_signature_reader/`).
 
-Renamed and moved 2026-10-05 at the owner's word (PseudoCoupHQ log 361):
+Renamed and moved 2026-10-05:
 `extract_lang_vocabulary` became `extract_lang_vocab`, and `DRY_mask_maker`
 moved up from it to here, because both stages use the mask.
 """
