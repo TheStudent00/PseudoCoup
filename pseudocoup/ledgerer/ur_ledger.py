@@ -976,9 +976,14 @@ class LedgerToScript:
         if dst_holder == "u8":
             return cls._format_target_hiop("&", lang, arg_s, "255", "0")
         if dst_holder in ("i32", "i16", "i8"):
-            sh = "32" if dst_holder == "i32" else ("48" if dst_holder == "i16" else "56")
-            shl = cls._format_target_hiop("<<", lang, arg_s, sh, "0")
-            return cls._format_target_hiop(">>", lang, shl, sh, "0")
+            mask_s, sign_s = (
+                ("4294967295", "2147483648")
+                if dst_holder == "i32"
+                else (("65535", "32768") if dst_holder == "i16" else ("255", "128"))
+            )
+            masked = cls._format_target_hiop("&", lang, arg_s, mask_s, "0")
+            xored = cls._format_target_hiop("^", lang, masked, sign_s, "0")
+            return cls._format_target_hiop("-", lang, xored, sign_s, "0")
         return arg_s
 
     @classmethod
