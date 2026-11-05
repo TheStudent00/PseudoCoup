@@ -91,6 +91,13 @@ def load_hiop_relations() -> Dict[str, dict]:
     return context, jumps, and dependent scope/stack/label requirements) from
     dependent_HiOp_reader (`bodies.json`, `places.json`) and
     HiOp_configuration_solver (`configurations.json`)."""
+    bundled_gz = os.path.join(os.path.dirname(os.path.abspath(__file__)), "hiop_relations.json.gz")
+    if not (os.path.isfile(CONFIGS_JSON) and os.path.isfile(BODIES_JSON) and os.path.isfile(PLACES_JSON)):
+        if os.path.isfile(bundled_gz):
+            import gzip
+            with gzip.open(bundled_gz, "rt", encoding="utf-8") as f:
+                return json.load(f)
+        return {}
     with open(CONFIGS_JSON, encoding="utf-8") as f:
         cfg = json.load(f)
     with open(BODIES_JSON, encoding="utf-8") as f:
