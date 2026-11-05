@@ -8,10 +8,13 @@ Plan: `Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
     Unit   composes its LoOp Leans into a single term and piecewise Domain-Range partition (`map_unit_to_lean`)
 """
 
-from . import sail_model_of_riscv  # noqa: F401
-from . import map_LoOp_to_lean  # noqa: F401
-from . import map_HiOp_to_unit  # noqa: F401
-from . import map_unit_to_lean  # noqa: F401
+import sys as _sys
+_sys.modules.setdefault("PseudoArch", _sys.modules[__name__])
+
+from . import sail_model_of_riscv  # noqa: F401, E402
+from . import map_LoOp_to_lean  # noqa: F401, E402
+from . import map_HiOp_to_unit  # noqa: F401, E402
+from . import map_unit_to_lean  # noqa: F401, E402
 
 __all__ = [
     "sail_model_of_riscv",

@@ -11,17 +11,18 @@ import os
 import sys
 from typing import Any, Dict, Tuple
 
-REPO_ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
-SAIL_LIFTER_DIR = os.path.join(REPO_ROOT, "Research", "oracle", "riscv", "sail_lifter")
-RISCV_ORACLE_DIR = os.path.join(REPO_ROOT, "Research", "oracle", "riscv")
-EMIT_DIR = os.path.join(RISCV_ORACLE_DIR, "leanpath", "gmp_insert")
-SL1_EMIT_DIR = os.path.join(SAIL_LIFTER_DIR, "lean_emit")
+_HERE = os.path.dirname(os.path.abspath(__file__))
+REPO_ROOT = os.path.abspath(os.path.join(_HERE, "..", "..", ".."))
+SAIL_LIFTER_DIR = _HERE if os.path.isfile(os.path.join(_HERE, "lifter.py")) else os.path.join(REPO_ROOT, "Research", "oracle", "riscv", "sail_lifter")
+RISCV_ORACLE_DIR = _HERE if os.path.isfile(os.path.join(_HERE, "lean_reader.py")) else os.path.join(REPO_ROOT, "Research", "oracle", "riscv")
+EMIT_DIR = _HERE if os.path.isdir(os.path.join(_HERE, "LeanIM")) else os.path.join(RISCV_ORACLE_DIR, "leanpath", "gmp_insert")
+SL1_EMIT_DIR = EMIT_DIR
 GMP_INSERT_DIR = os.path.join(EMIT_DIR, "LeanIM")
 GMP_SLICES_DIR = os.path.join(GMP_INSERT_DIR, "Gmp")
 FLAT_SLICES_DIR = os.path.join(RISCV_ORACLE_DIR, "softfloat_slices", "flattened")
 
-for _p in (RISCV_ORACLE_DIR, SAIL_LIFTER_DIR):
-    if _p not in sys.path:
+for _p in (_HERE, RISCV_ORACLE_DIR, SAIL_LIFTER_DIR):
+    if os.path.isdir(_p) and _p not in sys.path:
         sys.path.insert(0, _p)
 
 import lean_reader as _lean_reader  # noqa: E402
