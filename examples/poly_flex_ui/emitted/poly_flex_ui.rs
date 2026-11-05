@@ -1,8 +1,8 @@
 fn ui_pack_rect(x: i64, y: i64, w: i64, h: i64) -> i64 {
     let mut ux: i64 = (x & 65535);
-    let mut uy: i64 = ((y & 65535) << (16 & 63));
-    let mut uw: i64 = ((w & 65535) << (32 & 63));
-    let mut uh: i64 = ((h & 65535) << (48 & 63));
+    let mut uy: i64 = ((y & 65535) << 16);
+    let mut uw: i64 = ((w & 65535) << 32);
+    let mut uh: i64 = ((h & 65535) << 48);
     return (((ux | uy) | uw) | uh);
 }
 
@@ -72,8 +72,8 @@ fn ui_flex_child_size(avail_main: i64, fixed_sum: i64, gap: i64, flex0: i64, fle
     if ((total_flex <= 0)) {
         return 0;
     }
-    let mut s0: i64 = (if (((free_space * flex0) == -9223372036854775808) && (total_flex == -1)) { -9223372036854775808 } else { ((free_space * flex0) / total_flex) });
-    let mut s1: i64 = (if (((free_space * flex1) == -9223372036854775808) && (total_flex == -1)) { -9223372036854775808 } else { ((free_space * flex1) / total_flex) });
+    let mut s0: i64 = ((free_space * flex0) / total_flex);
+    let mut s1: i64 = ((free_space * flex1) / total_flex);
     let mut s2: i64 = ((free_space - s0) - s1);
     return (if (child_idx == 0) { s0 } else { (if (child_idx == 1) { s1 } else { s2 }) });
 }
@@ -108,7 +108,7 @@ fn ui_layout_nav_tab(nav_rect: i64, gap: i64, tab_idx: i64) -> i64 {
 }
 
 fn ui_scroll_step(scroll_pos: i64, velocity: i64, drag_delta: i64, max_scroll: i64, bounce_ios: i64) -> i64 {
-    let mut raw_vel: i64 = (((((if (((velocity * 3) == -9223372036854775808) && (4 == -1)) { -9223372036854775808 } else { ((velocity * 3) / 4) }) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
+    let mut raw_vel: i64 = ((((((velocity * 3) / 4) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
     let mut raw_pos: i64 = ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     if ((bounce_ios == 0)) {
         let mut clamped_pos: i64 = ui_constrain_dim(raw_pos, 0, max_scroll);
@@ -119,7 +119,7 @@ fn ui_scroll_step(scroll_pos: i64, velocity: i64, drag_delta: i64, max_scroll: i
     let mut over_top: i64 = ((((if (raw_pos < 0) { raw_pos } else { 0 }) & 4294967295) ^ 2147483648) - 2147483648);
     let mut over_bot: i64 = ((((if (raw_pos > max_scroll) { (raw_pos - max_scroll) } else { 0 }) & 4294967295) ^ 2147483648) - 2147483648);
     let mut overscroll: i64 = ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648);
-    let mut spring_pull: i64 = ((((if ((overscroll == -9223372036854775808) && (3 == -1)) { -9223372036854775808 } else { (overscroll / 3) }) & 4294967295) ^ 2147483648) - 2147483648);
+    let mut spring_pull: i64 = ((((overscroll / 3) & 4294967295) ^ 2147483648) - 2147483648);
     let mut bounced_pos: i64 = ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648);
     let mut bounced_vel: i64 = ((((if (overscroll != 0) { ((raw_vel - spring_pull) / 2) } else { raw_vel }) & 4294967295) ^ 2147483648) - 2147483648);
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648));
@@ -128,7 +128,7 @@ fn ui_scroll_step(scroll_pos: i64, velocity: i64, drag_delta: i64, max_scroll: i
 fn ui_visible_card_index(scroll_pos: i64, card_h: i64, card_gap: i64, total_cards: i64) -> i64 {
     let mut stride: i64 = ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648);
     let mut clamped_scroll: i64 = ((((if (scroll_pos < 0) { 0 } else { scroll_pos }) & 4294967295) ^ 2147483648) - 2147483648);
-    let mut raw_idx: i64 = ((((if ((clamped_scroll == -9223372036854775808) && (stride == -1)) { -9223372036854775808 } else { (clamped_scroll / stride) }) & 4294967295) ^ 2147483648) - 2147483648);
+    let mut raw_idx: i64 = ((((clamped_scroll / stride) & 4294967295) ^ 2147483648) - 2147483648);
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648);
 }
 

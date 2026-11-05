@@ -1,8 +1,8 @@
 function ui_pack_rect(int $x, int $y, int $w, int $h): int {
     $ux = ($x & 65535);
-    $uy = (($y & 65535) << (16 & 63));
-    $uw = (($w & 65535) << (32 & 63));
-    $uh = (($h & 65535) << (48 & 63));
+    $uy = (($y & 65535) << 16);
+    $uw = (($w & 65535) << 32);
+    $uh = (($h & 65535) << 48);
     return ((($ux | $uy) | $uw) | $uh);
 }
 
@@ -72,8 +72,8 @@ function ui_flex_child_size(int $avail_main, int $fixed_sum, int $gap, int $flex
     if (($total_flex <= 0)) {
         return 0;
     }
-    $s0 = (((($free_space * $flex0) == -9223372036854775808) && ($total_flex == -1)) ? -9223372036854775808 : intdiv(($free_space * $flex0), $total_flex));
-    $s1 = (((($free_space * $flex1) == -9223372036854775808) && ($total_flex == -1)) ? -9223372036854775808 : intdiv(($free_space * $flex1), $total_flex));
+    $s0 = intdiv(($free_space * $flex0), $total_flex);
+    $s1 = intdiv(($free_space * $flex1), $total_flex);
     $s2 = (($free_space - $s0) - $s1);
     return (($child_idx == 0) ? $s0 : (($child_idx == 1) ? $s1 : $s2));
 }
@@ -108,7 +108,7 @@ function ui_layout_nav_tab(int $nav_rect, int $gap, int $tab_idx): int {
 }
 
 function ui_scroll_step(int $scroll_pos, int $velocity, int $drag_delta, int $max_scroll, int $bounce_ios): int {
-    $raw_vel = (((((((($velocity * 3) == -9223372036854775808) && (4 == -1)) ? -9223372036854775808 : intdiv(($velocity * 3), 4)) + $drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
+    $raw_vel = ((((intdiv(($velocity * 3), 4) + $drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
     $raw_pos = (((($scroll_pos + $raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     if (($bounce_ios == 0)) {
         $clamped_pos = ui_constrain_dim($raw_pos, 0, $max_scroll);
@@ -119,7 +119,7 @@ function ui_scroll_step(int $scroll_pos, int $velocity, int $drag_delta, int $ma
     $over_top = ((((($raw_pos < 0) ? $raw_pos : 0) & 4294967295) ^ 2147483648) - 2147483648);
     $over_bot = ((((($raw_pos > $max_scroll) ? ($raw_pos - $max_scroll) : 0) & 4294967295) ^ 2147483648) - 2147483648);
     $overscroll = (((($over_top + $over_bot) & 4294967295) ^ 2147483648) - 2147483648);
-    $spring_pull = (((((($overscroll == -9223372036854775808) && (3 == -1)) ? -9223372036854775808 : intdiv($overscroll, 3)) & 4294967295) ^ 2147483648) - 2147483648);
+    $spring_pull = (((intdiv($overscroll, 3) & 4294967295) ^ 2147483648) - 2147483648);
     $bounced_pos = (((($raw_pos - $spring_pull) & 4294967295) ^ 2147483648) - 2147483648);
     $bounced_vel = ((((($overscroll != 0) ? intdiv(($raw_vel - $spring_pull), 2) : $raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     return ui_pack_rect($bounced_pos, $bounced_vel, $overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648));
@@ -128,7 +128,7 @@ function ui_scroll_step(int $scroll_pos, int $velocity, int $drag_delta, int $ma
 function ui_visible_card_index(int $scroll_pos, int $card_h, int $card_gap, int $total_cards): int {
     $stride = (((($card_h + $card_gap) & 4294967295) ^ 2147483648) - 2147483648);
     $clamped_scroll = ((((($scroll_pos < 0) ? 0 : $scroll_pos) & 4294967295) ^ 2147483648) - 2147483648);
-    $raw_idx = (((((($clamped_scroll == -9223372036854775808) && ($stride == -1)) ? -9223372036854775808 : intdiv($clamped_scroll, $stride)) & 4294967295) ^ 2147483648) - 2147483648);
+    $raw_idx = (((intdiv($clamped_scroll, $stride) & 4294967295) ^ 2147483648) - 2147483648);
     return (((ui_constrain_dim($raw_idx, 0, ($total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648);
 }
 

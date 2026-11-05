@@ -1,8 +1,8 @@
 long ui_pack_rect(long x, long y, long w, long h) {
     long ux = (x & 65535);
-    long uy = ((y & 65535) << (16 & 63));
-    long uw = ((w & 65535) << (32 & 63));
-    long uh = ((h & 65535) << (48 & 63));
+    long uy = ((y & 65535) << 16);
+    long uw = ((w & 65535) << 32);
+    long uh = ((h & 65535) << 48);
     return (((ux | uy) | uw) | uh);
 }
 
@@ -72,8 +72,8 @@ long ui_flex_child_size(long avail_main, long fixed_sum, long gap, long flex0, l
     if ((total_flex <= 0)) {
         return 0;
     }
-    long s0 = ((((free_space * flex0) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : ((free_space * flex0) / total_flex));
-    long s1 = ((((free_space * flex1) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : ((free_space * flex1) / total_flex));
+    long s0 = ((free_space * flex0) / total_flex);
+    long s1 = ((free_space * flex1) / total_flex);
     long s2 = ((free_space - s0) - s1);
     return ((child_idx == 0) ? s0 : ((child_idx == 1) ? s1 : s2));
 }
@@ -108,7 +108,7 @@ long ui_layout_nav_tab(long nav_rect, long gap, long tab_idx) {
 }
 
 long ui_scroll_step(long scroll_pos, long velocity, long drag_delta, long max_scroll, long bounce_ios) {
-    long raw_vel = ((((((((velocity * 3) == -9223372036854775808) && (4 == -1)) ? -9223372036854775808 : ((velocity * 3) / 4)) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
+    long raw_vel = ((((((velocity * 3) / 4) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
     long raw_pos = ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     if ((bounce_ios == 0)) {
         long clamped_pos = ui_constrain_dim(raw_pos, 0, max_scroll);
@@ -119,7 +119,7 @@ long ui_scroll_step(long scroll_pos, long velocity, long drag_delta, long max_sc
     long over_top = (((((raw_pos < 0) ? raw_pos : 0) & 4294967295) ^ 2147483648) - 2147483648);
     long over_bot = (((((raw_pos > max_scroll) ? (raw_pos - max_scroll) : 0) & 4294967295) ^ 2147483648) - 2147483648);
     long overscroll = ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648);
-    long spring_pull = ((((((overscroll == -9223372036854775808) && (3 == -1)) ? -9223372036854775808 : (overscroll / 3)) & 4294967295) ^ 2147483648) - 2147483648);
+    long spring_pull = ((((overscroll / 3) & 4294967295) ^ 2147483648) - 2147483648);
     long bounced_pos = ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648);
     long bounced_vel = (((((overscroll != 0) ? ((raw_vel - spring_pull) / 2) : raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648));
@@ -128,7 +128,7 @@ long ui_scroll_step(long scroll_pos, long velocity, long drag_delta, long max_sc
 long ui_visible_card_index(long scroll_pos, long card_h, long card_gap, long total_cards) {
     long stride = ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648);
     long clamped_scroll = (((((scroll_pos < 0) ? 0 : scroll_pos) & 4294967295) ^ 2147483648) - 2147483648);
-    long raw_idx = ((((((clamped_scroll == -9223372036854775808) && (stride == -1)) ? -9223372036854775808 : (clamped_scroll / stride)) & 4294967295) ^ 2147483648) - 2147483648);
+    long raw_idx = ((((clamped_scroll / stride) & 4294967295) ^ 2147483648) - 2147483648);
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648);
 }
 

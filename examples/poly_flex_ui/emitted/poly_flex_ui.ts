@@ -1,8 +1,8 @@
 function ui_pack_rect(x: number, y: number, w: number, h: number): number {
     let ux: number = (x & 65535);
-    let uy: number = ((y & 65535) << (16 & 63));
-    let uw: number = ((w & 65535) << (32 & 63));
-    let uh: number = ((h & 65535) << (48 & 63));
+    let uy: number = ((y & 65535) << 16);
+    let uw: number = ((w & 65535) << 32);
+    let uh: number = ((h & 65535) << 48);
     return (((ux | uy) | uw) | uh);
 }
 
@@ -72,8 +72,8 @@ function ui_flex_child_size(avail_main: number, fixed_sum: number, gap: number, 
     if ((total_flex <= 0)) {
         return 0;
     }
-    let s0: number = ((((free_space * flex0) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : Math.trunc((free_space * flex0) / total_flex));
-    let s1: number = ((((free_space * flex1) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : Math.trunc((free_space * flex1) / total_flex));
+    let s0: number = Math.trunc((free_space * flex0) / total_flex);
+    let s1: number = Math.trunc((free_space * flex1) / total_flex);
     let s2: number = ((free_space - s0) - s1);
     return ((child_idx == 0) ? s0 : ((child_idx == 1) ? s1 : s2));
 }
@@ -108,7 +108,7 @@ function ui_layout_nav_tab(nav_rect: number, gap: number, tab_idx: number): numb
 }
 
 function ui_scroll_step(scroll_pos: number, velocity: number, drag_delta: number, max_scroll: number, bounce_ios: number): number {
-    let raw_vel: number = ((((((((velocity * 3) == -9223372036854775808) && (4 == -1)) ? -9223372036854775808 : Math.trunc((velocity * 3) / 4)) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
+    let raw_vel: number = ((((Math.trunc((velocity * 3) / 4) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648);
     let raw_pos: number = ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     if ((bounce_ios == 0)) {
         let clamped_pos: number = ui_constrain_dim(raw_pos, 0, max_scroll);
@@ -119,7 +119,7 @@ function ui_scroll_step(scroll_pos: number, velocity: number, drag_delta: number
     let over_top: number = (((((raw_pos < 0) ? raw_pos : 0) & 4294967295) ^ 2147483648) - 2147483648);
     let over_bot: number = (((((raw_pos > max_scroll) ? (raw_pos - max_scroll) : 0) & 4294967295) ^ 2147483648) - 2147483648);
     let overscroll: number = ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648);
-    let spring_pull: number = ((((((overscroll == -9223372036854775808) && (3 == -1)) ? -9223372036854775808 : Math.trunc(overscroll / 3)) & 4294967295) ^ 2147483648) - 2147483648);
+    let spring_pull: number = (((Math.trunc(overscroll / 3) & 4294967295) ^ 2147483648) - 2147483648);
     let bounced_pos: number = ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648);
     let bounced_vel: number = (((((overscroll != 0) ? Math.trunc((raw_vel - spring_pull) / 2) : raw_vel) & 4294967295) ^ 2147483648) - 2147483648);
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648));
@@ -128,7 +128,7 @@ function ui_scroll_step(scroll_pos: number, velocity: number, drag_delta: number
 function ui_visible_card_index(scroll_pos: number, card_h: number, card_gap: number, total_cards: number): number {
     let stride: number = ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648);
     let clamped_scroll: number = (((((scroll_pos < 0) ? 0 : scroll_pos) & 4294967295) ^ 2147483648) - 2147483648);
-    let raw_idx: number = ((((((clamped_scroll == -9223372036854775808) && (stride == -1)) ? -9223372036854775808 : Math.trunc(clamped_scroll / stride)) & 4294967295) ^ 2147483648) - 2147483648);
+    let raw_idx: number = (((Math.trunc(clamped_scroll / stride) & 4294967295) ^ 2147483648) - 2147483648);
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648);
 }
 

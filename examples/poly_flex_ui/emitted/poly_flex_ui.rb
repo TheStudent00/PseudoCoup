@@ -1,8 +1,8 @@
 def ui_pack_rect(x, y, w, h)
     ux = (x & 65535)
-    uy = ((y & 65535) << (16 & 63))
-    uw = ((w & 65535) << (32 & 63))
-    uh = ((h & 65535) << (48 & 63))
+    uy = ((y & 65535) << 16)
+    uw = ((w & 65535) << 32)
+    uh = ((h & 65535) << 48)
     return (((ux | uy) | uw) | uh)
 end
 
@@ -72,8 +72,8 @@ def ui_flex_child_size(avail_main, fixed_sum, gap, flex0, flex1, flex2, child_id
     if (total_flex <= 0)
         return 0
     end
-    s0 = ((((free_space * flex0) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : ((free_space * flex0).fdiv(total_flex).truncate))
-    s1 = ((((free_space * flex1) == -9223372036854775808) && (total_flex == -1)) ? -9223372036854775808 : ((free_space * flex1).fdiv(total_flex).truncate))
+    s0 = ((free_space * flex0).fdiv(total_flex).truncate)
+    s1 = ((free_space * flex1).fdiv(total_flex).truncate)
     s2 = ((free_space - s0) - s1)
     return ((child_idx == 0) ? s0 : ((child_idx == 1) ? s1 : s2))
 end
@@ -108,7 +108,7 @@ def ui_layout_nav_tab(nav_rect, gap, tab_idx)
 end
 
 def ui_scroll_step(scroll_pos, velocity, drag_delta, max_scroll, bounce_ios)
-    raw_vel = ((((((((velocity * 3) == -9223372036854775808) && (4 == -1)) ? -9223372036854775808 : ((velocity * 3).fdiv(4).truncate)) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
+    raw_vel = ((((((velocity * 3).fdiv(4).truncate) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
     raw_pos = ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648)
     if (bounce_ios == 0)
         clamped_pos = ui_constrain_dim(raw_pos, 0, max_scroll)
@@ -119,7 +119,7 @@ def ui_scroll_step(scroll_pos, velocity, drag_delta, max_scroll, bounce_ios)
     over_top = (((((raw_pos < 0) ? raw_pos : 0) & 4294967295) ^ 2147483648) - 2147483648)
     over_bot = (((((raw_pos > max_scroll) ? (raw_pos - max_scroll) : 0) & 4294967295) ^ 2147483648) - 2147483648)
     overscroll = ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648)
-    spring_pull = ((((((overscroll == -9223372036854775808) && (3 == -1)) ? -9223372036854775808 : (overscroll.fdiv(3).truncate)) & 4294967295) ^ 2147483648) - 2147483648)
+    spring_pull = ((((overscroll.fdiv(3).truncate) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_pos = ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_vel = (((((overscroll != 0) ? ((raw_vel - spring_pull).fdiv(2).truncate) : raw_vel) & 4294967295) ^ 2147483648) - 2147483648)
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648))
@@ -128,7 +128,7 @@ end
 def ui_visible_card_index(scroll_pos, card_h, card_gap, total_cards)
     stride = ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648)
     clamped_scroll = (((((scroll_pos < 0) ? 0 : scroll_pos) & 4294967295) ^ 2147483648) - 2147483648)
-    raw_idx = ((((((clamped_scroll == -9223372036854775808) && (stride == -1)) ? -9223372036854775808 : (clamped_scroll.fdiv(stride).truncate)) & 4294967295) ^ 2147483648) - 2147483648)
+    raw_idx = ((((clamped_scroll.fdiv(stride).truncate) & 4294967295) ^ 2147483648) - 2147483648)
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648)
 end
 
