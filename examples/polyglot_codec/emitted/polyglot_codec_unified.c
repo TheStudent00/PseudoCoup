@@ -10,7 +10,7 @@ int64_t zigzag_encode_i32(int64_t n) {
 }
 
 int64_t zigzag_decode_u32(int64_t z) {
-    return ((((z >> 1) ^ (0 - (z & 1))) << 32) >> 32);
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
 }
 
 int64_t fx_fold64(int64_t acc, int64_t word) {
@@ -19,8 +19,8 @@ int64_t fx_fold64(int64_t acc, int64_t word) {
 }
 
 int64_t verify_telemetry_frame(int64_t delta_a, int64_t delta_b, int64_t seed) {
-    int64_t zz_a = zigzag_encode_i32(((delta_a << 32) >> 32));
-    int64_t zz_b = zigzag_encode_i32(((delta_b << 32) >> 32));
+    int64_t zz_a = zigzag_encode_i32((((delta_a & 4294967295) ^ 2147483648) - 2147483648));
+    int64_t zz_b = zigzag_encode_i32((((delta_b & 4294967295) ^ 2147483648) - 2147483648));
     int64_t h_a = xxhash32_avalanche(zz_a, (seed & 4294967295));
     int64_t h_b = xxhash32_avalanche(zz_b, h_a);
     int64_t digest = fx_fold64(h_a, h_b);

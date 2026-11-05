@@ -10,7 +10,7 @@ function zigzag_encode_i32(n: number): number {
 }
 
 function zigzag_decode_u32(z: number): number {
-    return ((((z >> 1) ^ (0 - (z & 1))) << 32) >> 32);
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
 }
 
 function fx_fold64(acc: number, word: number): number {
@@ -19,8 +19,8 @@ function fx_fold64(acc: number, word: number): number {
 }
 
 function verify_telemetry_frame(delta_a: number, delta_b: number, seed: number): number {
-    let zz_a: number = zigzag_encode_i32(((delta_a << 32) >> 32));
-    let zz_b: number = zigzag_encode_i32(((delta_b << 32) >> 32));
+    let zz_a: number = zigzag_encode_i32((((delta_a & 4294967295) ^ 2147483648) - 2147483648));
+    let zz_b: number = zigzag_encode_i32((((delta_b & 4294967295) ^ 2147483648) - 2147483648));
     let h_a: number = xxhash32_avalanche(zz_a, (seed & 4294967295));
     let h_b: number = xxhash32_avalanche(zz_b, h_a);
     let digest: number = fx_fold64(h_a, h_b);

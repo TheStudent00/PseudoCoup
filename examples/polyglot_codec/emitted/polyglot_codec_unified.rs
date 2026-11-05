@@ -10,7 +10,7 @@ fn zigzag_encode_i32(n: i64) -> i64 {
 }
 
 fn zigzag_decode_u32(z: i64) -> i64 {
-    return ((((z >> 1) ^ (0 - (z & 1))) << 32) >> 32);
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
 }
 
 fn fx_fold64(acc: i64, word: i64) -> i64 {
@@ -19,8 +19,8 @@ fn fx_fold64(acc: i64, word: i64) -> i64 {
 }
 
 fn verify_telemetry_frame(delta_a: i64, delta_b: i64, seed: i64) -> i64 {
-    let mut zz_a: i64 = zigzag_encode_i32(((delta_a << 32) >> 32));
-    let mut zz_b: i64 = zigzag_encode_i32(((delta_b << 32) >> 32));
+    let mut zz_a: i64 = zigzag_encode_i32((((delta_a & 4294967295) ^ 2147483648) - 2147483648));
+    let mut zz_b: i64 = zigzag_encode_i32((((delta_b & 4294967295) ^ 2147483648) - 2147483648));
     let mut h_a: i64 = xxhash32_avalanche(zz_a, (seed & 4294967295));
     let mut h_b: i64 = xxhash32_avalanche(zz_b, h_a);
     let mut digest: i64 = fx_fold64(h_a, h_b);
