@@ -1,8 +1,8 @@
 func ui_pack_rect(x int64, y int64, w int64, h int64) int64 {
     ux := (x & 65535)
-    uy := ((y & 65535) << (16 & 63))
-    uw := ((w & 65535) << (32 & 63))
-    uh := ((h & 65535) << (48 & 63))
+    uy := ((y & 65535) << 16)
+    uw := ((w & 65535) << 32)
+    uh := ((h & 65535) << 48)
     return (((ux | uy) | uw) | uh)
 }
 
@@ -72,8 +72,8 @@ func ui_flex_child_size(avail_main int64, fixed_sum int64, gap int64, flex0 int6
     if ((total_flex <= 0)) {
         return 0
     }
-    s0 := func() int64 { if (((free_space * flex0) == -9223372036854775808) && (total_flex == -1)) { return -9223372036854775808 } else { return ((free_space * flex0) / total_flex) } }()
-    s1 := func() int64 { if (((free_space * flex1) == -9223372036854775808) && (total_flex == -1)) { return -9223372036854775808 } else { return ((free_space * flex1) / total_flex) } }()
+    s0 := ((free_space * flex0) / total_flex)
+    s1 := ((free_space * flex1) / total_flex)
     s2 := ((free_space - s0) - s1)
     return func() int64 { if (child_idx == 0) { return s0 } else { return func() int64 { if (child_idx == 1) { return s1 } else { return s2 } }() } }()
 }
@@ -108,7 +108,7 @@ func ui_layout_nav_tab(nav_rect int64, gap int64, tab_idx int64) int64 {
 }
 
 func ui_scroll_step(scroll_pos int64, velocity int64, drag_delta int64, max_scroll int64, bounce_ios int64) int64 {
-    raw_vel := ((((func() int64 { if (((velocity * 3) == -9223372036854775808) && (4 == -1)) { return -9223372036854775808 } else { return ((velocity * 3) / 4) } }() + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
+    raw_vel := ((((((velocity * 3) / 4) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
     raw_pos := ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648)
     if ((bounce_ios == 0)) {
         clamped_pos := ui_constrain_dim(raw_pos, 0, max_scroll)
@@ -119,7 +119,7 @@ func ui_scroll_step(scroll_pos int64, velocity int64, drag_delta int64, max_scro
     over_top := (((func() int64 { if (raw_pos < 0) { return raw_pos } else { return 0 } }() & 4294967295) ^ 2147483648) - 2147483648)
     over_bot := (((func() int64 { if (raw_pos > max_scroll) { return (raw_pos - max_scroll) } else { return 0 } }() & 4294967295) ^ 2147483648) - 2147483648)
     overscroll := ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648)
-    spring_pull := (((func() int64 { if ((overscroll == -9223372036854775808) && (3 == -1)) { return -9223372036854775808 } else { return (overscroll / 3) } }() & 4294967295) ^ 2147483648) - 2147483648)
+    spring_pull := ((((overscroll / 3) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_pos := ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_vel := (((func() int64 { if (overscroll != 0) { return ((raw_vel - spring_pull) / 2) } else { return raw_vel } }() & 4294967295) ^ 2147483648) - 2147483648)
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648))
@@ -128,7 +128,7 @@ func ui_scroll_step(scroll_pos int64, velocity int64, drag_delta int64, max_scro
 func ui_visible_card_index(scroll_pos int64, card_h int64, card_gap int64, total_cards int64) int64 {
     stride := ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648)
     clamped_scroll := (((func() int64 { if (scroll_pos < 0) { return 0 } else { return scroll_pos } }() & 4294967295) ^ 2147483648) - 2147483648)
-    raw_idx := (((func() int64 { if ((clamped_scroll == -9223372036854775808) && (stride == -1)) { return -9223372036854775808 } else { return (clamped_scroll / stride) } }() & 4294967295) ^ 2147483648) - 2147483648)
+    raw_idx := ((((clamped_scroll / stride) & 4294967295) ^ 2147483648) - 2147483648)
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648)
 }
 

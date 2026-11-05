@@ -1,8 +1,8 @@
 def ui_pack_rect(x, y, w, h):
     ux = (x & 65535)
-    uy = ((y & 65535) << (16 & 63))
-    uw = ((w & 65535) << (32 & 63))
-    uh = ((h & 65535) << (48 & 63))
+    uy = ((y & 65535) << 16)
+    uw = ((w & 65535) << 32)
+    uh = ((h & 65535) << 48)
     return (((ux | uy) | uw) | uh)
 
 def ui_rect_lane(rect, lane):
@@ -61,8 +61,8 @@ def ui_flex_child_size(avail_main, fixed_sum, gap, flex0, flex1, flex2, child_id
     total_flex = ((flex0 + flex1) + flex2)
     if (total_flex <= 0):
         return 0
-    s0 = (-9223372036854775808 if (((free_space * flex0) == -9223372036854775808) and (total_flex == -1)) else int((free_space * flex0) / total_flex))
-    s1 = (-9223372036854775808 if (((free_space * flex1) == -9223372036854775808) and (total_flex == -1)) else int((free_space * flex1) / total_flex))
+    s0 = int((free_space * flex0) / total_flex)
+    s1 = int((free_space * flex1) / total_flex)
     s2 = ((free_space - s0) - s1)
     return (s0 if (child_idx == 0) else (s1 if (child_idx == 1) else s2))
 
@@ -92,7 +92,7 @@ def ui_layout_nav_tab(nav_rect, gap, tab_idx):
     return ui_pack_rect((((tx & 4294967295) ^ 2147483648) - 2147483648), ny, (((tw & 4294967295) ^ 2147483648) - 2147483648), nh)
 
 def ui_scroll_step(scroll_pos, velocity, drag_delta, max_scroll, bounce_ios):
-    raw_vel = (((((-9223372036854775808 if (((velocity * 3) == -9223372036854775808) and (4 == -1)) else int((velocity * 3) / 4)) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
+    raw_vel = ((((int((velocity * 3) / 4) + drag_delta) & 4294967295) ^ 2147483648) - 2147483648)
     raw_pos = ((((scroll_pos + raw_vel) & 4294967295) ^ 2147483648) - 2147483648)
     if (bounce_ios == 0):
         clamped_pos = ui_constrain_dim(raw_pos, 0, max_scroll)
@@ -102,7 +102,7 @@ def ui_scroll_step(scroll_pos, velocity, drag_delta, max_scroll, bounce_ios):
     over_top = ((((raw_pos if (raw_pos < 0) else 0) & 4294967295) ^ 2147483648) - 2147483648)
     over_bot = (((((raw_pos - max_scroll) if (raw_pos > max_scroll) else 0) & 4294967295) ^ 2147483648) - 2147483648)
     overscroll = ((((over_top + over_bot) & 4294967295) ^ 2147483648) - 2147483648)
-    spring_pull = ((((-9223372036854775808 if ((overscroll == -9223372036854775808) and (3 == -1)) else int(overscroll / 3)) & 4294967295) ^ 2147483648) - 2147483648)
+    spring_pull = (((int(overscroll / 3) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_pos = ((((raw_pos - spring_pull) & 4294967295) ^ 2147483648) - 2147483648)
     bounced_vel = ((((int((raw_vel - spring_pull) / 2) if (overscroll != 0) else raw_vel) & 4294967295) ^ 2147483648) - 2147483648)
     return ui_pack_rect(bounced_pos, bounced_vel, overscroll, (((0 & 4294967295) ^ 2147483648) - 2147483648))
@@ -110,7 +110,7 @@ def ui_scroll_step(scroll_pos, velocity, drag_delta, max_scroll, bounce_ios):
 def ui_visible_card_index(scroll_pos, card_h, card_gap, total_cards):
     stride = ((((card_h + card_gap) & 4294967295) ^ 2147483648) - 2147483648)
     clamped_scroll = ((((0 if (scroll_pos < 0) else scroll_pos) & 4294967295) ^ 2147483648) - 2147483648)
-    raw_idx = ((((-9223372036854775808 if ((clamped_scroll == -9223372036854775808) and (stride == -1)) else int(clamped_scroll / stride)) & 4294967295) ^ 2147483648) - 2147483648)
+    raw_idx = (((int(clamped_scroll / stride) & 4294967295) ^ 2147483648) - 2147483648)
     return (((ui_constrain_dim(raw_idx, 0, (total_cards - 1)) & 4294967295) ^ 2147483648) - 2147483648)
 
 def ui_layout_list_card(body_rect, scroll_pos, card_h, card_gap, card_idx):
