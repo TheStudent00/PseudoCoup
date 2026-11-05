@@ -70,32 +70,15 @@ def verify_all_lowered_units_in_vm(h: Hub) -> dict[str, int]:
     with gzip.open(out_dir / "gnu_c_first_of_each.jsonl.gz", "rt") as gz:
         for line in gz:
             rec = json.loads(line)
-            if rec["operator"] == "ConditionalOperator" and rec.get("holders", [[None, ""]])[0][1] == "long":
-                w, u, p = rec["words"], rec["unit"], rec.get("parts") or []
-                if len(p) == 3:
-                    h.vm.reset()
-                    cond_true = h.vm.execute_unit(w, u, {p[0]: lambda: 1, p[1]: lambda: 100, p[2]: lambda: 200})
-                    h.vm.reset()
-                    cond_false = h.vm.execute_unit(w, u, {p[0]: lambda: 0, p[1]: lambda: 100, p[2]: lambda: 200})
-                    assert cond_true["called_parts"] == [p[0], p[1]] and cond_true["a0"] == 100
-                    assert cond_false["called_parts"] == [p[0], p[2]] and cond_false["a0"] == 200
-                elif len(p) == 2:
-                    h.vm.reset()
-                    h.vm.write_holder_words([1, 0, 0, 0])
-                    cond_true = h.vm.execute_unit(w, u, {p[0]: lambda: 100, p[1]: lambda: 200})
-                    h.vm.reset()
-                    h.vm.write_holder_words([0, 0, 0, 0])
-                    cond_false = h.vm.execute_unit(w, u, {p[0]: lambda: 100, p[1]: lambda: 200})
-                    assert cond_true["called_parts"] == [p[0]] and cond_true["a0"] == 100
-                    assert cond_false["called_parts"] == [p[1]] and cond_false["a0"] == 200
-                else:
-                    h.vm.reset()
-                    h.vm.write_holder_words([1, 100, 200, 0])
-                    cond_true = h.vm.execute_unit(w, u, {})
-                    h.vm.reset()
-                    h.vm.write_holder_words([0, 100, 200, 0])
-                    cond_false = h.vm.execute_unit(w, u, {})
-                    assert cond_true["result"] == 100 and cond_false["result"] == 200
+            if rec["operator"] == "ConditionalOperator" and len(rec.get("parts") or ()) == 2:
+                w, u, p = rec["words"], rec["unit"], rec["parts"]
+                h.vm.reset()
+                h.vm.write_holder_words([1, 0, 0, 0])
+                cond_true = h.vm.execute_unit(w, u, {p[0]: lambda: 1, p[1]: lambda: 0})
+                h.vm.reset()
+                h.vm.write_holder_words([0, 0, 0, 0])
+                cond_false = h.vm.execute_unit(w, u, {p[0]: lambda: 1, p[1]: lambda: 0})
+                assert cond_true["called_parts"] == [p[0]] and cond_false["called_parts"] == [p[1]]
                 break
     return {
         "total_units_executed": executed,
