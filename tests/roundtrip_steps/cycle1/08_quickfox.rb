@@ -27,8 +27,8 @@ def factorial_iter(n)
 end
 
 def euclid_step(a, b)
-    q = ((((a ^ b) < 0) && ((a.remainder(b)) != 0)) ? ((a.fdiv(b).truncate) - 1) : (a.fdiv(b).truncate))
-    r = ((((a ^ b) < 0) && ((a.remainder(b)) != 0)) ? ((a.remainder(b)) + b) : (a.remainder(b)))
+    q = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a / b) - 1) : (a / b))
+    r = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a % b) + b) : (a % b))
     out = 0
     if ((q < 0) && (r != 0))
         out = (((q * 100) + r) - a)

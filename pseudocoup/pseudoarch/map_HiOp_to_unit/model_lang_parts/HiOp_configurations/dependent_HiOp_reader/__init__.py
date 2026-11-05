@@ -3,7 +3,7 @@ which parts of each GNU C listing are bodies, read from clang 21.1.8's own
 source code.
 
 Plan: `.../node_0_0_0_0_2_4_extract_lang_vocab/node_0_0_0_0_2_4_2_dependent_HiOp_reader/`
-(a research node until 2026-10-11, .
+(a research node until 2026-10-11, PCHQ log 422).
 
     dependent_HiOp_reader.py          the reader: out/places.json (steps 1 and 2) and out/bodies.json (step 3)
     check_against_clang.py            step 2, checked against clang's own checker

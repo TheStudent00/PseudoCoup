@@ -1,7 +1,7 @@
 """check_against_clang -- dependent_HiOp_reader's answer (out/places.json)
 checked against clang's own checker, on the tower: step 2, a brute force
 bounded at depth 2. Plan node
-Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoarch/
+Planning/node_0_0_projects/node_0_0_0_pseudocoup/node_0_0_0_0_pseudoir/
 node_0_0_0_0_2_map_HiOp_to_unit/node_0_0_0_0_2_4_extract_lang_vocab/
 node_0_0_0_0_2_4_2_dependent_HiOp_reader, section 4.
 out/ is the reader's: Research/extract_lang_vocabulary/dependent_HiOp_reader/out.
@@ -93,7 +93,7 @@ import sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import dependent_HiOp_reader as reader  # noqa: E402
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import LETTERS  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps.operator_reader import LETTERS  # noqa: E402
 
 PLACES = os.path.join(reader.OUT, "places.json")
 CHECKED = os.path.join(reader.OUT, "check.json")

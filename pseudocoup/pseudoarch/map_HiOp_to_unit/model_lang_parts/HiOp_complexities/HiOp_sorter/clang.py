@@ -58,7 +58,7 @@ from ...HiOps.operator_reader import clang as clang_lists
 
 # Where run elv2_l65 put the compiled reference graph: one
 # `<file>.refs.json` per compiled file. Configuration.
-COMPILED_VARIABLE = "PSEUDOARCH_COMPILED_CLANG"
+COMPILED_VARIABLE = "PSEUDOIR_COMPILED_CLANG"
 FILES = ("CGExprScalar", "CGExprComplex", "CGExprAgg", "CGExpr", "CGStmt", "CGAtomic", "CGBuiltin")
 CALL = "R_RISCV_CALL_PLT"
 ADDRESS = ("R_RISCV_PCREL_HI20", "R_RISCV_GOT_HI20")

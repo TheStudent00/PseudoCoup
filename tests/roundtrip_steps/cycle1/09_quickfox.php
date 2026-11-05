@@ -27,7 +27,7 @@ function factorial_iter(int $n): int {
 }
 
 function euclid_step(int $a, int $b): int {
-    $q = (((($a ^ $b) < 0) && (($a % $b) != 0)) ? (intdiv($a, $b) - 1) : intdiv($a, $b));
+    $q = (((($a ^ $b) < 0) && (($a % $b) != 0)) ? (($a / $b) - 1) : ($a / $b));
     $r = (((($a ^ $b) < 0) && (($a % $b) != 0)) ? (($a % $b) + $b) : ($a % $b));
     $out = 0;
     if ((($q < 0) && ($r != 0))) {

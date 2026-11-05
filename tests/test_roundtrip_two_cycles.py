@@ -16,9 +16,9 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[3]
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+sys.path.insert(0, str(ROOT / "Projects"))
 
-from pseudocoup.ledgerer import ScriptToLedger, LedgerToScript, eval_ledger
+from PseudoCoup.ledgerer import ScriptToLedger, LedgerToScript, eval_ledger
 
 
 def run_two_cycle_roundtrip(

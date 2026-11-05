@@ -1,6 +1,6 @@
 {
   "compiler": "Clang 21.1.8",
-  "latest_verification_run": "riscv64-runner_l24_all_clang_languages",
+  "latest_verification_run": "tlp1_l24_all_clang_languages",
   "total_keyed_operators": 2162,
   "strict_gnu_c_operators": 1634,
   "non_gnu_c_operators": 528,

@@ -15,13 +15,13 @@ from pathlib import Path
 import sys
 import z3
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from pseudocoup.hub import BreakSignal, ComplexHolder, ContinueSignal, Hub
+sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+from PseudoCoup.hub import BreakSignal, ComplexHolder, ContinueSignal, Hub
 
 
 def verify_all_lowered_units_in_vm(h: Hub) -> dict[str, int]:
     """Run every lowered Unit across all 6 language groups through RiscvUnitVM."""
-    pkg_dir = Path(__file__).resolve().parents[1] / "pseudocoup" / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
+    pkg_dir = Path(__file__).resolve().parents[1] / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
     hq_dir = Path(__file__).resolve().parents[3] / "Research" / "lower_HiOp" / "out"
     out_dir = pkg_dir if pkg_dir.exists() else hq_dir
     files = [

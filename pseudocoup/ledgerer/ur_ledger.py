@@ -14,6 +14,7 @@ import ast
 import re
 from dataclasses import dataclass, field
 from typing import Any
+import z3
 from .universal_rich_node import UniversalRichNode
 
 RISCV64_HOLDER_LAYOUT: dict[str, tuple[int, int, bool]] = {
@@ -142,62 +143,177 @@ class URLedger:
     bridge_events: list[dict[str, str]] = field(default_factory=list)
 
 
-TIER1_EXACT_OPS = {
-    "+", "-", "*", "&", "|", "^", "==", "!=", "<", "<=", ">", ">=",
-    "ite", "&&", "||", "neg", "not", "trunc_div", "trunc_rem",
+CANON_HOLDER_TO_C_TYPE: dict[str, str] = {
+    "bool": "_Bool",
+    "i8": "signed char",
+    "u8": "unsigned char",
+    "i16": "short",
+    "u16": "unsigned short",
+    "i32": "int",
+    "u32": "unsigned int",
+    "i64": "long",
+    "u64": "unsigned long",
 }
 
+_UR_NODE_CACHE: dict[tuple[str, str, str, bool], UniversalRichNode] = {}
 
-def build_ur_node(lang: str, op_symbol: str, holder: str = "i64", guarded: bool = False) -> UniversalRichNode:
-    if op_symbol in TIER1_EXACT_OPS or guarded:
-        meaning = {
-            "tier": 1, "D_ok": "True", "D_trap": "False",
-            "R_val": f"tier1_{op_symbol}_{holder}", "guarded": True,
-        }
-    elif op_symbol in ("<<", ">>"):
-        r_val = f"saturate_64_{op_symbol}" if lang in ("go", "swift") else f"mask_63_{op_symbol}"
-        meaning = {"tier": 2, "D_ok": "0 <= b < 64", "D_trap": "b < 0", "R_val": r_val, "guarded": False}
-    elif op_symbol in ("/", "//", "%"):
-        if lang in ("python", "ruby"):
-            r_val = "floor_div" if op_symbol in ("/", "//") else "floor_mod"
-        else:
-            r_val = "trunc_div" if op_symbol in ("/", "//") else "trunc_rem"
-        meaning = {"tier": 2, "D_ok": "b != 0", "D_trap": "b == 0", "R_val": r_val, "guarded": False}
-    else:
-        meaning = {"tier": 1, "D_ok": "True", "D_trap": "False", "R_val": op_symbol, "guarded": True}
 
-    opcode_map = {
-        "+": "add", "-": "sub", "*": "mul", "/": "div", "//": "div", "%": "rem",
-        "trunc_div": "div", "trunc_rem": "rem",
-        "&": "and", "|": "or", "^": "xor", "<<": "sll", ">>": "sra",
-        "==": "seqz", "!=": "snez", "<": "slt", "<=": "slt", ">": "slt", ">=": "slt", "ite": "beq",
+_LANG_DATASET_UL_CACHE: dict[str, dict[str, Any]] | None = None
+
+
+def _get_dataset_unit_lean(lang: str, op_symbol: str, holder: str, guarded: bool) -> Any:
+    """Look up the real lowered 64-bit `UnitLean` from `Research/lower_HiOp/out/` datasets when available."""
+    global _LANG_DATASET_UL_CACHE
+    if holder not in ("i64", "u64"):
+        return None
+    from ..hub.autopoly.polyfill import normalize_target_lang
+    from ..hub.autopoly.verify_hiop_primitives import load_language_64bit_unit_leans
+
+    if _LANG_DATASET_UL_CACHE is None:
+        _LANG_DATASET_UL_CACHE = load_language_64bit_unit_leans()
+
+    eff_lang = "c" if guarded else normalize_target_lang(lang)
+    uls = _LANG_DATASET_UL_CACHE.get(eff_lang, {})
+    is_u = holder == "u64"
+    prim_map = {
+        "+": "BV_ADD",
+        "-": "BV_SUB",
+        "*": "BV_MUL",
+        "&": "BV_AND",
+        "|": "BV_OR",
+        "^": "BV_XOR",
+        "~": "BV_NOT",
+        "<<": "BV_SHL",
+        ">>>": "BV_LSHR",
+        ">>": "BV_LSHR" if is_u else "BV_ASHR",
+        "<": "BV_ULT" if is_u else "BV_SLT",
+        "trunc_div": "BV_UDIV" if is_u else "BV_SDIV",
+        "trunc_rem": "BV_UREM" if is_u else "BV_SREM",
+        "/": "BV_UDIV" if is_u else ("PY_FLOORDIV" if eff_lang == "python" else "BV_SDIV"),
+        "//": "PY_FLOORDIV" if "PY_FLOORDIV" in uls else "BV_SDIV",
+        "%": "BV_UREM" if is_u else ("PY_MOD" if "PY_MOD" in uls else "BV_SREM"),
+        "ite": "BV_ITE",
     }
-    mnem = opcode_map.get(op_symbol, "add")
+    pkey = prim_map.get(op_symbol)
+    if pkey is None:
+        return None
+    if guarded and op_symbol in ("<<", ">>", ">>>"):
+        # Guarded shifts represent already-masked 64-bit shifts (a << (b & 63)); compile via _state_info_0_for_op
+        return None
+    return uls.get(pkey)
+
+
+def _state_info_0_for_op(op_symbol: str, holder: str, lang: str = "c", guarded: bool = False) -> Any:
+    from PseudoArch.map_HiOp_to_unit.model_lang_parts import Operator
+    from PseudoArch.map_HiOp_to_unit.model_lang_parts.context.entry_context import PartState0, StateInfo0
+
+    c_type = CANON_HOLDER_TO_C_TYPE.get(holder, "long")
+    if op_symbol == "neg":
+        return StateInfo0(
+            "c",
+            Operator("c", "UnaryOperator.Minus", "-a", ("a",), "ur_ledger"),
+            (PartState0("a", c_type),),
+        )
+    if op_symbol == "ite":
+        return StateInfo0(
+            "c",
+            Operator("c", "ConditionalOperator", "a ? b : c", ("a", "b", "c"), "ur_ledger"),
+            (PartState0("a", c_type), PartState0("b", c_type), PartState0("c", c_type)),
+        )
+    if op_symbol in ("<<", ">>"):
+        return StateInfo0(
+            "c",
+            Operator("c", f"BinaryOperator.{op_symbol}", f"a {op_symbol} (b & 63)", ("a", "b"), "ur_ledger"),
+            (PartState0("a", c_type), PartState0("b", c_type)),
+        )
+    c_op = "/" if op_symbol in ("trunc_div", "//") else ("%" if op_symbol == "trunc_rem" else op_symbol)
+    return StateInfo0(
+        "c",
+        Operator("c", f"BinaryOperator.{c_op}", f"a {c_op} b", ("a", "b"), "ur_ledger"),
+        (PartState0("a", c_type), PartState0("b", c_type)),
+    )
+
+
+def build_ur_node(
+    lang: str,
+    op_symbol: str,
+    holder: str = "i64",
+    guarded: bool = False,
+    unit_lean: Any = None,
+    state_info_0: Any = None,
+) -> UniversalRichNode:
+    if state_info_0 is not None:
+        from PseudoArch.map_HiOp_to_unit import map_state_info_0_to_unit
+        return UniversalRichNode.from_mapped_hiop(map_state_info_0_to_unit(state_info_0), state_info_0)
+    if unit_lean is None:
+        cache_key = (lang, op_symbol, holder, guarded)
+        if cache_key not in _UR_NODE_CACHE:
+            ds_ul = _get_dataset_unit_lean(lang, op_symbol, holder, guarded)
+            if ds_ul is not None:
+                node = UniversalRichNode(
+                    hiop={"lang": lang, "operator": op_symbol, "spelling": op_symbol, "holders": (holder, holder)},
+                    units={"riscv64": [{"opcode": l.constructor} for l in ds_ul.loop_leans]},
+                    meaning={
+                        "unit_lean": ds_ul,
+                        "D_ok": str(ds_ul.pieces[0].domain) if len(ds_ul.pieces) == 1 else "piecewise",
+                        "D_trap": "False",
+                        "R_val": str(ds_ul.combined_term) if ds_ul.combined_term is not None else "",
+                        "guarded": guarded,
+                    },
+                )
+            else:
+                from PseudoArch.map_HiOp_to_unit import map_state_info_0_to_unit
+                s0 = _state_info_0_for_op(op_symbol, holder, lang=lang, guarded=guarded)
+                mapped = map_state_info_0_to_unit(s0)
+                if mapped.LoHiOp.refusal is not None:
+                    raise ValueError(f"build_ur_node({lang!r}, {op_symbol!r}) compiler refusal: {mapped.LoHiOp.refusal}")
+                node = UniversalRichNode.from_mapped_hiop(mapped, s0)
+                node.hiop["lang"] = lang
+                node.hiop["operator"] = op_symbol
+                node.hiop["spelling"] = op_symbol
+                node.meaning["guarded"] = guarded
+            _UR_NODE_CACHE[cache_key] = node
+        return _UR_NODE_CACHE[cache_key]
     return UniversalRichNode(
         hiop={"lang": lang, "operator": op_symbol, "holders": (holder, holder)},
-        units={"riscv64": [{"opcode": mnem, "text": f"{mnem} a0, a0, a1"}]},
-        meaning=meaning,
+        units={"riscv64": [{"opcode": l.constructor} for l in unit_lean.loop_leans]},
+        meaning={
+            "unit_lean": unit_lean,
+            "D_ok": str(unit_lean.pieces[0].domain) if len(unit_lean.pieces) == 1 else "piecewise",
+            "D_trap": "False",
+            "R_val": str(unit_lean.combined_term) if unit_lean.combined_term is not None else "",
+            "guarded": guarded,
+        },
     )
 
 
-def build_holder_cast_node(expr: Any, src_holder: str, dst_holder: str, lang: str = "hub") -> URHolderCast:
-    sz1, _, sg1 = RISCV64_HOLDER_LAYOUT.get(src_holder, (8, 8, True))
-    sz2, _, sg2 = RISCV64_HOLDER_LAYOUT.get(dst_holder, (8, 8, True))
-    if src_holder == dst_holder:
-        kind = "identity"
-        lo_op = "mv"
-    elif sz1 == sz2 and sg1 != sg2:
-        kind = "rule3_reinterpretation_sext_zext"
-        lo_op = "addiw" if (sz2 == 4 and sg2) else "slli;srli"
+def build_holder_cast_node(
+    expr: Any, src_holder: str, dst_holder: str, lang: str = "hub", unit_lean: Any = None, state_info_0: Any = None
+) -> URHolderCast:
+    if state_info_0 is not None:
+        from PseudoArch.map_HiOp_to_unit import map_state_info_0_to_unit
+        ur_node = UniversalRichNode.from_mapped_hiop(map_state_info_0_to_unit(state_info_0), state_info_0)
+    elif unit_lean is not None:
+        ur_node = build_ur_node(lang, f"cast_{src_holder}_to_{dst_holder}", dst_holder, True, unit_lean=unit_lean)
     else:
-        kind = "width_conversion_trunc_ext"
-        lo_op = "addiw" if (sz2 == 4 and sg2) else "andi"
-    ur_node = UniversalRichNode(
-        hiop={"lang": lang, "operator": f"cast_{src_holder}_to_{dst_holder}", "holders": (src_holder, dst_holder)},
-        units={"riscv64": [{"opcode": lo_op, "text": f"{lo_op} a0, a0"}]},
-        meaning={"tier": 1, "D_ok": "True", "D_trap": "False", "R_val": kind, "guarded": True},
+        cache_key = (lang, f"cast_{src_holder}_to_{dst_holder}", dst_holder, True)
+        if cache_key not in _UR_NODE_CACHE:
+            from PseudoArch.map_HiOp_to_unit import map_state_info_0_to_unit
+            from PseudoArch.map_HiOp_to_unit.model_lang_parts import Operator
+            from PseudoArch.map_HiOp_to_unit.model_lang_parts.context.entry_context import PartState0, StateInfo0
+
+            dst_c = CANON_HOLDER_TO_C_TYPE.get(dst_holder, "long")
+            s0 = StateInfo0(
+                "c",
+                Operator("c", "CStyleCastExpr", f"(long)(({dst_c})a)", ("a",), "ur_ledger"),
+                (PartState0("a", "long"),),
+            )
+            mapped = map_state_info_0_to_unit(s0)
+            _UR_NODE_CACHE[cache_key] = UniversalRichNode.from_mapped_hiop(mapped, s0)
+        ur_node = _UR_NODE_CACHE[cache_key]
+    return URHolderCast(
+        ur_node=ur_node, expr=expr, src_holder=src_holder, dst_holder=dst_holder, bridge_kind="sail_unit_cast"
     )
-    return URHolderCast(ur_node=ur_node, expr=expr, src_holder=src_holder, dst_holder=dst_holder, bridge_kind=kind)
 
 
 
@@ -660,69 +776,195 @@ class LedgerToScript:
 
     @classmethod
     def canonicalize_expr(cls, expr: Any, target_lang: str) -> Any:
+        from ..hub.autopoly import EquivalenceProver
+
         if isinstance(expr, (URVar, URConst)):
             return expr
         if isinstance(expr, URHolderCast):
             inner = cls.canonicalize_expr(expr.expr, target_lang)
-            if expr.src_holder == expr.dst_holder or expr.dst_holder in ("i64", "u64"):
-                return inner
-            sz, _, signed = RISCV64_HOLDER_LAYOUT.get(expr.dst_holder, (8, 8, True))
-            bits = sz * 8
-            mask = URConst((1 << bits) - 1, expr.dst_holder)
-            sign_bit = URConst(1 << (bits - 1), expr.dst_holder)
-
-            def t1_c(op: str, *ops: Any) -> URHiOpCall:
-                return URHiOpCall(build_ur_node(target_lang, op, expr.dst_holder, True), list(ops), op, expr.dst_holder)
-
-            masked = t1_c("&", inner, mask)
-            if not signed:
-                return masked
-            return t1_c("-", t1_c("^", masked, sign_bit), sign_bit)
+            if expr.ur_node.meaning.get("unit_lean") is None:
+                raise ValueError(
+                    f"URHolderCast({expr.src_holder!r} -> {expr.dst_holder!r}) lacks Sail-derived 'unit_lean'; refusing fallback."
+                )
+            return URHolderCast(expr.ur_node, inner, expr.src_holder, expr.dst_holder, expr.bridge_kind)
         if isinstance(expr, URCall):
             return URCall(expr.func_name, [cls.canonicalize_expr(a, target_lang) for a in expr.args], expr.holder)
         if not isinstance(expr, URHiOpCall):
             return expr
         args = [cls.canonicalize_expr(a, target_lang) for a in expr.args]
         meaning = expr.ur_node.meaning
-        if meaning.get("guarded", False):
-            return URHiOpCall(build_ur_node(target_lang, expr.op_symbol, expr.holder, True), args, expr.op_symbol, expr.holder)
+        if meaning.get("unit_lean") is None:
+            raise ValueError(
+                f"URHiOpCall({expr.op_symbol!r}) in canonicalize_expr lacks Sail-derived 'unit_lean'; refusing silent string-table fallback."
+            )
+        h = expr.holder
+        if not meaning.get("guarded") and len(args) == 2:
+            vocab_ops = (
+                "trunc_div",
+                "trunc_rem",
+                "<<",
+                ">>",
+                "+",
+                "-",
+                "*",
+                "&",
+                "|",
+                "^",
+                "==",
+                "!=",
+                "<",
+                "<=",
+                ">",
+                ">=",
+                "&&",
+                "||",
+            )
+            matched_op: str | None = None
+            matched_cand: UniversalRichNode | None = None
+            matched_proof: dict[str, Any] | None = None
+            tier2_fallback: tuple[str, UniversalRichNode, dict[str, Any]] | None = None
 
-        r_val = meaning.get("R_val", "")
-        a, b = args[0], args[1]
-        c0 = URConst(0, "i64")
-        c64 = URConst(64, "i64")
-        c63 = URConst(63, "i64")
-        c_min = URConst(-9223372036854775808, "i64")
-        c_neg1 = URConst(-1, "i64")
+            for cand_op in vocab_ops:
+                cand = build_ur_node(target_lang, cand_op, h, True)
+                proof = EquivalenceProver.prove_domain_range_partition(expr.ur_node, cand)
+                if proof.get("equivalent"):
+                    matched_op, matched_cand, matched_proof = cand_op, cand, proof
+                    break
+                if proof.get("tier") == "tier2_piecewise_hiop" and tier2_fallback is None:
+                    tier2_fallback = (cand_op, cand, proof)
 
-        def t1(op: str, *ops: Any) -> URHiOpCall:
-            return URHiOpCall(build_ur_node(target_lang, op, "i64", True), list(ops), op, "i64")
+            if matched_cand is None and tier2_fallback is not None:
+                matched_op, matched_cand, matched_proof = tier2_fallback
 
-        if r_val == "saturate_64_<<":
-            cond = t1("&&", t1(">=", b, c0), t1("<", b, c64))
-            return t1("ite", cond, t1("<<", a, t1("&", b, c63)), c0)
-        if r_val == "saturate_64_>>":
-            cond = t1("&&", t1(">=", b, c0), t1("<", b, c64))
-            return t1("ite", cond, t1(">>", a, t1("&", b, c63)), t1(">>", a, t1("&", c63, c63)))
-        if r_val in ("mask_63_<<", "mask_63_>>"):
-            return t1(expr.op_symbol, a, t1("&", b, c63))
-        if r_val == "trunc_div":
-            ovf = t1("&&", t1("==", a, c_min), t1("==", b, c_neg1))
-            return t1("ite", ovf, c_min, t1("trunc_div", a, b))
-        if r_val == "trunc_rem":
-            ovf = t1("&&", t1("==", a, c_min), t1("==", b, c_neg1))
-            return t1("ite", ovf, c0, t1("trunc_rem", a, b))
-        if r_val == "floor_div":
-            diff_sign = t1("&&", t1("<", t1("^", a, b), c0), t1("!=", t1("trunc_rem", a, b), c0))
-            return t1("ite", diff_sign, t1("-", t1("trunc_div", a, b), URConst(1, "i64")), t1("trunc_div", a, b))
-        if r_val == "floor_mod":
-            diff_sign = t1("&&", t1("<", t1("^", a, b), c0), t1("!=", t1("trunc_rem", a, b), c0))
-            return t1("ite", diff_sign, t1("+", t1("trunc_rem", a, b), b), t1("trunc_rem", a, b))
-        return t1(expr.op_symbol, *args)
+            if matched_op is not None and matched_cand is not None and matched_proof is not None:
+                plan = matched_proof.get("composition_plan") or {}
+                steps = matched_proof.get("residual_steps") or ()
+                needs_mask63 = plan.get("kind") == "arg1_mask_63" or any(
+                    st["guard"]["kind"] == "shift_out_of_bounds" for st in steps
+                )
+                eff_rhs = (
+                    (
+                        args[1]
+                        if _is_bitmask_63(args[1])
+                        else URHiOpCall(build_ur_node(target_lang, "&", h, True), [args[1], URConst(63, h)], "&", h)
+                    )
+                    if needs_mask63
+                    else args[1]
+                )
+                base_call = URHiOpCall(matched_cand, [args[0], eff_rhs], matched_op, h)
 
+                for pg in plan.get("explicit_point_guards") or ():
+                    if pg.get("guard", {}).get("kind") == "int64_min_div_neg1":
+                        min_val = int(pg["range"]["value"])
+                        c_min = URHiOpCall(
+                            build_ur_node(target_lang, "==", h, True), [args[0], URConst(min_val, h)], "==", h
+                        )
+                        c_neg1 = URHiOpCall(
+                            build_ur_node(target_lang, "==", h, True), [args[1], URConst(-1, h)], "==", h
+                        )
+                        cond = URHiOpCall(build_ur_node(target_lang, "&&", h, True), [c_min, c_neg1], "&&", h)
+                        base_call = URHiOpCall(
+                            build_ur_node(target_lang, "ite", h, True),
+                            [cond, URConst(min_val, h), base_call],
+                            "ite",
+                            h,
+                        )
+
+                if matched_proof.get("tier") == "tier2_piecewise_hiop":
+                    orig_base = base_call
+                    for step in steps:
+                        gk = step["guard"]["kind"]
+                        if gk == "eq_const" and step["guard"].get("arg") == 1 and step["guard"].get("value") == 0:
+                            # Division-by-zero exception return piece from CPython trampoline; non-zero interior uses base/residual
+                            continue
+                        r_spec = step["range"]
+                        rk = r_spec["kind"]
+                        if rk == "base_op":
+                            op_s = r_spec["op"]
+                            rhs_k, rhs_v = r_spec["rhs"]
+                            rhs_e = URConst(int(rhs_v), h) if rhs_k == "const" else args[int(rhs_v)]
+                            val_call = URHiOpCall(
+                                build_ur_node(target_lang, op_s, h, True), [orig_base, rhs_e], op_s, h
+                            )
+                        elif rk == "const":
+                            val_call = URConst(int(r_spec["value"]), h)
+                        elif rk == "arg":
+                            val_call = args[int(r_spec["index"])]
+                        elif rk == "base_const_arg1":
+                            val_call = URHiOpCall(
+                                matched_cand, [args[0], URConst(int(r_spec["const"]), h)], matched_op, h
+                            )
+                        else:
+                            continue
+
+                        if gk == "shift_out_of_bounds":
+                            c_ge0 = URHiOpCall(
+                                build_ur_node(target_lang, ">=", h, True), [args[1], URConst(0, h)], ">=", h
+                            )
+                            c_lt64 = URHiOpCall(
+                                build_ur_node(target_lang, "<", h, True), [args[1], URConst(64, h)], "<", h
+                            )
+                            cond = URHiOpCall(build_ur_node(target_lang, "&&", h, True), [c_ge0, c_lt64], "&&", h)
+                            base_call = URHiOpCall(
+                                build_ur_node(target_lang, "ite", h, True), [cond, base_call, val_call], "ite", h
+                            )
+                        elif gk == "opp_sign_rem_nonzero":
+                            xor_e = URHiOpCall(build_ur_node(target_lang, "^", h, True), [args[0], args[1]], "^", h)
+                            c_sign = URHiOpCall(
+                                build_ur_node(target_lang, "<", h, True), [xor_e, URConst(0, h)], "<", h
+                            )
+                            rem_call = URHiOpCall(
+                                build_ur_node(target_lang, "trunc_rem", h, True), [args[0], args[1]], "trunc_rem", h
+                            )
+                            c_rem = URHiOpCall(
+                                build_ur_node(target_lang, "!=", h, True), [rem_call, URConst(0, h)], "!=", h
+                            )
+                            cond = URHiOpCall(build_ur_node(target_lang, "&&", h, True), [c_sign, c_rem], "&&", h)
+                            base_call = URHiOpCall(
+                                build_ur_node(target_lang, "ite", h, True), [cond, val_call, base_call], "ite", h
+                            )
+                        elif gk == "int64_min_div_neg1":
+                            min_val = -9223372036854775808
+                            c_min = URHiOpCall(
+                                build_ur_node(target_lang, "==", h, True), [args[0], URConst(min_val, h)], "==", h
+                            )
+                            c_neg1 = URHiOpCall(
+                                build_ur_node(target_lang, "==", h, True), [args[1], URConst(-1, h)], "==", h
+                            )
+                            cond = URHiOpCall(build_ur_node(target_lang, "&&", h, True), [c_min, c_neg1], "&&", h)
+                            base_call = URHiOpCall(
+                                build_ur_node(target_lang, "ite", h, True), [cond, val_call, base_call], "ite", h
+                            )
+                return base_call
+
+        return URHiOpCall(build_ur_node(target_lang, expr.op_symbol, h, True), args, expr.op_symbol, h)
+
+    @staticmethod
+    def _format_target_hiop(op_symbol: str, lang: str, lhs_s: str, rhs_s: str, third_s: str) -> str:
+        if op_symbol == "ite":
+            if lang == "python":
+                return f"({rhs_s} if {lhs_s} else {third_s})"
+            if lang == "rust":
+                return f"(if {lhs_s} {{ {rhs_s} }} else {{ {third_s} }})"
+            if lang == "go":
+                return f"func() int64 {{ if {lhs_s} {{ return {rhs_s} }} else {{ return {third_s} }} }}()"
+            return f"({lhs_s} ? {rhs_s} : {third_s})"
+        if op_symbol == "&&":
+            return f"({lhs_s} and {rhs_s})" if lang == "python" else f"({lhs_s} && {rhs_s})"
+        if op_symbol == "||":
+            return f"({lhs_s} or {rhs_s})" if lang == "python" else f"({lhs_s} || {rhs_s})"
+        if op_symbol == "neg":
+            return f"-{lhs_s}"
+        if op_symbol in ("trunc_div", "/", "//"):
+            return f"int({lhs_s} / {rhs_s})" if lang == "python" else f"({lhs_s} / {rhs_s})"
+        if op_symbol in ("trunc_rem", "%"):
+            return f"({lhs_s} - (int({lhs_s} / {rhs_s}) * {rhs_s}))" if lang == "python" else f"({lhs_s} % {rhs_s})"
+        return f"({lhs_s} {op_symbol} {rhs_s})"
 
     @classmethod
     def _emit_expr(cls, expr: Any, lang: str) -> str:
+        from ..hub.autopoly import AutoPoly
+
         if isinstance(expr, URConst):
             return str(expr.value)
         if isinstance(expr, URVar):
@@ -730,44 +972,20 @@ class LedgerToScript:
         if isinstance(expr, URCall):
             args_s = ", ".join(cls._emit_expr(a, lang) for a in expr.args)
             return f"{expr.func_name}({args_s})"
+        if isinstance(expr, URHolderCast):
+            arg_s = cls._emit_expr(expr.expr, lang)
+            return AutoPoly().emit_target_code(expr.ur_node, lang, arg_s, "0")["code"]
         if isinstance(expr, URHiOpCall):
-            op = expr.op_symbol
-            if op == "neg":
-                return f"(-{cls._emit_expr(expr.args[0], lang)})"
-            if op == "ite":
-                c, t, e = (cls._emit_expr(a, lang) for a in expr.args)
-                if lang == "python":
-                    return f"({t} if {c} else {e})"
-                if lang == "rust":
-                    return f"(if {c} {{ {t} }} else {{ {e} }})"
-                if lang == "go":
-                    return f"func() int64 {{ if {c} {{ return {t} }} else {{ return {e} }} }}()"
-                return f"({c} ? {t} : {e})"
-            if op == "trunc_div":
-                a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
-                if lang == "python":
-                    return f"int({a} / {b})"
-                if lang == "ruby":
-                    return f"({a}.fdiv({b}).truncate)"
-                if lang == "dart":
-                    return f"({a} ~/ {b})"
-                if lang == "php":
-                    return f"intdiv({a}, {b})"
-                if lang == "typescript":
-                    return f"Math.trunc({a} / {b})"
-                return f"({a} / {b})"
-            if op == "trunc_rem":
-                a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
-                if lang == "python":
-                    return f"({a} - (int({a} / {b}) * {b}))"
-                if lang in ("ruby", "dart"):
-                    return f"({a}.remainder({b}))"
-                return f"({a} % {b})"
-            a, b = cls._emit_expr(expr.args[0], lang), cls._emit_expr(expr.args[1], lang)
-            if lang == "python" and op in ("&&", "||"):
-                py_op = "and" if op == "&&" else "or"
-                return f"({a} {py_op} {b})"
-            return f"({a} {op} {b})"
+            lhs_s = cls._emit_expr(expr.args[0], lang) if len(expr.args) >= 1 else "0"
+            rhs_s = cls._emit_expr(expr.args[1], lang) if len(expr.args) >= 2 else "0"
+            third_s = cls._emit_expr(expr.args[2], lang) if len(expr.args) >= 3 else "0"
+            base_cand = build_ur_node(lang, expr.op_symbol, expr.holder, True)
+            cand_hiop = dict(base_cand.hiop)
+            cand_hiop["target_code"] = cls._format_target_hiop(expr.op_symbol, lang, lhs_s, rhs_s, third_s)
+            cand = UniversalRichNode(hiop=cand_hiop, units=base_cand.units, meaning=base_cand.meaning)
+            return AutoPoly().emit_target_code(
+                expr.ur_node, lang, lhs_s, rhs_s, candidate_target_nodes=[cand], third=third_s
+            )["code"]
         raise ValueError(f"Unknown expr: {expr}")
 
     @classmethod
@@ -887,44 +1105,21 @@ def eval_ledger(ledger: URLedger, args: dict[str, int], entry_func: str | None =
         env = {k: _s64(v) for k, v in fn_args.items()}
 
         def ev_expr(e: Any) -> int:
+            from ..hub import Hub
+
             if isinstance(e, URConst): return _s64(e.value)
             if isinstance(e, URVar): return env[e.name]
             if isinstance(e, URHolderCast):
-                ce = LedgerToScript.canonicalize_expr(e, "c")
-                return ev_expr(ce)
+                return Hub().eval_node(e.ur_node, ev_expr(e.expr), 0)
             if isinstance(e, URCall):
                 callee = funcs[e.func_name]
                 c_args = {p.name: ev_expr(a) for p, a in zip(callee.params, e.args)}
                 return run_fn(callee, c_args)
             if isinstance(e, URHiOpCall):
-                ce = LedgerToScript.canonicalize_expr(e, "c") if not e.ur_node.meaning.get("guarded") else e
-                op = ce.op_symbol
-                if op == "neg": return _s64(-ev_expr(ce.args[0]))
-                if op == "ite": return ev_expr(ce.args[1]) if ev_expr(ce.args[0]) != 0 else ev_expr(ce.args[2])
-                if op == "&&": return 1 if (ev_expr(ce.args[0]) != 0 and ev_expr(ce.args[1]) != 0) else 0
-                if op == "||": return 1 if (ev_expr(ce.args[0]) != 0 or ev_expr(ce.args[1]) != 0) else 0
-                a, b = ev_expr(ce.args[0]), ev_expr(ce.args[1])
-                if op == "+": return _s64(a + b)
-                if op == "-": return _s64(a - b)
-                if op == "*": return _s64(a * b)
-                if op == "&": return _s64(a & b)
-                if op == "|": return _s64(a | b)
-                if op == "^": return _s64(a ^ b)
-                if op == "<<": return _s64(a << (b & 63))
-                if op == ">>": return _s64(a >> (b & 63))
-                if op == "==": return 1 if a == b else 0
-                if op == "!=": return 1 if a != b else 0
-                if op == "<": return 1 if a < b else 0
-                if op == "<=": return 1 if a <= b else 0
-                if op == ">": return 1 if a > b else 0
-                if op == ">=": return 1 if a >= b else 0
-                if op == "trunc_div":
-                    q = abs(a) // abs(b)
-                    return _s64(-q if (a < 0) ^ (b < 0) else q)
-                if op == "trunc_rem":
-                    q = abs(a) // abs(b)
-                    q = -q if (a < 0) ^ (b < 0) else q
-                    return _s64(a - q * b)
+                a_v = ev_expr(e.args[0]) if len(e.args) >= 1 else 0
+                b_v = ev_expr(e.args[1]) if len(e.args) >= 2 else 0
+                c_v = ev_expr(e.args[2]) if len(e.args) >= 3 else 0
+                return Hub().eval_node(e.ur_node, a_v, b_v, c_v)
             raise ValueError(f"Cannot eval {e}")
 
         def ev_stmts(stmts: list[Any]) -> int | None:

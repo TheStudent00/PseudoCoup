@@ -63,7 +63,7 @@ def function_ranges(names: dict, wanted: list) -> list:
 
 # Each function's listing is read from the binary once and kept on disk, so
 # the loop's workers, which begin every round without the blocks, and every
-# later run read it from there (PCHQ Gemini copy, run riscv64-runner_l18: one
+# later run read it from there (PCHQ Gemini copy, run tlp1_l18: one
 # candidate's functions took 88 s of objdump, and every worker did it again in
 # every round). TLP_LISTING_CACHE names the folder; unset, nothing is kept.
 # The kept listing is the text objdump wrote, so every reading of it is the

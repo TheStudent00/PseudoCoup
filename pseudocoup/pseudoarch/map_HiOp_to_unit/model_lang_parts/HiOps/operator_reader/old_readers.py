@@ -295,7 +295,7 @@ def kinds_line(kinds: dict, kind: str) -> int:
 
 
 # The go the judge runs is go1.26.0, whose own source is in the runner image
-# at /usr/lib/go-1.26/src; read with PSEUDOARCH_SOURCES=/usr/lib.
+# at /usr/lib/go-1.26/src; read with PSEUDOIR_SOURCES=/usr/lib.
 GO_OPERATIONS = Declaration(
     checkout="go-1.26",
     files=(

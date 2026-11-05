@@ -1,0 +1,460 @@
+{
+  "languages": [
+    "c",
+    "cpp",
+    "go",
+    "rust",
+    "python",
+    "java",
+    "typescript",
+    "csharp",
+    "ruby",
+    "php",
+    "dart",
+    "swift"
+  ],
+  "total_cross_language_syntheses": 2256,
+  "tier_counts": {
+    "tier1_exact_native_hiop": 1786,
+    "tier2_piecewise_hiop": 270,
+    "tier3_loop_primitive_backstop": 200
+  },
+  "tier_percentages": {
+    "tier1_exact_native_hiop": "79.17%",
+    "tier2_piecewise_hiop": "11.97%",
+    "tier3_loop_primitive_backstop": "8.87%"
+  },
+  "compiler_rt_caller_syntheses_count": 48,
+  "elapsed_seconds": 66.316,
+  "sample_tier1": [
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_ADD",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a + b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_SUB",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a - b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_MUL",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a * b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_AND",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a & b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_OR",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a | b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_XOR",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a ^ b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_NOT",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(~a)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_SHL",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a << (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_LSHR",
+      "tier": "tier1_exact_native_hiop",
+      "code": "((uint64_t)a >> (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_ASHR",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a >> (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_ULT",
+      "tier": "tier1_exact_native_hiop",
+      "code": "((uint64_t)a < (uint64_t)b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_SLT",
+      "tier": "tier1_exact_native_hiop",
+      "code": "(a < b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_SDIV",
+      "tier": "tier1_exact_native_hiop",
+      "code": "((((uint64_t)(a)) == 0x8000000000000000ULL && (b) == -1) ? (a) : ((a) / (b)))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_UDIV",
+      "tier": "tier1_exact_native_hiop",
+      "code": "((int64_t)((uint64_t)(a) / (uint64_t)(b)))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "c",
+      "op": "BV_SREM",
+      "tier": "tier1_exact_native_hiop",
+      "code": "((((uint64_t)(a)) == 0x8000000000000000ULL && (b) == -1) ? 0 : ((a) % (b)))"
+    }
+  ],
+  "sample_tier2": [
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_SHL",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(a << (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_LSHR",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(uint64(a) >> (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_ASHR",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(a >> (b & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_SDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "ite((b == 0), (-1), (a / b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_UDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "ite((b == 0), (-1), int64(uint64(a) / uint64(b)))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_SREM",
+      "tier": "tier2_piecewise_hiop",
+      "code": "ite((b == 0), a, (a % b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_UREM",
+      "tier": "tier2_piecewise_hiop",
+      "code": "ite((b == 0), a, int64(uint64(a) % uint64(b)))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "rust",
+      "op": "BV_SDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(if (b == 0) { (-1i64) } else { (if ((a == (0x8000000000000000u64 as i64)) && (b == (-1i64))) { (0x8000000000000000u64 as i64) } else { (a).wrapping_div(b) }) })"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "rust",
+      "op": "BV_UDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(if (b == 0) { (-1i64) } else { (((a) as u64).wrapping_div((b) as u64) as i64) })"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "rust",
+      "op": "BV_SREM",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(if (b == 0) { a } else { (if ((a == (0x8000000000000000u64 as i64)) && (b == (-1i64))) { 0x0 } else { (a).wrapping_rem(b) }) })"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "rust",
+      "op": "BV_UREM",
+      "tier": "tier2_piecewise_hiop",
+      "code": "(if (b == 0) { a } else { (((a) as u64).wrapping_rem((b) as u64) as i64) })"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_SDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "((((a // b) + 1) & 0xFFFFFFFFFFFFFFFF) if ((((((a ^ b) + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000) < 0) and ((a % b) != 0)) else (a // b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_SREM",
+      "tier": "tier2_piecewise_hiop",
+      "code": "((((a % b) - b) & 0xFFFFFFFFFFFFFFFF) if ((((((a ^ b) + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000) < 0) and ((a % b) != 0)) else (a % b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "typescript",
+      "op": "BV_SDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "((b === 0n) ? (-1n) : BigInt.asIntN(64, BigInt.asIntN(64, BigInt(a)) / BigInt.asIntN(64, BigInt(b))))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "typescript",
+      "op": "BV_UDIV",
+      "tier": "tier2_piecewise_hiop",
+      "code": "((b === 0n) ? (-1n) : BigInt.asIntN(64, BigInt.asUintN(64, BigInt(a)) / BigInt.asUintN(64, BigInt(b))))"
+    }
+  ],
+  "sample_tier3": [
+    {
+      "src_lang": "c",
+      "tgt_lang": "go",
+      "op": "BV_ITE",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "ite((a == 0x0), c, b)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "rust",
+      "op": "BV_ITE",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "(if (a == 0x0) { c } else { b })"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_LSHR",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((a & 0xFFFFFFFFFFFFFFFF) >> (((b & 0x3f) & 0x3f) & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_ULT",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "(0x0 if (not ((a & 0xFFFFFFFFFFFFFFFF) < (b & 0xFFFFFFFFFFFFFFFF))) else 0x1)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_UDIV",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((-1) if (b == 0x0) else (((a & 0xFFFFFFFFFFFFFFFF) // (b & 0xFFFFFFFFFFFFFFFF)) & 0xFFFFFFFFFFFFFFFF))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "python",
+      "op": "BV_UREM",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "(a if (b == 0x0) else (((a & 0xFFFFFFFFFFFFFFFF) % (b & 0xFFFFFFFFFFFFFFFF)) & 0xFFFFFFFFFFFFFFFF))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "java",
+      "op": "BV_ULT",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((!(Long.compareUnsigned(a, b) < 0)) ? 0x0 : 0x1)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "java",
+      "op": "BV_UDIV",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((b == 0x0) ? (-1L) : Long.divideUnsigned(a, b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "java",
+      "op": "BV_UREM",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((b == 0x0) ? a : Long.remainderUnsigned(a, b))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "ruby",
+      "op": "BV_LSHR",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((a & 0xFFFFFFFFFFFFFFFF) >> (((b & 0x3f) & 0x3f) & 63))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "ruby",
+      "op": "BV_ULT",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((!((a & 0xFFFFFFFFFFFFFFFF) < (b & 0xFFFFFFFFFFFFFFFF))) ? 0x0 : 0x1)"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "ruby",
+      "op": "BV_UDIV",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((b == 0x0) ? (-1) : (((a & 0xFFFFFFFFFFFFFFFF) / (b & 0xFFFFFFFFFFFFFFFF)) & 0xFFFFFFFFFFFFFFFF))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "ruby",
+      "op": "BV_UREM",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((b == 0x0) ? a : (((a & 0xFFFFFFFFFFFFFFFF) % (b & 0xFFFFFFFFFFFFFFFF)) & 0xFFFFFFFFFFFFFFFF))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "php",
+      "op": "BV_LSHR",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((((b & 0x3f) & 0x3f) & 63) === 0 ? a : ((a >> (((b & 0x3f) & 0x3f) & 63)) & ~(PHP_INT_MIN >> (((((b & 0x3f) & 0x3f) & 63) - 1)))))"
+    },
+    {
+      "src_lang": "c",
+      "tgt_lang": "php",
+      "op": "BV_ULT",
+      "tier": "tier3_loop_primitive_backstop",
+      "code": "((!(((a ^ PHP_INT_MIN) < (b ^ PHP_INT_MIN)))) ? 0x0 : 0x1)"
+    }
+  ],
+  "sample_compiler_rt_caller_syntheses": [
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "c",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "cpp",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "go",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "rust",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "python",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d)"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "java",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "typescript",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "csharp",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "ruby",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d)"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "php",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "dart",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    },
+    {
+      "caller_node": "c.BinaryOperator.Add[__addtf3]",
+      "tgt_lang": "swift",
+      "tier": "tier3_loop_primitive_backstop",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "code": "compiler_rt___addtf3_a0(a, b, c, d) /* whole-lifted: 354 LoOps, 47 BBs */"
+    }
+  ]
+}

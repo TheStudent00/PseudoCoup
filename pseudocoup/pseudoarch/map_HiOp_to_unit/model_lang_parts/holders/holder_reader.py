@@ -33,7 +33,7 @@ from .. import Declaration, Holder, declaration_of, declaring_file_path
 
 # The preprocessor that reads clang's .def files. Configuration: clang's own
 # by default, at the version the judge runs.
-PREPROCESSOR_VARIABLE = "PSEUDOARCH_PREPROCESSOR"
+PREPROCESSOR_VARIABLE = "PSEUDOIR_PREPROCESSOR"
 DEFAULT_PREPROCESSOR = "clang -E"
 
 # clang declares its builtin types as ONE enum, BuiltinType::Kind in
@@ -311,7 +311,7 @@ def read_go_types(lang: str, declaration: Declaration) -> tuple:
 
 
 # The go the judge runs is go1.26.0, whose own source is in the runner image
-# at /usr/lib/go-1.26/src; read with PSEUDOARCH_SOURCES=/usr/lib.
+# at /usr/lib/go-1.26/src; read with PSEUDOIR_SOURCES=/usr/lib.
 GO_TYPES = Declaration(
     checkout="go-1.26",
     files=("src/cmd/compile/internal/types2/universe.go",),
@@ -460,6 +460,29 @@ DECLARATIONS = {
     "python": PYTHON_TYPES,
     "java": JAVA_TYPES,
 }
+
+
+CLANG_TYPE_NODE = re.compile(r"^\s*def\s+(\w+)\s*:\s*TypeNode<\s*(\w+)\s*(?:,\s*(1))?\s*>")
+CLANG_TYPE_NODES_TD = "clang/include/clang/Basic/TypeNodes.td"
+
+
+def read_type_constructors(lang: str) -> tuple:
+    """Every concrete type-constructor AST node the lowerer declares in
+    clang/include/clang/Basic/TypeNodes.td, as (node_name, base_name, source)."""
+    declaration = declaration_of(DECLARATIONS, lang, "read_type_constructors")
+    if declaration.checkout != "llvm-project-21.1.8":
+        return ()
+    path = declaring_file_path(declaration.checkout, CLANG_TYPE_NODES_TD)
+    constructors = []
+    with open(path, encoding="utf-8") as td_file:
+        for line_number, line in enumerate(td_file, start=1):
+            match = CLANG_TYPE_NODE.match(line)
+            if match is None or match.group(3) == "1":
+                continue
+            node_name = match.group(1) + "Type"
+            base_name = match.group(2)
+            constructors.append((node_name, base_name, f"{CLANG_TYPE_NODES_TD}:{line_number}"))
+    return tuple(constructors)
 
 
 def read_holders(lang: str) -> tuple:

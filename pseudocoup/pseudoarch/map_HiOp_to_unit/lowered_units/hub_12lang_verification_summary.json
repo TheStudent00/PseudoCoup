@@ -1,0 +1,412 @@
+{
+  "dataset_unit_counts": {
+    "C": 1373,
+    "ClangOther": 547,
+    "Go": 1654,
+    "Rust": 1168,
+    "Python": 46,
+    "Java": 4999,
+    "TypeScript": 432,
+    "C#": 440,
+    "Ruby": 354,
+    "PHP": 315,
+    "Dart": 345,
+    "Swift": 464
+  },
+  "total_registered_keys": 12904,
+  "total_canonical_unit_modes": 2715,
+  "shared_bv_add_semantic_mode_count": 1,
+  "eval_cases_verified": 18,
+  "eval_results": [
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "got": 47,
+      "expected": 47
+    },
+    {
+      "expr": "((m C++.* x) C++.- b)",
+      "got": 37,
+      "expected": 37
+    },
+    {
+      "expr": "((m Go.+ x) Go.* b)",
+      "got": 65,
+      "expected": 65
+    },
+    {
+      "expr": "(neg C./ pos)",
+      "got": -3,
+      "expected": -3
+    },
+    {
+      "expr": "(neg Go./ pos)",
+      "got": -3,
+      "expected": -3
+    },
+    {
+      "expr": "(neg Rust./ pos)",
+      "got": -3,
+      "expected": -3
+    },
+    {
+      "expr": "(neg Python.// pos)",
+      "got": -4,
+      "expected": -4
+    },
+    {
+      "expr": "(neg Python.% pos)",
+      "got": 3,
+      "expected": 3
+    },
+    {
+      "expr": "(neg C.% pos)",
+      "got": -2,
+      "expected": -2
+    },
+    {
+      "expr": "(ones Java.>>> sh)",
+      "got": 15,
+      "expected": 15
+    },
+    {
+      "expr": "(ones TypeScript.>>> sh)",
+      "got": 15,
+      "expected": 15
+    },
+    {
+      "expr": "(ones C#.>>> sh)",
+      "got": 15,
+      "expected": 15
+    },
+    {
+      "expr": "(ones Dart.>>> sh)",
+      "got": 15,
+      "expected": 15
+    },
+    {
+      "expr": "((m Ruby.+ x) PHP.+ (b Swift.&* pos))",
+      "got": 38,
+      "expected": 38
+    },
+    {
+      "expr": "C.~ 0",
+      "got": -1,
+      "expected": -1
+    },
+    {
+      "expr": "Rust.! 0",
+      "got": -1,
+      "expected": -1
+    },
+    {
+      "expr": "C.?:(cond, m, x)",
+      "got": 6,
+      "expected": 6
+    },
+    {
+      "expr": "Python.?:(0, m, x)",
+      "got": 7,
+      "expected": 7
+    }
+  ],
+  "compiler_rt_caller_evals": [
+    {
+      "node": "C.CompoundAssignOperator.RemAssign[_BitInt(128),unsigned _BitInt(37)]",
+      "alias": "C.remassign_bitint128",
+      "ext_calls": [
+        "__modti3"
+      ],
+      "emitted_python": "compiler_rt___modti3_a0(a, b, ((c & 0x1fffffffff) & 0x1fffffffff), 0x0)",
+      "inputs": [
+        100,
+        0,
+        7,
+        0
+      ],
+      "output": 2
+    },
+    {
+      "node": "Rust.Cast[i128,f64]",
+      "alias": "Rust.cast_i128_f64",
+      "ext_calls": [
+        "__floattidf"
+      ],
+      "emitted_python": "compiler_rt___floattidf_fa0(a, b)",
+      "inputs": [
+        42,
+        0,
+        0,
+        0
+      ],
+      "output": 4631107791820423168
+    },
+    {
+      "node": "C.div128",
+      "alias": "C.div128",
+      "ext_calls": [
+        "__divti3"
+      ],
+      "emitted_python": "compiler_rt___divti3_a0(a, b, c, d)",
+      "inputs": [
+        100,
+        0,
+        7,
+        0
+      ],
+      "output": 14
+    },
+    {
+      "node": "C.mod128",
+      "alias": "C.mod128",
+      "ext_calls": [
+        "__modti3"
+      ],
+      "emitted_python": "compiler_rt___modti3_a0(a, b, c, d)",
+      "inputs": [
+        100,
+        0,
+        7,
+        0
+      ],
+      "output": 2
+    },
+    {
+      "node": "C.addtf3",
+      "alias": "C.addtf3",
+      "ext_calls": [
+        "__addtf3"
+      ],
+      "emitted_python": "compiler_rt___addtf3_a0(a, b, c, d)",
+      "inputs": [
+        0,
+        4611404543450677248,
+        0,
+        4611686018427387904
+      ],
+      "output": 0
+    },
+    {
+      "node": "C.multf3",
+      "alias": "C.multf3",
+      "ext_calls": [
+        "__multf3"
+      ],
+      "emitted_python": "compiler_rt___multf3_a0(a, b, c, d)",
+      "inputs": [
+        0,
+        4611686018427387904,
+        0,
+        4611826755915743232
+      ],
+      "output": 0
+    }
+  ],
+  "transpile_cases_verified": 60,
+  "sample_transpiles": [
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "c",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "cpp",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "go",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "rust",
+      "transpiled_code": "y = ((m).wrapping_mul(x)).wrapping_add(b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "python",
+      "transpiled_code": "y = ((((m * x) & 0xFFFFFFFFFFFFFFFF) + b) & 0xFFFFFFFFFFFFFFFF)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "java",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "typescript",
+      "transpiled_code": "y = BigInt.asIntN(64, BigInt(BigInt.asIntN(64, BigInt(m) * BigInt(x))) + BigInt(b))",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "csharp",
+      "transpiled_code": "y = unchecked(unchecked(m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "ruby",
+      "transpiled_code": "y = ((((m * x) & 0xFFFFFFFFFFFFFFFF) + b) & 0xFFFFFFFFFFFFFFFF)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "php",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "dart",
+      "transpiled_code": "y = ((m * x) + b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "y = (m C.* x) C.+ b",
+      "target_lang": "swift",
+      "transpiled_code": "y = ((m &* x) &+ b)",
+      "tiers": [
+        "tier1_exact_native_hiop",
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "c",
+      "transpiled_code": "((((uint64_t)(a)) == 0x8000000000000000ULL && (b) == -1) ? (a) : ((a) / (b)))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "cpp",
+      "transpiled_code": "((((uint64_t)(a)) == 0x8000000000000000ULL && (b) == -1) ? (a) : ((a) / (b)))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "go",
+      "transpiled_code": "(a / b)",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "rust",
+      "transpiled_code": "(if ((a == (0x8000000000000000u64 as i64)) && (b == (-1i64))) { (0x8000000000000000u64 as i64) } else { (a).wrapping_div(b) })",
+      "tiers": [
+        "tier2_piecewise_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "python",
+      "transpiled_code": "((((a // b) + 1) & 0xFFFFFFFFFFFFFFFF) if ((((((a ^ b) + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000) < 0) and ((a % b) != 0)) else (a // b))",
+      "tiers": [
+        "tier2_piecewise_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "java",
+      "transpiled_code": "(a / b)",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "typescript",
+      "transpiled_code": "BigInt.asIntN(64, BigInt.asIntN(64, BigInt(a)) / BigInt.asIntN(64, BigInt(b)))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "csharp",
+      "transpiled_code": "(((ulong)(a) == 0x8000000000000000UL && (b) == -1L) ? (a) : ((a) / (b)))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "ruby",
+      "transpiled_code": "(((((((a + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000).abs / (((b + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000).abs) * ((((((a + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000) < 0) ^ ((((b + 0x8000000000000000) & 0xFFFFFFFFFFFFFFFF) - 0x8000000000000000) < 0)) ? -1 : 1)) & 0xFFFFFFFFFFFFFFFF))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "php",
+      "transpiled_code": "((a === PHP_INT_MIN && b === -1) ? PHP_INT_MIN : intdiv(a, b))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "dart",
+      "transpiled_code": "((a == -0x8000000000000000 && b == -1) ? a : (a ~/ b))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    },
+    {
+      "expr": "(a Go./ b)",
+      "target_lang": "swift",
+      "transpiled_code": "((a == Int64.min && b == -1) ? Int64.min : (a / b))",
+      "tiers": [
+        "tier1_exact_native_hiop"
+      ]
+    }
+  ],
+  "elapsed_seconds": 68.336
+}

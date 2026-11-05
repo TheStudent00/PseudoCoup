@@ -18,7 +18,7 @@ import tree_sitter_go
 HERE = Path(__file__).resolve().parent
 PCHQ = HERE.parents[4]
 sys.path.insert(0, str(PCHQ / "Projects"))
-from PseudoArch.map_HiOp_to_unit.model_lang_parts.HiOps import branch_trees  # noqa: E402
+from PseudoIR.map_HiOp_to_unit.model_lang_parts.HiOps import branch_trees  # noqa: E402
 
 GO_SRC = Path("/usr/lib/go-1.26/src/cmd/compile/internal")
 VOCAB_PATH = PCHQ / "Research" / "extract_lang_vocabulary" / "vocabulary" / "go.json"

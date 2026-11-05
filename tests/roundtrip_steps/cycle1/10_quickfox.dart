@@ -27,8 +27,8 @@ int factorial_iter(int n) {
 }
 
 int euclid_step(int a, int b) {
-    int q = ((((a ^ b) < 0) && ((a.remainder(b)) != 0)) ? ((a ~/ b) - 1) : (a ~/ b));
-    int r = ((((a ^ b) < 0) && ((a.remainder(b)) != 0)) ? ((a.remainder(b)) + b) : (a.remainder(b)));
+    int q = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a / b) - 1) : (a / b));
+    int r = ((((a ^ b) < 0) && ((a % b) != 0)) ? ((a % b) + b) : (a % b));
     int out = 0;
     if (((q < 0) && (r != 0))) {
         out = (((q * 100) + r) - a);
