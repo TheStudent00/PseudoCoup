@@ -316,7 +316,7 @@ class KotlinCSTLedgerLowerer:
             lhs = self.lower_expr(ch[0], pre_lines, indent, mset)
             op = _node_text(ch[1]).strip()
             tp = safe_py_ident(_node_text(ch[-1]).split("<")[0])
-            return f"({'not ' if op == '!is' else ''}isinstance({lhs}, {tp}))"
+            return f"({'not ' if op == '!is' else ''}_host_os._kt_is({lhs}, {tp}))"
         if t == "as_expression" and ch:
             return self.lower_expr(ch[0], pre_lines, indent, mset)
         if t == "index_expression" and len(ch) >= 2:
@@ -334,7 +334,7 @@ class KotlinCSTLedgerLowerer:
             lhs = self.lower_expr(ch[0], pre_lines, indent, mset)
             t_str = self._lower_user_type(ch[-1])
             neg = any(c.type == "!is" for c in ch)
-            return f"(not isinstance({lhs}, {t_str}))" if neg else f"isinstance({lhs}, {t_str})"
+            return f"(not _host_os._kt_is({lhs}, {t_str}))" if neg else f"_host_os._kt_is({lhs}, {t_str})"
         if t == "if_expression":
             return self.lower_if_expr(node, pre_lines, indent, mset)
         if t == "when_expression":
@@ -393,10 +393,15 @@ class KotlinCSTLedgerLowerer:
         entries: List[Any] = []
         for c in node.children:
             if c.type == "when_subject":
-                for sc in c.children:
-                    if sc.type not in ("(", ")"):
-                        subj_expr = self.lower_expr(sc, pre_lines, indent, mset)
-                        break
+                vdecl = next((sc for sc in c.children if sc.type in ("variable_declaration", "property_declaration")), None)
+                expr_nodes = [sc for sc in c.children if sc.type not in ("(", ")", "val", "var", "=", "variable_declaration", "property_declaration")]
+                if vdecl is not None and expr_nodes:
+                    vname = next((safe_py_ident(_node_text(vc)) for vc in vdecl.children if vc.type == "identifier"), "_when_v")
+                    val_e = self.lower_expr(expr_nodes[-1], pre_lines, indent, mset)
+                    pre_lines.append(f"{' ' * indent}{vname} = {val_e}")
+                    subj_expr = vname
+                elif expr_nodes:
+                    subj_expr = self.lower_expr(expr_nodes[-1], pre_lines, indent, mset)
             elif c.type == "when_entry":
                 entries.append(c)
         res_expr = "None"
@@ -423,7 +428,7 @@ class KotlinCSTLedgerLowerer:
                         ut = next((x for x in cn.children if x.type in ("user_type", "nullable_type")), None)
                         t_str = self._lower_user_type(ut)
                         neg = any(x.type == "!is" for x in cn.children)
-                        cond_parts.append(f"(not isinstance({subj_expr}, {t_str}))" if neg else f"isinstance({subj_expr}, {t_str})")
+                        cond_parts.append(f"(not _host_os._kt_is({subj_expr}, {t_str}))" if neg else f"_host_os._kt_is({subj_expr}, {t_str})")
                     elif cn.type == "in_expression":
                         cond_parts.append(self.lower_expr(cn, pre_lines, indent, mset))
                     else:
@@ -781,7 +786,7 @@ class KotlinCSTLedgerLowerer:
             )
         )
 
-        sig_parts = (["self"] if (is_method or ext_recv) else []) + [f"{p}=None" for p in pnames]
+        sig_parts = (["self"] if is_method else (["self=None"] if ext_recv else [])) + [f"{p}=None" for p in pnames]
         sig_str = ", ".join(sig_parts + (["__composer__=None, **_kt_kw"] if not is_method else ["**_kt_kw"]))
         out = [f"{pad}def {emit_name}({sig_str}):"]
         if is_composable:
@@ -814,6 +819,8 @@ class KotlinCSTLedgerLowerer:
         out.extend(body_out)
         if ext_recv and not is_method and indent == 0:
             out.append(f"{pad}_host_os.register_kt_extension({repr(ext_recv)}, {repr(fname)}, {emit_name})")
+        if fname in self.private_fn_map and not is_method and indent == 0 and self.private_fn_map[fname] != emit_name:
+            out.append(f"{pad}{self.private_fn_map[fname]} = {emit_name}")
         if (is_private or ext_recv) and not is_method and indent == 0 and emit_name != fname:
             out.append(f"{pad}if {repr(fname)} not in globals(): {fname} = {emit_name}")
         return out
@@ -915,9 +922,35 @@ class KotlinCSTLedgerLowerer:
             elif c.type == "enum_class_body":
                 enum_body = c
 
-        p_pre, param_specs = self._parse_params_and_defaults(params_node, indent + 8, set())
+        active_body = body_node or enum_body
+        comp_body = None
+        pre_members: Set[str] = set()
+        if active_body is not None:
+            for bc in active_body.children:
+                if bc.type == "function_declaration":
+                    for fc in bc.children:
+                        if fc.type == "identifier":
+                            pre_members.add(safe_py_ident(_node_text(fc)))
+                elif bc.type == "property_declaration":
+                    for pc in bc.children:
+                        if pc.type == "variable_declaration":
+                            for vc in pc.children:
+                                if vc.type == "identifier":
+                                    pre_members.add(safe_py_ident(_node_text(vc)))
+                elif bc.type == "companion_object":
+                    comp_body = next((cc for cc in bc.children if cc.type == "class_body"), None)
+                    if comp_body is not None:
+                        for cbc in comp_body.children:
+                            if cbc.type == "property_declaration":
+                                for pc in cbc.children:
+                                    if pc.type == "variable_declaration":
+                                        for vc in pc.children:
+                                            if vc.type == "identifier":
+                                                pre_members.add(safe_py_ident(_node_text(vc)))
+
+        p_pre, param_specs = self._parse_params_and_defaults(params_node, indent + 8, pre_members)
         pnames = [p for p, _ in param_specs]
-        member_names: Set[str] = set(pnames)
+        member_names: Set[str] = set(pnames) | pre_members
 
         out = [f"{pad}class {cname}:", f"{pad}    _source = {repr(self.source_label)}"]
         sig_str = ", ".join(["self"] + [f"{p}=None" for p in pnames] + ["**_kt_kw"])
@@ -935,22 +968,7 @@ class KotlinCSTLedgerLowerer:
         out.append(f"{pad}    def copy(self, **_upd):")
         out.append(f"{pad}        _d = dict(self.__dict__); _d.update(_upd); return self.__class__(**_d)")
 
-        active_body = body_node or enum_body
-        comp_body = None
         if active_body is not None:
-            for bc in active_body.children:
-                if bc.type == "function_declaration":
-                    for fc in bc.children:
-                        if fc.type == "identifier":
-                            member_names.add(safe_py_ident(_node_text(fc)))
-                elif bc.type == "property_declaration":
-                    for pc in bc.children:
-                        if pc.type == "variable_declaration":
-                            for vc in pc.children:
-                                if vc.type == "identifier":
-                                    member_names.add(safe_py_ident(_node_text(vc)))
-                elif bc.type == "companion_object":
-                    comp_body = next((cc for cc in bc.children if cc.type == "class_body"), None)
             for bc in active_body.children:
                 if bc.type == "class_declaration":
                     out.extend(self.lower_class_decl(bc, indent + 4))
