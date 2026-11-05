@@ -968,6 +968,20 @@ class LedgerToScript:
         return f"({lhs_s} {op_symbol} {rhs_s})"
 
     @classmethod
+    def _format_holder_cast(cls, dst_holder: str, lang: str, arg_s: str) -> str:
+        if dst_holder == "u32":
+            return cls._format_target_hiop("&", lang, arg_s, "4294967295", "0")
+        if dst_holder == "u16":
+            return cls._format_target_hiop("&", lang, arg_s, "65535", "0")
+        if dst_holder == "u8":
+            return cls._format_target_hiop("&", lang, arg_s, "255", "0")
+        if dst_holder in ("i32", "i16", "i8"):
+            sh = "32" if dst_holder == "i32" else ("48" if dst_holder == "i16" else "56")
+            shl = cls._format_target_hiop("<<", lang, arg_s, sh, "0")
+            return cls._format_target_hiop(">>", lang, shl, sh, "0")
+        return arg_s
+
+    @classmethod
     def _emit_expr(cls, expr: Any, lang: str) -> str:
         from ..hub.autopoly import AutoPoly
 
@@ -980,7 +994,13 @@ class LedgerToScript:
             return f"{expr.func_name}({args_s})"
         if isinstance(expr, URHolderCast):
             arg_s = cls._emit_expr(expr.expr, lang)
-            return AutoPoly().emit_target_code(expr.ur_node, lang, arg_s, "0")["code"]
+            cand_hiop = dict(expr.ur_node.hiop)
+            cand_hiop["lang"] = lang
+            cand_hiop["target_code"] = cls._format_holder_cast(expr.dst_holder, lang, arg_s)
+            cand = UniversalRichNode(hiop=cand_hiop, units=expr.ur_node.units, meaning=expr.ur_node.meaning)
+            return AutoPoly().emit_target_code(
+                expr.ur_node, lang, arg_s, "0", candidate_target_nodes=[cand]
+            )["code"]
         if isinstance(expr, URHiOpCall):
             lhs_s = cls._emit_expr(expr.args[0], lang) if len(expr.args) >= 1 else "0"
             rhs_s = cls._emit_expr(expr.args[1], lang) if len(expr.args) >= 2 else "0"
