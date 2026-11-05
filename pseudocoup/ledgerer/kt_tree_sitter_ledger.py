@@ -259,8 +259,14 @@ class KotlinCSTLedgerLowerer:
         if t == "binary_expression":
             ch = [c for c in node.children if c.type not in ("line_comment", "block_comment")]
             if len(ch) >= 3:
-                lhs = self.lower_expr(ch[0], pre_lines, indent, mset)
                 op = _node_text(ch[1]).strip()
+                if op == ">" and ch[0].type == "binary_expression" and ch[2].type == "parenthesized_expression":
+                    lch = [c for c in ch[0].children if c.type not in ("line_comment", "block_comment")]
+                    if len(lch) >= 3 and _node_text(lch[1]).strip() == "<":
+                        fn_e = self.lower_expr(lch[0], pre_lines, indent, mset)
+                        arg_e = self.lower_expr(ch[2], pre_lines, indent, mset)
+                        return f"_host_os._kt_call({fn_e}, {arg_e})"
+                lhs = self.lower_expr(ch[0], pre_lines, indent, mset)
                 rhs = self.lower_expr(ch[2], pre_lines, indent, mset)
                 if op == "?:":
                     return f"_kt_elvis({lhs}, {rhs})"
