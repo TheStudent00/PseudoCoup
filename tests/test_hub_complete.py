@@ -15,15 +15,23 @@ from pathlib import Path
 import sys
 import z3
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
+sys.path.insert(0, str(HERE.parents[1]))
 from PseudoCoup.hub import BreakSignal, ComplexHolder, ContinueSignal, Hub
 
 
 def verify_all_lowered_units_in_vm(h: Hub) -> dict[str, int]:
     """Run every lowered Unit across all 6 language groups through RiscvUnitVM."""
-    pkg_dir = Path(__file__).resolve().parents[1] / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
+    p1 = Path(__file__).resolve().parents[1] / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
+    p2 = Path(__file__).resolve().parents[1] / "pseudocoup" / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
     hq_dir = Path(__file__).resolve().parents[3] / "Research" / "lower_HiOp" / "out"
-    out_dir = pkg_dir if pkg_dir.exists() else hq_dir
+    out_dir = p1 if p1.exists() else (p2 if p2.exists() else hq_dir)
     files = [
         ("C", out_dir / "gnu_c_first_of_each.jsonl.gz"),
         ("ClangOther", out_dir / "clang_other_langs_all.jsonl.gz"),

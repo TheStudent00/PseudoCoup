@@ -12,8 +12,15 @@ import sys
 from pathlib import Path
 
 HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
 ROOT = HERE.parents[2]
-sys.path.insert(0, str(ROOT / "Projects"))
+if (ROOT / "Projects").exists():
+    sys.path.insert(0, str(ROOT / "Projects"))
 sys.path.insert(0, str(HERE.parent))
 
 from PseudoCoup.ledgerer import ScriptToLedger, LedgerToScript, eval_ledger
