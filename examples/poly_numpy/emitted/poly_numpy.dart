@@ -95,7 +95,7 @@ int np_broadcast_strides(int src_shape, int src_strides, int target_shape) {
 
 int np_normalize_index(int idx, int dim, int mode) {
     if ((mode == 1)) {
-        return ((((idx ^ dim) < 0) && ((idx % dim) != 0)) ? ((idx % dim) + dim) : (idx % dim));
+        return ((((idx ^ dim) < 0) && ((idx.remainder(dim)) != 0)) ? ((idx.remainder(dim)) + dim) : (idx.remainder(dim)));
     }
     if ((mode == 2)) {
         return ((idx < 0) ? 0 : ((idx >= dim) ? (dim - 1) : idx));
@@ -123,10 +123,10 @@ int np_ravel_multi_index(int coords3, int shape3, int mode) {
 int np_unravel_index(int flat_idx, int shape3) {
     int d1 = np_get_axis(shape3, (((1 & 4294967295) ^ 2147483648) - 2147483648));
     int d2 = np_get_axis(shape3, (((2 & 4294967295) ^ 2147483648) - 2147483648));
-    int i2 = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx % d2) + d2) : (flat_idx % d2));
-    int rem = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx / d2) - 1) : (flat_idx / d2));
-    int i1 = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem % d1) + d1) : (rem % d1));
-    int i0 = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem / d1) - 1) : (rem / d1));
+    int i2 = ((((flat_idx ^ d2) < 0) && ((flat_idx.remainder(d2)) != 0)) ? ((flat_idx.remainder(d2)) + d2) : (flat_idx.remainder(d2)));
+    int rem = ((((flat_idx ^ d2) < 0) && ((flat_idx.remainder(d2)) != 0)) ? ((flat_idx ~/ d2) - 1) : (flat_idx ~/ d2));
+    int i1 = ((((rem ^ d1) < 0) && ((rem.remainder(d1)) != 0)) ? ((rem.remainder(d1)) + d1) : (rem.remainder(d1)));
+    int i0 = ((((rem ^ d1) < 0) && ((rem.remainder(d1)) != 0)) ? ((rem ~/ d1) - 1) : (rem ~/ d1));
     return np_pack_vec3((((i0 & 4294967295) ^ 2147483648) - 2147483648), (((i1 & 4294967295) ^ 2147483648) - 2147483648), (((i2 & 4294967295) ^ 2147483648) - 2147483648));
 }
 

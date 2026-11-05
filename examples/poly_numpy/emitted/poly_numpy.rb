@@ -95,7 +95,7 @@ end
 
 def np_normalize_index(idx, dim, mode)
     if (mode == 1)
-        return ((((idx ^ dim) < 0) && ((idx % dim) != 0)) ? ((idx % dim) + dim) : (idx % dim))
+        return ((((idx ^ dim) < 0) && ((idx.remainder(dim)) != 0)) ? ((idx.remainder(dim)) + dim) : (idx.remainder(dim)))
     end
     if (mode == 2)
         return ((idx < 0) ? 0 : ((idx >= dim) ? (dim - 1) : idx))
@@ -123,10 +123,10 @@ end
 def np_unravel_index(flat_idx, shape3)
     d1 = np_get_axis(shape3, (((1 & 4294967295) ^ 2147483648) - 2147483648))
     d2 = np_get_axis(shape3, (((2 & 4294967295) ^ 2147483648) - 2147483648))
-    i2 = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx % d2) + d2) : (flat_idx % d2))
-    rem = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx / d2) - 1) : (flat_idx / d2))
-    i1 = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem % d1) + d1) : (rem % d1))
-    i0 = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem / d1) - 1) : (rem / d1))
+    i2 = ((((flat_idx ^ d2) < 0) && ((flat_idx.remainder(d2)) != 0)) ? ((flat_idx.remainder(d2)) + d2) : (flat_idx.remainder(d2)))
+    rem = ((((flat_idx ^ d2) < 0) && ((flat_idx.remainder(d2)) != 0)) ? ((flat_idx.fdiv(d2).truncate) - 1) : (flat_idx.fdiv(d2).truncate))
+    i1 = ((((rem ^ d1) < 0) && ((rem.remainder(d1)) != 0)) ? ((rem.remainder(d1)) + d1) : (rem.remainder(d1)))
+    i0 = ((((rem ^ d1) < 0) && ((rem.remainder(d1)) != 0)) ? ((rem.fdiv(d1).truncate) - 1) : (rem.fdiv(d1).truncate))
     return np_pack_vec3((((i0 & 4294967295) ^ 2147483648) - 2147483648), (((i1 & 4294967295) ^ 2147483648) - 2147483648), (((i2 & 4294967295) ^ 2147483648) - 2147483648))
 end
 

@@ -124,9 +124,9 @@ function np_unravel_index(int $flat_idx, int $shape3): int {
     $d1 = np_get_axis($shape3, (((1 & 4294967295) ^ 2147483648) - 2147483648));
     $d2 = np_get_axis($shape3, (((2 & 4294967295) ^ 2147483648) - 2147483648));
     $i2 = (((($flat_idx ^ $d2) < 0) && (($flat_idx % $d2) != 0)) ? (($flat_idx % $d2) + $d2) : ($flat_idx % $d2));
-    $rem = (((($flat_idx ^ $d2) < 0) && (($flat_idx % $d2) != 0)) ? (($flat_idx / $d2) - 1) : ($flat_idx / $d2));
+    $rem = (((($flat_idx ^ $d2) < 0) && (($flat_idx % $d2) != 0)) ? (intdiv($flat_idx, $d2) - 1) : intdiv($flat_idx, $d2));
     $i1 = (((($rem ^ $d1) < 0) && (($rem % $d1) != 0)) ? (($rem % $d1) + $d1) : ($rem % $d1));
-    $i0 = (((($rem ^ $d1) < 0) && (($rem % $d1) != 0)) ? (($rem / $d1) - 1) : ($rem / $d1));
+    $i0 = (((($rem ^ $d1) < 0) && (($rem % $d1) != 0)) ? (intdiv($rem, $d1) - 1) : intdiv($rem, $d1));
     return np_pack_vec3(((($i0 & 4294967295) ^ 2147483648) - 2147483648), ((($i1 & 4294967295) ^ 2147483648) - 2147483648), ((($i2 & 4294967295) ^ 2147483648) - 2147483648));
 }
 
