@@ -792,6 +792,8 @@ class LedgerToScript:
                 raise ValueError(
                     f"URHolderCast({expr.src_holder!r} -> {expr.dst_holder!r}) lacks Sail-derived 'unit_lean'; refusing fallback."
                 )
+            if expr.src_holder == expr.dst_holder or expr.dst_holder in ("i64", "u64"):
+                return inner
             return URHolderCast(expr.ur_node, inner, expr.src_holder, expr.dst_holder, expr.bridge_kind)
         if isinstance(expr, URCall):
             return URCall(expr.func_name, [cls.canonicalize_expr(a, target_lang) for a in expr.args], expr.holder)
@@ -962,9 +964,23 @@ class LedgerToScript:
         if op_symbol == "neg":
             return f"-{lhs_s}"
         if op_symbol in ("trunc_div", "/", "//"):
-            return f"int({lhs_s} / {rhs_s})" if lang == "python" else f"({lhs_s} / {rhs_s})"
+            if lang == "python":
+                return f"int({lhs_s} / {rhs_s})"
+            if lang == "ruby":
+                return f"({lhs_s}.fdiv({rhs_s}).truncate)"
+            if lang == "dart":
+                return f"({lhs_s} ~/ {rhs_s})"
+            if lang == "php":
+                return f"intdiv({lhs_s}, {rhs_s})"
+            if lang == "typescript":
+                return f"Math.trunc({lhs_s} / {rhs_s})"
+            return f"({lhs_s} / {rhs_s})"
         if op_symbol in ("trunc_rem", "%"):
-            return f"({lhs_s} - (int({lhs_s} / {rhs_s}) * {rhs_s}))" if lang == "python" else f"({lhs_s} % {rhs_s})"
+            if lang == "python":
+                return f"({lhs_s} - (int({lhs_s} / {rhs_s}) * {rhs_s}))"
+            if lang in ("ruby", "dart"):
+                return f"({lhs_s}.remainder({rhs_s}))"
+            return f"({lhs_s} % {rhs_s})"
         return f"({lhs_s} {op_symbol} {rhs_s})"
 
     @classmethod
