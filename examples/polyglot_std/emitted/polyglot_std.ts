@@ -1,10 +1,10 @@
 function std_rotl32_c(x: number, r: number): number {
-    return (((x << (r & 63)) | (x >> ((32 - r) & 63))) & 4294967295);
+    return (((x << r) | (x >> (32 - r))) & 4294967295);
 }
 
 function std_mul32(a: number, b: number): number {
     let lo: number = ((a * (b & 65535)) & 4294967295);
-    let hi: number = (((a * (b >> (16 & 63))) << (16 & 63)) & 4294967295);
+    let hi: number = (((a * (b >> 16)) << 16) & 4294967295);
     return ((lo + hi) & 4294967295);
 }
 
@@ -15,9 +15,9 @@ function std_xxh32_round(acc: number, input: number): number {
 }
 
 function std_xxh32_avalanche(h: number): number {
-    let h1: number = std_mul32((h ^ (h >> (15 & 63))), (2246822519 & 4294967295));
-    let h2: number = std_mul32((h1 ^ (h1 >> (13 & 63))), (3266489917 & 4294967295));
-    return ((h2 ^ (h2 >> (16 & 63))) & 4294967295);
+    let h1: number = std_mul32((h ^ (h >> 15)), (2246822519 & 4294967295));
+    let h2: number = std_mul32((h1 ^ (h1 >> 13)), (3266489917 & 4294967295));
+    return ((h2 ^ (h2 >> 16)) & 4294967295);
 }
 
 function std_xxh32_word64(data: number, seed: number): number {
@@ -29,10 +29,10 @@ function std_xxh32_word64(data: number, seed: number): number {
 }
 
 function std_lz4_pack_token(lit_len: number, match_len: number, offset: number, literal_u32: number): number {
-    let token: number = (((lit_len & 15) << (4 & 63)) | (match_len & 15));
-    let off_bits: number = ((offset & 65535) << (8 & 63));
-    let lit_bits: number = ((literal_u32 & 4294967295) << (24 & 63));
-    return ((token | off_bits) | lit_bits);
+    let lz4_hdr: number = (((lit_len & 15) << 4) | (match_len & 15));
+    let off_bits: number = ((offset & 65535) << 8);
+    let lit_bits: number = ((literal_u32 & 4294967295) << 24);
+    return ((lz4_hdr | off_bits) | lit_bits);
 }
 
 function std_lz4_token_lit_len(frame: number): number {
@@ -52,12 +52,12 @@ function std_lz4_literal(frame: number): number {
 }
 
 function std_rotl32_rs(x: number, b: number): number {
-    return (((x << (b & 63)) | (x >> ((32 - b) & 63))) & 4294967295);
+    return (((x << b) | (x >> (32 - b))) & 4294967295);
 }
 
 function std_pack_u32_pair(lo: number, hi: number): number {
     let ulo: number = (lo & 4294967295);
-    let uhi: number = ((hi & 4294967295) << (32 & 63));
+    let uhi: number = ((hi & 4294967295) << 32);
     return (ulo | uhi);
 }
 
@@ -106,30 +106,30 @@ function std_halfsiphash_1_3(k0: number, k1: number, m0: number, m1: number): nu
 }
 
 function std_zigzag_encode(n: number): number {
-    return (((((1 >= 0) && (1 < 64)) ? (n << (1 & 63)) : 0) ^ (((31 >= 0) && (31 < 64)) ? (n >> (31 & 63)) : (n >> (63 & 63)))) & 4294967295);
+    return (((n << 1) ^ (n >> 31)) & 4294967295);
 }
 
 function std_zigzag_decode(z: number): number {
-    return (((((((1 >= 0) && (1 < 64)) ? (z >> (1 & 63)) : (z >> (63 & 63))) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
 }
 
 function std_leb128_encode_u32(v: number): number {
     let b0: number = (((v & 127) | ((v >= 128) ? 128 : 0)) & 4294967295);
-    let v1: number = ((((7 >= 0) && (7 < 64)) ? (v >> (7 & 63)) : (v >> (63 & 63))) & 4294967295);
+    let v1: number = ((v >> 7) & 4294967295);
     let b1: number = (((v1 & 127) | ((v1 >= 128) ? 128 : 0)) & 4294967295);
-    let v2: number = ((((14 >= 0) && (14 < 64)) ? (v >> (14 & 63)) : (v >> (63 & 63))) & 4294967295);
+    let v2: number = ((v >> 14) & 4294967295);
     let b2: number = (((v2 & 127) | ((v2 >= 128) ? 128 : 0)) & 4294967295);
-    let v3: number = (((((21 >= 0) && (21 < 64)) ? (v >> (21 & 63)) : (v >> (63 & 63))) & 127) & 4294967295);
+    let v3: number = (((v >> 21) & 127) & 4294967295);
     let nbytes: number = (((1 + ((v >= 128) ? 1 : 0)) + ((v >= 16384) ? 1 : 0)) + ((v >= 2097152) ? 1 : 0));
-    let wire: number = ((((b0 | (((8 >= 0) && (8 < 64)) ? (b1 << (8 & 63)) : 0)) | (((16 >= 0) && (16 < 64)) ? (b2 << (16 & 63)) : 0)) | (((24 >= 0) && (24 < 64)) ? (v3 << (24 & 63)) : 0)) & 4294967295);
+    let wire: number = ((((b0 | (b1 << 8)) | (b2 << 16)) | (v3 << 24)) & 4294967295);
     return (wire | (((32 >= 0) && (32 < 64)) ? (nbytes << (32 & 63)) : 0));
 }
 
 function std_leb128_decode_u32(packed: number): number {
     let b0: number = (packed & 255);
-    let b1: number = ((((8 >= 0) && (8 < 64)) ? (packed >> (8 & 63)) : (packed >> (63 & 63))) & 255);
-    let b2: number = ((((16 >= 0) && (16 < 64)) ? (packed >> (16 & 63)) : (packed >> (63 & 63))) & 255);
-    let b3: number = ((((24 >= 0) && (24 < 64)) ? (packed >> (24 & 63)) : (packed >> (63 & 63))) & 255);
+    let b1: number = ((((8 >= 0) && (8 < 64)) ? (packed >> (8 & 63)) : (packed >> 63)) & 255);
+    let b2: number = ((((16 >= 0) && (16 < 64)) ? (packed >> (16 & 63)) : (packed >> 63)) & 255);
+    let b3: number = ((((24 >= 0) && (24 < 64)) ? (packed >> (24 & 63)) : (packed >> 63)) & 255);
     let acc: number = (b0 & 127);
     if (((b0 & 128) != 0)) {
         acc = (acc | (((7 >= 0) && (7 < 64)) ? ((b1 & 127) << (7 & 63)) : 0));
