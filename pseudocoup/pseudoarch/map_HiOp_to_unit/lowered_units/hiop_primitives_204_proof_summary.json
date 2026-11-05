@@ -2,7 +2,7 @@
   "total_pairs": 204,
   "proven_unsat": 204,
   "pass_rate_pct": 100.0,
-  "elapsed_sec": 29.326,
+  "elapsed_sec": 44.602,
   "by_language": {
     "c": 17,
     "cpp": 17,
