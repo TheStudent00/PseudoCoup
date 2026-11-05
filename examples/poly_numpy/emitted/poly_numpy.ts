@@ -124,9 +124,9 @@ function np_unravel_index(flat_idx: number, shape3: number): number {
     let d1: number = np_get_axis(shape3, (((1 & 4294967295) ^ 2147483648) - 2147483648));
     let d2: number = np_get_axis(shape3, (((2 & 4294967295) ^ 2147483648) - 2147483648));
     let i2: number = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx % d2) + d2) : (flat_idx % d2));
-    let rem: number = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? ((flat_idx / d2) - 1) : (flat_idx / d2));
+    let rem: number = ((((flat_idx ^ d2) < 0) && ((flat_idx % d2) != 0)) ? (Math.trunc(flat_idx / d2) - 1) : Math.trunc(flat_idx / d2));
     let i1: number = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem % d1) + d1) : (rem % d1));
-    let i0: number = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? ((rem / d1) - 1) : (rem / d1));
+    let i0: number = ((((rem ^ d1) < 0) && ((rem % d1) != 0)) ? (Math.trunc(rem / d1) - 1) : Math.trunc(rem / d1));
     return np_pack_vec3((((i0 & 4294967295) ^ 2147483648) - 2147483648), (((i1 & 4294967295) ^ 2147483648) - 2147483648), (((i2 & 4294967295) ^ 2147483648) - 2147483648));
 }
 
