@@ -362,6 +362,10 @@ def _normalize_inline_cond_and_div(ln: str, lang: str) -> str:
     ln = re.sub(r"intdiv\(\s*([A-Za-z0-9_]+)\s*,\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
     # TypeScript native truncated division `Math.trunc(a / b)` -> `trunc_div(a, b)`
     ln = re.sub(r"Math\.trunc\(\s*([A-Za-z0-9_]+)\s*/\s*([A-Za-z0-9_]+)\s*\)", r"trunc_div(\1, \2)", ln)
+    # Rust wrapping_shl / wrapping_shr emitted by HIOP_PRIMITIVES: `.wrapping_shl(B as u32)` -> `<< (B & 63)`
+    if lang == "rust":
+        ln = re.sub(r"\.wrapping_shl\(\s*([^()]+?)\s+as\s+u32\s*\)", r" << (\1 & 63)", ln)
+        ln = re.sub(r"\.wrapping_shr\(\s*([^()]+?)\s+as\s+u32\s*\)", r" >> (\1 & 63)", ln)
     return ln
 
 
