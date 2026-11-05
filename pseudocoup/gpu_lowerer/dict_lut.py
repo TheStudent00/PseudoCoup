@@ -47,8 +47,8 @@ OPS = [
 OP_TO_ID = {op: i for i, op in enumerate(OPS)}
 
 RVALS = [
-    "guarded", "saturate_64_<<", "saturate_64_>>", "mask_63_<<", "mask_63_>>",
-    "trunc_div", "trunc_rem", "floor_div", "floor_mod",
+    "guarded",
+    *[f"src_{l}" for l in ALL_12_LANGS],
     "cast_noop", "cast_u32", "cast_i32", "cast_u16", "cast_i16", "cast_u8", "cast_i8",
 ]
 RVAL_TO_ID = {r: i for i, r in enumerate(RVALS)}
@@ -145,6 +145,8 @@ class DictLUT:
     def _build_all_templates(self) -> None:
         v0 = URVar("__SLOT_0__", "i64")
         v1 = URVar("__SLOT_1__", "i64")
+        v1_masked = URVar("__SLOT_1__", "i64")
+        setattr(v1_masked, "_is_masked_slot", True)
         v2 = URVar("__SLOT_2__", "i64")
 
         for lang_id, lang in enumerate(ALL_12_LANGS):
@@ -153,22 +155,34 @@ class DictLUT:
             self.lut_table[lang_id, KIND_CONST, 0, 0, 0] = self._compile_pattern_str("__SYM__")
             self.lut_table[lang_id, KIND_VAR, 0, 0, 0] = self._compile_pattern_str("$__SYM__" if lang == "php" else "__SYM__")
 
-            # 1. HIOP (both guarded Tier-1 and unguarded Tier-2 R_vals)
+            # 1. HIOP (both guarded Tier-1 and unguarded Tier-2 R_vals across source languages)
             for op_id, op_sym in enumerate(OPS):
                 if op_sym == "none":
                     continue
-                for rval_id, rval in enumerate(RVALS):
-                    if rval.startswith("cast_") or (op_sym in ("ite", "neg") and rval != "guarded"):
+                g_node = build_ur_node(lang, op_sym, "i64", True)
+                g_args = [v0] if op_sym == "neg" else ([v0, v1, v2] if op_sym == "ite" else [v0, v1])
+                g_hiop = URHiOpCall(g_node, g_args, op_sym, "i64")
+                g_canon = LedgerToScript.canonicalize_expr(g_hiop, lang)
+                g_pat = LedgerToScript._emit_expr(g_canon, lang).replace("$__SLOT_", "__SLOT_")
+                g_tid = self._compile_pattern_str(g_pat)
+                self.lut_table[lang_id, KIND_HIOP, op_id, RVAL_TO_ID["guarded"], 0] = g_tid
+                self.lut_table[lang_id, KIND_HIOP, op_id, RVAL_TO_ID["guarded"], 1] = g_tid
+
+                for src_l in ALL_12_LANGS:
+                    rval_id = RVAL_TO_ID[f"src_{src_l}"]
+                    if op_sym not in ("/", "//", "%", "<<", ">>"):
+                        self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, 0] = g_tid
+                        self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, 1] = g_tid
                         continue
-                    is_guarded = (rval == "guarded")
-                    node = build_ur_node(lang, op_sym, "i64", is_guarded)
-                    if not is_guarded:
-                        node.meaning = {"tier": 2, "D_ok": "True", "D_trap": "False", "R_val": rval, "guarded": False}
-                    args = [v0] if op_sym == "neg" else ([v0, v1, v2] if op_sym == "ite" else [v0, v1])
-                    hiop = URHiOpCall(node, args, op_sym, "i64")
-                    canon = LedgerToScript.canonicalize_expr(hiop, lang)
-                    pat = LedgerToScript._emit_expr(canon, lang).replace("$__SLOT_", "__SLOT_")
-                    self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, 0] = self._compile_pattern_str(pat)
+                    node = build_ur_node(src_l, op_sym, "i64", False)
+                    for extra_masked, rhs_var in ((0, v1), (1, v1_masked)):
+                        if extra_masked == 1 and op_sym not in ("<<", ">>"):
+                            self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, 1] = self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, 0]
+                            continue
+                        hiop = URHiOpCall(node, [v0, rhs_var], op_sym, "i64")
+                        canon = LedgerToScript.canonicalize_expr(hiop, lang)
+                        pat = LedgerToScript._emit_expr(canon, lang).replace("$__SLOT_", "__SLOT_")
+                        self.lut_table[lang_id, KIND_HIOP, op_id, rval_id, extra_masked] = self._compile_pattern_str(pat)
 
             # 2. HOLDER_CAST
             for dst_h, rval_name in [("i64", "cast_noop"), ("u64", "cast_noop"), ("u32", "cast_u32"),

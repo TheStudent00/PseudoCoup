@@ -318,6 +318,8 @@ def build_holder_cast_node(
 
 
 def _is_bitmask_63(expr_node: Any) -> bool:
+    if getattr(expr_node, "_is_masked_slot", False):
+        return True
     return (
         isinstance(expr_node, URHiOpCall)
         and expr_node.op_symbol == "&"

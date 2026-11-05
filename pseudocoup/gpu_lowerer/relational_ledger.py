@@ -41,6 +41,7 @@ from ..ledgerer.ur_ledger import (
     URReturn,
     URVar,
     URWhile,
+    _is_bitmask_63,
 )
 
 COL_ID = 0
@@ -177,9 +178,14 @@ class RelationalLedgerTable:
         if isinstance(expr, URHiOpCall):
             op_id = OP_TO_ID[expr.op_symbol]
             meaning = expr.ur_node.meaning
-            rval_str = "guarded" if meaning.get("guarded", False) else meaning.get("R_val", "guarded")
+            if meaning.get("guarded", False):
+                rval_str = "guarded"
+            else:
+                src_l = str(expr.ur_node.hiop.get("lang", "c")).lower()
+                rval_str = f"src_{src_l}" if f"src_{src_l}" in RVAL_TO_ID else "guarded"
             rval_id = RVAL_TO_ID.get(rval_str, 0)
-            nid = self._alloc_row(depth, KIND_HIOP, op=op_id, rval=rval_id)
+            extra = 1 if (len(expr.args) == 2 and _is_bitmask_63(expr.args[1])) else 0
+            nid = self._alloc_row(depth, KIND_HIOP, op=op_id, rval=rval_id, extra=extra)
             cids = [self._build_expr(a, depth + 1) for a in expr.args]
             self._set_children(nid, cids)
             return nid
