@@ -1,16 +1,16 @@
 function xxhash32_avalanche(h: number, seed: number): number {
-    let acc: number = (((h + seed) + 374761393) & 4294967295);
-    acc = (((acc ^ (acc >> (15 & 63))) * 2246822519) & 4294967295);
-    acc = (((acc ^ (acc >> (13 & 63))) * 3266489917) & 4294967295);
-    return ((acc ^ (acc >> (16 & 63))) & 4294967295);
+    let acc: number = BigInt.asIntN(64, BigInt(((h + seed) + 374761393)) & BigInt(0xffffffffn));
+    acc = BigInt.asIntN(64, BigInt(((acc ^ (acc >> 15)) * 2246822519)) & BigInt(0xffffffffn));
+    acc = BigInt.asIntN(64, BigInt(((acc ^ (acc >> 13)) * 3266489917)) & BigInt(0xffffffffn));
+    return BigInt.asIntN(64, BigInt((acc ^ (acc >> 16))) & BigInt(0xffffffffn));
 }
 
 function zigzag_encode_i32(n: number): number {
-    return (((((1 >= 0) && (1 < 64)) ? (n << (1 & 63)) : 0) ^ (((31 >= 0) && (31 < 64)) ? (n >> (31 & 63)) : (n >> (63 & 63)))) & 4294967295);
+    return BigInt.asIntN(64, BigInt(((n << 1) ^ (n >> 31))) & BigInt(0xffffffffn));
 }
 
 function zigzag_decode_u32(z: number): number {
-    return (((((((1 >= 0) && (1 < 64)) ? (z >> (1 & 63)) : (z >> (63 & 63))) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648);
+    return BigInt.asIntN(64, BigInt.asIntN(64, BigInt(BigInt.asIntN(64, BigInt(((z >> 1) ^ (0 - (z & 1)))) << (BigInt(32n) & 63n)))) >> (BigInt(32n) & 63n));
 }
 
 function fx_fold64(acc: number, word: number): number {
@@ -19,9 +19,9 @@ function fx_fold64(acc: number, word: number): number {
 }
 
 function verify_telemetry_frame(delta_a: number, delta_b: number, seed: number): number {
-    let zz_a: number = zigzag_encode_i32((((delta_a & 4294967295) ^ 2147483648) - 2147483648));
-    let zz_b: number = zigzag_encode_i32((((delta_b & 4294967295) ^ 2147483648) - 2147483648));
-    let h_a: number = xxhash32_avalanche(zz_a, (seed & 4294967295));
+    let zz_a: number = zigzag_encode_i32(BigInt.asIntN(64, BigInt.asIntN(64, BigInt(BigInt.asIntN(64, BigInt(delta_a) << (BigInt(32n) & 63n)))) >> (BigInt(32n) & 63n)));
+    let zz_b: number = zigzag_encode_i32(BigInt.asIntN(64, BigInt.asIntN(64, BigInt(BigInt.asIntN(64, BigInt(delta_b) << (BigInt(32n) & 63n)))) >> (BigInt(32n) & 63n)));
+    let h_a: number = xxhash32_avalanche(zz_a, BigInt.asIntN(64, BigInt(seed) & BigInt(0xffffffffn)));
     let h_b: number = xxhash32_avalanche(zz_b, h_a);
     let digest: number = fx_fold64(h_a, h_b);
     let dec_a: number = zigzag_decode_u32(zz_a);
