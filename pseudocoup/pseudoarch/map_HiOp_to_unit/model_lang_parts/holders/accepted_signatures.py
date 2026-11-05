@@ -50,7 +50,6 @@ from typing import NamedTuple, Optional
 from ... import mask_maker as mask_code
 from .. import Holder
 from . import holder_reader
-from ..HiOps.operator_reader import clang as clang_reader
 
 UNDECIDED = "undecided"
 
@@ -1148,6 +1147,7 @@ def read_signatures(operators: list, kept_spellings: list, defaults_of, director
     its checking code accepts, read from that code (checking_reader) and
     tested on the holders kept and a pointer to each (domain_of)."""
     from ...complex_signature_reader import checking_reader
+    from ..HiOps.operator_reader import clang as clang_reader
     builtins = clang_reader.made_builtins(clang_reader.BUILTINS_TD)
     letters_of = {}
     custom_typechecked = set()
