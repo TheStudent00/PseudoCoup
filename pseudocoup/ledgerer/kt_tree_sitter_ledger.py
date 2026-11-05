@@ -637,6 +637,13 @@ class KotlinCSTLedgerLowerer:
                     rhs = self.lower_expr(ch[2], pre, indent, local_mset)
                     lines.extend(pre)
                     lines.append(f"{pad}{lhs} {op} {rhs}")
+            elif t == "unary_expression" and any(c.type in ("++", "--") or _node_text(c).strip() in ("++", "--") for c in st.children):
+                uch = [c for c in st.children if c.type not in ("line_comment", "block_comment", "++", "--") and _node_text(c).strip() not in ("++", "--")]
+                is_inc = "++" in _node_text(st)
+                if uch:
+                    target_e = self.lower_expr(uch[0], pre, indent, local_mset)
+                    lines.extend(pre)
+                    lines.append(f"{pad}{target_e} {'+=' if is_inc else '-='} 1")
             elif t == "function_declaration":
                 lines.extend(self.lower_function_decl(st, indent=indent, is_method=False, mset=local_mset))
             elif t in ("return_expression", "jump_expression") or _node_text(st).strip() in ("break", "continue"):
