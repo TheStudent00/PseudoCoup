@@ -1,10 +1,10 @@
 func std_rotl32_c(_ x: Int64, _ r: Int64) -> Int64 {
-    return (((x << (r & 63)) | (x >> ((32 - r) & 63))) & 4294967295)
+    return (((x << r) | (x >> (32 - r))) & 4294967295)
 }
 
 func std_mul32(_ a: Int64, _ b: Int64) -> Int64 {
     var lo: Int64 = ((a * (b & 65535)) & 4294967295)
-    var hi: Int64 = (((a * (b >> (16 & 63))) << (16 & 63)) & 4294967295)
+    var hi: Int64 = (((a * (b >> 16)) << 16) & 4294967295)
     return ((lo + hi) & 4294967295)
 }
 
@@ -15,9 +15,9 @@ func std_xxh32_round(_ acc: Int64, _ input: Int64) -> Int64 {
 }
 
 func std_xxh32_avalanche(_ h: Int64) -> Int64 {
-    var h1: Int64 = std_mul32((h ^ (h >> (15 & 63))), (2246822519 & 4294967295))
-    var h2: Int64 = std_mul32((h1 ^ (h1 >> (13 & 63))), (3266489917 & 4294967295))
-    return ((h2 ^ (h2 >> (16 & 63))) & 4294967295)
+    var h1: Int64 = std_mul32((h ^ (h >> 15)), (2246822519 & 4294967295))
+    var h2: Int64 = std_mul32((h1 ^ (h1 >> 13)), (3266489917 & 4294967295))
+    return ((h2 ^ (h2 >> 16)) & 4294967295)
 }
 
 func std_xxh32_word64(_ data: Int64, _ seed: Int64) -> Int64 {
@@ -29,10 +29,10 @@ func std_xxh32_word64(_ data: Int64, _ seed: Int64) -> Int64 {
 }
 
 func std_lz4_pack_token(_ lit_len: Int64, _ match_len: Int64, _ offset: Int64, _ literal_u32: Int64) -> Int64 {
-    var token: Int64 = (((lit_len & 15) << (4 & 63)) | (match_len & 15))
-    var off_bits: Int64 = ((offset & 65535) << (8 & 63))
-    var lit_bits: Int64 = ((literal_u32 & 4294967295) << (24 & 63))
-    return ((token | off_bits) | lit_bits)
+    var lz4_hdr: Int64 = (((lit_len & 15) << 4) | (match_len & 15))
+    var off_bits: Int64 = ((offset & 65535) << 8)
+    var lit_bits: Int64 = ((literal_u32 & 4294967295) << 24)
+    return ((lz4_hdr | off_bits) | lit_bits)
 }
 
 func std_lz4_token_lit_len(_ frame: Int64) -> Int64 {
@@ -52,12 +52,12 @@ func std_lz4_literal(_ frame: Int64) -> Int64 {
 }
 
 func std_rotl32_rs(_ x: Int64, _ b: Int64) -> Int64 {
-    return (((x << (b & 63)) | (x >> ((32 - b) & 63))) & 4294967295)
+    return (((x << b) | (x >> (32 - b))) & 4294967295)
 }
 
 func std_pack_u32_pair(_ lo: Int64, _ hi: Int64) -> Int64 {
     var ulo: Int64 = (lo & 4294967295)
-    var uhi: Int64 = ((hi & 4294967295) << (32 & 63))
+    var uhi: Int64 = ((hi & 4294967295) << 32)
     return (ulo | uhi)
 }
 
@@ -106,30 +106,30 @@ func std_halfsiphash_1_3(_ k0: Int64, _ k1: Int64, _ m0: Int64, _ m1: Int64) -> 
 }
 
 func std_zigzag_encode(_ n: Int64) -> Int64 {
-    return (((((1 >= 0) && (1 < 64)) ? (n << (1 & 63)) : 0) ^ (((31 >= 0) && (31 < 64)) ? (n >> (31 & 63)) : (n >> (63 & 63)))) & 4294967295)
+    return (((n << 1) ^ (n >> 31)) & 4294967295)
 }
 
 func std_zigzag_decode(_ z: Int64) -> Int64 {
-    return (((((((1 >= 0) && (1 < 64)) ? (z >> (1 & 63)) : (z >> (63 & 63))) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648)
+    return (((((z >> 1) ^ (0 - (z & 1))) & 4294967295) ^ 2147483648) - 2147483648)
 }
 
 func std_leb128_encode_u32(_ v: Int64) -> Int64 {
     var b0: Int64 = (((v & 127) | ((v >= 128) ? 128 : 0)) & 4294967295)
-    var v1: Int64 = ((((7 >= 0) && (7 < 64)) ? (v >> (7 & 63)) : (v >> (63 & 63))) & 4294967295)
+    var v1: Int64 = ((v >> 7) & 4294967295)
     var b1: Int64 = (((v1 & 127) | ((v1 >= 128) ? 128 : 0)) & 4294967295)
-    var v2: Int64 = ((((14 >= 0) && (14 < 64)) ? (v >> (14 & 63)) : (v >> (63 & 63))) & 4294967295)
+    var v2: Int64 = ((v >> 14) & 4294967295)
     var b2: Int64 = (((v2 & 127) | ((v2 >= 128) ? 128 : 0)) & 4294967295)
-    var v3: Int64 = (((((21 >= 0) && (21 < 64)) ? (v >> (21 & 63)) : (v >> (63 & 63))) & 127) & 4294967295)
+    var v3: Int64 = (((v >> 21) & 127) & 4294967295)
     var nbytes: Int64 = (((1 + ((v >= 128) ? 1 : 0)) + ((v >= 16384) ? 1 : 0)) + ((v >= 2097152) ? 1 : 0))
-    var wire: Int64 = ((((b0 | (((8 >= 0) && (8 < 64)) ? (b1 << (8 & 63)) : 0)) | (((16 >= 0) && (16 < 64)) ? (b2 << (16 & 63)) : 0)) | (((24 >= 0) && (24 < 64)) ? (v3 << (24 & 63)) : 0)) & 4294967295)
+    var wire: Int64 = ((((b0 | (b1 << 8)) | (b2 << 16)) | (v3 << 24)) & 4294967295)
     return (wire | (((32 >= 0) && (32 < 64)) ? (nbytes << (32 & 63)) : 0))
 }
 
 func std_leb128_decode_u32(_ packed: Int64) -> Int64 {
     var b0: Int64 = (packed & 255)
-    var b1: Int64 = ((((8 >= 0) && (8 < 64)) ? (packed >> (8 & 63)) : (packed >> (63 & 63))) & 255)
-    var b2: Int64 = ((((16 >= 0) && (16 < 64)) ? (packed >> (16 & 63)) : (packed >> (63 & 63))) & 255)
-    var b3: Int64 = ((((24 >= 0) && (24 < 64)) ? (packed >> (24 & 63)) : (packed >> (63 & 63))) & 255)
+    var b1: Int64 = ((((8 >= 0) && (8 < 64)) ? (packed >> (8 & 63)) : (packed >> 63)) & 255)
+    var b2: Int64 = ((((16 >= 0) && (16 < 64)) ? (packed >> (16 & 63)) : (packed >> 63)) & 255)
+    var b3: Int64 = ((((24 >= 0) && (24 < 64)) ? (packed >> (24 & 63)) : (packed >> 63)) & 255)
     var acc: Int64 = (b0 & 127)
     if (((b0 & 128) != 0)) {
         acc = (acc | (((7 >= 0) && (7 < 64)) ? ((b1 & 127) << (7 & 63)) : 0))
