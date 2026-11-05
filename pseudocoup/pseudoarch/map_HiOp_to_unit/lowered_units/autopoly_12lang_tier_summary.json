@@ -25,7 +25,7 @@
     "tier3_loop_primitive_backstop": "8.87%"
   },
   "compiler_rt_caller_syntheses_count": 48,
-  "elapsed_seconds": 66.316,
+  "elapsed_seconds": 110.154,
   "sample_tier1": [
     {
       "src_lang": "c",
