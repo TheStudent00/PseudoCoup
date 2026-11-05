@@ -272,6 +272,8 @@ class KotlinCSTLedgerLowerer:
                     return f"({lhs} is {rhs})"
                 if op == "!==":
                     return f"({lhs} is not {rhs})"
+                if op == "/":
+                    return f"_host_os._kt_div({lhs}, {rhs})"
                 return f"({lhs} {op} {rhs})"
         if t == "infix_expression":
             ch = [c for c in node.children if c.type not in ("line_comment", "block_comment")]
@@ -599,6 +601,12 @@ class KotlinCSTLedgerLowerer:
                 rhs_e = self.lower_expr(val_node, pre, indent, local_mset) if val_node else "None"
                 lines.extend(pre)
                 lines.append(f"{pad}{vname} = {rhs_e}")
+                if val_node is not None and val_node.type == "binary_expression":
+                    bch = [c for c in val_node.children if c.type not in ("line_comment", "block_comment")]
+                    if len(bch) >= 3 and _node_text(bch[1]).strip() == "?:" and bch[2].type in ("jump_expression", "return_expression"):
+                        jtxt = _node_text(bch[2]).strip()
+                        jstmt = "continue" if jtxt.startswith("continue") else ("break" if jtxt.startswith("break") else "return None")
+                        lines.append(f"{pad}if {vname} is None: {jstmt}")
                 if is_last:
                     lines.append(f"{pad}return {vname}")
             elif t == "assignment":
@@ -898,6 +906,12 @@ class KotlinCSTLedgerLowerer:
                 elif bc.type == "function_declaration":
                     has_members = True
                     out.extend(self.lower_function_decl(bc, indent + 4, is_method=True, mset=member_names))
+                elif bc.type == "class_declaration":
+                    has_members = True
+                    out.extend(self.lower_class_decl(bc, indent + 4))
+                elif bc.type == "object_declaration":
+                    has_members = True
+                    out.extend(self.lower_object_decl(bc, indent + 4))
         if not has_members:
             out.append(f"{pad}    pass")
         out.append(f"{pad}{oname} = {cls_name}()")
@@ -947,6 +961,10 @@ class KotlinCSTLedgerLowerer:
                                         for vc in pc.children:
                                             if vc.type == "identifier":
                                                 pre_members.add(safe_py_ident(_node_text(vc)))
+                            elif cbc.type == "function_declaration":
+                                for fc in cbc.children:
+                                    if fc.type == "identifier":
+                                        pre_members.add(safe_py_ident(_node_text(fc)))
 
         p_pre, param_specs = self._parse_params_and_defaults(params_node, indent + 8, pre_members)
         pnames = [p for p, _ in param_specs]
