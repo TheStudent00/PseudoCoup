@@ -178,7 +178,7 @@ class RelationalLedgerTable:
         if isinstance(expr, URHiOpCall):
             op_id = OP_TO_ID[expr.op_symbol]
             meaning = expr.ur_node.meaning
-            if meaning.get("guarded", False):
+            if meaning.get("guarded", False) or expr.holder not in ("i64", "u64"):
                 rval_str = "guarded"
             else:
                 src_l = str(expr.ur_node.hiop.get("lang", "c")).lower()
