@@ -23,9 +23,16 @@ from pathlib import Path
 from typing import Any, NamedTuple, Sequence
 import z3
 
-PCHQ_ROOT = Path(__file__).resolve().parents[4]
+HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
+PCHQ_ROOT = HERE.parents[3]
 PROJECTS_DIR = PCHQ_ROOT / "Projects"
-if str(PROJECTS_DIR) not in sys.path:
+if PROJECTS_DIR.exists() and str(PROJECTS_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECTS_DIR))
 
 from PseudoArch.map_LoOp_to_lean import LoOpLean, decode_word, execute_word
@@ -37,13 +44,18 @@ from PseudoArch.map_unit_to_lean.compose_LoOp_leans import (
 import riscv_reference as RV
 
 from PseudoCoup.hub.autopoly.polyfill import HIOP_PRIMITIVES, normalize_target_lang, translate_z3_to_hiop_primitives
+_PKG_CRT_JSONL = HERE.parents[1] / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units" / "compiler_rt_riscv64.jsonl.gz"
 COMPILER_RT_JSONL = (
-    PCHQ_ROOT
-    / "Research"
-    / "lower_HiOp"
-    / "out"
-    / "infrastructure_l157"
-    / "compiler_rt_riscv64.jsonl.gz"
+    _PKG_CRT_JSONL
+    if _PKG_CRT_JSONL.exists()
+    else (
+        PCHQ_ROOT
+        / "Research"
+        / "lower_HiOp"
+        / "out"
+        / "infrastructure_l157"
+        / "compiler_rt_riscv64.jsonl.gz"
+    )
 )
 
 RET_RA_SENTINEL = 0xDEAD0000

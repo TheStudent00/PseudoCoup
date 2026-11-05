@@ -17,9 +17,15 @@ from typing import Any, Callable
 import z3
 
 HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
 PROJECTS_DIR = HERE.parents[2]
 PCHQ = PROJECTS_DIR.parent
-if str(PROJECTS_DIR) not in sys.path:
+if (PROJECTS_DIR / "PseudoArch").exists() and str(PROJECTS_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECTS_DIR))
 
 from PseudoArch.map_HiOp_to_unit.lower_HiOp import Word
@@ -28,7 +34,8 @@ from PseudoArch.map_unit_to_lean import compose_LoOp_leans
 from PseudoCoup.hub.autopoly.equivalence_prover import canonicalize_unit_lean
 from PseudoCoup.hub.autopoly.polyfill import HIOP_PRIMITIVES
 
-OUT_DIR = PCHQ / "Research" / "lower_HiOp" / "out"
+_PKG_LU_DIR = HERE.parents[1] / "pseudoarch" / "map_HiOp_to_unit" / "lowered_units"
+OUT_DIR = _PKG_LU_DIR if _PKG_LU_DIR.exists() else (PCHQ / "Research" / "lower_HiOp" / "out")
 
 ALL_12_LANGUAGES: tuple[str, ...] = (
     "c", "cpp", "go", "rust", "python", "java",

@@ -15,7 +15,14 @@ from pathlib import Path
 import sys
 import z3
 
-sys.path.insert(0, str(Path(__file__).resolve().parents[2]))
+HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
+sys.path.insert(0, str(HERE.parents[1]))
 from PseudoCoup.hub import BreakSignal, ComplexHolder, ContinueSignal, Hub
 
 

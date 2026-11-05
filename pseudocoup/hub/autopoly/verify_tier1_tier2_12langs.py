@@ -20,9 +20,16 @@ import time
 from pathlib import Path
 from typing import Any
 
-PCHQ_ROOT = Path(__file__).resolve().parents[4]
+HERE = Path(__file__).resolve().parent
+for _anc in HERE.parents:
+    if (_anc / "pseudocoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        import pseudocoup  # noqa: F401
+        break
+PCHQ_ROOT = HERE.parents[3]
 PROJECTS_DIR = PCHQ_ROOT / "Projects"
-if str(PROJECTS_DIR) not in sys.path:
+if PROJECTS_DIR.exists() and str(PROJECTS_DIR) not in sys.path:
     sys.path.insert(0, str(PROJECTS_DIR))
 
 from PseudoArch.map_HiOp_to_unit.lower_HiOp import Word
