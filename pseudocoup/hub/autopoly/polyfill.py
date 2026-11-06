@@ -784,6 +784,10 @@ def format_hiop_target_template(op_key: str, lang: str) -> str | None:
         return "({a} // {b})"
     if t == "python" and op_key == "PY_MOD":
         return "({a} % {b})"
+    if t == "dart" and op_key == "DART_EUCLID_MOD":
+        return "({a} % {b})"
+    if t in ("cpp", "ruby", "php") and op_key == "SPACESHIP":
+        return "({a} <=> {b})"
     return None
 
 

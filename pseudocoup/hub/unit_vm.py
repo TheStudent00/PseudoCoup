@@ -83,6 +83,7 @@ class RiscvUnitVM:
         unit_indices: list[int] | None = None,
         part_callbacks: dict[str, Callable[[], int]] | None = None,
         max_steps: int = 500,
+        holds_p: Any = None,
     ) -> dict[str, Any]:
         """Step a sliced RISC-V Unit, calling `part_callbacks` at `R_RISCV_CALL_PLT` sites."""
         callbacks = part_callbacks or {}
@@ -90,9 +91,23 @@ class RiscvUnitVM:
         slice_words = [words[i] for i in idxs if 0 <= i < len(words)]
         addr_to_pc = {int(w[0]): pc for pc, w in enumerate(slice_words)}
 
+        holds_p_map: dict[int, list[str]] = {}
+        if holds_p is True:
+            holds_p_map[0] = ["a0"]
+        elif isinstance(holds_p, (list, tuple)):
+            for item in holds_p:
+                if isinstance(item, (list, tuple)) and len(item) == 2:
+                    holds_p_map.setdefault(int(item[0]), []).append(str(item[1]))
+
         def resolve_target(cur_pc: int, cur_addr: int, tgt_addr: int) -> int:
-            if tgt_addr != cur_addr and tgt_addr in addr_to_pc:
-                return addr_to_pc[tgt_addr]
+            if tgt_addr != cur_addr:
+                if tgt_addr in addr_to_pc:
+                    return addr_to_pc[tgt_addr]
+                if tgt_addr >= 0 and slice_words:
+                    for pc_cand, w_cand in enumerate(slice_words):
+                        if int(w_cand[0]) >= tgt_addr:
+                            return pc_cand
+                    return len(slice_words)
             # Unlinked RISC-V `-mrelax` relocation (`.L0`): jump past next unconditional jump
             for k in range(cur_pc + 1, len(slice_words)):
                 if slice_words[k][2] in ("c.j", "j") and k > cur_pc + 1:
@@ -105,6 +120,8 @@ class RiscvUnitVM:
         pending_call: str | None = None
 
         while 0 <= pc < len(slice_words) and steps < max_steps:
+            for reg_p in holds_p_map.get(pc, ()):
+                self.set_reg(reg_p, self.HOLDER_BASE)
             steps += 1
             addr, _hex, mnem, ops_str, relocs = slice_words[pc]
             ops = [x.strip() for x in str(ops_str).split(",") if x.strip()]

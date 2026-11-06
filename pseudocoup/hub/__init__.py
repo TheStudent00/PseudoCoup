@@ -202,10 +202,18 @@ PRIMITIVE_SHORT_SPELLING: dict[str, dict[str, tuple[str, ...]]] = {
     "BV_SREM": {
         "c": ("%",), "cpp": ("%",), "go": ("%",), "rust": ("%",), "python": ("trunc_mod",),
         "java": ("%",), "typescript": ("%",), "csharp": ("%",), "ruby": ("%",),
-        "php": ("%",), "dart": ("%",), "swift": ("%",),
+        "php": ("%",), "dart": ("remainder",), "swift": ("%",),
     },
     "BV_UREM": {k: ("u%",) for k in HIOP_PRIMITIVES["BV_UREM"]},
     "BV_ITE": {k: ("?:",) for k in HIOP_PRIMITIVES["BV_ITE"]},
+    "DART_EUCLID_MOD": {
+        "dart": ("%",),
+    },
+    "SPACESHIP": {
+        "cpp": ("<=>",),
+        "ruby": ("<=>",),
+        "php": ("<=>",),
+    },
 }
 
 

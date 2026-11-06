@@ -257,6 +257,8 @@ def load_language_64bit_unit_leans() -> dict[str, dict[str, Any]]:
         "Binary.Div": "BV_SDIV",
         "Binary.TruncDiv": "BV_SDIV",
         "Binary.Rem": "BV_SREM",
+        "Binary.EuclidMod": "DART_EUCLID_MOD",
+        "Binary.Spaceship": "SPACESHIP",
         "Conditional": "BV_ITE",
     }
     op_to_prim_unsigned = {
@@ -279,6 +281,9 @@ def load_language_64bit_unit_leans() -> dict[str, dict[str, Any]]:
                     prim = op_to_prim_unsigned[op]
                     if prim not in lang_units[lang]:
                         lang_units[lang][prim] = lift_rec(rec)
+
+    if "SPACESHIP" in lang_units["ruby"] and "SPACESHIP" not in lang_units["cpp"]:
+        lang_units["cpp"]["SPACESHIP"] = lang_units["ruby"]["SPACESHIP"]
 
     return lang_units
 

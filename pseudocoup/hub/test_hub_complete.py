@@ -22,7 +22,11 @@ for _anc in HERE.parents:
             sys.path.insert(0, str(_anc))
         import pseudocoup  # noqa: F401
         break
-sys.path.insert(0, str(HERE.parents[1]))
+for _anc in HERE.parents:
+    if (_anc / "PseudoCoup" / "__init__.py").exists():
+        if str(_anc) not in sys.path:
+            sys.path.insert(0, str(_anc))
+        break
 from PseudoCoup.hub import BreakSignal, ComplexHolder, ContinueSignal, Hub
 
 
@@ -63,25 +67,42 @@ def verify_all_lowered_units_in_vm(h: Hub) -> dict[str, int]:
                 cbs = {p: (lambda: 1) for p in parts}
                 h.vm.reset()
                 h.vm.write_holder_words([7, 3, 0, 0])
-                h.vm.execute_unit(words, unit_idxs, cbs, max_steps=120)
+                h.vm.execute_unit(words, unit_idxs, cbs, max_steps=120, holds_p=rec.get("holds_p"))
                 executed += 1
-    # Verify real lowered RISC-V ConditionalOperator Unit (`a ? b : c`) branches & short-circuits at machine level
+    # Verify real lowered RISC-V ConditionalOperator Units (`a ? b : c`):
+    # 1) Value-level ConditionalOperator on ('long', 'long', 'long') with holds_p
+    # 2) Multi-body callback ConditionalOperator with 3 held parts (short-circuiting)
+    val_true = val_false = None
     cond_true = cond_false = None
     with gzip.open(out_dir / "gnu_c_first_of_each.jsonl.gz", "rt") as gz:
         for line in gz:
             rec = json.loads(line)
             if rec["operator"] == "ConditionalOperator":
-                w, u, p = rec["words"], rec["unit"], rec["parts"]
-                h.vm.reset()
-                cond_true = h.vm.execute_unit(w, u, {p[0]: lambda: 1, p[1]: lambda: 100, p[2]: lambda: 200})
-                h.vm.reset()
-                cond_false = h.vm.execute_unit(w, u, {p[0]: lambda: 0, p[1]: lambda: 100, p[2]: lambda: 200})
-                assert cond_true["called_parts"] == [p[0], p[1]] and cond_true["a0"] == 100
-                assert cond_false["called_parts"] == [p[0], p[2]] and cond_false["a0"] == 200
-                break
+                w, u, p = rec["words"], rec["unit"], rec.get("parts") or []
+                holders = [x[1] if isinstance(x, list) and len(x) > 1 else str(x) for x in (rec.get("holders") or ())]
+                if holders == ["long", "long", "long"] and not p and val_true is None:
+                    h.vm.reset()
+                    h.vm.write_holder_words([1, 100, 200, 0])
+                    val_true = h.vm.execute_unit(w, u, {}, holds_p=rec.get("holds_p"))
+                    assert val_true["a0"] == 100 and h.vm.read_holder_word(3) == 100
+                    h.vm.reset()
+                    h.vm.write_holder_words([0, 100, 200, 0])
+                    val_false = h.vm.execute_unit(w, u, {}, holds_p=rec.get("holds_p"))
+                    assert val_false["a0"] == 200 and h.vm.read_holder_word(3) == 200
+                elif len(p) == 3 and cond_true is None:
+                    h.vm.reset()
+                    cond_true = h.vm.execute_unit(w, u, {p[0]: lambda: 1, p[1]: lambda: 100, p[2]: lambda: 200})
+                    h.vm.reset()
+                    cond_false = h.vm.execute_unit(w, u, {p[0]: lambda: 0, p[1]: lambda: 100, p[2]: lambda: 200})
+                    assert cond_true["called_parts"] == [p[0], p[1]] and cond_true["a0"] == 100
+                    assert cond_false["called_parts"] == [p[0], p[2]] and cond_false["a0"] == 200
+    assert val_true is not None and val_false is not None
+    assert cond_true is not None and cond_false is not None
     return {
         "total_units_executed": executed,
         "multi_body_units_executed": multi_body_units,
+        "riscv_conditional_val_true": val_true,
+        "riscv_conditional_val_false": val_false,
         "riscv_conditional_unit_true": cond_true,
         "riscv_conditional_unit_false": cond_false,
     }
@@ -130,19 +151,24 @@ def verify_polyglot_multi_body_program(h: Hub) -> dict[str, object]:
         state.set("acc", new_acc)
 
     iters = h.multi_body.exec_while(loop_cond, loop_body)
+    six_checks = {
+        "TypeScript.>>> (-1 >>> 28)": h.eval_qualified_expr("(a TypeScript.>>> b)", {"a": -1, "b": 28}),
+        "C#.>>> (-1 >>> 60)": h.eval_qualified_expr("(a C#.>>> b)", {"a": -1, "b": 60}),
+        "Ruby.<=> (10 <=> 20)": h.eval_qualified_expr("(a Ruby.<=> b)", {"a": 10, "b": 20}),
+        "PHP.<=> (20 <=> 10)": h.eval_qualified_expr("(a PHP.<=> b)", {"a": 20, "b": 10}),
+        "Dart.% (-7 % 3 Euclidean)": h.eval_qualified_expr("(a Dart.% b)", {"a": -7, "b": 3}),
+        "Swift.&+ and Swift.&*": h.eval_qualified_expr("((m Swift.&* x) Swift.&+ b)", {"m": 7, "x": 6, "b": 3}),
+    }
+    assert six_checks["Ruby.<=> (10 <=> 20)"] == -1
+    assert six_checks["PHP.<=> (20 <=> 10)"] == 1
+    assert six_checks["Dart.% (-7 % 3 Euclidean)"] == 2
+    assert six_checks["Swift.&+ and Swift.&*"] == 45
     return {
         "iterations_run": iters,
         "final_acc": state.get("acc"),
         "final_idx": state.get("idx"),
         "short_circuit_side_effects": state.get("side_effects"),
-        "remaining_six_langs_hub_checks": {
-            "TypeScript.>>> (-1 >>> 28)": h.eval_qualified_expr("(a TypeScript.>>> b)", {"a": -1, "b": 28}),
-            "C#.>>> (-1 >>> 60)": h.eval_qualified_expr("(a C#.>>> b)", {"a": -1, "b": 60}),
-            "Ruby.<=> (10 <=> 20)": h.eval_qualified_expr("(a Ruby.<=> b)", {"a": 10, "b": 20}),
-            "PHP.<=> (20 <=> 10)": h.eval_qualified_expr("(a PHP.<=> b)", {"a": 20, "b": 10}),
-            "Dart.% (-7 % 3 Euclidean)": h.eval_qualified_expr("(a Dart.% b)", {"a": -7, "b": 3}),
-            "Swift.&+ and Swift.&*": h.eval_qualified_expr("(m Swift.&* x) Swift.&+ b", {"m": 7, "x": 6, "b": 3}),
-        },
+        "remaining_six_langs_hub_checks": six_checks,
         "transpiled_while_rust": h.multi_body.transpile_multi_body("while", "rust", ["idx < 5", "acc = acc.wrapping_mul(2).wrapping_add(step)"]),
         "transpiled_ternary_python": h.multi_body.transpile_multi_body("ternary", "python", ["val < 0", "val // 2", "int(val / 2)"]),
     }

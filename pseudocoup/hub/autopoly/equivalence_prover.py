@@ -62,7 +62,7 @@ def simplify_domain_predicate_via_z3(
     return cond
 
 
-_BASE_CANON_UL_CACHE: dict[int, Tuple[List[Tuple[z3.BitVecRef, int]], List[Tuple[z3.BoolRef, z3.ExprRef]], z3.ExprRef]] = {}
+_BASE_CANON_UL_CACHE: dict[int, Tuple[Any, List[Tuple[z3.BitVecRef, int]], List[Tuple[z3.BoolRef, z3.ExprRef]], z3.ExprRef]] = {}
 
 
 def canonicalize_unit_lean(
@@ -75,7 +75,7 @@ def canonicalize_unit_lean(
 ) -> Tuple[List[Tuple[z3.BoolRef, z3.ExprRef]], z3.ExprRef]:
     """Substitute canonical symbols `(a, b[, c, d, ...])` for `in_off_*` in a Sail-derived `UnitLean`."""
     ul_id = id(unit_lean)
-    if ul_id not in _BASE_CANON_UL_CACHE:
+    if ul_id not in _BASE_CANON_UL_CACHE or _BASE_CANON_UL_CACHE[ul_id][0] is not unit_lean:
         offsets = sorted(unit_lean.inputs.keys())
         max_in_w = max((unit_lean.inputs[off].size() for off in offsets), default=64)
         base_vars: List[Tuple[z3.BitVecRef, int]] = []
@@ -117,9 +117,9 @@ def canonicalize_unit_lean(
                 if (unit_lean.combined_term is not None and base_subs)
                 else unit_lean.combined_term
             )
-        _BASE_CANON_UL_CACHE[ul_id] = (base_vars, base_pieces, base_comb)
+        _BASE_CANON_UL_CACHE[ul_id] = (unit_lean, base_vars, base_pieces, base_comb)
 
-    base_vars, base_pieces, base_comb = _BASE_CANON_UL_CACHE[ul_id]
+    _ul_ref, base_vars, base_pieces, base_comb = _BASE_CANON_UL_CACHE[ul_id]
     explicit_syms: list[z3.BitVecRef | None] = [a, b, c, d, *extra_syms]
     caller_subs = []
     is_identity = True
