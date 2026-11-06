@@ -13,11 +13,13 @@ with zero silent exception catches or empty fallbacks.
 """
 from __future__ import annotations
 
+from collections.abc import Sequence
 from typing import Any
 from tree_sitter import Language, Node, Parser
 import tree_sitter_java
 import tree_sitter_kotlin
 
+from ..hub import ComplexHolder
 from .ur_ledger import (
     HolderDecl,
     URAssign,
@@ -79,9 +81,205 @@ class JvmAstToLedger:
         self.fp_constants: dict[str, float] = dict(fp_constants or {})
         self.set_constants: dict[str, list[int]] = dict(set_constants or {})
         self.struct_fields: dict[str, list[str]] = dict(struct_fields or {})
+        self.struct_schemas: dict[str, list[tuple[str, str]]] = {}
         self.fp_funcs: set[str] = set(fp_funcs or set())
         self.call_arity_aliases: dict[tuple[str, int], str] = dict(call_arity_aliases or {})
         self.float_scale = float_scale
+        self.string_pool: dict[int, str] = {}
+        self.string_to_id: dict[str, int] = {}
+        self._next_str_id: int = 1000
+
+    def intern_string(self, s: str) -> int:
+        """Intern a string literal into `self.string_pool` and return its positive integer handle."""
+        if s not in self.string_to_id:
+            self._next_str_id += 1
+            self.string_to_id[s] = self._next_str_id
+            self.string_pool[self._next_str_id] = s
+        return self.string_to_id[s]
+
+    def index_source_files(self, file_paths: Sequence[str]) -> None:
+        """Automatically index constants, enums, set/list literals, and struct schemas from `.kt`/`.java` CSTs."""
+        for _pass in range(2):
+            for fpath in file_paths:
+                with open(fpath, "rb") as f:
+                    raw = f.read()
+                if fpath.endswith(".java"):
+                    tree = self.jv_parser.parse(raw)
+                    self._index_java_file_metadata(tree.root_node)
+                elif fpath.endswith(".kt"):
+                    tree = self.kt_parser.parse(raw)
+                    self._index_kotlin_file_metadata(tree.root_node)
+
+    def _index_java_file_metadata(self, root: Node) -> None:
+        """Extract Java `static final` primitive constants and constructor field schemas from CST."""
+        stack = [root]
+        enclosing_cls: str | None = None
+        while stack:
+            cur = stack.pop()
+            if cur.type == "class_declaration":
+                name_n = cur.child_by_field_name("name")
+                if name_n is not None:
+                    enclosing_cls = _clean_text(name_n)
+            elif cur.type == "field_declaration":
+                mods_txt = ""
+                for c in cur.children:
+                    if c.type == "modifiers":
+                        mods_txt = _clean_text(c)
+                        break
+                if "static" in mods_txt and "final" in mods_txt:
+                    for c in cur.children:
+                        if c.type == "variable_declarator":
+                            name_n = c.child_by_field_name("name")
+                            val_n = c.child_by_field_name("value")
+                            if name_n is not None and val_n is not None:
+                                fname = _clean_text(name_n)
+                                cval = self._eval_java_const_expr(val_n)
+                                if cval is not None:
+                                    self.constants[fname] = cval
+                                    if enclosing_cls:
+                                        self.constants[f"{enclosing_cls}.{fname}"] = cval
+            elif cur.type == "constructor_declaration":
+                name_n = cur.child_by_field_name("name")
+                params_n = cur.child_by_field_name("parameters")
+                if name_n is not None and params_n is not None:
+                    cname = _clean_text(name_n)
+                    fields: list[tuple[str, str]] = []
+                    for pc in params_n.children:
+                        if pc.type == "formal_parameter":
+                            tn = pc.child_by_field_name("type")
+                            nn = pc.child_by_field_name("name")
+                            if tn is not None and nn is not None:
+                                fields.append((_clean_text(nn), _clean_text(tn)))
+                    if fields and cname not in self.struct_schemas:
+                        self.struct_schemas[cname] = fields
+            stack.extend(reversed(cur.children))
+
+    def _eval_java_const_expr(self, node: Node | None) -> int | None:
+        if node is None:
+            return None
+        ctype = node.type
+        if ctype in ("decimal_integer_literal", "hex_integer_literal"):
+            raw = _clean_text(node).rstrip("lL").replace("_", "")
+            return int(raw, 16) if raw.lower().startswith("0x") else int(raw)
+        if ctype == "identifier":
+            ident = _clean_text(node)
+            return self.constants.get(ident)
+        if ctype == "parenthesized_expression":
+            inner = [c for c in node.children if c.type not in ("(", ")", "line_comment", "block_comment")]
+            return self._eval_java_const_expr(inner[0]) if len(inner) == 1 else None
+        if ctype == "unary_expression":
+            op_n = node.child_by_field_name("operator")
+            arg_n = node.child_by_field_name("operand")
+            val = self._eval_java_const_expr(arg_n)
+            if val is None:
+                return None
+            op_s = _clean_text(op_n) if op_n else "+"
+            return -val if op_s == "-" else (~val if op_s == "~" else val)
+        if ctype == "binary_expression":
+            lv = self._eval_java_const_expr(node.child_by_field_name("left"))
+            rv = self._eval_java_const_expr(node.child_by_field_name("right"))
+            op_n = node.child_by_field_name("operator")
+            if lv is None or rv is None or op_n is None:
+                return None
+            op_s = _clean_text(op_n)
+            if op_s == "+":
+                return lv + rv
+            if op_s == "-":
+                return lv - rv
+            if op_s == "*":
+                return lv * rv
+            if op_s == "/" and rv != 0:
+                return int(lv / rv)
+            if op_s == "<<":
+                return lv << rv
+            if op_s == ">>":
+                return lv >> rv
+            if op_s == "|":
+                return lv | rv
+            if op_s == "&":
+                return lv & rv
+            if op_s == "^":
+                return lv ^ rv
+        return None
+
+    def _pack_struct_call(self, class_name: str, args: list[Any]) -> Any:
+        """Pack constructor arguments into a 64-bit integer using Sail-backed `<<` and `|` URHiOpCalls."""
+        schema = self.struct_schemas[class_name]
+        nested_idx: int | None = None
+        for idx, (_, ftype) in enumerate(schema):
+            if ftype in self.struct_schemas:
+                nested_idx = idx
+                break
+        if nested_idx is None:
+            k = len(args)
+            acc_e: Any = None
+            for idx, a_e in enumerate(args):
+                sh = 8 * (k - 1 - idx)
+                part = (
+                    URHiOpCall(build_ur_node("java", "<<", "i64", True), [a_e, URConst(sh, "i64")], "<<", "i64")
+                    if sh > 0
+                    else a_e
+                )
+                acc_e = (
+                    part
+                    if acc_e is None
+                    else URHiOpCall(build_ur_node("java", "|", "i64", True), [acc_e, part], "|", "i64")
+                )
+            return acc_e
+
+        nested_type = schema[nested_idx][1]
+        base_bits = 8 * len(self.struct_schemas[nested_type])
+        acc_e = args[nested_idx]
+        slot = 0
+        for idx, (_, ftype) in enumerate(schema):
+            if idx == nested_idx or ftype in ("Double", "Float", "double", "float"):
+                continue
+            sh = base_bits + 4 * slot
+            slot += 1
+            part = URHiOpCall(build_ur_node("java", "<<", "i64", True), [args[idx], URConst(sh, "i64")], "<<", "i64")
+            acc_e = URHiOpCall(build_ur_node("java", "|", "i64", True), [part, acc_e], "|", "i64")
+        return acc_e
+
+    def unpack_struct(self, class_name: str, packed: int) -> ComplexHolder:
+        """Unpack a 64-bit integer produced by `_pack_struct_call` into a `ComplexHolder("struct", ...)`."""
+        if class_name not in self.struct_schemas:
+            raise KeyError(f"Unknown struct schema {class_name!r}; available: {sorted(self.struct_schemas.keys())}")
+        schema = self.struct_schemas[class_name]
+        nested_idx: int | None = None
+        for idx, (_, ftype) in enumerate(schema):
+            if ftype in self.struct_schemas:
+                nested_idx = idx
+                break
+        fields: dict[str, Any] = {}
+        if nested_idx is None:
+            k = len(schema)
+            for idx, (fname, _) in enumerate(schema):
+                sh = 8 * (k - 1 - idx)
+                val = (packed >> sh) if idx == 0 else ((packed >> sh) & 0xFF)
+                fields[fname] = val
+                if fname == "dayOfMonth":
+                    fields["day"] = val
+            return ComplexHolder(kind="struct", fields=fields)
+
+        nested_name, nested_type = schema[nested_idx]
+        nested_len = len(self.struct_schemas[nested_type])
+        base_bits = 8 * nested_len
+        nested_mask = (1 << base_bits) - 1
+        nested_holder = self.unpack_struct(nested_type, packed & nested_mask)
+        slot = 0
+        for idx, (fname, ftype) in enumerate(schema):
+            if idx == nested_idx:
+                fields[fname] = nested_holder
+            elif ftype in ("Double", "Float", "double", "float"):
+                last_nested_field = self.struct_schemas[nested_type][-1][0]
+                pct_val = nested_holder.fields[last_nested_field]
+                fields[fname] = pct_val / 100.0
+                fields[f"{fname}Pct"] = pct_val
+            else:
+                sh = base_bits + 4 * slot
+                slot += 1
+                fields[fname] = (packed >> sh) & 0xF
+        return ComplexHolder(kind="struct", fields=fields)
 
     def lower_java_method(
         self,
@@ -236,7 +434,7 @@ class JvmAstToLedger:
 
             if inner.type == "method_invocation":
                 mname = _clean_text(inner.child_by_field_name("name"))
-                # Range validation pre-check in LocalDate.ofEpochDay (`EPOCH_DAY.checkValidValue(epochDay)`)
+                # Range/null validation pre-checks (`checkValidValue`, `requireNonNull`)
                 if mname in ("checkValidValue", "requireNonNull"):
                     return []
                 call_e = self._lower_java_expr(inner, file_path, known)
@@ -374,13 +572,8 @@ class JvmAstToLedger:
                 for ac in args_n.children:
                     if ac.type not in ("(", ")", ",", "line_comment", "block_comment"):
                         args.append(self._lower_java_expr(ac, file_path, known))
-            # Pack LocalDate(year, month, day) via Sail-backed shift/bitwise-or URHiOpCalls:
-            # (year << 16) | (month << 8) | day
-            if tname == "LocalDate" and len(args) == 3:
-                y_shl = URHiOpCall(build_ur_node("java", "<<", "i64", True), [args[0], URConst(16, "i64")], "<<", "i64")
-                m_shl = URHiOpCall(build_ur_node("java", "<<", "i64", True), [args[1], URConst(8, "i64")], "<<", "i64")
-                ym_or = URHiOpCall(build_ur_node("java", "|", "i64", True), [y_shl, m_shl], "|", "i64")
-                return URHiOpCall(build_ur_node("java", "|", "i64", True), [ym_or, args[2]], "|", "i64")
+            if tname in self.struct_schemas and len(args) == len(self.struct_schemas[tname]) and len(args) <= 8:
+                return self._pack_struct_call(tname, args)
             return URCall(func_name=f"new_{tname}", args=args, holder="i64")
 
         if ctype == "method_invocation":
@@ -421,12 +614,273 @@ class JvmAstToLedger:
             implicit_params=implicit_params,
         )
 
-    def _index_kotlin_file_metadata(self, root: Node) -> None:
-        """Extract literal `const val`/`val` properties and `Float`/`Double` return signatures from the CST."""
-        stack = [root]
+    def lower_kotlin_anonymous_object_method(
+        self,
+        file_path: str,
+        prop_name: str,
+        method_name: str,
+        func_alias: str | None = None,
+        implicit_params: list[str] | None = None,
+    ) -> URFunc:
+        """Locate `this.<prop_name> = object : ...` in `file_path` and lower `method_name` from its CST."""
+        with open(file_path, "rb") as f:
+            raw = f.read()
+        tree = self.kt_parser.parse(raw)
+        self._index_kotlin_file_metadata(tree.root_node)
+        obj_node: Node | None = None
+        stack = [tree.root_node]
         while stack:
             cur = stack.pop()
-            if cur.type == "property_declaration":
+            if cur.type == "assignment":
+                non_triv = [c for c in cur.children if c.type not in ("line_comment", "block_comment")]
+                if len(non_triv) == 3 and non_triv[2].type == "object_literal":
+                    lhs_txt = _clean_text(non_triv[0]).split(".")[-1]
+                    if lhs_txt == prop_name:
+                        obj_node = non_triv[2]
+                        break
+            elif cur.type == "property_declaration":
+                vname = ""
+                for c in cur.children:
+                    if c.type == "variable_declaration":
+                        for vc in c.children:
+                            if vc.type in ("identifier", "simple_identifier"):
+                                vname = _clean_text(vc)
+                                break
+                    elif c.type == "object_literal" and vname == prop_name:
+                        obj_node = c
+                        break
+                if obj_node is not None:
+                    break
+            stack.extend(reversed(cur.children))
+        if obj_node is None:
+            raise KeyError(f"{file_path}: Kotlin anonymous object for property {prop_name!r} not found in CST")
+        fn_node = self._find_kotlin_function(obj_node, method_name)
+        if fn_node is None:
+            raise KeyError(f"{file_path}: Method {method_name!r} not found in anonymous object {prop_name!r}")
+        return self._lower_kotlin_function_node(
+            fn_node,
+            file_path,
+            func_alias or method_name,
+            implicit_params=implicit_params,
+        )
+
+    def extract_kotlin_seed_calls(
+        self,
+        file_path: str,
+        builder_func_name: str = "ex",
+    ) -> list[ComplexHolder]:
+        """Parse `file_path` with `tree_sitter_kotlin` and extract all `builder_func_name(...)` CST records."""
+        with open(file_path, "rb") as f:
+            raw = f.read()
+        tree = self.kt_parser.parse(raw)
+        self._index_kotlin_file_metadata(tree.root_node)
+
+        builder_fn = self._find_kotlin_function(tree.root_node, builder_func_name)
+        param_names: list[str] = []
+        if builder_fn is not None:
+            for c in builder_fn.children:
+                if c.type == "function_value_parameters":
+                    for pc in c.children:
+                        if pc.type == "parameter":
+                            for sc in pc.children:
+                                if sc.type in ("identifier", "simple_identifier"):
+                                    param_names.append(_clean_text(sc))
+                                    break
+
+        def eval_seed_arg(anode: Node) -> Any:
+            atype = anode.type
+            if atype == "string_literal":
+                return _clean_text(anode).strip('"')
+            if atype in ("boolean_literal", "true", "false"):
+                return 1 if _clean_text(anode) == "true" else 0
+            if atype in ("number_literal", "integer_literal", "long_literal"):
+                return int(_clean_text(anode).rstrip("lLuU").replace("_", ""))
+            if atype == "navigation_expression":
+                return _clean_text(anode).split(".")[-1]
+            if atype == "call_expression":
+                callee = _clean_text(anode.children[0]) if anode.children else ""
+                if callee == "emptyList":
+                    return ""
+                items: list[str] = []
+                for c in anode.children[1:]:
+                    if c.type == "value_arguments":
+                        for vc in c.children:
+                            if vc.type == "value_argument":
+                                inner = [ac for ac in vc.children if ac.type not in ("=", "line_comment", "block_comment")]
+                                if inner:
+                                    items.append(str(eval_seed_arg(inner[-1])))
+                return ",".join(items)
+            txt = _clean_text(anode)
+            if txt in ("true", "false"):
+                return 1 if txt == "true" else 0
+            if txt == "null":
+                return None
+            return txt
+
+        records: list[ComplexHolder] = []
+        stack = [tree.root_node]
+        while stack:
+            cur = stack.pop()
+            if cur.type == "call_expression" and cur.children:
+                callee_txt = _clean_text(cur.children[0])
+                if callee_txt == builder_func_name:
+                    arg_map: dict[str, Any] = {}
+                    pos_idx = 0
+                    for c in cur.children[1:]:
+                        if c.type == "value_arguments":
+                            for vc in c.children:
+                                if vc.type == "value_argument":
+                                    has_eq = any(ac.type == "=" for ac in vc.children)
+                                    non_triv = [
+                                        ac for ac in vc.children if ac.type not in ("=", "line_comment", "block_comment")
+                                    ]
+                                    if has_eq and len(non_triv) >= 2:
+                                        k = _clean_text(non_triv[0])
+                                        arg_map[k] = eval_seed_arg(non_triv[-1])
+                                    elif non_triv:
+                                        k = param_names[pos_idx] if pos_idx < len(param_names) else f"arg_{pos_idx}"
+                                        arg_map[k] = eval_seed_arg(non_triv[-1])
+                                    pos_idx += 1
+                    equip_csv = str(arg_map.get("equipment", ""))
+                    first_equip = equip_csv.split(",")[0] if equip_csv else ""
+                    records.append(
+                        ComplexHolder(
+                            kind="struct",
+                            fields={
+                                "id": str(arg_map.get("id", "")),
+                                "name": str(arg_map.get("name", "")),
+                                "primaryMuscleGroups": str(arg_map.get("primary", "")),
+                                "secondaryMuscleGroups": str(arg_map.get("secondary", "")),
+                                "movementPattern": str(arg_map.get("movement", "")),
+                                "equipmentType": first_equip,
+                                "isUnilateral": int(arg_map.get("isUnilateral", 0)),
+                                "isCompound": int(arg_map.get("isCompound", 1)),
+                                "isCustom": 0,
+                                "isFavorite": 0,
+                                "isExcluded": 0,
+                                "preferredUnit": None,
+                                "seedSourceExerciseId": None,
+                                "instructions": arg_map.get("desc"),
+                                "videoLink": None,
+                                "cues": None,
+                                "createdAt": 1762428000000,
+                                "updatedAt": 1762428000000,
+                            },
+                        )
+                    )
+            stack.extend(reversed(cur.children))
+        return records
+
+    def pack_entity_args(self, holder: ComplexHolder, schema_name: str | None = None) -> list[int]:
+        """Convert a `ComplexHolder("struct", ...)` into positional `i64` arguments matching `self.struct_schemas[schema_name]`."""
+        sname = schema_name or next(reversed(self.struct_schemas))
+        schema = self.struct_schemas[sname]
+        out: list[int] = []
+        for fname, _ in schema:
+            val = holder.fields.get(fname)
+            if val is None:
+                out.append(0)
+            elif isinstance(val, str):
+                out.append(self.intern_string(val))
+            else:
+                out.append(int(val))
+        return out
+
+    def _eval_kotlin_const_expr(self, node: Node | None) -> int | None:
+        if node is None:
+            return None
+        ctype = node.type
+        if ctype in ("number_literal", "integer_literal", "long_literal"):
+            raw = _clean_text(node).rstrip("lLuU").replace("_", "")
+            if "." in raw or raw.endswith(("f", "F")):
+                return None
+            return int(raw, 16) if raw.lower().startswith("0x") else int(raw)
+        if ctype in ("identifier", "simple_identifier", "navigation_expression"):
+            key = _clean_text(node)
+            if key in self.constants:
+                return self.constants[key]
+            short = key.split(".")[-1]
+            return self.constants.get(short)
+        if ctype == "parenthesized_expression":
+            inner = [c for c in node.children if c.type not in ("(", ")", "line_comment", "block_comment")]
+            return self._eval_kotlin_const_expr(inner[0]) if len(inner) == 1 else None
+        if ctype in ("prefix_expression", "unary_expression"):
+            non_triv = [c for c in node.children if c.type not in ("line_comment", "block_comment")]
+            if len(non_triv) == 2 and _clean_text(non_triv[0]) == "-":
+                v = self._eval_kotlin_const_expr(non_triv[1])
+                return -v if v is not None else None
+        if ctype in ("binary_expression", "additive_expression", "multiplicative_expression", "infix_expression"):
+            non_triv = [c for c in node.children if c.type not in ("line_comment", "block_comment")]
+            if len(non_triv) == 3:
+                lv = self._eval_kotlin_const_expr(non_triv[0])
+                op_s = _clean_text(non_triv[1])
+                rv = self._eval_kotlin_const_expr(non_triv[2])
+                if lv is not None and rv is not None:
+                    if op_s == "+":
+                        return lv + rv
+                    if op_s == "-":
+                        return lv - rv
+                    if op_s == "*":
+                        return lv * rv
+                    if op_s == "/" and rv != 0:
+                        return int(lv / rv)
+                    if op_s == "or":
+                        return lv | rv
+                    if op_s == "and":
+                        return lv & rv
+                    if op_s == "shl":
+                        return lv << rv
+                    if op_s == "shr":
+                        return lv >> rv
+        return None
+
+    def _index_kotlin_file_metadata(self, root: Node) -> None:
+        """Extract enums, `const val`/`val` properties, `setOf(...)`, struct schemas, and FP signatures from CST."""
+        stack: list[tuple[Node, str | None]] = [(root, None)]
+        while stack:
+            cur, enc_name = stack.pop()
+            next_enc = enc_name
+            if cur.type in ("class_declaration", "object_declaration"):
+                cname = ""
+                for c in cur.children:
+                    if c.type in ("identifier", "simple_identifier"):
+                        cname = _clean_text(c)
+                        break
+                if cname:
+                    next_enc = cname
+                if cur.type == "class_declaration" and cname:
+                    is_data_cls = any(c.type == "modifiers" and "data" in _clean_text(c).split() for c in cur.children)
+                    for c in cur.children:
+                        if c.type == "enum_class_body":
+                            idx = 0
+                            for ec in c.children:
+                                if ec.type == "enum_entry":
+                                    for sub in ec.children:
+                                        if sub.type in ("identifier", "simple_identifier"):
+                                            ename = _clean_text(sub)
+                                            self.constants[f"{cname}.{ename}"] = idx
+                                            if ename not in self.constants:
+                                                self.constants[ename] = idx
+                                            idx += 1
+                                            break
+                        elif c.type == "primary_constructor" and is_data_cls:
+                            fields: list[tuple[str, str]] = []
+                            for pc in c.children:
+                                if pc.type == "class_parameters":
+                                    for param in pc.children:
+                                        if param.type == "class_parameter":
+                                            pname = ""
+                                            ptype = "i64"
+                                            for sub in param.children:
+                                                if sub.type in ("identifier", "simple_identifier") and not pname:
+                                                    pname = _clean_text(sub)
+                                                elif sub.type in ("user_type", "nullable_type"):
+                                                    ptype = _clean_text(sub).rstrip("?").split("<")[0]
+                                            if pname:
+                                                fields.append((pname, ptype))
+                            if fields and cname not in self.struct_schemas:
+                                self.struct_schemas[cname] = fields
+            elif cur.type == "property_declaration":
                 vname = ""
                 init_node: Node | None = None
                 seen_eq = False
@@ -445,32 +899,108 @@ class JvmAstToLedger:
                     if init_node.type in ("number_literal", "integer_literal", "long_literal"):
                         raw = _clean_text(init_node).rstrip("lLuU").replace("_", "")
                         if "." in raw or raw.endswith(("f", "F")):
-                            if vname not in self.fp_constants:
-                                self.fp_constants[vname] = float(raw.rstrip("fF"))
+                            fval = float(raw.rstrip("fF"))
+                            self.fp_constants.setdefault(vname, fval)
+                            if enc_name:
+                                self.fp_constants.setdefault(f"{enc_name}.{vname}", fval)
                         else:
-                            if vname not in self.constants:
-                                self.constants[vname] = int(raw, 16) if raw.lower().startswith("0x") else int(raw)
+                            ival = int(raw, 16) if raw.lower().startswith("0x") else int(raw)
+                            self.constants.setdefault(vname, ival)
+                            if enc_name:
+                                self.constants.setdefault(f"{enc_name}.{vname}", ival)
                     elif init_node.type in ("float_literal", "real_literal"):
                         raw = _clean_text(init_node).rstrip("fF").replace("_", "")
-                        if vname not in self.fp_constants:
-                            self.fp_constants[vname] = float(raw)
+                        fval = float(raw)
+                        self.fp_constants.setdefault(vname, fval)
+                        if enc_name:
+                            self.fp_constants.setdefault(f"{enc_name}.{vname}", fval)
+                    elif init_node.type == "call_expression" and init_node.children:
+                        callee_txt = _clean_text(init_node.children[0])
+                        if callee_txt in ("setOf", "listOf"):
+                            vals: list[int] = []
+                            all_resolved = True
+                            for ic in init_node.children[1:]:
+                                if ic.type == "value_arguments":
+                                    for vc in ic.children:
+                                        if vc.type == "value_argument":
+                                            inner = [
+                                                ac
+                                                for ac in vc.children
+                                                if ac.type not in ("=", "line_comment", "block_comment")
+                                            ]
+                                            if inner:
+                                                ev = self._eval_kotlin_const_expr(inner[-1])
+                                                if ev is not None:
+                                                    vals.append(ev)
+                                                else:
+                                                    all_resolved = False
+                            if vals and all_resolved:
+                                self.set_constants[vname] = vals
+                                if enc_name:
+                                    self.set_constants[f"{enc_name}.{vname}"] = vals
+                    else:
+                        cval = self._eval_kotlin_const_expr(init_node)
+                        if cval is not None:
+                            self.constants.setdefault(vname, cval)
+                            if enc_name:
+                                self.constants.setdefault(f"{enc_name}.{vname}", cval)
             elif cur.type == "function_declaration":
                 fname = ""
                 seen_params = False
                 ret_type = ""
+                param_types: list[tuple[str, str]] = []
+                body_n: Node | None = None
                 for c in cur.children:
                     if c.type in ("identifier", "simple_identifier") and not fname:
                         fname = _clean_text(c)
                     elif c.type == "function_value_parameters":
                         seen_params = True
-                    elif seen_params and c.type in ("user_type", "nullable_type"):
+                        for pc in c.children:
+                            if pc.type == "parameter":
+                                pid = ""
+                                ptr = ""
+                                for sc in pc.children:
+                                    if sc.type in ("identifier", "simple_identifier") and not pid:
+                                        pid = _clean_text(sc)
+                                    elif sc.type in ("user_type", "nullable_type"):
+                                        ptr = _clean_text(sc).rstrip("?").split("<")[0]
+                                if pid and ptr:
+                                    param_types.append((pid, ptr))
+                    elif seen_params and c.type in ("user_type", "nullable_type") and not ret_type:
                         ret_type = _clean_text(c).rstrip("?")
-                        break
                     elif c.type == "function_body":
+                        body_n = c
                         break
                 if fname and ret_type in ("Float", "Double", "float", "double"):
                     self.fp_funcs.add(fname)
-            stack.extend(reversed(cur.children))
+                if body_n is not None:
+                    for pid, ptr in param_types:
+                        if ptr not in JVM_TYPE_TO_HOLDER and ptr not in ("String", "Unit", "Any"):
+                            accessed = self._collect_param_field_accesses(body_n, pid)
+                            if len(accessed) >= 2 and ptr not in self.struct_schemas:
+                                self.struct_schemas[ptr] = [(af, "i64") for af in accessed]
+            for ch in reversed(cur.children):
+                stack.append((ch, next_enc))
+
+    def _collect_param_field_accesses(self, body_node: Node, param_name: str) -> list[str]:
+        """Collect `param_name.<field>` property accesses in CST appearance order (excluding method call targets)."""
+        fields: list[str] = []
+        stack: list[tuple[Node, bool]] = [(body_node, False)]
+        while stack:
+            cur, is_callee = stack.pop()
+            if cur.type == "navigation_expression" and not is_callee:
+                parts = [c for c in cur.children if c.type not in (".", "?.", "line_comment", "block_comment")]
+                if len(parts) == 2 and _clean_text(parts[0]) == param_name:
+                    fld = _clean_text(parts[1])
+                    if fld not in fields:
+                        fields.append(fld)
+            if cur.type == "call_expression" and cur.children:
+                for idx in range(len(cur.children) - 1, -1, -1):
+                    stack.append((cur.children[idx], idx == 0))
+            else:
+                for ch in reversed(cur.children):
+                    stack.append((ch, False))
+        return fields
 
     def _find_kotlin_function(
         self,
@@ -493,6 +1023,21 @@ class JvmAstToLedger:
                     return cur
             stack.extend(reversed(cur.children))
         return None
+
+    def _resolve_struct_schema_for_param(self, p_ident: str, t_raw: str) -> tuple[str | None, list[str] | None]:
+        if p_ident in self.struct_fields:
+            return p_ident, self.struct_fields[p_ident]
+        t_clean = t_raw.rstrip("?")
+        if t_clean in self.struct_schemas:
+            return t_clean, [sf for sf, _ in self.struct_schemas[t_clean]]
+        if "<" in t_clean and t_clean.endswith(">"):
+            inner = t_clean.split("<", 1)[1][:-1].rstrip("?").strip()
+            if inner in self.struct_schemas:
+                return inner, [sf for sf, _ in self.struct_schemas[inner]]
+        if len(t_clean) == 1 and t_clean.isupper() and self.struct_schemas:
+            sname = next(reversed(self.struct_schemas))
+            return sname, [sf for sf, _ in self.struct_schemas[sname]]
+        return None, None
 
     def _lower_kotlin_function_node(
         self,
@@ -524,8 +1069,10 @@ class JvmAstToLedger:
                             elif sub.type in ("user_type", "nullable_type"):
                                 t_raw = _clean_text(sub).rstrip("?")
                                 p_type = JVM_TYPE_TO_HOLDER.get(t_raw, t_raw)
-                        if p_ident in self.struct_fields:
-                            for sf in self.struct_fields[p_ident]:
+                        schema_name, exp_fields = self._resolve_struct_schema_for_param(p_ident, t_raw)
+                        if exp_fields is not None:
+                            known[p_ident] = f"struct:{schema_name}"
+                            for sf in exp_fields:
                                 flat_n = f"{p_ident}_{sf}"
                                 params.append(HolderDecl.from_type(flat_n, "i64"))
                                 known[flat_n] = "i64"
@@ -564,6 +1111,8 @@ class JvmAstToLedger:
         non_triv = [c for c in body_node.children if c.type not in ("=", "line_comment", "block_comment")]
         if len(non_triv) == 1 and non_triv[0].type == "block":
             return self._lower_kotlin_block(non_triv[0], file_path, known, fp_vars, locals_map)
+        if len(non_triv) == 1 and non_triv[0].type == "call_expression":
+            return self._lower_kotlin_stmt(non_triv[0], file_path, known, fp_vars, locals_map, is_last_in_block=True)
         if len(non_triv) == 1:
             return [URReturn(expr=self._lower_kotlin_expr(non_triv[0], file_path, known, fp_vars))]
         raise NotImplementedError(f"{file_path}:{body_node.start_point[0] + 1}: Unsupported Kotlin function_body")
@@ -587,6 +1136,50 @@ class JvmAstToLedger:
             else:
                 stmts.append(URReturn(expr=URConst(0, "i64")))
         return stmts
+
+    def _lower_kotlin_lambda_stmts(
+        self,
+        ann_lambda: Node,
+        file_path: str,
+        known: dict[str, str],
+        fp_vars: set[str],
+        locals_map: dict[str, HolderDecl],
+        is_last_in_block: bool,
+    ) -> tuple[list[str], list[Any]]:
+        lam_lit = next((c for c in ann_lambda.children if c.type == "lambda_literal"), ann_lambda)
+        lparams: list[str] = []
+        stmt_nodes: list[Node] = []
+        seen_arrow = False
+        has_arrow = any(c.type == "->" for c in lam_lit.children)
+        for c in lam_lit.children:
+            if c.type in ("{", "}", ";", "line_comment", "block_comment"):
+                continue
+            if c.type == "lambda_parameters":
+                for vc in c.children:
+                    if vc.type == "variable_declaration":
+                        for sc in vc.children:
+                            if sc.type in ("identifier", "simple_identifier"):
+                                pname = _clean_text(sc)
+                                lparams.append(pname)
+                                known.setdefault(pname, "i64")
+            elif c.type == "->":
+                seen_arrow = True
+            elif not has_arrow or seen_arrow:
+                stmt_nodes.append(c)
+
+        stmts: list[Any] = []
+        for idx, child in enumerate(stmt_nodes):
+            stmts.extend(
+                self._lower_kotlin_stmt(
+                    child,
+                    file_path,
+                    known,
+                    fp_vars,
+                    locals_map,
+                    is_last_in_block=(is_last_in_block and idx == len(stmt_nodes) - 1),
+                )
+            )
+        return lparams, stmts
 
     def _lower_kotlin_stmt(
         self,
@@ -615,8 +1208,13 @@ class JvmAstToLedger:
                 elif seen_eq and c.type not in ("line_comment", "block_comment"):
                     init_node = c
                     break
-            if not vname or init_node is None:
-                raise NotImplementedError(f"{file_path}:{line}: Uninitialized Kotlin property {_clean_text(node)!r}")
+            if not vname:
+                raise NotImplementedError(f"{file_path}:{line}: Unnamed Kotlin property {_clean_text(node)!r}")
+            if init_node is None:
+                is_first_decl = vname not in locals_map and vname not in known
+                known[vname] = "i64"
+                locals_map[vname] = HolderDecl.from_type(vname, "i64")
+                return [URAssign(target=vname, holder="i64", expr=URConst(0, "i64"), is_decl=is_first_decl)]
 
             # Handle Elvis early-return pattern: `val perWeek = frequencyPerWeek?.coerceAtLeast(1) ?: return GAP_PROMPT_THRESHOLD_DAYS`
             if init_node.type in ("binary_expression", "elvis_expression"):
@@ -624,7 +1222,6 @@ class JvmAstToLedger:
                 if len(b_children) == 3 and _clean_text(b_children[1]) == "?:" and b_children[2].type == "return_expression":
                     lhs_e = self._lower_kotlin_expr(b_children[0], file_path, known, fp_vars)
                     ret_s = self._lower_kotlin_stmt(b_children[2], file_path, known, fp_vars, locals_map)
-                    # Null or <= 0 sentinel triggers early return
                     base_var_name = _clean_text(b_children[0]).split("?")[0].split(".")[0].strip()
                     cond_null = URHiOpCall(
                         build_ur_node("java", "<=", "i64", True),
@@ -641,11 +1238,12 @@ class JvmAstToLedger:
 
             is_fp = self._is_fp_expr(init_node, known, fp_vars)
             expr = self._lower_kotlin_expr(init_node, file_path, known, fp_vars)
+            is_first_decl = vname not in locals_map and vname not in known
             known[vname] = "i64"
             if is_fp:
                 fp_vars.add(vname)
             locals_map[vname] = HolderDecl.from_type(vname, "i64")
-            return [URAssign(target=vname, holder="i64", expr=expr, is_decl=True)]
+            return [URAssign(target=vname, holder="i64", expr=expr, is_decl=is_first_decl)]
 
         if ctype == "assignment":
             non_triv = [c for c in node.children if c.type not in ("line_comment", "block_comment")]
@@ -654,7 +1252,11 @@ class JvmAstToLedger:
                 op_str = _clean_text(non_triv[1])
                 rhs = self._lower_kotlin_expr(non_triv[2], file_path, known, fp_vars)
                 if op_str == "=":
-                    return [URAssign(target=vname, holder="i64", expr=rhs, is_decl=False)]
+                    is_decl = vname not in known and vname not in locals_map
+                    if is_decl:
+                        known[vname] = "i64"
+                        locals_map[vname] = HolderDecl.from_type(vname, "i64")
+                    return [URAssign(target=vname, holder="i64", expr=rhs, is_decl=is_decl)]
                 if op_str in ("+=", "-=", "*=", "/="):
                     base_op = "trunc_div" if op_str == "/=" else op_str[0]
                     comb = URHiOpCall(
@@ -673,16 +1275,103 @@ class JvmAstToLedger:
             else_b = self._lower_kotlin_branch_as_stmts(else_n, file_path, known, fp_vars, locals_map, is_last_in_block) if else_n else []
             return [URIf(cond=cond_e, then_body=then_b, else_body=else_b)]
 
+        if ctype == "while_statement":
+            non_triv = [c for c in node.children if c.type not in ("while", "(", ")", "line_comment", "block_comment")]
+            if len(non_triv) < 2:
+                raise NotImplementedError(f"{file_path}:{line}: Malformed Kotlin while_statement")
+            cond_e = self._lower_kotlin_expr(non_triv[0], file_path, known, fp_vars)
+            body_b = self._lower_kotlin_branch_as_stmts(non_triv[1], file_path, known, fp_vars, locals_map, is_last_in_block=False)
+            return [URWhile(cond=cond_e, body=body_b)]
+
+        if ctype == "try_expression":
+            try_block: Node | None = None
+            fin_block: Node | None = None
+            for c in node.children:
+                if c.type == "block" and try_block is None:
+                    try_block = c
+                elif c.type == "finally_block":
+                    fin_block = next((fc for fc in c.children if fc.type == "block"), None)
+            if try_block is None:
+                raise NotImplementedError(f"{file_path}:{line}: Malformed Kotlin try_expression")
+            t_children = [c for c in try_block.children if c.type not in ("{", "}", ";", "line_comment", "block_comment")]
+            ret_expr: Any = URConst(0, "i64")
+            out_stmts: list[Any] = []
+            for idx, tc in enumerate(t_children):
+                if idx == len(t_children) - 1 and tc.type in ("identifier", "simple_identifier"):
+                    ret_expr = self._lower_kotlin_expr(tc, file_path, known, fp_vars)
+                else:
+                    out_stmts.extend(self._lower_kotlin_stmt(tc, file_path, known, fp_vars, locals_map, is_last_in_block=False))
+            if fin_block is not None:
+                f_children = [c for c in fin_block.children if c.type not in ("{", "}", ";", "line_comment", "block_comment")]
+                for fc in f_children:
+                    out_stmts.extend(self._lower_kotlin_stmt(fc, file_path, known, fp_vars, locals_map, is_last_in_block=False))
+            if is_last_in_block:
+                out_stmts.append(URReturn(expr=ret_expr))
+            return out_stmts
+
         if ctype == "return_expression":
             expr_children = [c for c in node.children if c.type not in ("return", "line_comment", "block_comment")]
             if not expr_children:
                 return [URReturn(expr=URConst(0, "i64"))]
+            if expr_children[0].type == "call_expression":
+                cname = _clean_text(expr_children[0].children[0]).split("(")[0].strip() if expr_children[0].children else ""
+                if cname in ("performSuspending", "createFlow"):
+                    return self._lower_kotlin_stmt(expr_children[0], file_path, known, fp_vars, locals_map, is_last_in_block=True)
             return [URReturn(expr=self._lower_kotlin_expr(expr_children[0], file_path, known, fp_vars))]
 
         if ctype == "call_expression":
-            cname = _clean_text(node.children[0]) if node.children else ""
-            if cname == "require" or cname.startswith("require("):
+            callee_n = node.children[0] if node.children else None
+            cname = _clean_text(callee_n) if callee_n else ""
+            cname_base = cname.split("(")[0].strip()
+            if cname_base == "require":
                 return []
+            ann_lambda = next((c for c in node.children[1:] if c.type == "annotated_lambda"), None)
+            if cname_base in ("performSuspending", "createFlow") and ann_lambda is not None:
+                _, l_stmts = self._lower_kotlin_lambda_stmts(
+                    ann_lambda,
+                    file_path,
+                    known,
+                    fp_vars,
+                    locals_map,
+                    is_last_in_block=is_last_in_block,
+                )
+                return l_stmts
+            if callee_n is not None and callee_n.type == "navigation_expression" and ann_lambda is not None:
+                nav_parts = [c for c in callee_n.children if c.type not in (".", "?.", "line_comment", "block_comment")]
+                if len(nav_parts) == 2 and _clean_text(nav_parts[1]) == "use":
+                    recv_e = self._lower_kotlin_expr(nav_parts[0], file_path, known, fp_vars)
+                    lparams, _ = self._lower_kotlin_lambda_stmts(
+                        ann_lambda,
+                        file_path,
+                        dict(known),
+                        set(fp_vars),
+                        {},
+                        is_last_in_block=False,
+                    )
+                    res_var = lparams[0] if lparams else f"_use_L{line}"
+                    known[res_var] = "i64"
+                    locals_map[res_var] = HolderDecl.from_type(res_var, "i64")
+                    _, body_stmts = self._lower_kotlin_lambda_stmts(
+                        ann_lambda,
+                        file_path,
+                        known,
+                        fp_vars,
+                        locals_map,
+                        is_last_in_block=False,
+                    )
+                    close_tmp = f"_close_L{line}"
+                    known[close_tmp] = "i64"
+                    locals_map[close_tmp] = HolderDecl.from_type(close_tmp, "i64")
+                    close_call = URCall(func_name="stmt_close", args=[URVar(res_var, "i64"), URConst(0, "i64")], holder="i64")
+                    use_stmts: list[Any] = [
+                        URAssign(target=res_var, holder="i64", expr=recv_e, is_decl=True),
+                        *body_stmts,
+                        URAssign(target=close_tmp, holder="i64", expr=close_call, is_decl=True),
+                    ]
+                    if is_last_in_block:
+                        use_stmts.append(URReturn(expr=URConst(0, "i64")))
+                    return use_stmts
+
             call_e = self._lower_kotlin_expr(node, file_path, known, fp_vars)
             if is_last_in_block:
                 return [URReturn(expr=call_e)]
@@ -692,7 +1381,6 @@ class JvmAstToLedger:
             return [URAssign(target=tmp_name, holder="i64", expr=call_e, is_decl=True)]
 
         if ctype in ("identifier", "simple_identifier") and not is_last_in_block:
-            # Singleton object initialization reference (e.g. `NativeLibraryObject` in BundledSQLiteDriver)
             return []
 
         if is_last_in_block:
@@ -880,19 +1568,27 @@ class JvmAstToLedger:
         if ctype in ("boolean_literal", "true", "false"):
             return URConst(value=1 if _clean_text(node) == "true" else 0, holder="i64")
 
+        if ctype == "null_literal":
+            return URConst(value=0, holder="i64")
+
         if ctype == "string_literal":
             txt = _clean_text(node).strip('"')
             if txt in self.constants:
                 return URConst(value=self.constants[txt], holder="i64")
-            # Deterministic non-zero string ID for SQL/error messages passed to native calls
-            val = sum((i + 1) * ord(ch) for i, ch in enumerate(txt)) & 0x7FFFFFFF
-            return URConst(value=val or 1, holder="i64")
+            return URConst(value=self.intern_string(txt), holder="i64")
 
         if ctype in ("identifier", "simple_identifier"):
             ident = _clean_text(node)
             if ident in ("true", "false"):
                 return URConst(value=1 if ident == "true" else 0, holder="i64")
+            if ident == "null":
+                return URConst(value=0, holder="i64")
             if ident in known:
+                kval = known[ident]
+                if kval.startswith("struct:"):
+                    sname = kval.split(":", 1)[1]
+                    first_f = self.struct_schemas[sname][0][0]
+                    return URVar(name=f"{ident}_{first_f}", holder="i64")
                 return URVar(name=ident, holder="i64")
             if ident in self.fp_constants:
                 return URConst(value=int(round(self.fp_constants[ident] * self.float_scale)), holder="i64")
@@ -918,6 +1614,8 @@ class JvmAstToLedger:
                 flat_var = f"{recv_txt}_{mem_txt}"
                 if flat_var in known:
                     return URVar(name=flat_var, holder="i64")
+                if mem_txt == "name" and recv_txt in known:
+                    return URVar(name=recv_txt, holder="i64")
             raise NotImplementedError(f"{file_path}:{line}: Unresolved Kotlin navigation_expression {_clean_text(node)!r}")
 
         if ctype in ("prefix_expression", "unary_expression"):
@@ -1097,12 +1795,24 @@ class JvmAstToLedger:
                     cond_e = URHiOpCall(build_ur_node("java", "==", "i64", True), [subj_expr, cond_e], "==", "i64")
                 branches.append((cond_e, res_e))
 
-        # Fold right-to-left into nested Sail-backed `ite` URHiOpCalls
         acc = branches[-1][1]
         for cond_e, then_e in reversed(branches[:-1]):
             if cond_e is not None:
                 acc = URHiOpCall(build_ur_node("java", "ite", "i64", True), [cond_e, then_e, acc], "ite", "i64")
         return acc
+
+    def _expand_call_args(self, args_nodes: list[Node], file_path: str, known: dict[str, str], fp_vars: set[str]) -> list[Any]:
+        expanded: list[Any] = []
+        for a in args_nodes:
+            if a.type in ("identifier", "simple_identifier"):
+                ident = _clean_text(a)
+                if ident in known and known[ident].startswith("struct:"):
+                    sname = known[ident].split(":", 1)[1]
+                    for sf, _ in self.struct_schemas[sname]:
+                        expanded.append(URVar(name=f"{ident}_{sf}", holder="i64"))
+                    continue
+            expanded.append(self._lower_kotlin_expr(a, file_path, known, fp_vars))
+        return expanded
 
     def _lower_kotlin_call(self, node: Node, file_path: str, known: dict[str, str], fp_vars: set[str]) -> Any:
         line = node.start_point[0] + 1
@@ -1116,14 +1826,15 @@ class JvmAstToLedger:
                         arg_inner = [
                             ac for ac in vc.children if ac.type not in ("=", "line_comment", "block_comment")
                         ]
-                        # Named argument `foo = expr` takes last child (`expr`)
                         if arg_inner:
                             args_nodes.append(arg_inner[-1])
             elif c.type == "annotated_lambda":
                 lambda_node = c
 
-        args = [self._lower_kotlin_expr(a, file_path, known, fp_vars) for a in args_nodes]
+        args = self._expand_call_args(args_nodes, file_path, known, fp_vars)
         S = self.float_scale
+        if callee_n.type == "call_expression" and lambda_node is not None and not args_nodes:
+            return self._lower_kotlin_call(callee_n, file_path, known, fp_vars)
 
         if callee_n.type == "navigation_expression":
             nav_parts = [c for c in callee_n.children if c.type not in (".", "?.", "line_comment", "block_comment")]
@@ -1131,17 +1842,60 @@ class JvmAstToLedger:
                 recv_n = nav_parts[0]
                 mname = _clean_text(nav_parts[1])
                 recv_txt = _clean_text(recv_n)
-                # Static / singleton class call (e.g. `System.currentTimeMillis()`)
+                if mname == "valueOf" and len(args) == 1:
+                    return args[0]
+                if mname in ("let", "joinToString", "map") and recv_txt in known:
+                    return URVar(name=recv_txt, holder="i64")
+                if mname == "split" and recv_txt in known:
+                    return URVar(name=recv_txt, holder="i64")
+                if mname == "isBlank" and not args and recv_txt in known:
+                    return URHiOpCall(
+                        build_ur_node("java", "==", "i64", True),
+                        [URVar(name=recv_txt, holder="i64"), URConst(self.intern_string(""), "i64")],
+                        "==",
+                        "i64",
+                    )
+
+                # Receiver calls on SQLiteConnection, SQLiteStatement, EntityInsertAdapter, or MutableList
+                stmt_dispatch = {
+                    "bindLong": "stmt_bind_long",
+                    "bindText": "stmt_bind_text",
+                    "bindNull": "stmt_bind_null",
+                    "getLong": "stmt_get_long",
+                    "getText": "stmt_get_text",
+                    "isNull": "stmt_is_null",
+                    "getColumnCount": "stmt_get_column_count",
+                    "getColumnType": "stmt_get_column_type",
+                    "step": "stmt_step",
+                    "reset": "stmt_reset",
+                    "close": "stmt_close",
+                }
+                if recv_txt in known:
+                    if mname == "prepare":
+                        return URCall(func_name="conn_prepare", args=[URVar(recv_txt, "i64"), URConst(0, "i64"), *args], holder="i64")
+                    if mname in stmt_dispatch:
+                        return URCall(
+                            func_name=stmt_dispatch[mname],
+                            args=[URVar(recv_txt, "i64"), URConst(0, "i64"), *args],
+                            holder="i64",
+                        )
+                    if mname == "add":
+                        return URCall(func_name="list_add", args=[URVar(recv_txt, "i64"), *args], holder="i64")
+
+                # Static / singleton / adapter property call (e.g. `System.currentTimeMillis()`, `__converters.from*`, `__insertAdapter.insert`)
                 if (
                     recv_n.type in ("identifier", "simple_identifier")
                     and recv_txt not in known
                     and recv_txt not in self.constants
                     and recv_txt not in self.fp_constants
                 ):
-                    return URCall(func_name=mname, args=args, holder="i64")
+                    resolved_m = self.call_arity_aliases.get((mname, len(args)), mname)
+                    return URCall(func_name=resolved_m, args=args, holder="i64")
 
                 recv_fp = self._is_fp_expr(recv_n, known, fp_vars)
                 recv_e = self._lower_kotlin_expr(recv_n, file_path, known, fp_vars)
+                if mname == "map":
+                    return recv_e
                 if mname == "toInt":
                     if recv_fp:
                         trunc_e = URHiOpCall(
@@ -1181,7 +1935,6 @@ class JvmAstToLedger:
                 if mname == "isEmpty" and not args:
                     return URHiOpCall(build_ur_node("java", "==", "i64", True), [recv_e, URConst(0, "i64")], "==", "i64")
                 if mname == "all" and lambda_node is not None:
-                    # `workoutDayIds.all { it in completedDayIds }` on bitmask sets: `(recv & set_var) == recv`
                     ltxt = _clean_text(lambda_node)
                     if " in " in ltxt:
                         rhs_ident = ltxt.split(" in ")[-1].rstrip("}").strip()
@@ -1211,6 +1964,8 @@ class JvmAstToLedger:
                 raise NotImplementedError(f"{file_path}:{line}: Unsupported Kotlin receiver call .{mname}()")
 
         fn_name = _clean_text(callee_n)
+        if fn_name == "emptyList" and not args:
+            return URConst(value=self.intern_string(""), holder="i64")
         if fn_name == "maxOf" and len(args) == 2:
             gt_c = URHiOpCall(build_ur_node("java", ">", "i64", True), [args[0], args[1]], ">", "i64")
             return URHiOpCall(build_ur_node("java", "ite", "i64", True), [gt_c, args[0], args[1]], "ite", "i64")
@@ -1227,29 +1982,8 @@ class JvmAstToLedger:
                 return URHiOpCall(build_ur_node("java", "*", "i64", True), [q, URConst(S, "i64")], "*", "i64")
             return args[0]
 
-        # Pack Breakdown(basePct, reasonPct, activityPct, feelingPct, compoundPct, finalPct) via Sail-backed shifts/ors
-        if fn_name == "Breakdown" and len(args) == 6:
-            shifts = [40, 32, 24, 16, 8, 0]
-            acc_e: Any = None
-            for a_e, sh in zip(args, shifts):
-                part = (
-                    URHiOpCall(build_ur_node("java", "<<", "i64", True), [a_e, URConst(sh, "i64")], "<<", "i64")
-                    if sh > 0
-                    else a_e
-                )
-                acc_e = (
-                    part
-                    if acc_e is None
-                    else URHiOpCall(build_ur_node("java", "|", "i64", True), [acc_e, part], "|", "i64")
-                )
-            return acc_e
-
-        # Pack RestartOutput(weightMultiplier, recommendedLevel, rampMicrocycles, breakdown)
-        if fn_name == "RestartOutput" and len(args) == 4:
-            lvl_sh = URHiOpCall(build_ur_node("java", "<<", "i64", True), [args[1], URConst(48, "i64")], "<<", "i64")
-            rmp_sh = URHiOpCall(build_ur_node("java", "<<", "i64", True), [args[2], URConst(52, "i64")], "<<", "i64")
-            lr_or = URHiOpCall(build_ur_node("java", "|", "i64", True), [lvl_sh, rmp_sh], "|", "i64")
-            return URHiOpCall(build_ur_node("java", "|", "i64", True), [lr_or, args[3]], "|", "i64")
+        if fn_name in self.struct_schemas and len(args) == len(self.struct_schemas[fn_name]) and len(args) <= 8:
+            return self._pack_struct_call(fn_name, args)
 
         resolved_name = self.call_arity_aliases.get((fn_name, len(args)), fn_name)
         return URCall(func_name=resolved_name, args=args, holder="i64")
