@@ -19,7 +19,13 @@ from tree_sitter import Language, Node, Parser
 import tree_sitter_java
 import tree_sitter_kotlin
 
-from ..hub import ComplexHolder
+try:
+    from ..hub import ComplexHolder
+except (ImportError, ValueError):
+    try:
+        from PseudoCoup.hub import ComplexHolder
+    except ModuleNotFoundError:
+        from pseudocoup.hub import ComplexHolder
 from .ur_ledger import (
     HolderDecl,
     URAssign,
