@@ -20,12 +20,12 @@ import tree_sitter_java
 import tree_sitter_kotlin
 
 try:
-    from ..hub import ComplexHolder
+    from ..hub.control_flow import ComplexHolder
 except (ImportError, ValueError):
     try:
-        from PseudoCoup.hub import ComplexHolder
+        from PseudoCoup.hub.control_flow import ComplexHolder
     except ModuleNotFoundError:
-        from pseudocoup.hub import ComplexHolder
+        from pseudocoup.hub.control_flow import ComplexHolder
 from .ur_ledger import (
     HolderDecl,
     URAssign,
